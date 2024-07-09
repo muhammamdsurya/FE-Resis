@@ -43,7 +43,7 @@
     <header id="header" class="header d-flex align-items-center fixed-top">
         <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-            <a href="index.html" class="logo d-flex align-items-center me-5">
+            <a href="index.html" class="logo d-flex align-items-center me-2">
                 <!-- Uncomment the line below if you also wish to use an image logo -->
                 <img src="assets/img/logo.png" alt="">
             </a>
@@ -99,7 +99,7 @@
                     <div class="col-lg-7 d-flex flex-column justify-content-center" data-aos="fade-up"
                         data-aos-delay="200">
                         <div class="content">
-                            <h2>Tentang Kami </h2>
+                            <h2 class="text-center">Tentang Kami </h2>
 
                             <p class="text-center">
                                 Kami berdedikasi untuk menyediakan media belajar kursus online Kimia Analisis yang berkualitas dan mudah diakses, menawarkan pengalaman belajar yang komprehensif dan interaktif. Dengan teknologi digital terkini, Anda akan mendapatkan materi pembelajaran yang dirancang oleh para lulusan di bidang kimia, lengkap dengan fasilitas Virtual Lab secara real time untuk melakukan eksperimen seolah-olah berada di laboratorium sungguhan. <br><br>
@@ -124,7 +124,9 @@ Kami juga menyediakan berbagai soal latihan dan studi kasus untuk menguji dan me
 
             <div class="container">
 
-                <div class="row gy-5">
+                <div class="row gy-4">
+
+                    <h3 class="text-center">Kenapa harus kami?</h2>
 
                     <div class="col-xl-7 d-flex order-2 order-xl-1" data-aos="fade-up" data-aos-delay="200">
 
@@ -483,10 +485,10 @@ Kami juga menyediakan berbagai soal latihan dan studi kasus untuk menguji dan me
                         <p>A108 Adam Street</p>
                         <p>New York, NY 535022</p>
                         <div class="social-links d-flex mt-3">
-                            <a href=""><i class="bi bi-twitter-x"></i></a>
-                            <a href=""><i class="bi bi-facebook"></i></a>
-                            <a href=""><i class="bi bi-instagram"></i></a>
-                            <a href=""><i class="bi bi-linkedin"></i></a>
+                            <a href=""><i class="bi bi-whatsapp"></i></a>
+                            <a href="https://www.facebook.com/profile.php?id=100086836052617"><i class="bi bi-facebook"></i></a>
+                            <a href="https://www.instagram.com/resis.project/"><i class="bi bi-instagram"></i></a>
+                            <a href="http://www.linkedin.com/in/dimas-panduresi-9258591b4"><i class="bi bi-linkedin"></i></a>
                         </div>
                     </div>
                 </div>
@@ -494,18 +496,18 @@ Kami juga menyediakan berbagai soal latihan dan studi kasus untuk menguji dan me
                 <div class="col-lg-2 col-md-3 footer-links">
                     <h4>Profile</h4>
                     <ul>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">Tentang kami</a></li>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">Keunggulan</a></li>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">Visi Misi</a></li>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">Testimoni</a></li>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">F A Q</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#about">Tentang kami</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#alt-features">Keunggulan</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#visi">Visi Misi</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#testimonials">Testimoni</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#faq">F A Q</a></li>
                     </ul>
                 </div>
 
                 <div class="col-lg-2 col-md-3 footer-links">
                     <h4>Navigasi</h4>
                     <ul>
-                        <li><i class="bi bi-chevron-right"></i> <a href="#">Beranda</a></li>
+                        <li><i class="bi bi-chevron-right"></i> <a href="#home">Beranda</a></li>
                         <li><i class="bi bi-chevron-right"></i> <a href="#">Kelas Kami</a></li>
                         <li><i class="bi bi-chevron-right"></i> <a href="#">Kontak</a></li>
                     </ul>
