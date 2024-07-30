@@ -1,11 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return redirect('/beranda');
-});
-
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\RegisController;
+// Rute standar
+Route::redirect('/', '/beranda');
 Route::get('/beranda', function () {
     return view('welcome');
 })->name('beranda');
@@ -14,23 +15,53 @@ Route::get('/kelas', function () {
     return view('kelas');
 })->name('kelas');
 
+Route::get('/detail-kelas', function () {
+    return view('detailKelas');
+})->name('detail-kelas');
 
 Route::get('/kontak', function () {
     return view('kontak');
 })->name('kontak');
 
+Route::get('/terms', function () {
+    return view('terms');
+})->name('terms');
 
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
+// Grup rute untuk rute-rute yang terkait dengan admin
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboardAdmin');
+    Route::get('/kelas', [AdminController::class, 'kelas'])->name('kelas');
+    Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
+    Route::get('/bundling', [AdminController::class, 'bundling'])->name('bundling');
+    Route::get('/sales', [AdminController::class, 'sales'])->name('sales');
+    Route::get('/data-admin', [AdminController::class, 'dataAdmin'])->name('data-admin');
+    Route::get('/data-pengajar', [AdminController::class, 'dataPengajar'])->name('data-pengajar');
+    Route::get('/data-siswa', [AdminController::class, 'dataSiswa'])->name('data-siswa');
+    // Tambahkan rute-rute lain untuk admin di sini
+});
 
+// Grup rute untuk rute-rute yang terkait dengan admin
+Route::prefix('user')->group(function () {
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::get('/kelas', [UserController::class, 'kelas'])->name('kelas');
+    Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
+});
 
-Route::get('/register', function () {
-    return view('register');
-})->name('register');
+// Rute untuk login pengguna biasa
+Route::prefix('')->group(function () {
+    Route::get('/login', [AuthController::class, 'show'])->name('login'); // Menampilkan form login
+    Route::post('/login', [AuthController::class, 'login']); // Proses login user
+});
 
+// Rute untuk login admin
+Route::prefix('admin')->group(function () {
+    Route::get('/login', [AuthController::class, 'showAdmin'])->name('loginAdmin'); // Menampilkan form login admin
+    Route::post('/login', [AuthController::class, 'loginAdmin']); // Proses login admin
+});
 
-Route::get('/detail-kelas', function () {
-    return view('detailKelas');
-})->name('detail-kelas');
+Route::prefix('')->group(function () {
+    Route::get('/register', [RegisController::class, 'show']); // Menampilkan form registrasi
+    Route::post('/register', [RegisController::class, 'register'])->name('register'); // Proses registrasi user
+});
 

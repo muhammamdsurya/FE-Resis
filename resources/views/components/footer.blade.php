@@ -3,12 +3,12 @@
     <div class="container footer-top">
         <div class="row gy-4">
             <div class="col-lg-4 col-md-6 footer-about">
-                <a href="index.html" class="d-flex align-items-center">
+                <a href="/" class="d-flex align-items-center">
                     <span class="sitename">AkuAnalis</span>
                 </a>
                 <div class="footer-contact pt-3">
-                    <p>A108 Adam Street</p>
-                    <p>New York, NY 535022</p>
+                    <p>Kota Bekasi, Jawa Barat</p>
+                    <p>Indonesia</p>
                     <div class="social-links d-flex mt-3">
                         <a href=""><i class="bi bi-whatsapp"></i></a>
                         <a href="https://www.facebook.com/profile.php?id=100086836052617"><i class="bi bi-facebook"></i></a>
@@ -51,7 +51,8 @@
     </div>
 
     <div class="container copyright text-center mt-4">
-        <p>© <span>Copyright</span> <strong class="px-1 sitename">AkuAnalis.com</strong> </p>
+        <a href="/terms" class="small mb-1">*Syarat & Ketentuan</a>
+        <p>© <span>Copyright</span> <strong class="px-1 sitename">akuanalis.com</strong> </p>
 
     </div>
 

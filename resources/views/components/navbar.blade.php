@@ -2,17 +2,14 @@
     <header id="header" class="header d-flex align-items-center fixed-top">
         <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
-            <a href="/" class="logo d-flex align-items-center me-2">
+            <a href="/" class="logo d-flex align-items-center ">
                 <!-- Uncomment the line below if you also wish to use an image logo -->
                 <img src="assets/img/logo.png" alt="">
             </a>
 
-            <div class="search-form ms-3" style="width: 100%">
+            <div class="search-form ms-2" style="width: 100%">
                 <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Belajar apa hari ini ?" aria-label="Search">
-                    <button type="submit" class="btn btn-outline-primary">
-                        <i class="bi bi-search"></i> <!-- Ganti dengan ikon sesuai kebutuhan -->
-                    </button>
+                    <input id="searchInput" class="form-control me-1" type="search" placeholder="Mau Belajar Apa Hari Ini ?" aria-label="Search">
                 </form>
             </div>
 

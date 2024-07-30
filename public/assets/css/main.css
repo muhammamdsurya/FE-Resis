@@ -1,15 +1,4 @@
-/**
-* Template Name: FlexStart
-* Template URL: https://bootstrapmade.com/flexstart-bootstrap-startup-template/
-* Updated: Jun 29 2024 with Bootstrap v5.3.3
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
 
-/*--------------------------------------------------------------
-# Font & Color Variables
-# Help: https://bootstrapmade.com/color-system/
---------------------------------------------------------------*/
 /* Fonts */
 :root {
   --default-font: "Roboto",  system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -21,8 +10,7 @@
 :root {
   --background-color: #ffffff; /* Background color for the entire website, including individual sections */
   --default-color: #444444; /* Default color used for the majority of the text content across the entire website */
-  --heading-color: #012970; /* Color for headings, subheadings and title throughout the website */
-  --accent-color: #4154f1; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
+  --accent-color: #2E3A9D; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
   --surface-color: #ffffff; /* The surface color is used as a background of boxed elements within sections, such as cards, icon boxes, or other elements that require a visual separation from the global background. */
   --contrast-color: #ffffff; /* Contrast color for text, ensuring readability against backgrounds of accent, heading, or default colors. */
 }
@@ -47,7 +35,7 @@
 .dark-background {
   --background-color: #060606;
   --default-color: #ffffff;
-  --heading-color: #ffffff;
+  --accent-color: #ffffff;
   --surface-color: #252525;
   --contrast-color: #ffffff;
 }
@@ -83,7 +71,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: var(--heading-color);
+  color: var(--accent-color);
   font-family: var(--heading-font);
 }
 
@@ -91,61 +79,6 @@ h6 {
     background-image: url('../img/bg.png');
     position: relative; /* Pastikan untuk mengatur posisi */
     z-index: 1; /* Z-index lebih rendah */
-}
-.custom-z-index {
-    z-index: 99; /* Atur sesuai kebutuhan */
-    position: relative;
-}
-/* PHP Email Form Messages
-------------------------------*/
-.php-email-form .error-message {
-  display: none;
-  background: #df1529;
-  color: #ffffff;
-  text-align: left;
-  padding: 15px;
-  margin-bottom: 24px;
-  font-weight: 600;
-}
-
-.php-email-form .sent-message {
-  display: none;
-  color: #ffffff;
-  background: #059652;
-  text-align: center;
-  padding: 15px;
-  margin-bottom: 24px;
-  font-weight: 600;
-}
-
-.php-email-form .loading {
-  display: none;
-  background: var(--surface-color);
-  text-align: center;
-  padding: 15px;
-  margin-bottom: 24px;
-}
-
-.php-email-form .loading:before {
-  content: "";
-  display: inline-block;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  margin: 0 10px -6px 0;
-  border: 3px solid var(--accent-color);
-  border-top-color: var(--surface-color);
-  animation: php-email-form-loading 1s linear infinite;
-}
-
-@keyframes php-email-form-loading {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 /*--------------------------------------------------------------
@@ -164,7 +97,7 @@ h6 {
 }
 
 .header .logo img {
-  max-height: 50px;
+  max-height: 56px;
   padding:0;
   margin-right: 8px;
 }
@@ -173,7 +106,7 @@ h6 {
   font-size: 30px;
   margin: 0;
   font-weight: 700;
-  color: var(--heading-color);
+  color: var(--accent-color);
 }
 
 
@@ -202,8 +135,9 @@ h6 {
 
   .header .btn-getstarted {
     order: 2;
-    margin: 0 15px 0 0;
-    padding: 6px 15px;
+    margin: 0 8px 0 8px;
+    padding: 6px 10px;
+    font-size: 14px;
   }
 
   .header .navmenu {
@@ -339,6 +273,20 @@ h6 {
 
 /* Navmenu - Mobile */
 @media (max-width: 1199px) {
+
+    .btn-getstarted,
+    .header .btn-getstarted:focus
+     {
+        font-size: 12px;
+    margin: 0 2px 0 2px;
+    }
+
+
+.header .logo img {
+    max-height: 40px;
+    padding:0;
+  }
+
   .mobile-nav-toggle {
     color: var(--nav-color);
     font-size: 28px;
@@ -462,20 +410,6 @@ h6 {
     display: block;
   }
 }
-.search-form .btn {
-    display: none; /* Tampilkan tombol */
-}
-
-@media (max-width: 550px) { /* Ubah 768px sesuai breakpoint yang diinginkan */
-    .search-form .form-control {
-        display: none; /* Sembunyikan input pada mobile */
-    }
-
-    .search-form .btn {
-        display: inline; /* Tampilkan tombol */
-    }
-}
-
 
 
 /* Listing Dropdown - Desktop */
@@ -634,7 +568,7 @@ h6 {
 }
 
 .footer .footer-about a {
-  color: var(--heading-color);
+  color: var(--accent-color);
   font-size: 24px;
   font-weight: 600;
   font-family: var(--heading-font);
@@ -794,7 +728,7 @@ section,
 }
 
 .section-title p {
-  color: var(--heading-color);
+  color: var(--accent-color);
   margin: 10px 0 0 0;
   font-size: 32px;
   font-weight: 700;
@@ -827,7 +761,7 @@ section,
 }
 
 
-.hero span {
+span {
     color: var(--accent-color);
 }
 
@@ -838,7 +772,7 @@ section,
   font-weight: 400;
 }
 
-.hero .btn-get-started {
+.btn-get-started {
   color: var(--contrast-color);
   background: var(--accent-color);
   font-family: var(--heading-font);
@@ -854,19 +788,19 @@ section,
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
 }
 
-.hero .btn-get-started i {
+.btn-get-started i {
   margin-left: 5px;
   font-size: 18px;
   transition: 0.3s;
 }
 
-.hero .btn-get-started:hover {
+.btn-get-started:hover {
   color: var(--contrast-color);
   background: color-mix(in srgb, var(--accent-color), transparent 15%);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
 }
 
-.hero .btn-get-started:hover i {
+.btn-get-started:hover i {
   transform: translateX(5px);
 }
 
@@ -925,71 +859,7 @@ section,
 .about .content .misi p {
     margin: 10px 0 10px 0 !important;
 }
-/*--------------------------------------------------------------
-# Values Section
---------------------------------------------------------------*/
-.values .card {
-  background-color: var(--surface-color);
-  color: var(--default-color);
-  padding: 30px;
-  box-shadow: 0px 0 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: 0.3s;
-  height: 100%;
-  border: 0;
-}
 
-.values .card img {
-  padding: 30px 50px;
-  transition: 0.5s;
-  transform: scale(1.1);
-}
-
-.values .card h3 {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 18px;
-}
-
-.values .card:hover {
-  box-shadow: 0px 0 30px rgba(0, 0, 0, 0.1);
-}
-
-.values .card:hover img {
-  transform: scale(1);
-}
-
-/*--------------------------------------------------------------
-# Features Section
---------------------------------------------------------------*/
-.features .feature-box {
-  padding: 24px 20px;
-  box-shadow: 0px 0 30px rgba(0, 0, 0, 0.1);
-  transition: 0.3s;
-  height: 100%;
-}
-
-.features .feature-box h3 {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0;
-}
-
-.features .feature-box i {
-  background: color-mix(in srgb, var(--accent-color), transparent 92%);
-  color: var(--accent-color);
-  line-height: 0;
-  padding: 4px;
-  margin-right: 10px;
-  font-size: 24px;
-  border-radius: 3px;
-  transition: 0.3s;
-}
-
-.features .feature-box:hover i {
-  background: var(--accent-color);
-  color: var(--contrast-color);
-}
 
 /*--------------------------------------------------------------
 # Alt Features Section
@@ -1186,14 +1056,4 @@ section,
     opacity: 1;
     transform: scale(1.12);
   }
-}
-
-
-/* login */
-.divider:after,
-.divider:before {
-content: "";
-flex: 1;
-height: 1px;
-background: #eee;
 }

@@ -1,5 +1,6 @@
-<x-layout>
+@extends('layout.layout')
 
+@section('content')
     <section id="detail-kelas" class="hero section">
         <div class="container my-5">
 
@@ -15,14 +16,14 @@
 
                             <div class="col-lg-7">
                                 <div>
-                                    <h4>Teori Kimia Dasar</h4>
+                                    <h4>Kimia Dasar</h4>
                                     <div class="header-card d-flex justify-content-between">
                                         <p class="mr-auto fs-6"><i class="bi bi-star-fill text-warning me-1"></i>4.9</p>
-                                        <p class="ml-auto fs-6">Jenjang : SMA</p>
+                                        <p class="ml-auto fs-6">Jenjang : Umum</p>
                                     </div>
-                                    <p>123.456 Siswa Terdaftar</p>
-                                    <p> Kelas ini mencakup konsep-konsep dasar kimia, termasuk struktur atom, tabel
-                                        periodik, ikatan kimia, dan stoikiometri.</p>
+                                    <p>100 Siswa Terdaftar</p>
+                                    <p> Pengenalan konsep dasar kimia, termasuk materi, energi, dan perubahan kimia."
+                                    </p>
                                 </div>
                             </div><!-- End Feature Item -->
                         </div>
@@ -54,15 +55,13 @@
                 <div class="col-lg-7">
                     <div class="container mb-3">
                         <h4>Deskripsi</h4>
-                        <p>Kelas ini mencakup konsep-konsep dasar kimia, termasuk struktur atom, tabel periodik, ikatan
-                            kimia,
-                            dan stoikiometri.</p>
+                        <p>Pengenalan konsep dasar kimia, termasuk materi, energi, dan perubahan kimia."
+                        </p>
                     </div>
                     <div class="container mb-3">
                         <h4>Tujuan</h4>
-                        <p>Memastikan siswa memiliki pemahaman dasar yang kuat dalam kimia sebelum melangkah ke topik
-                            yang lebih
-                            kompleks.</p>
+                        <p>Memahami konsep dasar kimia dan terminologi kimia
+                        </p>
                     </div>
                     <div class="container mb-3">
                         <h4>Pengajar</h4>
@@ -274,4 +273,4 @@
 
     </section><!-- /Testimonials Section -->
 
-</x-layout>
+@endsection

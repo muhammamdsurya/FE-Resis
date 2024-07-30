@@ -1,14 +1,16 @@
-<x-layout>
-      <!-- Hero Section -->
+@extends('layout.layout')
+
+@section('content')
+<!-- Hero Section -->
       <section id="hero" class="hero section">
 
         <div class="container">
             <div class="row gy-4">
                 <div class="col-lg-7 order-2 order-lg-1 d-flex flex-column justify-content-center">
-                    <h1 data-aos="fade-up">Belajar menjadi analis lebih mudah bersama <span>AkuAnalis</span> by Resi’s Project</h1>
+                    <h1 class="text-dark" data-aos="fade-up">Belajar menjadi analis lebih mudah bersama <span>AkuAnalis</span> by Resi’s Project</h1>
                     <p data-aos="fade-up" data-aos-delay="100">Segera mulai perjalanan kimia anda bersama kami!</p>
                     <div class="d-flex flex-column flex-md-row" data-aos="fade-up" data-aos-delay="200">
-                        <a href="#about" class="btn-get-started">Belajar Sekarang <i class="bi bi-arrow-right"></i></a>
+                        <a href="/kelas" class="btn-get-started">Belajar Sekarang <i class="bi bi-arrow-right"></i></a>
                     </div>
                 </div>
                 <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out">
@@ -89,7 +91,7 @@ Kami juga menyediakan berbagai soal latihan dan studi kasus untuk menguji dan me
                         <div class="col-md-6 icon-box">
                             <i class="bi bi-book-half"></i>
                             <div>
-                                <h4>Studi kasus & Kuis</h4>
+                                <h4>Studi Kasus & Kuis</h4>
                                 <p>Kuis dan studi kasus terkait
                                     analisis kimia sesuai kebutuhan di dunia Industri</p>
                             </div>
@@ -251,7 +253,7 @@ Kami juga menyediakan berbagai soal latihan dan studi kasus untuk menguji dan me
                                     class="bi bi-star-fill"></i>
                             </div>
                             <p>
-                                Materi yang disajikan sangat mudah dipahami dan langsung dapat diaplikasikan dalam pekerjaan sehari-hari saya sebagai ahli kimia. Terima kasih, Akuanalis.com!"
+                                Materi yang disajikan sangat mudah dipahami dan langsung dapat diaplikasikan dalam pekerjaan sehari-hari saya sebagai ahli kimia. Terima kasih, AkuAnalis"
                             </p>
                             <div class="profile mt-auto">
                                 <img src="assets/img/testimonials/testimonials-3.jpg" class="testimonial-img"
@@ -270,7 +272,7 @@ Kami juga menyediakan berbagai soal latihan dan studi kasus untuk menguji dan me
                                     class="bi bi-star-fill"></i>
                             </div>
                             <p>
-                                Materi yang disajikan sangat mudah dipahami dan langsung dapat diaplikasikan dalam pekerjaan sehari-hari saya sebagai ahli kimia. Terima kasih, Akuanalis.com!"
+                                Materi yang disajikan sangat mudah dipahami dan langsung dapat diaplikasikan dalam pekerjaan sehari-hari saya sebagai ahli kimia. Terima kasih, AkuAnalis"
                             </p>
                             <div class="profile mt-auto">
                                 <img src="assets/img/testimonials/testimonials-3.jpg" class="testimonial-img"
@@ -352,7 +354,7 @@ Kami juga menyediakan berbagai soal latihan dan studi kasus untuk menguji dan me
                         </div><!-- End Faq item-->
 
                         <div class="faq-item">
-                            <h3>Mengapa memilih Akuanalis.com untuk belajar kimia analisis?</h3>
+                            <h3>Mengapa memilih AkuAnalis untuk belajar kimia analisis?</h3>
                             <div class="faq-content">
                                 <p>Materi dan praktikum kami telah dirancang oleh para lulusan Kimia/Analis Kimia di bidangnya sehingga sudah sesuai dengan kebutuhan nyata di laboratorium. Dengan fitur keunggulan kami yaitu: Kemudahan Akses Materi, Pengajaran Virtual Lab, Soal Latihan dan Studi Kasus.
                                 </p>
@@ -382,12 +384,11 @@ Kami juga menyediakan berbagai soal latihan dan studi kasus untuk menguji dan me
         <div class="container py-2">
             <div class="row justify-content-center text-center">
                 <div class="col-lg-7 ">
-                    <h4 class="mb-3">Tunggu Apalagi ? Yuk Belajar bersama Aku Analis!</h4>
-                        <button type="button" class="btn btn-primary">Belajar Sekarang <i class="bi bi-arrow-right"></i></button>
-                </div>
+                    <h4 class="text-dark" data-aos="fade-up">Tunggu apalagi ? Yuk belajar di <span class="">AkuAnalis</span></h1>
+                        <div class="d-flex justify-content-center mt-2" data-aos="fade-up" data-aos-delay="200">
+                            <a href="/kelas" class="btn-get-started text-center">Belajar Sekarang <i class="bi bi-arrow-right"></i></a>
+                        </div>
             </div>
         </div>
     </div>
-
-
-</x-layout>
+@endsection

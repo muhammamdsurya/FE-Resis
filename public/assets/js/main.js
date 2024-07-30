@@ -267,4 +267,18 @@
     }
     window.addEventListener("load", navmenuScrollspy);
     document.addEventListener("scroll", navmenuScrollspy);
+
+    function updatePlaceholder() {
+        const input = document.getElementById('searchInput');
+        if (window.innerWidth < 768) { // Jika lebar layar kurang dari 768px
+            input.placeholder = 'Cari kelas...';
+        } else {
+            input.placeholder = 'Belajar apa hari ini?';
+        }
+    }
+
+    // Panggil fungsi saat halaman dimuat
+    window.onload = updatePlaceholder;
+    // Panggil fungsi saat ukuran layar diubah
+    window.onresize = updatePlaceholder;
 })();
