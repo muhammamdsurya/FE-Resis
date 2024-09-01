@@ -18,9 +18,10 @@
                             </div>
 
                             <h5 class="card-title">Instrumentasi Kimia</h5>
+                            <h5 class="card-title">Rp 125.000</h5>
                             <p class="card-text"> Dasar-dasar instrumentasi dalam analisis kimia dan pentingnya penggunaan alat-alat instrumen.
                             </p>
-                            <a href="https://wa.me/{{ env('WHATSAPP_NUMBER') }}?text={{ env('WHATSAPP_MESSAGE') }}" class="btn btn-success">Belajar Sekarang</a>
+                            <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
                         </div>
                     </div>
                 </div>
@@ -34,9 +35,10 @@
                             </div>
 
                             <h5 class="card-title">Kimia Dasar</h5>
-                            <p class="card-text">Pengenalan konsep dasar kimia...
+                            <h5 class="card-title">Rp 105.000</h5>
+                            <p class="card-text">Pengenalan konsep dasar kimia, termasuk materi, energi, dan perubahan kimia
                             </p>
-                            <a href="https://wa.me/{{ env('WHATSAPP_NUMBER') }}?text={{ env('WHATSAPP_MESSAGE') }}" class="btn btn-success">Belajar Sekarang</a>
+                            <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
                         </div>
                     </div>
                 </div>
@@ -50,9 +52,10 @@
                             </div>
 
                             <h5 class="card-title">Kimia Analisis Kualitatif</h5>
+                            <h5 class="card-title">Rp 110.000</h5>
                             <p class="card-text">Dasar-dasar analisis kualitatif dan pentingnya dalam kimia analisis.
                             </p>
-                            <a href="https://wa.me/{{ env('WHATSAPP_NUMBER') }}?text={{ env('WHATSAPP_MESSAGE') }}" class="btn btn-success">Belajar Sekarang</a>
+                            <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
                         </div>
                     </div>
                 </div>
@@ -66,8 +69,9 @@
                             </div>
 
                             <h5 class="card-title">Kimia Analisis Kuantitatif</h5>
+                            <h5 class="card-title">Rp 95.000</h5>
                             <p class="card-text">Dasar-dasar analisis kuantitatif dan dalam kimia analisis.</p>
-                            <a href="https://wa.me/{{ env('WHATSAPP_NUMBER') }}?text={{ env('WHATSAPP_MESSAGE') }}" class="btn btn-success">Belajar Sekarang</a>
+                            <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
                         </div>
                     </div>
                 </div>
@@ -81,9 +85,10 @@
                             </div>
 
                             <h5 class="card-title">Kimia Fisika</h5>
+                            <h5 class="card-title">Rp 115.000</h5>
                             <p class="card-text">Menjelaskan dasar-dasar kimia fisika dan pentingnya dalam ilmu kimia.
                             </p>
-                            <a href="https://wa.me/{{ env('WHATSAPP_NUMBER') }}?text={{ env('WHATSAPP_MESSAGE') }}" class="btn btn-success">Belajar Sekarang</a>
+                            <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
                         </div>
                     </div>
                 </div>

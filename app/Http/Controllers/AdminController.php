@@ -6,11 +6,18 @@ use App\Models\User;
 use App\Models\Course;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Http;
 
 class AdminController extends Controller
 {
+    protected $apiUrl;
+
+    public function __construct()
+    {
+        $this->apiUrl = env('API_URL');
+    }
     public function dashboard()
     {
 
@@ -25,11 +32,11 @@ class AdminController extends Controller
             "id" => $id,
             "full_name" => $full_name,
             "role" => $role,
-            ]);
-
+        ]);
     }
 
-    public function kelas() {
+    public function kelas()
+    {
         // $client = new Client();
         // $response = $client->get('http://localhost:3000/api/v1/kelas');
 
@@ -48,10 +55,11 @@ class AdminController extends Controller
             "id" => $id,
             "full_name" => $full_name,
             "role" => $role,
-            ]);
+        ]);
     }
 
-    public function profile() {
+    public function profile()
+    {
         // $client = new Client();
         // $response = $client->get('http://localhost:3000/api/v1/profile');
 
@@ -80,11 +88,11 @@ class AdminController extends Controller
             "created_at" => $created_at,
             "activated_at" => $activated_at,
             "updated_at" => $updated_at,
-            ]);
-
+        ]);
     }
 
-    public function bundling() {
+    public function bundling()
+    {
         // $client = new Client();
         // $response = $client->get('http://localhost:3000/api/v1/bundling');
 
@@ -104,10 +112,11 @@ class AdminController extends Controller
             "id" => $id,
             "full_name" => $full_name,
             "role" => $role,
-            ]);
+        ]);
     }
 
-    public function sales(){
+    public function sales()
+    {
         // $client = new Client();
         // $response = $client->get('http://localhost:3000/api/v1/sales');
 
@@ -126,10 +135,11 @@ class AdminController extends Controller
             "id" => $id,
             "full_name" => $full_name,
             "role" => $role,
-            ]);
+        ]);
     }
 
-    public function dataAdmin() {
+    public function dataAdmin()
+    {
         // $client = new Client();
         // $response = $client->get('http://localhost:3000/api/v1/data-admin');
 
@@ -142,23 +152,16 @@ class AdminController extends Controller
         $full_name = session('full_name');
 
         // Lakukan operasi lain yang diperlukan
-
-        $data = Course::query();
-        return DataTables::of($data)
-            ->editColumn('start_date', function ($employee) {
-                return $employee->start_date->format('Y-m-d');
-            })
-            ->make(true);
-
         return view('admin.dataAdmin', [
             "title" => $title,
             "id" => $id,
             "full_name" => $full_name,
             "role" => $role,
-            ]);
+        ]);
     }
 
-    public function dataPengajar() {
+    public function dataPengajar()
+    {
         // $client = new Client();
         // $response = $client->get('http://localhost:3000/api/v1/data-admin');
 
@@ -178,29 +181,68 @@ class AdminController extends Controller
             "id" => $id,
             "full_name" => $full_name,
             "role" => $role,
-            ]);
+        ]);
     }
 
-    public function dataSiswa() {
+    public function dataSiswa()
+    {
         // $client = new Client();
         // $response = $client->get('http://localhost:3000/api/v1/data-admin');
 
         // $kelas = $response->getBody()->getContents();
 
         //['kelas' => json_decode($kelas)]
-         $title = 'Data Siswa';
-         $id = session('id');
-         $role = session('role');
-         $full_name = session('full_name');
+        $title = 'Data Siswa';
+        $id = session('id');
+        $role = session('role');
+        $full_name = session('full_name');
 
 
         // Lakukan operasi lain yang diperlukan
 
         return view('admin.dataSiswa', [
             "title" => $title,
-           "id" => $id,
+            "id" => $id,
             "full_name" => $full_name,
             "role" => $role,
-            ]);
+        ]);
+    }
+
+
+
+    public function jenjang(Request $request)
+    {
+
+        // Retrieve the token from the session
+        $token = $request->session()->get('_token'); // Adjust 'api_token' to the key where your token is stored
+
+        // Check if the token is present
+        if (!$token) {
+            // Handle missing token
+            return response()->json([
+                'success' => false,
+                'message' => 'Authentication token is missing.'
+            ], 401);
+        }
+
+        $response = Http::withToken($token)->post($this->apiUrl . 'courses/categories', [
+            'name' => $request->name // Include other necessary data here
+        ]);
+
+        dd($response->status(), $response->body());
+
+
+
+        if ($response->successful()) {
+            return response()->json([
+                'success' => true,
+                'data' => $response->json()
+            ], $response->status());
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add category.'
+            ], $response->status());
+        }
     }
 }

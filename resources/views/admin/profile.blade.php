@@ -11,35 +11,35 @@
         </div>
 
         <div class="role text-center">
-            <h5 class="bold">Role : {{$role}} </p>
+            <h5 class="bold">Role : {{ $role }} </p>
         </div>
         <div class="row ">
             <div class="col-lg-5 col-md-6 mx-auto">
-                <div class="form-floating mb-3">
-                    <label for="floatingInput">Nama Lengkap</label>
-                    <input type="email" class="form-control" id="floatingInput"
-                        name="email" value="{{ $full_name }}" disabled>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Nama Lengkap</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                        value="{{ $full_name }}" disabled>
                 </div>
 
-                <div class="form-floating mb-3">
-                    <label for="floatingInput">Email</label>
-                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com"
-                        name="email" value="{{ $email }}" disabled>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Email  </label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                        value="{{ $email }}" disabled>
                 </div>
 
             </div>
             <div class="col-lg-5 col-md-6 mx-auto">
 
-                <div class="form-floating mb-3">
-                    <label for="floatingInput">Dibuat Tanggal</label>
-                    <input type="text" class="form-control" id="floatingInput"
-                        name="created_at" value="{{ $created_at }}" disabled>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Dibuat Tanggal  </label>
+                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                        value="{{ $created_at }}" disabled>
                 </div>
 
-                <div class="form-floating mb-3">
-                    <label for="floatingInput">Diperbarui Tanggal</label>
-                    <input type="text" class="form-control" id="floatingInput"
-                        name="updated_at" value="{{ $updated_at }}" disabled>
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Diperbarui Tanggal </label>
+                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                        value="{{ $updated_at }}" disabled>
                 </div>
 
 
@@ -47,7 +47,7 @@
 
             <div class="col-lg-5 ml-5">
                 <button type="submit" class="btn btn-success px-3 mb-5 mt-3">Edit</button>
-                <a href="/admin/login" class="btn btn-danger px-3 mb-5 mt-3 btn-logout">Logout</a>
+                <button type="submit" class="btn btn-danger px-3 mb-5 mt-3 btn-logout">Logout</a>
             </div>
         </div>
 

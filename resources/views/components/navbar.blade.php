@@ -17,7 +17,7 @@
             <nav id="navmenu" class="navmenu">
                 <ul>
                     <li>
-                        <a href="/beranda" class="{{ request()->routeIs('beranda') ? 'active' : '' }}">Beranda</a>
+                        <a href="/" class="{{ request()->routeIs('beranda') ? 'active' : '' }}">Beranda</a>
                     </li>
                     <li><a href="/kelas" class="{{ request()->routeIs('kelas') ? 'active' : '' }}">Kelas</a></li>
                     <li><a href="/kontak" class="{{ request()->routeIs('kontak') ? 'active' : '' }}">Kontak kami</a></li>

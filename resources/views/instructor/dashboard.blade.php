@@ -1,4 +1,4 @@
-@extends('layout.userLayout')
+@extends('layout.InstLayout')
 @section('title', $title)
 
 @section('content')
@@ -26,7 +26,7 @@
                     <div class="inner">
                         <h3>10</h3>
 
-                        <p>Selesai</p>
+                        <p>Jumlah Siswa</p>
                     </div>
                     <div class="icon">
                         <i class="fas fa-users-cog"></i>

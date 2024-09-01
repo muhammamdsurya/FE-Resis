@@ -1,4 +1,4 @@
-@extends('layout.userLayout')
+@extends('layout.InstLayout')
 @section('title', $title)
 
 @section('content')
@@ -16,35 +16,45 @@
             </div>
         </div>
         <div class="row g-2">
-
             <div class="col-lg-3 col-md-4 col-6">
                 <div class="card" style="width: 100%;">
-                    <img src="{{asset ('assets/img/values-1.png') }}" class="card-img-top" alt="...">
+                    <img src="{{ asset('assets/img/values-1.png') }}" class="card-img-top" alt="...">
                     <div class="card-body">
-                        <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-success" style="width: 25%">25%</div>
-                          </div>
 
-                        <h5 class="card-title my-2">Praktikum Laboratorium Dasar</h5>
-                        <a href="/user/materi" class="fs-6 text-decoration-none">Lanjutkan <i class="fas fa-arrow-circle-right"></i></a>
+                        <h5 class="card-title">Praktikum Laboratorium Dasar</h5>
+                        <div class="mt-3">
+                            <a href="/detail-kelas" class="btn btn-success">
+                              <i class="fas fa-chalkboard-teacher"></i>
+                              <span class="d-none d-md-inline">Kelas</span>
+                            </a>
+                            <a href="/instructor/diskusi" class="btn btn-primary ">
+                              <i class="fas fa-comments"></i>
+                              <span class="d-none d-md-inline">Diskusi</span>
+                            </a>
+                          </div>
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-3 col-md-4 col-6">
                 <div class="card" style="width: 100%;">
-                    <img src="{{asset ('assets/img/values-1.png') }}" class="card-img-top" alt="...">
+                    <img src="{{ asset('assets/img/values-1.png') }}" class="card-img-top" alt="...">
                     <div class="card-body">
-                        <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-success" style="width: 25%">25%</div>
-                          </div>
 
-                        <h5 class="card-title my-2">Praktikum Laboratorium Dasar</h5>
-                        <a href="/user/materi" class="fs-6 text-decoration-none">Lanjutkan <i class="fas fa-arrow-circle-right"></i></a>
+                        <h5 class="card-title">Praktikum Laboratorium Dasar</h5>
+                        <div class="mt-3">
+                            <a href="/detail-kelas" class="btn btn-success">
+                              <i class="fas fa-chalkboard-teacher"></i>
+                              <span class="d-none d-md-inline">Kelas</span>
+                            </a>
+                            <a href="/diskusi" class="btn btn-primary ">
+                              <i class="fas fa-comments"></i>
+                              <span class="d-none d-md-inline">Diskusi</span>
+                            </a>
+                          </div>
                     </div>
                 </div>
             </div>
-
         </div>
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">

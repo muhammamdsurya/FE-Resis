@@ -5,9 +5,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\RegisController;
+use App\Http\Controllers\InstructorController;
+
 // Rute standar
 Route::redirect('/', '/beranda');
-Route::get('/beranda', function () {
+Route::get('/', function () {
     return view('welcome');
 })->name('beranda');
 
@@ -27,7 +29,11 @@ Route::get('/terms', function () {
     return view('terms');
 })->name('terms');
 
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 // Grup rute untuk rute-rute yang terkait dengan admin
+
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboardAdmin');
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('kelas');
@@ -38,14 +44,28 @@ Route::prefix('admin')->group(function () {
     Route::get('/data-pengajar', [AdminController::class, 'dataPengajar'])->name('data-pengajar');
     Route::get('/data-siswa', [AdminController::class, 'dataSiswa'])->name('data-siswa');
     // Tambahkan rute-rute lain untuk admin di sini
+
+    Route::post('/kelas', [AdminController::class, 'jenjang'])->name('jenjang.post');
+
 });
+
 
 // Grup rute untuk rute-rute yang terkait dengan admin
 Route::prefix('user')->group(function () {
-    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::get('/kelas', [UserController::class, 'kelas'])->name('kelas');
     Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
+    Route::get('/materi', [UserController::class, 'materi'])->name('materi');
+    Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
+});
+
+Route::prefix('instructor')->group(function () {
+    Route::get('/dashboard', [InstructorController::class, 'dashboard'])->name('dashboard');
+    Route::get('/kelas', [InstructorController::class, 'kelas'])->name('kelas');
+    Route::get('/profile', [InstructorController::class, 'profile'])->name('profile');
+    Route::get('/diskusi', [InstructorController::class, 'diskusi'])->name('diskusi');
+
 });
 
 // Rute untuk login pengguna biasa
@@ -60,8 +80,19 @@ Route::prefix('admin')->group(function () {
     Route::post('/login', [AuthController::class, 'loginAdmin']); // Proses login admin
 });
 
-Route::prefix('')->group(function () {
-    Route::get('/register', [RegisController::class, 'show']); // Menampilkan form registrasi
-    Route::post('/register', [RegisController::class, 'register'])->name('register'); // Proses registrasi user
+// Rute untuk login instrutor
+Route::prefix('instructor')->group(function () {
+    Route::get('/login', [AuthController::class, 'showInstructor'])->name('loginInstructor'); // Menampilkan form login admin
+    Route::post('/login', [AuthController::class, 'loginInstructor']); // Proses login admin
 });
+
+Route::prefix('')->group(function () {
+    Route::get('/register', [RegisController::class, 'show'])->name('show'); // Menampilkan form registrasi
+    Route::post('/register', [RegisController::class, 'store'])->name('register'); // Proses registrasi user
+});
+
+Route::post('/activate', [AuthController::class, 'activation'])->name('activate.post');
+Route::get('/activate', [AuthController::class, 'activate'])->name('activate');
+
+Route::get('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password');
 

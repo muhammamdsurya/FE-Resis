@@ -10,7 +10,7 @@
                     <p>Kota Bekasi, Jawa Barat</p>
                     <p>Indonesia</p>
                     <div class="social-links d-flex mt-3">
-                        <a href=""><i class="bi bi-whatsapp"></i></a>
+                        <a href="https://wa.me/{{ env('WHATSAPP_NUMBER') }}"><i class="bi bi-whatsapp"></i></a>
                         <a href="https://www.facebook.com/profile.php?id=100086836052617"><i class="bi bi-facebook"></i></a>
                         <a href="https://www.instagram.com/resis.project/"><i class="bi bi-instagram"></i></a>
                         <a href="http://www.linkedin.com/in/dimas-panduresi-9258591b4"><i class="bi bi-linkedin"></i></a>

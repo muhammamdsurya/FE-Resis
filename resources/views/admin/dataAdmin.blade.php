@@ -2,8 +2,6 @@
 @section('title', $title)
 
 @section('content')
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
     <div class="card">
         <div class="card-header">
             <button type="submit" class="btn btn-success">Ekspor Data</button>
@@ -22,7 +20,33 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Data will be filled here -->
+                <tr>
+                    <td>Trident</td>
+                    <td>Internet
+                      Explorer 4.0
+                    </td>
+                    <td>Win 95+</td>
+                    <td> 4</td>
+                    <td>X</td>
+                  </tr>
+                  <tr>
+                    <td>Trident</td>
+                    <td>Internet
+                      Explorer 4.0
+                    </td>
+                    <td>Win 95+</td>
+                    <td> 4</td>
+                    <td>X</td>
+                  </tr>
+                  <tr>
+                    <td>Trident</td>
+                    <td>Internet
+                      Explorer 4.0
+                    </td>
+                    <td>Win 95+</td>
+                    <td> 4</td>
+                    <td>X</td>
+                  </tr>
             </tbody>
         </table>
        </div>
@@ -42,13 +66,5 @@
           </li>
         </ul>
       </nav>
-      <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-      <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
-      <script>
 
-$(document).ready(function() {
-    $('#example').DataTable();
-});
-
-      </script>
 @endsection

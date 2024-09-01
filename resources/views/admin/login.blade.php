@@ -6,13 +6,20 @@
             <div class="container bg-light col-lg-10">
                 <div class="row d-flex justify-content-center align-items-center shadow py-3">
                     <div class="col-md-5 col-lg-5">
-                        <img src="{{ asset('assets/img/logo.png') }}" class="img-fluid d-none d-md-block" style="width: 20rem;" alt="Sample image">
+                        <img src="{{ asset('assets/img/logo.png') }}" class="img-fluid d-none d-md-block" style="width: 20rem;"
+                            alt="Sample image">
                     </div>
 
                     <div class="col-md-5 col-lg-5 ">
                         <form method="POST" action="{{ route('loginAdmin') }}">
                             @csrf
                             <h3 class="text-center mb-3">Admin Login</h3>
+                            <!-- Display error message -->
+                            @if (session('error'))
+                                <div  id="alert-message" class="alert alert-danger">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
                             <!-- Input field untuk email -->
                             <div class="form-floating mb-3">
                                 <input type="email" class="form-control @error('email') is-invalid @enderror"
@@ -43,4 +50,19 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Check if the alert exists and set a timeout to hide it
+        document.addEventListener('DOMContentLoaded', function() {
+            var alertMessage = document.getElementById('alert-message');
+            if (alertMessage) {
+                setTimeout(function() {
+                    alertMessage.style.opacity = '0';
+                    setTimeout(function() {
+                        alertMessage.style.display = 'none';
+                    }, 500); // Delay for fade-out effect
+                }, 2000); // Time to wait before starting fade-out
+            }
+        });
+    </script>
 @endsection

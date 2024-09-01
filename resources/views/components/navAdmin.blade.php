@@ -9,12 +9,6 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto gap-2 mr-3">
-      <!-- Navbar Search -->
-      <li class="nav-item">
-        <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-          <i class="fas fa-search"></i>
-        </a>
-      </li>
 
       <!-- Notifications Dropdown Menu -->
       <li class="nav-item dropdown">

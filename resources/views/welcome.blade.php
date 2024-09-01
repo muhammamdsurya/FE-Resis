@@ -67,6 +67,7 @@ Kami juga menyediakan berbagai soal latihan dan studi kasus untuk menguji dan me
                             <i class="bi bi-award"></i>
                             <div>
                                 <h4>Inovasi Terbaru</h4>
+
                                 <p>Virtual Lab real-time kami memungkinkan siswa untuk eksperimen praktis</p>
                             </div>
                         </div><!-- End Feature Item -->
