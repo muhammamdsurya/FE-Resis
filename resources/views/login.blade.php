@@ -36,13 +36,13 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center mt-3">
-                                <div class="form-check mb-0">
+                               <!-- <div class="form-check mb-0">
                                     <input class="form-check-input me-2" type="checkbox" value=""
                                         id="form2Example3" />
                                     <label class="form-check-label" for="form2Example3">
                                         Ingat saya
                                     </label>
-                                </div>
+                                </div> -->
                                 <a href="#!" class="text-body link-primary">Lupa Password?</a>
                             </div>
 
@@ -55,8 +55,8 @@
                                     <div class="flex-grow-1 border-top" style="border-color: #ccc;"></div>
                                 </div>
 
-                                <button type="button" class="btn btn-light w-100"><i class="bi bi-google mx-3"></i>Masuk
-                                    dengan google</button>
+                                <a href="{{ route('login.google') }}" class="btn btn-light w-100"><i class="bi bi-google mx-3"></i>Masuk
+                                    dengan google</a>
 
                                 <p class="small mt-3 pt-1 mb-0">belum punya akun? <a href="/register"
                                         class="link-primary">Daftar sekarang</a></p>
