@@ -5,6 +5,7 @@ namespace App\View\Components;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use Illuminate\Support\Facades\Session;
 
 class sidebarUser extends Component
 {
@@ -14,7 +15,8 @@ class sidebarUser extends Component
     public $name;
     public function __construct($name)
     {
-        $this->name = $name;
+        $user = Session::get('user');
+        $this->name = $user['full_name'];
     }
 
     /**

@@ -225,9 +225,7 @@ class AuthController extends Controller
         try {
 
             // Send a POST request to the API logout endpoint
-            $response = Http::withHeaders([
-                'Cookie' => 'session=' . session('api_session'),
-            ])->post($this->apiUrl . 'auth/logout');
+            $response = Http::withApiSession()->post($this->apiUrl . 'auth/logout');
 
             if ($response->ok()) {
                 // Clear session data

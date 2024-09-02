@@ -15,7 +15,7 @@
             </div>
             <div class="info">
                 <a href="/user/profile"
-                style="text-decoration: none;" class="d-block">{{$name}}</a>
+                style="text-decoration: none;" class="d-block">{{ $name }}</a>
             </div>
         </div>
 

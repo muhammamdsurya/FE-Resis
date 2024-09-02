@@ -30,9 +30,7 @@ Route::get('/terms', function () {
 })->name('terms');
 
 
-Route::middleware(['apicookiehandler'])->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-});
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 
@@ -55,7 +53,7 @@ Route::prefix('admin')->group(function () {
 
 
 // Grup rute untuk rute-rute yang terkait dengan admin
-Route::middleware(['apicookiehandler', 'whoami'])->group(function () {
+Route::middleware(['whoami'])->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
         Route::get('/profile', [UserController::class, 'profile'])->name('profile');
@@ -75,7 +73,7 @@ Route::prefix('instructor')->group(function () {
 });
 
 // Rute untuk login pengguna biasa
-Route::prefix('')->group(function () {
+Route::prefix('')->middleware('redirect.if.authenticated')->group(function () {
     Route::get('/login', [AuthController::class, 'show'])->name('login'); // Menampilkan form login
     Route::post('/login', [AuthController::class, 'login']); // Proses login user
     // for google login
