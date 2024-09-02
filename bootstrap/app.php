@@ -31,9 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
         ]);
         $middleware->alias([
-            /* 'apiCookieHandler' => ApiCookieHandler::class, */
-            'apicookiehandler' => \App\Http\Middleware\ApiCookieHandler::class,
             'whoami' => App\Http\Middleware\WhoAmIMiddleware::class,
+            'redirect.if.authenticated' => App\Http\Middleware\RedirectIfAuthenticated::class,
             /* 'adminRole' => adminRole::class, */
             /* 'authCheck' => authCheck::class */
         ]);

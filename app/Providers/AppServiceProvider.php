@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Define a macro for the Http facade
+        Http::macro('withApiSession', function () {
+            $apiSession = Session::get('api_session');
 
+            return $this->withHeaders([
+                'Cookie' => 'session=' . $apiSession,
+            ]);
+        });
     }
 }

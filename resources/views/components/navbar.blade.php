@@ -1,3 +1,7 @@
+@php
+    $user = session('api_session');
+@endphp
+
 <div>
     <header id="header" class="header d-flex align-items-center fixed-top">
         <div class="container-fluid container-xl position-relative d-flex align-items-center">
@@ -25,7 +29,7 @@
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
 
-            <a class="btn-getstarted flex-md-shrink-0" href="/login">Login</a>
+            <a class="btn-getstarted flex-md-shrink-0" href="/login">{{ $user ? 'Dashboard' : 'Login' }}</a>
 
         </div>
     </header>
