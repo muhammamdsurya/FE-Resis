@@ -54,8 +54,8 @@
                                     <div class="flex-grow-1 border-top" style="border-color: #ccc;"></div>
                                 </div>
 
-                                <button type="button" class="btn btn-light w-100"><i class="bi bi-google mx-3"></i>Daftar
-                                    dengan google</button>
+                                <a href="{{ route('register.google') }}" class="btn btn-light w-100"><i class="bi bi-google mx-3"></i>Daftar
+                                    dengan google</a>
 
                                 <p class="small mt-3 pt-1 mb-0">Sudah punya akun? <a href="/login"
                                         class="link-primary">Login</a></p>

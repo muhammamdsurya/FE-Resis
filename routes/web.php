@@ -34,6 +34,8 @@ Route::middleware(['apicookiehandler'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
+
+
 // Grup rute untuk rute-rute yang terkait dengan admin
 
 Route::prefix('admin')->group(function () {
@@ -76,6 +78,10 @@ Route::prefix('instructor')->group(function () {
 Route::prefix('')->group(function () {
     Route::get('/login', [AuthController::class, 'show'])->name('login'); // Menampilkan form login
     Route::post('/login', [AuthController::class, 'login']); // Proses login user
+    // for google login
+    Route::get('/login/google', [AuthController::class, 'handleGoogleOauth'])->name('login.google');
+    Route::get('/register/google', [AuthController::class, 'handleGoogleOauth'])->name('register.google');
+    Route::get('/auth/google/login', [AuthController::class, 'handleGoogleCallback']);
 });
 
 // Rute untuk login admin

@@ -47,8 +47,6 @@ class AuthController extends Controller
             // Jika berhasil, lakukan sesuatu (misalnya menyimpan token ke session)
             $userData = $response->json(); // Ambil seluruh data dari respons JSON
 
-            // log the headers
-            /* Log::info('Login API Response Cookies: ', ['cookies' => $cookies]); */
             // get the cookies from the response
             $cookies = $response->cookies();
             Log::info('Login API Response Cookies: ', ['cookies' => $cookies]);
@@ -166,6 +164,58 @@ class AuthController extends Controller
             return redirect()->route('/instructor/dashboard');
         } else {
             // Jika gagal, kembalikan ke halaman login dengan pesan error
+            return redirect()->route('login')->with('error', 'Login gagal. Coba lagi.');
+        }
+    }
+
+    public function handleGoogleOauth(Request $request)
+    {
+        $targetUrl = $this->apiUrl . 'users/auth/google/login';
+        return redirect($targetUrl);
+    }
+
+    public function handleGoogleCallback(Request $request)
+    {
+        try {
+            $request->validate([
+                'code' => 'required|string',
+                'state' => 'required|string',
+            ]);
+
+            $response = Http::get($this->apiUrl . 'users/auth/google/callback', [
+                'code' => $request->code,
+                'state' => $request->state,
+            ]);
+
+            if ($response->successful()) {
+                // get the cookies from the response
+                $cookies = $response->cookies();
+                Log::info('Login API Response Cookies: ', ['cookies' => $cookies]);
+                // get the session cookie
+                $sessionCookie = null;
+                foreach ($cookies as $cookie) {
+                    if (strpos($cookie, 'session') !== false) {
+                        $sessionCookie = $cookie;
+                        break;
+                    }
+                }
+
+                if ($sessionCookie) {
+                    // parse the cookie string
+                    $parts = explode(';', $sessionCookie);
+                    $sessionValue = explode('=', $parts[0])[1];
+
+                    // set the session session to laravel session
+                    session(['api_session' => $sessionValue]);
+                }
+
+                // Redirect ke halaman setelah login sukses
+                return redirect()->route('user.dashboard');
+            } else {
+                return redirect()->route('login')->with('error', 'Login gagal. Coba lagi.');
+            }
+        } catch (\Exception $e) {
+            Log::error('Google OAuth error: ' . $e->getMessage());
             return redirect()->route('login')->with('error', 'Login gagal. Coba lagi.');
         }
     }
