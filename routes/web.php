@@ -30,7 +30,9 @@ Route::get('/terms', function () {
 })->name('terms');
 
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::middleware(['apicookiehandler'])->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
 
 // Grup rute untuk rute-rute yang terkait dengan admin
 
@@ -51,13 +53,15 @@ Route::prefix('admin')->group(function () {
 
 
 // Grup rute untuk rute-rute yang terkait dengan admin
-Route::prefix('user')->group(function () {
-    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
-    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
-    Route::get('/kelas', [UserController::class, 'kelas'])->name('kelas');
-    Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
-    Route::get('/materi', [UserController::class, 'materi'])->name('materi');
-    Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
+Route::middleware(['apicookiehandler', 'whoami'])->group(function () {
+    Route::prefix('user')->group(function () {
+        Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
+        Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+        Route::get('/kelas', [UserController::class, 'kelas'])->name('kelas');
+        Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
+        Route::get('/materi', [UserController::class, 'materi'])->name('materi');
+        Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
+    });
 });
 
 Route::prefix('instructor')->group(function () {

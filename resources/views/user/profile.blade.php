@@ -1,3 +1,7 @@
+@php
+    $user = session('user');
+@endphp
+
 @extends('layout.userLayout')
 @section('title', $title)
 
@@ -9,20 +13,19 @@
                 width="200rem" height="200rem">
 
         </div>
-        <form action="{{ route('logout') }}">
             <div class="row ">
                 <div class="col-lg-5 col-md-6 mx-auto">
                     @csrf
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Nama Lengkap</label>
                         <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                            value="{{ $name }}" disabled>
+                            value="{{ $user['full_name'] }}" disabled>
                     </div>
 
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Email </label>
                         <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                            value="{{ $email }}" disabled>
+                            value="{{ $user['email'] }}" disabled>
                     </div>
 
                 </div>
@@ -31,13 +34,13 @@
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Dibuat Tanggal </label>
                         <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                            value="{{ $created_at }}" disabled>
+                            value="{{ $user['created_at'] }}" disabled>
                     </div>
 
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Diperbarui Tanggal </label>
                         <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                            value="{{ $updated_at }}" disabled>
+                            value="{{ $user['updated_at'] }}" disabled>
                     </div>
 
                 </div>
@@ -45,9 +48,13 @@
                 <div class="col-lg-5 ml-5">
                     <button type="button" class="btn btn-success px-3 mb-5 mt-3" data-bs-toggle="modal"
                         data-bs-target="#exampleModal">Edit</button>
-                    <a href="/admin/login" class="btn btn-danger px-3 mb-5 mt-3 btn-logout">Logout</a>
+                <!--    <a href="/logout" class="btn btn-danger px-3 mb-5 mt-3 btn-logout">Logout</a> -->
+                <!-- Logout Button -->
+                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-danger px-3 mb-5 mt-3">Logout</button>
+                </form>
                 </div>
-        </form>
     </div>
     </div>
 
