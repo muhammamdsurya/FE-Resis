@@ -4,18 +4,28 @@ FROM laravelsail/php83-composer:latest
 # Set working directory
 WORKDIR /var/www/html
 
+# Copy composer.json and composer.lock
+COPY composer.json composer.lock ./
+
+# Install PHP dependencies
+RUN composer install --no-scripts --no-autoloader
+
 # Copy the existing application directory contents
 COPY . .
 
-# Install PHP dependencies
-RUN composer install
+# Generate optimized autoload files
+RUN composer dump-autoload --optimize
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . .
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage
 
-RUN touch database/database.sqlite
+# Create SQLite database file
+RUN touch database/database.sqlite \
+    && chown www-data:www-data database/database.sqlite
 
-# Expose port 8000 and start Laravel Sail server
+# Expose port 8000
 EXPOSE 8000
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
 
+# Start Laravel server
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
