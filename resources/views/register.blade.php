@@ -168,13 +168,14 @@
                     full_name: nameInput.val().trim()
                 };
 
+                var myEnvVariable = "{{ env('API_URL') }}";
 
                 $.ajax({
                     method: 'POST',
-                    url: '{{ route('register') }}',
+                    url: myEnvVariable + "users/auth/register",
                     data: JSON.stringify(data),
                     success: function(response) {
-                            console.log(response.status_code);
+                            console.log(response);
                             Swal.fire(
                                 'Berhasil!',
                                 'Silahkan aktivasi akunmu di email!',
