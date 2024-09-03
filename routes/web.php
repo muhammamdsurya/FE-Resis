@@ -36,7 +36,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Grup rute untuk rute-rute yang terkait dengan admin
 
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboardAdmin');
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('kelas');
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
@@ -48,32 +48,31 @@ Route::prefix('admin')->group(function () {
     // Tambahkan rute-rute lain untuk admin di sini
 
     Route::post('/kelas', [AdminController::class, 'jenjang'])->name('jenjang.post');
-
 });
 
 
 // Grup rute untuk rute-rute yang terkait dengan admin
-Route::middleware(['whoami'])->group(function () {
-    Route::prefix('user')->group(function () {
-        Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
-        Route::get('/profile', [UserController::class, 'profile'])->name('profile');
-        Route::get('/kelas', [UserController::class, 'kelas'])->name('kelas');
-        Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
-        Route::get('/materi', [UserController::class, 'materi'])->name('materi');
-        Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
-    });
+
+Route::prefix('user')->middleware(['whoami:user'])->group(function () {
+
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::get('/kelas', [UserController::class, 'kelas'])->name('kelas');
+    Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
+    Route::get('/materi', [UserController::class, 'materi'])->name('materi');
+    Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
 });
 
-Route::prefix('instructor')->group(function () {
-    Route::get('/dashboard', [InstructorController::class, 'dashboard'])->name('dashboard');
+
+Route::prefix('instructor')->middleware(['whoami:instructor'])->group(function () {
+    Route::get('/dashboard', [InstructorController::class, 'dashboard'])->name('instructor.dashboard');
     Route::get('/kelas', [InstructorController::class, 'kelas'])->name('kelas');
     Route::get('/profile', [InstructorController::class, 'profile'])->name('profile');
     Route::get('/diskusi', [InstructorController::class, 'diskusi'])->name('diskusi');
-
 });
 
 // Rute untuk login pengguna biasa
-Route::prefix('')->middleware('redirect.if.authenticated')->group(function () {
+Route::prefix('')->middleware('redirect.if.authenticated:user')->group(function () {
     Route::get('/login', [AuthController::class, 'show'])->name('login'); // Menampilkan form login
     Route::post('/login', [AuthController::class, 'login']); // Proses login user
     // for google login
@@ -83,13 +82,13 @@ Route::prefix('')->middleware('redirect.if.authenticated')->group(function () {
 });
 
 // Rute untuk login admin
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware('redirect.if.authenticated:admin')->group(function () {
     Route::get('/login', [AuthController::class, 'showAdmin'])->name('loginAdmin'); // Menampilkan form login admin
     Route::post('/login', [AuthController::class, 'loginAdmin']); // Proses login admin
 });
 
 // Rute untuk login instrutor
-Route::prefix('instructor')->group(function () {
+Route::prefix('instructor')->middleware('redirect.if.authenticated:instructor')->group(function () {
     Route::get('/login', [AuthController::class, 'showInstructor'])->name('loginInstructor'); // Menampilkan form login admin
     Route::post('/login', [AuthController::class, 'loginInstructor']); // Proses login admin
 });
@@ -103,4 +102,3 @@ Route::post('/activate', [AuthController::class, 'activation'])->name('activate.
 Route::get('/activate', [AuthController::class, 'activate'])->name('activate');
 
 Route::get('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password');
-

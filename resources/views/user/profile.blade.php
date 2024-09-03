@@ -1,6 +1,4 @@
-@php
-    $user = session('user');
-@endphp
+
 
 @extends('layout.userLayout')
 @section('title', $title)
@@ -19,13 +17,13 @@
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Nama Lengkap</label>
                         <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                            value="{{ $user['full_name'] }}" disabled>
+                            value="{{ $full_name }}" disabled>
                     </div>
 
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Email </label>
                         <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                            value="{{ $user['email'] }}" disabled>
+                            value="{{ $email }}" disabled>
                     </div>
 
                 </div>
@@ -34,13 +32,13 @@
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Dibuat Tanggal </label>
                         <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                            value="{{ $user['created_at'] }}" disabled>
+                            value="{{ $created_at }}" disabled>
                     </div>
 
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Diperbarui Tanggal </label>
                         <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                            value="{{ $user['updated_at'] }}" disabled>
+                            value="{{ $updated_at }}" disabled>
                     </div>
 
                 </div>
@@ -79,7 +77,7 @@
                                 <div class="mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Nama Lengkap</label>
                                     <input type="email" class="form-control" id="exampleInputEmail1"
-                                        aria-describedby="emailHelp" value="{{ $name }}">
+                                        aria-describedby="emailHelp" value="{{ $full_name }}">
                                 </div>
 
                                 <div class="mb-3">

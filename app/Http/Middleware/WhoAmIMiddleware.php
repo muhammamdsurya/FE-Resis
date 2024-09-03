@@ -18,8 +18,10 @@ class WhoAmIMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next , $role = null): Response
     {
+
+
         $sessionCookie = 'session=' . session('api_session');
         // Log the cookies being sent
         Log::info('WhoAmI API Request Cookies: ', ['cookies' => $sessionCookie]);
@@ -32,12 +34,18 @@ class WhoAmIMiddleware
             if ($response->successful()) {
                 $userData = $response->json();
 
+                // dd($userData);
+                if ($role != $userData['role']) {
+
+                    return redirect()->route('beranda')->with('error', 'Your session has expired. Please log in again.');
+                }
+
 
                 // Validate the response structure
-                $requiredFields = ['id', 'email', 'full_name', 'role', 'created_at', 'updated_at', 'activated_at'];
+                $requiredFields = ['id', 'email', 'full_name', 'photo_profile', 'role', 'created_at', 'updated_at', 'activated_at'];
                 foreach ($requiredFields as $field) {
                     if (!isset($userData[$field])) {
-                        throw new \Exception("Missing required field: $field");
+                        $userData[$field] = '';
                     }
                 }
 
@@ -52,11 +60,21 @@ class WhoAmIMiddleware
                 // If the whoami request fails, clear the session and redirect to login
 
                 session()->forget('api_session');
-                return redirect()->route('login')->with('error', 'Your session has expired. Please log in again.');
+
+                if ( $role == 'user') {
+                    return redirect()->route('login')->with('error', 'Your session has expired. Please log in again.');
+                } else if ($role == 'admin') {
+                    return redirect()->route('loginAdmin')->with('error', 'Your session has expired. Please log in again.');
+                } else if ($role == 'instructor') {
+                    return redirect()->route('loginInstructor')->with('error', 'Your session has expired. Please log in again.');
+                }
+
+
+
             }
         } catch (\Exception $e) {
             // Log the error
-            \Log::error('WhoAmI API error: ' . $e->getMessage());
+            // \Log::error('WhoAmI API error: ' . $e->getMessage());
 
             // Clear the session and redirect to login
             session()->forget('api_session');

@@ -17,6 +17,7 @@
                 <a href="/user/profile"
                 style="text-decoration: none;" class="d-block">{{ $name }}</a>
             </div>
+
         </div>
 
         <!-- Sidebar Menu -->
