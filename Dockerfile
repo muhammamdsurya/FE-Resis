@@ -13,6 +13,10 @@ RUN composer install
 # Copy existing application directory permissions
 COPY --chown=www-data:www-data . .
 
+RUN touch database/database.sqlite
+
+RUN php artisan migrate
+
 # Expose port 8000 and start Laravel Sail server
 EXPOSE 8000
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
