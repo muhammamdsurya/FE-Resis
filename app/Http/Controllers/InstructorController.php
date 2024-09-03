@@ -8,8 +8,8 @@ class InstructorController extends Controller
 {
     public function dashboard (){
         $title = 'Dashboard';
-        $userId = 01;
-        $name = 'Surya User';
+        $userId = session('id');
+        $name = session('full_name');
 
         // Lakukan operasi lain yang diperlukan
 
@@ -22,22 +22,27 @@ class InstructorController extends Controller
 
     public function profile (){
         $title = 'Profile';
-        $userId = 01;
-        $name = 'Surya User';
+        $userId = session('id');
+        $name = session('full_name');
+        $email = session('email');
+        $created_at = session('created_at');
+        $updated_at = session('updated_at');
 
         // Lakukan operasi lain yang diperlukan
-
         return view('instructor.profile', [
             "title" => $title,
             "userId" => $userId,
             "name" => $name,
+            "email" => $email,
+            "created_at" => $created_at,
+            "updated_at" => $updated_at,
             ]);
     }
 
     public function kelas (){
         $title = 'Data Kelas';
-        $userId = 01;
-        $name = 'Surya User';
+        $userId = session("id");
+        $name = session("full_name");
 
         // Lakukan operasi lain yang diperlukan
 
@@ -50,8 +55,8 @@ class InstructorController extends Controller
 
     public function diskusi (){
         $title = 'Diskusi ';
-        $userId = 01;
-        $name = 'Surya User';
+        $userId = session("id");
+        $name = session("full_name");
 
         // Lakukan operasi lain yang diperlukan
 

@@ -213,24 +213,9 @@ class AdminController extends Controller
     public function jenjang(Request $request)
     {
 
-        // Retrieve the token from the session
-        $token = $request->session()->get('_token'); // Adjust 'api_token' to the key where your token is stored
-
-        // Check if the token is present
-        if (!$token) {
-            // Handle missing token
-            return response()->json([
-                'success' => false,
-                'message' => 'Authentication token is missing.'
-            ], 401);
-        }
-
-        $response = Http::withToken($token)->post($this->apiUrl . 'courses/categories', [
+        $response = Http::withApiSession()->post($this->apiUrl . 'courses/categories', [
             'name' => $request->name // Include other necessary data here
         ]);
-
-        dd($response->status(), $response->body());
-
 
 
         if ($response->successful()) {

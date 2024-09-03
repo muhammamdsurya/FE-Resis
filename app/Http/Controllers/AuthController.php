@@ -68,6 +68,20 @@ class AuthController extends Controller
                 session(['api_session' => $sessionValue]);
             }
 
+             // Validate the response structure
+             $requiredFields = ['id', 'email', 'full_name', 'photo_profile', 'role', 'created_at', 'updated_at', 'activated_at'];
+             foreach ($requiredFields as $field) {
+                 if (!isset($userData[$field])) {
+                    $userData[$field] = '';
+                }
+             }
+
+             // Store user data in the request for use in the controller
+             $request->merge(['user' => $userData]);
+
+             // Optionally, store in session if needed across requests
+             session(['user' => $userData]);
+
             // Redirect ke halaman setelah login sukses
             return redirect()->route('user.dashboard');
         } else {
@@ -102,25 +116,45 @@ class AuthController extends Controller
             // Jika berhasil, lakukan sesuatu (misalnya menyimpan token ke session)
             $userData = $response->json(); // Ambil seluruh data dari respons JSON
 
-            // Mengonversi string tanggal menjadi objek Carbon
-            $createdAt = Carbon::parse($userData['created_at']);
-            $updatedAt = Carbon::parse($userData['updated_at']);
+            // get the cookies from the response
+            $cookies = $response->cookies();
+            Log::info('Login API Response Cookies: ', ['cookies' => $cookies]);
+            // get the session cookie
+            $sessionCookie = null;
+            foreach ($cookies as $cookie) {
+                if (strpos($cookie, 'session') !== false) {
+                    $sessionCookie = $cookie;
+                    break;
+                }
+            }
 
-            session([
-                'id' => $userData['id'],
-                'full_name' => $userData['full_name'],
-                'email' => $userData['email'],
-                'role' => $userData['role'],
-                'photo_profile' => $userData['photo_profile'],
-                'created_at' => $createdAt->toDateTimeString(), // Format: 'YYYY-MM-DD HH:MM:SS'
-                'updated_at' => $updatedAt->toDateTimeString(), // Format: 'YYYY-MM-DD HH:MM:SS'
-            ]);
+            if ($sessionCookie) {
+                // parse the cookie string
+                $parts = explode(';', $sessionCookie);
+                $sessionValue = explode('=', $parts[0])[1];
+
+                // set the session session to laravel session
+                session(['api_session' => $sessionValue]);
+            }
+
+             // Validate the response structure
+             $requiredFields = ['id', 'email', 'full_name', 'photo_profile', 'role', 'created_at', 'updated_at', 'activated_at'];
+             foreach ($requiredFields as $field) {
+                 if (!isset($userData[$field])) {
+                    $userData[$field] = '';
+                }
+             }
+
+             // Store user data in the request for use in the controller
+             $request->merge(['user' => $userData]);
+
+             // Optionally, store in session if needed across requests
+             session(['user' => $userData]);
 
             // Redirect ke halaman setelah login sukses
             return redirect()->route('dashboardAdmin');
         } else {
             // Jika gagal, kembalikan ke halaman login dengan pesan error
-
             return redirect()->route('loginAdmin')->with('error', 'Login gagal. Coba lagi.');
         }
     }
@@ -145,26 +179,50 @@ class AuthController extends Controller
             'password' => $request->password,
         ]);
 
-        // Cek status respons dari API
         if ($response->successful()) {
             // Jika berhasil, lakukan sesuatu (misalnya menyimpan token ke session)
             $userData = $response->json(); // Ambil seluruh data dari respons JSON
-            session([
-                'id' => $userData['id'],
-                'full_name' => $userData['full_name'],
-                'email' => $userData['email'],
-                'role' => $userData['role'],
-                'photo_profile' => $userData['photo_profile'],
-                'created_at' => $userData['created_at'],
-                'updated_at' => $userData['updated_at'],
-                'activated_at' => $userData['activated_at'],
-            ]);
+
+            // get the cookies from the response
+            $cookies = $response->cookies();
+            Log::info('Login API Response Cookies: ', ['cookies' => $cookies]);
+            // get the session cookie
+            $sessionCookie = null;
+            foreach ($cookies as $cookie) {
+                if (strpos($cookie, 'session') !== false) {
+                    $sessionCookie = $cookie;
+                    break;
+                }
+            }
+
+            if ($sessionCookie) {
+                // parse the cookie string
+                $parts = explode(';', $sessionCookie);
+                $sessionValue = explode('=', $parts[0])[1];
+
+                // set the session session to laravel session
+                session(['api_session' => $sessionValue]);
+            }
+
+             // Validate the response structure
+             $requiredFields = ['id', 'email', 'full_name', 'photo_profile', 'role', 'created_at', 'updated_at', 'activated_at'];
+             foreach ($requiredFields as $field) {
+                 if (!isset($userData[$field])) {
+                    $userData[$field] = '';
+                }
+             }
+
+             // Store user data in the request for use in the controller
+             $request->merge(['user' => $userData]);
+
+             // Optionally, store in session if needed across requests
+             session(['user' => $userData]);
 
             // Redirect ke halaman setelah login sukses
-            return redirect()->route('/instructor/dashboard');
+            return redirect()->route('instructor.dashboard');
         } else {
             // Jika gagal, kembalikan ke halaman login dengan pesan error
-            return redirect()->route('login')->with('error', 'Login gagal. Coba lagi.');
+            return redirect()->route('login.instructor')->with('error', 'Login gagal. Coba lagi.');
         }
     }
 
@@ -241,8 +299,7 @@ class AuthController extends Controller
             }
         } catch (\Exception $e) {
             // Log the exception for debugging purposes
-            \Log::error('Logout API error: ' . $e->getMessage());
-
+            // \Log::error('Logout API error: ' . $e->getMessage());
 
             // Return a generic error response
             return response()->json(['error' => 'An unexpected error occurred.'], 500);

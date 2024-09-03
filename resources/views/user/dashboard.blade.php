@@ -54,6 +54,7 @@
         <!-- /.row -->
         <!-- Main row -->
         <div class="row">
+            <!-- Example in a Blade template -->
             <!-- Left col -->
             <section class="col-12">
                 <div class="card-header mb-3">

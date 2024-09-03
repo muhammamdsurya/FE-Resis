@@ -41,7 +41,7 @@
   </div>
   <!-- /.content-wrapper -->
   <!-- Control Sidebar -->
-  <x-sidebarUser :name="$name" />
+  <x-sidebarUser :name="$full_name" />
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->

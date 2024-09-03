@@ -13,10 +13,9 @@ class sidebarUser extends Component
      * Create a new component instance.
      */
     public $name;
-    public function __construct($name)
+    public function __construct($name = '')
     {
-        $user = Session::get('user');
-        $this->name = $user['full_name'];
+        $this->name = $name;
     }
 
     /**
