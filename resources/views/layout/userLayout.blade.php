@@ -90,7 +90,7 @@
                                 'Anda telah berhasil logout.',
                                 'success'
                             ).then(() => {
-                                window.location.href = '/login'; // Redirect ke halaman login
+                                window.location.href = 'https://staging.akuanalis.com/login'; // Redirect ke halaman login
                             });
                         } else {
                             Swal.fire(
