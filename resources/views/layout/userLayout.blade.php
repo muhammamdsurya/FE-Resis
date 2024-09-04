@@ -72,7 +72,8 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Mengirimkan permintaan POST untuk logout
-                    fetch('{{route('logout')}}', {
+                    fetch('/logout', {
+
                         method: 'POST',
                         headers: {
                                     'Content-Type': 'application/json',
@@ -82,7 +83,10 @@
                                 body: JSON.stringify({}) // Laravel mengharapkan metode POST
                     })
                     .then(response => {
-                        console.log(response);
+                        console.log('{{route('logout')}}');
+                        console.log('{{route('login')}}');
+
+
                         if (response.ok) {
                             // Redirect setelah logout
                             Swal.fire(
@@ -90,7 +94,7 @@
                                 'Anda telah berhasil logout.',
                                 'success'
                             ).then(() => {
-                                window.location.href = '{{route('login')}}'; // Redirect ke halaman login
+                                window.location.href = '/login'; // Redirect ke halaman login
                             });
                         } else {
                             Swal.fire(
