@@ -72,7 +72,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Mengirimkan permintaan POST untuk logout
-                    fetch('/logout', {
+                    fetch('{{route('logout')}}', {
                         method: 'POST',
                         headers: {
                                     'Content-Type': 'application/json',
@@ -90,7 +90,7 @@
                                 'Anda telah berhasil logout.',
                                 'success'
                             ).then(() => {
-                                window.location.href = 'https://staging.akuanalis.com/login'; // Redirect ke halaman login
+                                window.location.href = '{{route('login')}}'; // Redirect ke halaman login
                             });
                         } else {
                             Swal.fire(
