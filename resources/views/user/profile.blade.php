@@ -13,7 +13,6 @@
         </div>
             <div class="row ">
                 <div class="col-lg-5 col-md-6 mx-auto">
-                    @csrf
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Nama Lengkap</label>
                         <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
@@ -48,10 +47,7 @@
                         data-bs-target="#exampleModal">Edit</button>
                 <!--    <a href="/logout" class="btn btn-danger px-3 mb-5 mt-3 btn-logout">Logout</a> -->
                 <!-- Logout Button -->
-                <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="btn btn-danger px-3 mb-5 mt-3">Logout</button>
-                </form>
+                    <button type="submit" class="btn btn-danger px-3 mb-5 mt-3 btn-logout">Logout</button>
                 </div>
     </div>
     </div>
@@ -70,10 +66,9 @@
                             width="200rem" height="200rem">
 
                     </div>
-                    <form action="{{ route('logout') }}">
+                    <form action="">
                         <div class="row ">
                             <div class="col-lg-5 col-md-6 mx-auto">
-                                @csrf
                                 <div class="mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Nama Lengkap</label>
                                     <input type="email" class="form-control" id="exampleInputEmail1"

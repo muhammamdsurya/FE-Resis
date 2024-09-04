@@ -4,6 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>Instruktur Dashboard</title>
 
     <!-- Google Font: Source Sans Pro -->
@@ -44,7 +46,7 @@
         </div>
         <!-- /.content-wrapper -->
         <!-- Control Sidebar -->
-        <x-sidebarInst :name="$name" />
+        <x-sidebarInst :name="$full_name" />
         <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
@@ -70,42 +72,35 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                    // Mengirimkan permintaan POST untuk logout
-                    fetch('/logout', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({})
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            // Redirect setelah logout
-                            Swal.fire(
-                                'Logged out!',
-                                'Anda telah berhasil logout.',
-                                'success'
-                            ).then(() => {
-                                window.location.href = route('loginInstructor'); // Redirect ke halaman login
+                        // Kirim permintaan AJAX untuk logout
+                        fetch('{{ route('logout') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector(
+                                        'meta[name="csrf-token"]').getAttribute('content')
+                                },
+                                body: JSON.stringify({}) // Laravel mengharapkan metode POST
+                            })
+                            .then(response => {
+                                console.log(response);
+                                if (response.ok) {
+                                    // Redirect setelah logout
+                                    Swal.fire(
+                                        'Logged out!',
+                                        'Anda telah berhasil logout.',
+                                        'success'
+                                    ).then(() => {
+                                        window.location.href =
+                                            '{{ route('login.instructor') }}'; // Redirect ke halaman login
+                                    });
+                                } else {
+                                    Swal.fire('Oops!', 'Terjadi kesalahan saat logout.',
+                                        'error');
+                                }
                             });
-                        } else {
-                            Swal.fire(
-                                'Error!',
-                                'Terjadi kesalahan saat logout.',
-                                'error'
-                            );
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire(
-                            'Error!',
-                            'Terjadi kesalahan saat logout.',
-                            'error'
-                        );
-                    });
-                }
+
+                    }
                 });
             });
         });

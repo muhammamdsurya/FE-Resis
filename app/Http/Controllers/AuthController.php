@@ -65,7 +65,7 @@ class AuthController extends Controller
                 $sessionValue = explode('=', $parts[0])[1];
 
                 // set the session session to laravel session
-                session(['api_session' => $sessionValue]);
+                session(['api_session' => $sessionValue."="]);
             }
 
              // Validate the response structure
@@ -152,10 +152,10 @@ class AuthController extends Controller
              session(['user' => $userData]);
 
             // Redirect ke halaman setelah login sukses
-            return redirect()->route('dashboardAdmin');
+            return redirect()->route('admin.dashboard');
         } else {
             // Jika gagal, kembalikan ke halaman login dengan pesan error
-            return redirect()->route('loginAdmin')->with('error', 'Login gagal. Coba lagi.');
+            return redirect()->route('login.Admin')->with('error', 'Login gagal. Coba lagi.');
         }
     }
 
@@ -283,7 +283,7 @@ class AuthController extends Controller
         try {
 
             // Send a POST request to the API logout endpoint
-            $response = Http::withApiSession()->post($this->apiUrl . 'auth/logout');
+            $response = Http::withApiSession()->post('https://staging.akuanalis.com/api/v1/auth/logout');
 
             if ($response->ok()) {
                 // Clear session data

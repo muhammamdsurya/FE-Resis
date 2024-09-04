@@ -10,7 +10,7 @@
                     </div>
 
                     <div class="col-md-5 col-lg-5 ">
-                        <form method="POST" action="{{ route('loginInstructor') }}">
+                        <form method="POST" action="{{ route('login.instructor') }}">
                             @csrf
                             <h3 class="text-center mb-3">Instruktur Login</h3>
                             <!-- Input field untuk email -->

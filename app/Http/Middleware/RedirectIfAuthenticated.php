@@ -19,7 +19,7 @@ class RedirectIfAuthenticated
             if ($user['role'] != $role) {
                 return redirect()->route('beranda');  // Replace 'home' with the desired route for unauthorized users.
             } else if ($user['role'] == 'admin') {
-                return redirect()->route('dashboardAdmin');
+                return redirect()->route('admin.dashboard');
             } else if ($user['role'] == 'user'){
                 return redirect()->route('user.dashboard');
             } else if ($user['role'] == 'instructor') {
