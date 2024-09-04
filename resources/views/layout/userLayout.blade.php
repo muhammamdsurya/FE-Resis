@@ -90,7 +90,6 @@
                             })
                             .then(response => {
 
-
                                 if (response.ok) {
                                     // Redirect setelah logout
                                     Swal.fire(
@@ -99,7 +98,7 @@
                                         'success'
                                     ).then(() => {
                                         window.location.href =
-                                            'https://staging.akuanalis.com/login'; // Redirect ke halaman login dengan HTTPS
+                                            '/login'; // Redirect ke halaman login dengan HTTPS
                                     });
                                 } else {
                                     Swal.fire(

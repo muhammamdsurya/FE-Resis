@@ -283,14 +283,13 @@ class AuthController extends Controller
         try {
 
             // Send a POST request to the API logout endpoint
-            $response = Http::withApiSession()->post('https://staging.akuanalis.com/api/v1/auth/logout');
+            $response = Http::withApiSession()->post($this->apiUrl . 'auth/logout');
 
             if ($response->ok()) {
                 // Clear session data
                 session()->forget('api_session');
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
-
 
                 $message = $response->json('success') ?? 'Logout Success.';
                 return response()->json(['success' => $message], $response->status());
