@@ -13,7 +13,7 @@
             <div class="col-lg-5 col-md-6 mx-auto">
                 <div class="form-floating mb-3">
                     <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com"
-                        name="email" value="{{ $name }}">
+                        name="email" value="{{ $full_name }}">
                     <label for="floatingInput">Nama Lengkap</label>
                 </div>
 
@@ -45,14 +45,8 @@
             </div>
 
             <div class="col-lg-5 ml-5">
-                <button type="button" class="btn btn-success px-3 mb-5 mt-3" data-bs-toggle="modal"
-                    data-bs-target="#exampleModal">Edit</button>
-            <!--    <a href="/logout" class="btn btn-danger px-3 mb-5 mt-3 btn-logout">Logout</a> -->
-            <!-- Logout Button -->
-            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                @csrf
-                <button type="submit" class="btn btn-danger px-3 mb-5 mt-3">Logout</button>
-            </form>
+                <button type="submit" class="btn btn-success px-3 mb-5 mt-3">Edit</button>
+                <button type="submit" class="btn btn-danger px-3 mb-5 mt-3 btn-logout">Logout</a>
             </div>
 
         </div>

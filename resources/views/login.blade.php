@@ -13,6 +13,11 @@
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
                             <h3 class="text-center mb-3">Login</h3>
+                            @if (session('error'))
+                                <div id="alert-message" class="alert alert-danger">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
                             <!-- Email input -->
                             <!-- Input field untuk email -->
                             <div class="form-floating mb-3">
@@ -36,14 +41,8 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-center mt-3">
-                               <!-- <div class="form-check mb-0">
-                                    <input class="form-check-input me-2" type="checkbox" value=""
-                                        id="form2Example3" />
-                                    <label class="form-check-label" for="form2Example3">
-                                        Ingat saya
-                                    </label>
-                                </div> -->
-                                <a href="#!" class="text-body link-primary">Lupa Password?</a>
+
+                                <a href="{{ route('reset.password') }}" class="text-body link-primary">Lupa Password?</a>
                             </div>
 
                             <div class="text-center text-lg-start mt-4 pt-2">
@@ -55,7 +54,8 @@
                                     <div class="flex-grow-1 border-top" style="border-color: #ccc;"></div>
                                 </div>
 
-                                <a href="{{ route('login.google') }}" class="btn btn-light w-100"><i class="bi bi-google mx-3"></i>Masuk
+                                <a href="{{ route('login.google') }}" class="btn btn-light w-100"><i
+                                        class="bi bi-google mx-3"></i>Masuk
                                     dengan google</a>
 
                                 <p class="small mt-3 pt-1 mb-0">belum punya akun? <a href="/register"

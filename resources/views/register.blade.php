@@ -31,9 +31,9 @@
                                 <input type="password" class="form-control" id="password" placeholder="Password"
                                     name="password">
                                 <label for="password">Password</label>
-                                <p class="small">Gunakan minimal 8 karakter dengan kombinasi huruf & angka</p>
+                                <p class="small">Gunakan minimal 8 karakter dengan kombinasi huruf, angka & karakter</p>
                                 <p id="passwordError" class="small text-danger" style="display: none;">Password harus
-                                    mengandung minimal 8 karakter, 1 huruf besar, dan 1 angka</p>
+                                    mengandung minimal 8 karakter, 1 huruf besar, 1 angka & 1 Karakter</p>
                             </div>
 
                             <div class="form-floating">
@@ -54,7 +54,8 @@
                                     <div class="flex-grow-1 border-top" style="border-color: #ccc;"></div>
                                 </div>
 
-                                <a href="{{ route('register.google') }}" class="btn btn-light w-100"><i class="bi bi-google mx-3"></i>Daftar
+                                <a href="{{ route('register.google') }}" class="btn btn-light w-100"><i
+                                        class="bi bi-google mx-3"></i>Daftar
                                     dengan google</a>
 
                                 <p class="small mt-3 pt-1 mb-0">Sudah punya akun? <a href="/login"
@@ -98,9 +99,10 @@
 
                 const hasUpperCase = /[A-Z]/.test(password);
                 const hasDigit = /\d/.test(password);
+                const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password); // Check for special character
                 const minLength = password.length >= 8;
 
-                if (!minLength || !hasUpperCase || !hasDigit) {
+                if (!minLength || !hasUpperCase || !hasDigit || !hasSpecialChar) {
                     $('#passwordError').show();
                     registerButton.prop('disabled', true);
                 } else {
@@ -175,18 +177,23 @@
                     url: myEnvVariable + "users/auth/register",
                     data: JSON.stringify(data),
                     success: function(response) {
-                            console.log(response);
-                            Swal.fire(
-                                'Berhasil!',
-                                'Silahkan aktivasi akunmu di email!',
-                                'success'
-                            ).then(() => {
-                                window.location.href = '/login'; // Redirect ke halaman login
-                            });
-                            // window.location.href = '/login';
+                        console.log(response);
+                        Swal.fire(
+                            'Berhasil!',
+                            'Silahkan aktivasi akunmu di email!',
+                            'success'
+                        ).then(() => {
+                            window.location.href =
+                            '/login'; // Redirect ke halaman login
+                        });
+                        // window.location.href = '/login';
                     },
                     error: function(xhr, status, error) {
-                        alert('Email Sudah Terdaftar');
+                        Swal.fire(
+                            'Ooops!',
+                            'Email sudah terdaftar!',
+                            'error'
+                        )
                     }
 
                 });

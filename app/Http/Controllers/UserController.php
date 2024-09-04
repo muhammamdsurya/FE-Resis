@@ -2,26 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 
 class UserController extends Controller
 {
     private $user;
-    public function __construct() {
+    public function __construct()
+    {
         $this->user = session('user');
     }
 
     private function getProfileData()
     {
+        // Mengonversi setiap timestamp ke objek Carbon
+        $created = Carbon::parse($this->user['created_at']);
+        $updated = Carbon::parse($this->user['updated_at']);
+        $activated = Carbon::parse($this->user['activated_at']);
+
+        // Mengubah zona waktu ke WIB (Asia/Jakarta)
+        $createdWIB = $created->setTimezone('Asia/Jakarta');
+        $updatedWIB = $updated->setTimezone('Asia/Jakarta');
+        $activatedWIB = $activated->setTimezone('Asia/Jakarta');
+
+        // Format tanggal sesuai kebutuhan
+        $created_at = $createdWIB->format('d-m-Y H:i:s');
+        $updated_at = $updatedWIB->format('d-m-Y H:i:s');
+        $activated_at = $activatedWIB->format('d-m-Y H:i:s');
+
         return [
             'id' => $this->user['id'],
             'full_name' => $this->user['full_name'],
             'email' => $this->user['email'],
             'photo_profile' => $this->user['photo_profile'],
-            'created_at' => $this->user['created_at'],
-            'updated_at' => $this->user['updated_at'],
-            'activated_at' => $this->user['activated_at'],
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+            'activated_at' => $activated_at,
         ];
     }
     public function dashboard()
@@ -42,7 +59,6 @@ class UserController extends Controller
 
         return view('user.profile', [
             "title" => $title,
-            "id" => $profileData['id'],
             "full_name" => $profileData['full_name'],
             "email" => $profileData['email'],
             "photo_profile" => $profileData['photo_profile'],
@@ -86,15 +102,13 @@ class UserController extends Controller
     public function diskusi()
     {
         $title = 'Diskusi';
-        $id = 01;
-        $full_name = 'Surya User';
 
         // Lakukan operasi lain yang diperlukan
 
         return view('user.diskusi', [
             "title" => $title,
-            "id" => $id,
-            "full_name" => $full_name,
+            "id" => $this->user['id'],
+            "full_name" => $this->user['full_name'],
         ]);
     }
 }

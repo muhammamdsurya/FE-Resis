@@ -75,12 +75,14 @@
                     fetch('/logout', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({})
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector(
+                                        'meta[name="csrf-token"]').getAttribute('content')
+                                },
+                                body: JSON.stringify({}) // Laravel mengharapkan metode POST
                     })
                     .then(response => {
+                        console.log(response);
                         if (response.ok) {
                             // Redirect setelah logout
                             Swal.fire(

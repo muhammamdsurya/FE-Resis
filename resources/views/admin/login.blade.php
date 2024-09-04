@@ -11,7 +11,7 @@
                     </div>
 
                     <div class="col-md-5 col-lg-5 ">
-                        <form method="POST" action="{{ route('loginAdmin') }}">
+                        <form method="POST" action="{{ route('login.Admin') }}">
                             @csrf
                             <h3 class="text-center mb-3">Admin Login</h3>
                             <!-- Display error message -->
@@ -51,18 +51,5 @@
         </div>
     </div>
 
-    <script>
-        // Check if the alert exists and set a timeout to hide it
-        document.addEventListener('DOMContentLoaded', function() {
-            var alertMessage = document.getElementById('alert-message');
-            if (alertMessage) {
-                setTimeout(function() {
-                    alertMessage.style.opacity = '0';
-                    setTimeout(function() {
-                        alertMessage.style.display = 'none';
-                    }, 500); // Delay for fade-out effect
-                }, 2000); // Time to wait before starting fade-out
-            }
-        });
-    </script>
+
 @endsection

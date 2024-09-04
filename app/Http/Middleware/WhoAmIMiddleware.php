@@ -18,30 +18,37 @@ class WhoAmIMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next , $role = null): Response
+    public function handle(Request $request, Closure $next, $role = null): Response
     {
 
-
-        $sessionCookie = 'session=' . session('api_session');
-        // Log the cookies being sent
-        Log::info('WhoAmI API Request Cookies: ', ['cookies' => $sessionCookie]);
-
         try {
+            $apiSession = session('api_session');
+
+            if (!$apiSession) {
+                throw new \Exception('Session token is missing.');
+            }
+
+            // Log the session cookie that will be sent
+            Log::info('Session Cookie:', ['session_cookie' => $apiSession]);
+
+            // Make the WhoAmI API request
             $response = Http::withHeaders([
-                'Cookie' => 'session=' . session('api_session'),
+                'Cookie' => 'session=' . $apiSession,
             ])->get(config('services.backend_api.url') . 'auth/whoami');
+
+            // Log the response headers for debugging
+            Log::info('Response Headers:', ['headers' => $response->headers()]);
+
 
             if ($response->successful()) {
                 $userData = $response->json();
 
-                // dd($userData);
+                // Check the role of the user
                 if ($role != $userData['role']) {
-
                     return redirect()->route('beranda')->with('error', 'Your session has expired. Please log in again.');
                 }
 
-
-                // Validate the response structure
+                // Validate and ensure all required fields are present in the response
                 $requiredFields = ['id', 'email', 'full_name', 'photo_profile', 'role', 'created_at', 'updated_at', 'activated_at'];
                 foreach ($requiredFields as $field) {
                     if (!isset($userData[$field])) {
@@ -57,24 +64,26 @@ class WhoAmIMiddleware
 
                 return $next($request);
             } else {
-                // If the whoami request fails, clear the session and redirect to login
-
+                // If the WhoAmI request fails, clear the session and redirect to login
                 session()->forget('api_session');
 
-                if ( $role == 'user') {
-                    return redirect()->route('login')->with('error', 'Your session has expired. Please log in again.');
-                } else if ($role == 'admin') {
-                    return redirect()->route('loginAdmin')->with('error', 'Your session has expired. Please log in again.');
-                } else if ($role == 'instructor') {
-                    return redirect()->route('loginInstructor')->with('error', 'Your session has expired. Please log in again.');
+                // Determine the redirect route based on the user's role
+                switch ($role) {
+                    case 'admin':
+                        $route = 'loginAdmin';
+                        break;
+                    case 'instructor':
+                        $route = 'loginInstructor';
+                        break;
+                    default:
+                        $route = 'login';
                 }
 
-
-
+                return redirect()->route($route)->with('error', 'Your session has expired. Please log in again.');
             }
         } catch (\Exception $e) {
-            // Log the error
-            // \Log::error('WhoAmI API error: ' . $e->getMessage());
+            // Log the error for debugging
+            Log::error('WhoAmI API error: ' . $e->getMessage());
 
             // Clear the session and redirect to login
             session()->forget('api_session');
@@ -82,4 +91,3 @@ class WhoAmIMiddleware
         }
     }
 }
-

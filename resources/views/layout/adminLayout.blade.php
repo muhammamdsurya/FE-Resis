@@ -15,8 +15,9 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('assets/dist/css/adminlte.min.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
 
 
 </head>
@@ -51,9 +52,12 @@
     <!-- ./wrapper -->
 
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -72,7 +76,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Kirim permintaan AJAX untuk logout
-                        fetch('https://staging.akuanalis.com/api/v1/auth/logout', {
+                        fetch('{{ route('logout') }}', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -84,9 +88,15 @@
                             .then(response => {
                                 console.log(response);
                                 if (response.ok) {
-                                    // Redirect ke halaman utama setelah logout berhasil
-                                    window.location.href =
-                                        '{{ route('login') }}'; // Atau rute lain setelah logout
+                                    // Redirect setelah logout
+                                    Swal.fire(
+                                        'Logged out!',
+                                        'Anda telah berhasil logout.',
+                                        'success'
+                                    ).then(() => {
+                                        window.location.href =
+                                            '{{ route('login.Admin') }}'; // Redirect ke halaman login
+                                    });
                                 } else {
                                     Swal.fire('Oops!', 'Terjadi kesalahan saat logout.',
                                         'error');
