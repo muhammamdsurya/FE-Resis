@@ -79,15 +79,12 @@ class WhoAmIMiddleware
                         $route = 'login';
                 }
 
-                return redirect()->route($route)->with('error', 'Your session has expired. Please log in again.');
+                return redirect()->route($route)->with('error', 'Silahkan login kembali!');
             }
         } catch (\Exception $e) {
-            // Log the error for debugging
-            Log::error('WhoAmI API error: ' . $e->getMessage());
-
             // Clear the session and redirect to login
             session()->forget('api_session');
-            return redirect()->route('login')->with('error', 'An error occurred. Please log in again.');
+            return redirect()->route('login')->with('error', 'Oops!.');
         }
     }
 }

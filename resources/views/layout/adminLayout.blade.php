@@ -76,7 +76,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Kirim permintaan AJAX untuk logout
-                        fetch('{{ route('logout') }}', {
+                        fetch('/logout', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -89,13 +89,15 @@
                                 console.log(response);
                                 if (response.ok) {
                                     // Redirect setelah logout
-                                    Swal.fire(
-                                        'Logged out!',
-                                        'Anda telah berhasil logout.',
-                                        'success'
-                                    ).then(() => {
+                                    S Swal.fire({
+                                        type: 'success',
+                                        icon: 'success',
+                                        title: `${response.message}`,
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    });.then(() => {
                                         window.location.href =
-                                            '{{ route('login.Admin') }}'; // Redirect ke halaman login
+                                            '/admin/login'; // Redirect ke halaman login
                                     });
                                 } else {
                                     Swal.fire('Oops!', 'Terjadi kesalahan saat logout.',

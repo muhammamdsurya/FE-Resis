@@ -44,11 +44,13 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/data-pengajar', [AdminController::class, 'dataPengajar'])->name('data.pengajar');
     Route::get('/data-siswa', [AdminController::class, 'dataSiswa'])->name('data-siswa');
     // Tambahkan rute-rute lain untuk admin di sini
-    // In routes/web.php or routes/api.php
+    // In routes/web.php or routes/api.php->name
 
-    Route::get('/kelas/semua' , [courseController::class, 'getKelas'])->name('kelas.index');
-    Route::post('/kelas/jenjang', [CourseController::class, 'jenjang'])->name('jenjang.post');
+    Route::post('/kelas/categories', [CourseController::class, 'jenjang'])->name('categories.post');
     Route::post('/kelas', [CourseController::class, 'kelas'])->name('kelas.post');
+
+    Route::delete('/kelas/{id}', [courseController::class, 'destroy'])->name('categories.destroy');
+
 });
 
 

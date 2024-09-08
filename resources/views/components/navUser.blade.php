@@ -6,7 +6,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item">
-        <a href="/user/dashboard" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">Beranda</a>
+        <a href="/" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">Beranda</a>
       </li>
       <li class="nav-item">
         <a href="/kelas" class="nav-link">Kelas</a>

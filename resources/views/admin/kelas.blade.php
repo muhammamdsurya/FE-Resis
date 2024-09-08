@@ -46,7 +46,7 @@
                                     </div>
                                 </form>
 
-                                <table class="table">
+                                <table id="categoriesTable" class="table">
                                     <thead>
                                         <tr>
                                             <th scope="col">No</th>
@@ -54,7 +54,7 @@
                                             <th scope="col">Aksi</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="categoriesTable" class="table">
+                                    <tbody>
                                         <!-- Dynamic rows will be appended here -->
                                     </tbody>
                                 </table>
@@ -183,7 +183,7 @@
                     // Make the AJAX request directly to the API endpoint
                     $.ajax({
 
-                        url: '{{ route('jenjang.post') }}', // Direct API endpoint
+                        url: '{{ route('categories.post') }}', // Direct API endpoint
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -204,49 +204,171 @@
 
                 });
 
+                // Initialize the DataTable
+                const table = $('#categoriesTable').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: apiUrl + 'courses/categories', // API endpoint
+                        method: 'GET',
+                        dataSrc: '', // Since the API returns an array of objects
+                        error: function(xhr, status, error) {
+                            console.error('Error fetching data:', error);
+                            console.log('Error response:', xhr.responseText);
+                        }
+                    },
+                    columns: [{
+                            data: null,
+                            render: function(data, type, row, meta) {
+                                return meta.row + 1; // Adding row index for the numbering
+                            }
+                        },
+                        {
+                            data: 'name'
+                        },
+                        {
+                            data: 'id',
+                            render: function(data, type, row) {
+                                return `
+                    <a href="javascript:void(0)" class="btn btn-danger btn-sm delete-btn" data-id="${data}">Hapus</a>
+                    <a href="javascript:void(0)" class="btn btn-success btn-sm edit-btn" data-id="${data}">Edit</a>
+                `;
+                            }
+                        }
+                    ],
+                    paging: true, // Enable pagination
+                    searching: true, // Enable search/filter
+                    info: false, // Disable table information display
+                    lengthChange: false, // Disable page length change
+                    autoWidth: false, // Disable automatic column width calculation
+                    language: {
+                        search: "_INPUT_", // Customize search input placeholder
+                        searchPlaceholder: "Search..."
+                    }
+                });
+
+                $('#categoriesTable').on('click', '.delete-btn, .edit-btn', function(e) {
+                    e.preventDefault(); // Prevent the default anchor behavior
+
+                    let post_id = $(this).data('id');
+                    let token = $("meta[name='csrf-token']").attr("content");
+
+                    if ($(this).hasClass('delete-btn')) {
+                        // Handle delete button
+                        Swal.fire({
+                            text: "Apa kamu yakin menghapus ini?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ya!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Make an AJAX request to delete the item
+                                $.ajax({
+                                    url: `/admin/kelas/${post_id}`,
+                                    type: 'DELETE',
+                                    cache: false,
+                                    data: {
+                                        "_token": token
+                                    },
+                                    success: function(response) {
+                                        Swal.fire(
+                                            'Deleted!',
+                                            'Your category has been deleted.',
+                                            'success'
+                                        );
+
+                                        // Reload the DataTable
+                                        $('#categoriesTable').DataTable().ajax.reload();
+                                    },
+                                    error: function(xhr, status, error) {
+                                        Swal.fire(
+                                            'Error!',
+                                            'There was an error deleting the category.',
+                                            'error'
+                                        );
+                                    }
+                                });
+                            }
+                        });
+                    } else if ($(this).hasClass('edit-btn')) {
+                        // Handle edit button
+                        let currentName = $(this).closest('tr').find('').text();
+
+                        Swal.fire({
+                            title: 'Edit Category',
+                            input: 'text',
+                            inputLabel: 'Category Name',
+                            inputValue: currentName,
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Save'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                let newName = result.value;
+
+                                // Make an AJAX request to update the item
+                                $.ajax({
+                                    url: `/admin/kelas/${post_id}`,
+                                    type: 'PUT',
+                                    cache: false,
+                                    data: {
+                                        "_token": token,
+                                        "name": newName
+                                    },
+                                    success: function(response) {
+                                        Swal.fire(
+                                            'Updated!',
+                                            'Your category has been updated.',
+                                            'success'
+                                        );
+
+                                        // Update the table row with the new name
+                                        $(this).closest('tr').find('.category-name').text(
+                                            newName);
+                                    }.bind(
+                                    this), // Bind the context to access `this` inside success callback
+                                    error: function(xhr, status, error) {
+                                        Swal.fire(
+                                            'Error!',
+                                            'There was an error updating the category.',
+                                            'error'
+                                        );
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+
+
 
 
                 $.ajax({
                     url: apiUrl + 'courses/categories',
                     method: 'GET',
                     success: function(response) {
-                        const tableBody = $('#tableBody');
-                        tableBody.empty(); // Clear any existing rows
                         const jenjangSelect = $('#jenjangSelect');
                         jenjangSelect.empty(); // Clear existing options
 
                         jenjangSelect.append(
-                            '<option value="" disabled selected>Select Jenjang</option>'); // Default option
+                            '<option value="" disabled selected>Select Jenjang</option>'
+                        ); // Default option
 
-                        // Assuming response is an array of objects
                         $.each(response, function(index, category) {
-
-
-                            const row = `
-                    <tr>
-                        <th scope="row">${index + 1}</th>
-                        <td>${category.name}</td>
-                        <td>
-                            <a href="/categories/${category.id}/delete" class="btn btn-danger">Hapus</a>
-                            <a href="/categories/${category.id}/edit" class="btn btn-success">Edit</a>
-                        </td>
-                    </tr>
-                `;
-                            tableBody.append(row);
                             jenjangSelect.append(new Option(category.name, category.id));
                         });
-
                     },
                     error: function(xhr, status, error) {
-                        console.error('Error fetching data:', error);
-                        console.log('eror', xhr.responseText);
+                        console.error('Error fetching jenjang data:', error);
+                        console.log('Error response:', xhr.responseText);
                     }
                 });
 
-
-
                 $.ajax({
-                    url: '{{ route('kelas.index') }}', // API endpoint to fetch course data
+                    url: apiUrl + 'courses', // API endpoint to fetch course data
                     method: 'GET',
                     success: function(response) {
                         console.log(response); // Log the
@@ -256,7 +378,7 @@
                         // Assuming response is an array of course objects
                         $.each(response, function(index, item) {
                             const courseCategory = item
-                            .course_category; // Access course category details
+                                .course_category; // Access course category details
                             const courseData = item.course; // Access course details
 
                             const cardHtml = `

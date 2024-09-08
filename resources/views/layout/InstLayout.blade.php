@@ -73,7 +73,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Kirim permintaan AJAX untuk logout
-                        fetch('{{ route('logout') }}', {
+                        fetch('/logout', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -92,7 +92,7 @@
                                         'success'
                                     ).then(() => {
                                         window.location.href =
-                                            '{{ route('login.instructor') }}'; // Redirect ke halaman login
+                                            '/instructor/login'; // Redirect ke halaman login
                                     });
                                 } else {
                                     Swal.fire('Oops!', 'Terjadi kesalahan saat logout.',
