@@ -72,8 +72,9 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Kirim permintaan AJAX untuk logout
+                        // Mengirimkan permintaan POST untuk logout
                         fetch('/logout', {
+
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -83,7 +84,7 @@
                                 body: JSON.stringify({}) // Laravel mengharapkan metode POST
                             })
                             .then(response => {
-                                console.log(response);
+
                                 if (response.ok) {
                                     // Redirect setelah logout
                                     Swal.fire(
@@ -92,14 +93,24 @@
                                         'success'
                                     ).then(() => {
                                         window.location.href =
-                                            '/instructor/login'; // Redirect ke halaman login
+                                            '/login'; // Redirect ke halaman login dengan HTTPS
                                     });
                                 } else {
-                                    Swal.fire('Oops!', 'Terjadi kesalahan saat logout.',
-                                        'error');
+                                    Swal.fire(
+                                        'Error!',
+                                        'Terjadi kesalahan saat logout.',
+                                        'error'
+                                    );
                                 }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                Swal.fire(
+                                    'Error!',
+                                    'Terjadi kesalahan saat logout.',
+                                    'error'
+                                );
                             });
-
                     }
                 });
             });
