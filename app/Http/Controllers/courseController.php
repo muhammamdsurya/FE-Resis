@@ -69,14 +69,41 @@ class courseController extends Controller
     public function kelas(Request $request)
 
     {
-        $response = Http::withApiSession()->post($this->apiUrl . 'courses', [
+        $price = (int) $request->input('price');
+
+        // $response = Http::withApiSession()->post($this->apiUrl . 'courses', [
+        //     'name' => $request->name,
+        //     'description' => $request->description,
+        //     'category_id' => $request->level,
+        //     'price' => $price,
+        //     'purpose'  => $request->purpose,
+        //     'instructor_id' => $request->instrutor_id,
+        // ]);
+
+
+        $apiSession = session('api_session');
+
+        // Definisikan headers
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Cookie' => 'session=' . $apiSession
+        ];
+
+
+        // Definisikan body sebagai array associative
+        $body = [
             'name' => $request->name,
             'description' => $request->description,
-            'category_id' => $request->level,
-            'price' => $request->price,
+            'category_id' => $request->category_id,
+            'price' => $price,
             'purpose'  => $request->purpose,
-            'instructor_id' => $request->instrutor_id,
-        ]);
+            'instructor_id' => $request->instructor_id,
+        ];
+
+        // Kirimkan request POST
+        $response = Http::withHeaders($headers)->post('https://staging.akuanalis.com/api/v1/courses', $body);
+
+        // Tampilkan response body
 
 
         if ($response->successful()) {
@@ -112,6 +139,37 @@ class courseController extends Controller
         } catch (\Exception $e) {
             // Handle any exceptions
             return response()->json(['error' => 'An error occurred.'], 500);
+        }
+    }
+
+    public function editCategory(Request $request, $id)
+    {
+        try {
+            // Construct the API URL for updating the category
+            $apiUrl = $this->apiUrl . 'courses/categories/' . $id;
+
+            // Make the PUT request to the external API
+            $response = Http::withApiSession()->put($apiUrl, [
+                // Assuming you need to send data with the request, include it here
+                'name' => $request->name // Example data if you are updating the category's name
+            ]);
+
+            if ($response->successful()) {
+                // If the request was successful, return a success response
+                return response()->json(['message' => 'Category successfully updated.'], 200);
+            } else {
+                // Handle failure response from the API
+                return response()->json([
+                    'error' => 'Failed to update category.',
+                    'details' => $response->json() // Include API response details if available
+                ], $response->status());
+            }
+        } catch (\Exception $e) {
+            // Handle any exceptions
+            return response()->json([
+                'error' => 'An error occurred while updating the category.',
+                'exception' => $e->getMessage() // Provide exception message for debugging
+            ], 500);
         }
     }
 }

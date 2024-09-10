@@ -50,7 +50,7 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::post('/kelas', [CourseController::class, 'kelas'])->name('kelas.post');
 
     Route::delete('/kelas/{id}', [courseController::class, 'destroy'])->name('categories.destroy');
-
+    Route::put('/kelas/{id}', [courseController::class, 'editCategory'])->name('categories.edit');
 });
 
 

@@ -26,7 +26,7 @@
                 <!-- Modal Jenjang -->
                 <div class="modal fade" id="modal-default" tabindex="-1" aria-labelledby="modal-defaultLabel"
                     aria-hidden="true">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="modal-defaultLabel">Tambah Jenjang</h5>
@@ -46,8 +46,8 @@
                                     </div>
                                 </form>
 
-                                <table id="categoriesTable" class="table">
-                                    <thead>
+                                <table id="categoriesTable" class="table table-hover">
+                                    <thead class="table-primary">
                                         <tr>
                                             <th scope="col">No</th>
                                             <th scope="col">Jenjang</th>
@@ -75,75 +75,90 @@
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form id="courseForm" method="POST" action="{{ route('kelas.post') }}">
+                                <form method="POST" action="{{ route('kelas.post') }}">
                                     @csrf
-
-                                    <div class="container">
-                                        <div class="image text-center mb-5">
-                                            <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}"
-                                                alt="" class="img-fluid" width="200rem" height="200rem">
-                                        </div>
-                                        <div class="row gy-3 ">
-                                            <div class="col-lg-6 col-md-6 mx-auto">
-                                                <div class="form-floating mb-3">
-                                                    <input type="text" class="form-control" id="nameInput"
-                                                        placeholder="name@example.com" name="name">
-                                                    <label for="nameInput">Nama Kelas</label>
-                                                </div>
-
-                                                <div class="form-floating mb-3">
-                                                    <input type="number" class="form-control" id="priceInput"
-                                                        placeholder="Price" name="price">
-                                                    <label for="priceInput">Harga</label>
-                                                </div>
-
-                                                <div class="form-floating">
-                                                    <textarea class="form-control" placeholder="Leave a comment here" id="descriptionTextarea" name="description"
-                                                        style="height: 100px"></textarea>
-                                                    <label for="descriptionTextarea">Deskripsi</label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6 mx-auto">
-                                                <div class="form-floating mb-3">
-                                                    <select class="form-control" id="jenjangSelect" name="level">
-                                                        <option value="" disabled selected>Select Jenjang</option>
-                                                        <!-- Options will be populated here -->
-                                                    </select>
-                                                    <label for="jenjangSelect">Jenjang</label>
-                                                </div>
-
-                                                <div class="form-floating mb-3">
-                                                    <input type="text" class="form-control" id="instructorInput"
-                                                        placeholder="Instructor" name="instructor">
-                                                    <label for="instructorInput">Pengajar</label>
-                                                </div>
-
-                                                <div class="form-floating">
-                                                    <textarea class="form-control" placeholder="Purpose" id="purposeTextarea" name="purpose" style="height: 100px"></textarea>
-                                                    <label for="purposeTextarea">Tujuan</label>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="nameInput" placeholder="Class Name"
+                                            name="name">
+                                        <label for="nameInput">Class Name</label>
                                     </div>
-                                    <div class="modal-footer mr-auto ml-2">
-                                        <button type="submit" class="btn btn-primary">Tambah Kelas</button>
+
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="descriptionInput"
+                                            placeholder="Description" name="description">
+                                        <label for="descriptionInput">Description</label>
                                     </div>
+
+                                    <div class="form-floating mb-3">
+                                        <select class="form-control" id="categorySelect" name="category_id">
+                                            <!-- Options should be populated dynamically -->
+                                        </select>
+                                        <label for="categorySelect">Category</label>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="priceInput" placeholder="Price"
+                                            name="price">
+                                        <label for="priceInput">Price</label>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="purposeInput"
+                                            placeholder="Purpose" name="purpose">
+                                        <label for="purposeInput">Purpose</label>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <input type="text" name="instructor_id">
+                                        {{-- <select class="form-control" id="instructorSelect" name="instructor_id">
+                                            <!-- Options should be populated dynamically -->
+                                        </select>
+                                        <label for="instructorSelect">Instructor</label> --}}
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>
+
 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row g-2">
 
-                <div id="coursesContainer">
-                    <!-- Cards will be dynamically inserted here -->
-
-
-                </div>
-
+            <div id="coursesContainer" class="row g-2">
+                <!-- Cards will be dynamically inserted here -->
             </div>
+
+
+            <!-- Bootstrap Modal HTML -->
+            <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editCategoryForm">
+                                <div class="mb-3">
+                                    <label for="categoryName" class="form-label">Category Name</label>
+                                    <input type="text" class="form-control" id="categoryName" required>
+                                </div>
+                                <input type="hidden" id="categoryId">
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="saveCategoryBtn">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
                     <li class="page-item disabled">
@@ -164,6 +179,64 @@
         <script>
             $(document).ready(function() {
                 const apiUrl = '{{ env('API_URL') }}';
+
+                $('#categoriesTable').on('click', '.edit-btn', function(e) {
+                    e.preventDefault(); // Prevent the default anchor behavior
+
+                    // Get the row that contains the clicked button
+                    let row = $(this).closest('tr');
+                    let rowData = table.row(row).data(); // Ensure 'table' is the DataTable instance
+
+                    // Extract the 'name' value and 'id' from the row data
+                    let currentName = rowData.name;
+                    let post_id = $(this).data('id');
+
+                    // Populate the modal form with the current name and category ID
+                    $('#categoryName').val(currentName);
+                    $('#categoryId').val(post_id);
+
+                    // Show the modal
+                    $('#editCategoryModal').modal('show');
+                });
+
+                $('#saveCategoryBtn').on('click', function() {
+                    // Get the new category name and ID
+                    let newName = $('#categoryName').val();
+                    let post_id = $('#categoryId').val();
+                    let token = $("meta[name='csrf-token']").attr("content");
+
+                    // Make an AJAX request to update the item
+                    $.ajax({
+                        url: `/admin/kelas/${post_id}`,
+                        type: 'PUT',
+                        cache: false,
+                        data: {
+                            "_token": token,
+                            "name": newName
+                        },
+                        success: function(response) {
+                            $('#editCategoryModal').modal('hide'); // Hide the modal
+
+                            Swal.fire(
+                                'Updated!',
+                                'Your category has been updated.',
+                                'success'
+                            );
+
+                            // Reload the DataTable to reflect changes
+                            $('#categoriesTable').DataTable().ajax.reload();
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire(
+                                'Error!',
+                                'There was an error updating the category.',
+                                'error'
+                            );
+                        }
+                    });
+                });
+
+
                 $('#tambahJenjang').on('click', function(event) {
                     event.preventDefault(); // Prevent the default form submission
 
@@ -172,7 +245,7 @@
                     // Trim and validate the input
                     const level = levelInput.val().trim();
                     if (level === '') {
-                        alert('Masukkan jenjang terlebih dahulu.');
+                        Swal.fire('Oops!', 'Masukan jenjang terlebih dahulu!.', 'error');
                         return;
                     }
 
@@ -194,6 +267,8 @@
                         success: function(response) {
                             console.log("data:", response); // Log the response for debugging
                             Swal.fire('Berhasil', 'jenjang berhasil ditambahkan!.', 'success');
+                            $('#categoriesTable').DataTable().ajax.reload();
+
                         },
                         error: function(xhr, status, error) {
                             console.error('Error:', error); // Log the error for debugging
@@ -236,7 +311,7 @@
                             }
                         }
                     ],
-                    paging: true, // Enable pagination
+                    paging: false, // Enable pagination
                     searching: true, // Enable search/filter
                     info: false, // Disable table information display
                     lengthChange: false, // Disable page length change
@@ -247,7 +322,7 @@
                     }
                 });
 
-                $('#categoriesTable').on('click', '.delete-btn, .edit-btn', function(e) {
+                $('#categoriesTable').on('click', '.delete-btn', function(e) {
                     e.preventDefault(); // Prevent the default anchor behavior
 
                     let post_id = $(this).data('id');
@@ -274,8 +349,8 @@
                                     },
                                     success: function(response) {
                                         Swal.fire(
-                                            'Deleted!',
-                                            'Your category has been deleted.',
+                                            'Dihapus!',
+                                            'Kategori berhasil di hapus.',
                                             'success'
                                         );
 
@@ -329,7 +404,8 @@
                                         $(this).closest('tr').find('.category-name').text(
                                             newName);
                                     }.bind(
-                                    this), // Bind the context to access `this` inside success callback
+                                        this
+                                    ), // Bind the context to access `this` inside success callback
                                     error: function(xhr, status, error) {
                                         Swal.fire(
                                             'Error!',
@@ -344,13 +420,11 @@
                 });
 
 
-
-
                 $.ajax({
                     url: apiUrl + 'courses/categories',
                     method: 'GET',
                     success: function(response) {
-                        const jenjangSelect = $('#jenjangSelect');
+                        const jenjangSelect = $('#categorySelect');
                         jenjangSelect.empty(); // Clear existing options
 
                         jenjangSelect.append(
@@ -363,6 +437,30 @@
                     },
                     error: function(xhr, status, error) {
                         console.error('Error fetching jenjang data:', error);
+                        console.log('Error response:', xhr.responseText);
+                    }
+                });
+
+                // Fetch instructor data from the API
+                $.ajax({
+                    url: apiUrl + "courses/instructors",
+                    method: 'GET',
+                    success: function(response) {
+                        const instructorSelect = $('#instructorSelect');
+                        instructorSelect.empty(); // Clear existing options
+
+                        // Add a default option
+                        instructorSelect.append(
+                            '<option value="" disabled selected>Select Instructor</option>'
+                        );
+
+                        // Populate dropdown with options from API response
+                        $.each(response, function(index, instructor) {
+                            instructorSelect.append(new Option(instructor.name, instructor.id));
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching instructor data:', error);
                         console.log('Error response:', xhr.responseText);
                     }
                 });
@@ -388,7 +486,7 @@
                             <div class="card-body">
                                 <div class="header-card d-flex justify-content-between">
                                     <p class="mr-auto fs-6"><i class="fas fa-star text-warning mr-2"></i>${courseData.rating}</p>
-                                    <p class="ml-auto fs-6">Jenjang: ${categoryData.name}</p>
+                                    <p class="ml-auto fs-6">Jenjang: ${courseCategory.name}</p>
                                 </div>
                                 <h5 class="card-title">${courseData.name}</h5>
                                 <p class="card-text">${courseData.description}</p>
