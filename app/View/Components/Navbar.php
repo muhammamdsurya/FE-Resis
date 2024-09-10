@@ -39,7 +39,7 @@ class Navbar extends Component
         } else if ($this->user['role'] == 'user') {
             return $this->attribut('Dashboard', route('user.dashboard'));
         } else if ($this->user['role'] == 'admin') {
-            return $this->attribut('Dashboard', route('dashboardAdmin'));
+            return $this->attribut('Dashboard', route('admin.dashboard'));
         } else if ($this->user['role'] == 'instructor') {
             return $this->attribut('Dashboard', route('instructor.dashboard'));
         }

@@ -71,16 +71,6 @@ class courseController extends Controller
     {
         $price = (int) $request->input('price');
 
-        // $response = Http::withApiSession()->post($this->apiUrl . 'courses', [
-        //     'name' => $request->name,
-        //     'description' => $request->description,
-        //     'category_id' => $request->level,
-        //     'price' => $price,
-        //     'purpose'  => $request->purpose,
-        //     'instructor_id' => $request->instrutor_id,
-        // ]);
-
-
         $apiSession = session('api_session');
 
         // Definisikan headers
@@ -101,22 +91,15 @@ class courseController extends Controller
         ];
 
         // Kirimkan request POST
-        $response = Http::withHeaders($headers)->post('https://staging.akuanalis.com/api/v1/courses', $body);
+        $response = Http::withHeaders($headers)->post($this->apiUrl. 'courses', $body);
 
         // Tampilkan response body
 
 
-        if ($response->successful()) {
-            return response()->json([
-                'success' => true,
-                'data' => $response->json()
-            ], $response->status());
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to add courses.'
-            ], $response->status());
-        }
+        return redirect()->route('admin.kelas')->with([
+            'message' => 'Data berhasil ditambahkan.',
+            'details' => null
+        ]);
     }
 
 

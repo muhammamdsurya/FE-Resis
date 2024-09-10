@@ -4,8 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\courseController;
 use App\Http\Controllers\RegisController;
+use App\Http\Controllers\courseController;
+use App\Http\Controllers\UserDataController;
 use App\Http\Controllers\InstructorController;
 
 // Rute standar
@@ -36,13 +37,14 @@ Route::get('/terms', function () {
 
 Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/kelas', [AdminController::class, 'kelas'])->name('kelas');
+    Route::get('/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
     Route::get('/bundling', [AdminController::class, 'bundling'])->name('bundling');
     Route::get('/sales', [AdminController::class, 'sales'])->name('sales');
     Route::get('/data-admin', [AdminController::class, 'dataAdmin'])->name('data.admin');
     Route::get('/data-pengajar', [AdminController::class, 'dataPengajar'])->name('data.pengajar');
     Route::get('/data-siswa', [AdminController::class, 'dataSiswa'])->name('data-siswa');
+    Route::get('/instructor', [AdminController::class, 'getInstructor'])->name('get.instructors');
     // Tambahkan rute-rute lain untuk admin di sini
     // In routes/web.php or routes/api.php->name
 
@@ -56,22 +58,27 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 
 // Grup rute untuk rute-rute yang terkait dengan admin
 
-Route::prefix('user')->middleware(['whoami:user'])->group(function () {
+Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(function () {
 
+    Route::get('/', [UserController::class, 'completeData'])->name('user.data');
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::get('/kelas', [UserController::class, 'kelas'])->name('kelas');
     Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
     Route::get('/materi', [UserController::class, 'materi'])->name('materi');
     Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
+
+    Route::post('/complete-data', [UserDataController::class, 'completePost'])->name('complete.post');
+
 });
 
 
 Route::prefix('instructor')->middleware(['whoami:instructor'])->group(function () {
     Route::get('/dashboard', [InstructorController::class, 'dashboard'])->name('instructor.dashboard');
-    Route::get('/kelas', [InstructorController::class, 'kelas'])->name('kelas');
+    Route::get('/kelas', [InstructorController::class, 'kelas'])->name('instructor.kelas');
     Route::get('/profile', [InstructorController::class, 'profile'])->name('profile');
     Route::get('/diskusi', [InstructorController::class, 'diskusi'])->name('diskusi');
+
 });
 
 // Rute untuk login pengguna biasa

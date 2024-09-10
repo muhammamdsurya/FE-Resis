@@ -67,7 +67,7 @@
                 <!-- Modal Kelas -->
                 <div class="modal fade" id="modal-kelas" tabindex="-1" aria-labelledby="modal-defaultLabel"
                     aria-hidden="true">
-                    <div class="modal-dialog modal-xl">
+                    <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="modal-defaultLabel">Tambah Kelas</h5>
@@ -77,44 +77,65 @@
                             <div class="modal-body">
                                 <form method="POST" action="{{ route('kelas.post') }}">
                                     @csrf
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="nameInput" placeholder="Class Name"
-                                            name="name">
-                                        <label for="nameInput">Class Name</label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="nameInput"
+                                                    placeholder="Class Name" name="name">
+                                                <label for="nameInput">Nama Kelas</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-floating mb-3">
+                                                <input type="number" class="form-control" id="priceInput"
+                                                    placeholder="Price" name="price">
+                                                <label for="priceInput">Harga</label>
+                                            </div>
+                                        </div>
+
                                     </div>
 
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="descriptionInput"
-                                            placeholder="Description" name="description">
-                                        <label for="descriptionInput">Description</label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-floating mb-3">
+                                                <select class="form-control" id="categorySelect" name="category_id">
+                                                    <!-- Options should be populated dynamically -->
+                                                </select>
+                                                <label for="categorySelect">Jenjang</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-floating mb-3">
+                                                {{-- <input type="text" name="instructor_id"> --}}
+                                                <select class="form-control" id="instructorSelect" name="instructor_id">
+                                                    <!-- Options should be populated dynamically -->
+                                                </select>
+                                                <label for="instructorSelect">Instruktur</label>
+                                            </div>
+                                        </div>
+
+
+
                                     </div>
 
-                                    <div class="form-floating mb-3">
-                                        <select class="form-control" id="categorySelect" name="category_id">
-                                            <!-- Options should be populated dynamically -->
-                                        </select>
-                                        <label for="categorySelect">Category</label>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-floating mb-3">
+                                                <textarea class="form-control" id="purposeInput" placeholder="Purpose" name="purpose" rows="3"></textarea>
+                                                <label for="purposeInput">Tujuan</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-floating mb-3">
+                                                <textarea class="form-control" id="descriptionInput" placeholder="Description" name="description" rows="3"></textarea>
+                                                <label for="descriptionInput">Deskripsi</label>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class="form-floating mb-3">
-                                        <input type="number" class="form-control" id="priceInput" placeholder="Price"
-                                            name="price">
-                                        <label for="priceInput">Price</label>
-                                    </div>
-
-                                    <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="purposeInput"
-                                            placeholder="Purpose" name="purpose">
-                                        <label for="purposeInput">Purpose</label>
-                                    </div>
-
-                                    <div class="form-floating mb-3">
-                                        <input type="text" name="instructor_id">
-                                        {{-- <select class="form-control" id="instructorSelect" name="instructor_id">
-                                            <!-- Options should be populated dynamically -->
-                                        </select>
-                                        <label for="instructorSelect">Instructor</label> --}}
-                                    </div>
 
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>
@@ -443,9 +464,10 @@
 
                 // Fetch instructor data from the API
                 $.ajax({
-                    url: apiUrl + "courses/instructors",
+                    url: '{{ route('get.instructors') }}',
                     method: 'GET',
                     success: function(response) {
+                        console.log("get", response);
                         const instructorSelect = $('#instructorSelect');
                         instructorSelect.empty(); // Clear existing options
 
@@ -455,8 +477,18 @@
                         );
 
                         // Populate dropdown with options from API response
-                        $.each(response, function(index, instructor) {
-                            instructorSelect.append(new Option(instructor.name, instructor.id));
+                        $.each(response, function(index, item) {
+                            // Asumsi item adalah objek yang memiliki properti 'instructor' di dalamnya
+                            const instructor = item
+                                .instructor; // Akses objek instruktur di dalam item
+
+                            if (instructor) {
+                                instructorSelect.append(new Option(item.full_name, instructor
+                                    .id));
+                                console.log("Instructor:", item.full_name, instructor.id);
+                            } else {
+                                console.error("Instructor data not found:", item);
+                            }
                         });
                     },
                     error: function(xhr, status, error) {

@@ -4,41 +4,51 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
+
 
 
 class UserController extends Controller
 {
     private $user;
+    private $apiUrl;
     public function __construct()
     {
         $this->user = session('user');
+        $this->apiUrl = env('API_URL');
+    }
+
+
+    private function getDetailData()
+    {
+        $id = $this->user['id'];
+        $api = $this->apiUrl . 'users/auth/data/' . $id;
+
+        $response = Http::withApiSession()->get($api);
+
+
+        return $response->json();
+
+    }
+
+    public function completeData()
+    {
+        return view('user.completeData', [
+            "title" => 'Complete Data',
+            "id" => $this->user['id'],
+            "full_name" => $this->user['full_name'],
+        ]);
     }
 
     private function getProfileData()
     {
-        // Mengonversi setiap timestamp ke objek Carbon
-        $created = Carbon::parse($this->user['created_at']);
-        $updated = Carbon::parse($this->user['updated_at']);
-        $activated = Carbon::parse($this->user['activated_at']);
 
-        // Mengubah zona waktu ke WIB (Asia/Jakarta)
-        $createdWIB = $created->setTimezone('Asia/Jakarta');
-        $updatedWIB = $updated->setTimezone('Asia/Jakarta');
-        $activatedWIB = $activated->setTimezone('Asia/Jakarta');
-
-        // Format tanggal sesuai kebutuhan
-        $created_at = $createdWIB->format('d-m-Y H:i:s');
-        $updated_at = $updatedWIB->format('d-m-Y H:i:s');
-        $activated_at = $activatedWIB->format('d-m-Y H:i:s');
 
         return [
             'id' => $this->user['id'],
             'full_name' => $this->user['full_name'],
             'email' => $this->user['email'],
-            'photo_profile' => $this->user['photo_profile'],
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-            'activated_at' => $activated_at,
         ];
     }
     public function dashboard()
@@ -56,14 +66,22 @@ class UserController extends Controller
     {
         $title = 'Profile';
         $profileData = $this->getProfileData();
+        $detailData = $this->getDetailData();
+
+        $birth = Carbon::parse($detailData['birth']);
+        $wib = $birth->setTimezone('Asia/Jakarta');
+        $format = $wib->format('d-m-Y');
+
+
 
         return view('user.profile', [
             "title" => $title,
             "full_name" => $profileData['full_name'],
             "email" => $profileData['email'],
-            "photo_profile" => $profileData['photo_profile'],
-            "created_at" => $profileData['created_at'],
-            "updated_at" => $profileData['updated_at'],
+            "birth" => $format,
+            "study_level" => $detailData['study_level'],
+            "institution" => $detailData['institution']
+
         ]);
     }
 
