@@ -95,7 +95,7 @@
                         <label for="contentName">Nama Konten</label>
                     </div>
                     <textarea id="summernote" name="description"></textarea>
-                    <div class="form-floating mb-3">
+                    <div class="form-floating mb-3 mt-3">
                     <select class="form-control" id="contentType" name="level">
                         <option value="video" selected>video</option>
                         <option value="quiz">quiz</option>
@@ -104,6 +104,17 @@
                     <label for="contentType">Jenis Konten</label>
                 </div>
                    
+                <div id="video-type" >
+                    <div class="form-floating mb-3">
+                        <input type="file" class="form-control" id="contentName"
+                            placeholder="name@example.com" name="name">
+                        <label for="contentName">Konten Video</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="file" class="form-control" id="contentName"
+                            placeholder="name@example.com" name="name">
+                        <label for="contentName">Thumbnail</label>
+                    </div>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="contentName"
                             placeholder="name@example.com" name="name">
@@ -114,6 +125,33 @@
                             placeholder="name@example.com" name="name">
                         <label for="contentName">Durasi Video</label>
                     </div>
+                </div>
+                
+                <div id="ional-src-type" >
+                    <div class="form-floating mb-3">
+                        <input type="file" class="form-control" id="contentName"
+                            placeholder="name@example.com" name="name">
+                        <label for="contentName">Source Tambahan</label>
+                    </div>
+                </div>
+
+                <div id="quiz-type" >
+                    <div class="form-floating mb-3">
+                        <input type="file" class="form-control" id="contentName"
+                            placeholder="name@example.com" name="name">
+                        <label for="contentName">Konten Video</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="contentName"
+                            placeholder="name@example.com" name="name">
+                        <label for="contentName">video article content</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="contentName"
+                            placeholder="name@example.com" name="name">
+                        <label for="contentName">Durasi Video</label>
+                    </div>
+                </div>
                     @else
                     <div class="ratio ratio-16x9">
                     <iframe src="https://www.youtube.com/embed/CpSoqTvSAF0?si=MyY3y8RuEgSAORQk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -211,6 +249,31 @@
             console.error('Error fetching courses:', error);
         }
     });
+
+    $('#additional-src-type').hide()
+    $('#quiz-type').hide()
+
+    $('#contentType').on('change', function() {
+            var selectedValue = $(this).val();
+            console.log("Selected content type:", selectedValue);
+            if(selectedValue == 'additional_source'){
+                $('#additional-src-type').show()
+                $('#quiz-type').hide()
+                $('#video-type').hide()
+            }else if(selectedValue == 'quiz'){
+                $('#additional-src-type').hide()
+                $('#quiz-type').show()
+                $('#video-type').hide()
+                
+            }else{
+                $('#additional-src-type').hide()
+                $('#quiz-type').hide()
+                $('#video-type').show()
+
+            }
+
+        
+        });
 </script>
 
 
