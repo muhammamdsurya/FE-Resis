@@ -185,5 +185,39 @@ class AdminController extends Controller
     }
 
 
+    public  function detailKelas(Request $request,$id)
+    {
+        $title = '';
+
+
+        // $courseCtrl = new courseController();
+        // $courseData =   $courseCtrl->getKelasById($id);
+
+        $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
+
+        return view('admin.detailKelas', [
+            "title" => $title,
+            "courseId" => $id,
+            "selectedCourseContentId" => $selectedCourseContentId,
+            "id" => $this->user['id'],
+            "full_name" => $this->user['full_name'],
+            "role" => $this->user['role'],
+        ]);
+    }
+
+    public function diskusi()
+    {
+        $title = 'Diskusi';
+
+        // Lakukan operasi lain yang diperlukan
+
+        return view('admin.diskusi', [
+            "title" => $title,
+            "id" => $this->user['id'],
+            "full_name" => $this->user['full_name'],
+        ]);
+    }
+
+
 
 }

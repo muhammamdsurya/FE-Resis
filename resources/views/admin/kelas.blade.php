@@ -501,12 +501,12 @@
                     url: apiUrl + 'courses', // API endpoint to fetch course data
                     method: 'GET',
                     success: function(response) {
-                        console.log(response); // Log the
+                        console.log(response.data); // Log the
                         const coursesContainer = $('#coursesContainer');
                         coursesContainer.empty(); // Clear existing content
 
                         // Assuming response is an array of course objects
-                        $.each(response, function(index, item) {
+                        $.each(response.data, function(index, item) {
                             const courseCategory = item
                                 .course_category; // Access course category details
                             const courseData = item.course; // Access course details
@@ -522,7 +522,7 @@
                                 </div>
                                 <h5 class="card-title">${courseData.name}</h5>
                                 <p class="card-text">${courseData.description}</p>
-                                <a href="/detail-kelas/${courseData.id}" class="btn btn-success">Edit Kelas</a>
+                                <a href="detail-kelas/${courseData.id}" class="btn btn-success">Edit Kelas</a>
                             </div>
                         </div>
                     </div>
