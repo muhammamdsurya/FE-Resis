@@ -127,7 +127,7 @@
                     </div>
                 </div>
                 
-                <div id="ional-src-type" >
+                <div id="additional-src-type" >
                     <div class="form-floating mb-3">
                         <input type="file" class="form-control" id="contentName"
                             placeholder="name@example.com" name="name">
@@ -137,19 +137,9 @@
 
                 <div id="quiz-type" >
                     <div class="form-floating mb-3">
-                        <input type="file" class="form-control" id="contentName"
-                            placeholder="name@example.com" name="name">
-                        <label for="contentName">Konten Video</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="contentName"
-                            placeholder="name@example.com" name="name">
-                        <label for="contentName">video article content</label>
-                    </div>
-                    <div class="form-floating mb-3">
                         <input type="number" class="form-control" id="contentName"
                             placeholder="name@example.com" name="name">
-                        <label for="contentName">Durasi Video</label>
+                        <label for="contentName">Nilai Kelulusan</label>
                     </div>
                 </div>
                     @else
