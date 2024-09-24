@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Course;
 use GuzzleHttp\Client;
@@ -21,17 +22,42 @@ class AdminController extends Controller
         $this->user = session('user');
         $this->apiUrl = env('API_URL');
     }
+
+    private function getDetailData()
+    {
+        $id = $this->user['id'];
+        $api = $this->apiUrl . 'admin/auth/data/' . $id;
+
+        $response = Http::withApiSession()->get($api);
+
+
+        return $response->json();
+
+    }
+
     private function getProfileData()
     {
+
+        // Mengonversi setiap timestamp ke objek Carbon
+        $created = Carbon::parse($this->user['created_at']);
+        $updated = Carbon::parse($this->user['updated_at']);
+
+        // Mengubah zona waktu ke WIB (Asia/Jakarta)
+        $createdWIB = $created->setTimezone('Asia/Jakarta');
+        $updatedWIB = $updated->setTimezone('Asia/Jakarta');
+
+        // Format tanggal sesuai kebutuhan
+        $created_at = $createdWIB->format('d-m-Y H:i:s');
+        $updated_at = $updatedWIB->format('d-m-Y H:i:s');
+
         return [
             'id' => $this->user['id'],
             'email' => $this->user['email'],
             'full_name' => $this->user['full_name'],
             'role' => $this->user['role'],
             'photo_profile' => $this->user['photo_profile'],
-            'created_at' => $this->user['created_at'],
-            'activated_at' => $this->user['activated_at'],
-            'updated_at' => $this->user['updated_at'],
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
         ];
     }
         public function dashboard()
@@ -68,17 +94,17 @@ class AdminController extends Controller
 
         $title = 'Profile';
         $profileData = $this->getProfileData();
+        $detailData = $this->getDetailData();
 
         // Lakukan operasi lain yang diperlukan
 
         return view('admin.profile', [
             "title" => $title,
             "full_name" => $profileData['full_name'],
-            "role" => $profileData['role'],
+            "role" => $detailData['type'],
             "email" => $profileData['email'],
             "photo_profile" => $profileData['photo_profile'],
             "created_at" => $profileData['created_at'],
-            "activated_at" => $profileData['activated_at'],
             "updated_at" => $profileData['updated_at'],
         ]);
     }
@@ -124,6 +150,12 @@ class AdminController extends Controller
         ]);
     }
 
+    public function getInstructor(){
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/instructors');
+
+        return $response->json();
+
+    }
     public function dataPengajar()
     {
 
@@ -149,6 +181,40 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
+        ]);
+    }
+
+
+    public  function detailKelas(Request $request,$id)
+    {
+        $title = '';
+
+
+        // $courseCtrl = new courseController();
+        // $courseData =   $courseCtrl->getKelasById($id);
+
+        $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
+
+        return view('admin.detailKelas', [
+            "title" => $title,
+            "courseId" => $id,
+            "selectedCourseContentId" => $selectedCourseContentId,
+            "id" => $this->user['id'],
+            "full_name" => $this->user['full_name'],
+            "role" => $this->user['role'],
+        ]);
+    }
+
+    public function diskusi()
+    {
+        $title = 'Diskusi';
+
+        // Lakukan operasi lain yang diperlukan
+
+        return view('admin.diskusi', [
+            "title" => $title,
+            "id" => $this->user['id'],
+            "full_name" => $this->user['full_name'],
         ]);
     }
 

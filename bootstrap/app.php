@@ -34,6 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'whoami' => App\Http\Middleware\WhoAmIMiddleware::class,
             'redirect.if.authenticated' => App\Http\Middleware\RedirectIfAuthenticated::class,
+            'completed.data' => App\Http\Middleware\CompletedData::class,
             /* 'adminRole' => adminRole::class, */
             /* 'authCheck' => authCheck::class */
         ]);

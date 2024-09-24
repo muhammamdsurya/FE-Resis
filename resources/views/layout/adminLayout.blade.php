@@ -17,7 +17,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <!-- SummerNote -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 
+    
 
 
 </head>
@@ -59,59 +62,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelector('.btn-logout').addEventListener('click', function(e) {
-                e.preventDefault(); // Mencegah pengiriman formulir default
-
-                Swal.fire({
-                    title: 'Apakah Anda yakin?',
-                    text: "Anda akan keluar dari akun Anda!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Logout!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Kirim permintaan AJAX untuk logout
-                        fetch('{{ route('logout') }}', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector(
-                                        'meta[name="csrf-token"]').getAttribute('content')
-                                },
-                                body: JSON.stringify({}) // Laravel mengharapkan metode POST
-                            })
-                            .then(response => {
-                                console.log(response);
-                                if (response.ok) {
-                                    // Redirect setelah logout
-                                    Swal.fire(
-                                        'Logged out!',
-                                        'Anda telah berhasil logout.',
-                                        'success'
-                                    ).then(() => {
-                                        window.location.href =
-                                            '{{ route('login.Admin') }}'; // Redirect ke halaman login
-                                    });
-                                } else {
-                                    Swal.fire('Oops!', 'Terjadi kesalahan saat logout.',
-                                        'error');
-                                }
-                            });
-
-                    }
-                });
-            });
-        });
-    </script>
-
-
     <!-- AdminLTE App -->
-    <script src="{{ asset('assets/dist/js/adminlte.js') }}"></script>
+     <!-- summernote -->
+     <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
+
 
 </body>
 

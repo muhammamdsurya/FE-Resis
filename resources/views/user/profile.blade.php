@@ -6,11 +6,6 @@
 @section('content')
     <div class="container">
 
-        <div class="image text-center mb-5">
-            <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}" alt="" class="rounded-circle"
-                width="200rem" height="200rem">
-
-        </div>
             <div class="row ">
                 <div class="col-lg-5 col-md-6 mx-auto">
                     <div class="mb-3">
@@ -25,19 +20,27 @@
                             value="{{ $email }}" disabled>
                     </div>
 
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Tanggal lahir </label>
+                        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                            value="{{ $birth }}" disabled>
+                    </div>
+
+
                 </div>
                 <div class="col-lg-5 col-md-6 mx-auto">
 
+
                     <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Dibuat Tanggal </label>
+                        <label for="exampleInputEmail1" class="form-label"> Jenjang </label>
                         <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                            value="{{ $created_at }}" disabled>
+                            value="{{ $study_level }}" disabled>
                     </div>
 
                     <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Diperbarui Tanggal </label>
+                        <label for="exampleInputEmail1" class="form-label"> Sekolah </label>
                         <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                            value="{{ $updated_at }}" disabled>
+                            value="{{ $institution }}" disabled>
                     </div>
 
                 </div>
@@ -61,11 +64,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="image text-center mb-5">
-                        <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}" alt="" class="rounded-circle"
-                            width="200rem" height="200rem">
 
-                    </div>
                     <form action="">
                         <div class="row ">
                             <div class="col-lg-5 col-md-6 mx-auto">
@@ -81,19 +80,25 @@
                                         aria-describedby="emailHelp" value="{{ $email }}" disabled>
                                 </div>
 
+                                <div class="mb-3">
+                                    <label for="exampleInputEmail1" class="form-label"> Tanggal lahir </label>
+                                    <input type="text" class="form-control" id="exampleInputEmail1"
+                                        aria-describedby="emailHelp" value="{{ $birth }}">
+                                </div>
+
                             </div>
                             <div class="col-lg-5 col-md-6 mx-auto">
 
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Dibuat Tanggal </label>
+                                    <label for="exampleInputEmail1" class="form-label">Jenjang</label>
                                     <input type="text" class="form-control" id="exampleInputEmail1"
-                                        aria-describedby="emailHelp" value="{{ $created_at }}" disabled>
+                                        aria-describedby="emailHelp" value="{{ $study_level }}" >
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Diperbarui Tanggal </label>
+                                    <label for="exampleInputEmail1" class="form-label">Sekolah</label>
                                     <input type="text" class="form-control" id="exampleInputEmail1"
-                                        aria-describedby="emailHelp" value="{{ $updated_at }}" disabled>
+                                        aria-describedby="emailHelp" value="{{ $institution }}" >
                                 </div>
 
 
