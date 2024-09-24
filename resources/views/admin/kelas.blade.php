@@ -45,20 +45,20 @@
                                         </button>
                                     </div>
                                 </form>
-
-                                <table id="categoriesTable" class="table table-hover">
-                                    <thead class="table-primary">
-                                        <tr>
-                                            <th scope="col">No</th>
-                                            <th scope="col">Jenjang</th>
-                                            <th scope="col">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Dynamic rows will be appended here -->
-                                    </tbody>
-                                </table>
-
+                                <div class="table-responsive">
+                                    <table id="categoriesTable" class="table table-hover">
+                                        <thead class="table-primary">
+                                            <tr>
+                                                <th scope="col">No</th>
+                                                <th scope="col">Jenjang</th>
+                                                <th scope="col">Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- DataTable will handle appending rows dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -148,7 +148,29 @@
             </div>
 
             <div id="coursesContainer" class="row g-2">
-                <!-- Cards will be dynamically inserted here -->
+                @foreach ($courses as $item)
+                    <div class="col-lg-3 col-md-4 col-6">
+                        <a href="detail-kelas/{{ $item['course']['id'] }}" class="text-decoration-none">
+                            <div class="card shadow-sm border-light rounded">
+                                <img src="{{ asset('assets/img/values-1.png') }}" class="card-img-top"
+                                    alt="{{ $item['course']['name'] }}" style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="fs-6 mb-0"><i
+                                                class="fas fa-star text-warning me-1"></i>{{ $item['course']['rating'] }}
+                                        </p>
+                                        <p class="fs-6 mb-0 text-muted">{{ $item['course_category']['name'] }}</p>
+                                    </div>
+                                    <h5 class="card-title mt-2">{{ $item['course']['name'] }}</h5>
+                                    <div class="text-center">
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
+
+
             </div>
 
 
@@ -179,46 +201,143 @@
                 </div>
             </div>
 
-
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link">Previous</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
+                    <!-- Previous Button -->
+                    @if ($pagination['page'] > 1)
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{{ route('admin.kelas', ['page' => $pagination['page'] - 1]) }}">Previous</a>
+                        </li>
+                    @else
+                        <li class="page-item disabled">
+                            <a class="page-link">Previous</a>
+                        </li>
+                    @endif
+
+                    <!-- Page Numbers -->
+                    @for ($i = 1; $i <= $pagination['total_page']; $i++)
+                        <li class="page-item {{ $pagination['page'] == $i ? 'active' : '' }}">
+                            <a class="page-link"
+                                href="{{ route('admin.kelas', ['page' => $i]) }}">{{ $i }}</a>
+                        </li>
+                    @endfor
+
+                    <!-- Next Button -->
+                    @if ($pagination['page'] < $pagination['total_page'])
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{{ route('admin.kelas', ['page' => $pagination['page'] + 1]) }}">Next</a>
+                        </li>
+                    @else
+                        <li class="page-item disabled">
+                            <a class="page-link">Next</a>
+                        </li>
+                    @endif
                 </ul>
             </nav>
+
+
         </div>
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <script>
             $(document).ready(function() {
-                const apiUrl = '{{ env('API_URL') }}';
+                let categoriesData = {!! $categories !!};
+                let instructorsData = {!! $instructors !!};
 
-                $('#categoriesTable').on('click', '.edit-btn', function(e) {
-                    e.preventDefault(); // Prevent the default anchor behavior
+                // Get the select element
+                const categorySelect = document.getElementById('categorySelect');
+                const instructorSelect = document.getElementById('instructorSelect');
 
-                    // Get the row that contains the clicked button
-                    let row = $(this).closest('tr');
-                    let rowData = table.row(row).data(); // Ensure 'table' is the DataTable instance
+                // Populate the select element with options
+                categoriesData.forEach(category => {
+                    // Create a new option element
+                    let option = document.createElement('option');
+                    option.value = category.id; // Set the value to the category ID
+                    option.textContent = category.name; // Set the display text to the category name
 
-                    // Extract the 'name' value and 'id' from the row data
-                    let currentName = rowData.name;
-                    let post_id = $(this).data('id');
-
-                    // Populate the modal form with the current name and category ID
-                    $('#categoryName').val(currentName);
-                    $('#categoryId').val(post_id);
-
-                    // Show the modal
-                    $('#editCategoryModal').modal('show');
+                    // Append the option to the select element
+                    categorySelect.appendChild(option);
                 });
+
+                // Populate the select element with options
+                // Assuming `instructorsData` is an array of objects, each containing an 'instructor' object.
+                instructorsData.forEach(item => {
+                    const instructor = item.instructor; // Access the 'instructor' object inside the item
+
+                    // Check if the instructor object exists
+                    if (instructor) {
+                        // Create a new option element
+                        let option = document.createElement('option');
+                        option.value = instructor.id; // Set the value to the instructor ID
+                        option.textContent = item
+                            .full_name; // Set the display text to the instructor's full name
+
+                        // Append the option to the select element
+                        instructorSelect.appendChild(option);
+
+                        console.log("Instructor:", item.full_name, instructor.id);
+                    } else {
+                        console.error("Instructor data not found in item:", item);
+                    }
+                });
+
+
+
+                setTimeout(function() {
+                    let table = $('#categoriesTable').DataTable({
+                        data: categoriesData,
+                        pageLength: 5, // Display 2 records per page
+                        ordering: true, // Keep ordering functionality
+                        searching: false, // Keep search functionality
+                        lengthChange: false, // Disable page length options dropdown
+                        info: false, // Remove info like "Showing 1 to 2 of 5 entries"
+                        paging: true, // Enable pagination
+                        columns: [{
+                                data: null,
+                                render: function(data, type, row, meta) {
+                                    return meta.row + 1; // Auto-incrementing number
+                                }
+                            },
+                            {
+                                data: 'name' // Assuming 'name' refers to the category name
+                            },
+                            {
+                                data: 'id',
+                                render: function(data, type, row) {
+                                    return `
+                        <a href="javascript:void(0)" class="btn btn-danger btn-sm delete-btn" data-id="${data}">Hapus</a>
+                        <a href="javascript:void(0)" class="btn btn-success btn-sm edit-btn" data-id="${data}">Edit</a>
+                    `;
+                                }
+                            }
+                        ],
+                        dom: 'tip', // 'tip' = Table, Info, Pagination (hides other controls)
+                        autoWidth: false, // Automatically adjust column widths to fit the table width
+                    });
+                    // Handle the Edit button click
+                    $('#categoriesTable').on('click', '.edit-btn', function(e) {
+                        e.preventDefault(); // Prevent the default anchor behavior
+
+                        // Get the row that contains the clicked button
+                        let row = $(this).closest('tr');
+                        let rowData = table.row(row).data(); // Get the DataTable row data
+
+                        // Extract the 'name' value and 'id' from the row data
+                        let currentName = rowData.name;
+                        let post_id = $(this).data('id');
+
+                        // Populate the modal form with the current name and category ID
+                        $('#categoryName').val(currentName);
+                        $('#categoryId').val(post_id);
+
+                        // Show the modal
+                        $('#editCategoryModal').modal('show');
+                    });
+                }, 100);
+
 
                 $('#saveCategoryBtn').on('click', function() {
                     // Get the new category name and ID
@@ -300,48 +419,6 @@
 
                 });
 
-                // Initialize the DataTable
-                const table = $('#categoriesTable').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    ajax: {
-                        url: apiUrl + 'courses/categories', // API endpoint
-                        method: 'GET',
-                        dataSrc: '', // Since the API returns an array of objects
-                        error: function(xhr, status, error) {
-                            console.error('Error fetching data:', error);
-                            console.log('Error response:', xhr.responseText);
-                        }
-                    },
-                    columns: [{
-                            data: null,
-                            render: function(data, type, row, meta) {
-                                return meta.row + 1; // Adding row index for the numbering
-                            }
-                        },
-                        {
-                            data: 'name'
-                        },
-                        {
-                            data: 'id',
-                            render: function(data, type, row) {
-                                return `
-                    <a href="javascript:void(0)" class="btn btn-danger btn-sm delete-btn" data-id="${data}">Hapus</a>
-                    <a href="javascript:void(0)" class="btn btn-success btn-sm edit-btn" data-id="${data}">Edit</a>
-                `;
-                            }
-                        }
-                    ],
-                    paging: false, // Enable pagination
-                    searching: true, // Enable search/filter
-                    info: false, // Disable table information display
-                    lengthChange: false, // Disable page length change
-                    autoWidth: false, // Disable automatic column width calculation
-                    language: {
-                        search: "_INPUT_", // Customize search input placeholder
-                        searchPlaceholder: "Search..."
-                    }
-                });
 
                 $('#categoriesTable').on('click', '.delete-btn', function(e) {
                     e.preventDefault(); // Prevent the default anchor behavior
@@ -388,114 +465,9 @@
                                 });
                             }
                         });
-                    } else if ($(this).hasClass('edit-btn')) {
-                        // Handle edit button
-                        let currentName = $(this).closest('tr').find('').text();
-
-                        Swal.fire({
-                            title: 'Edit Category',
-                            input: 'text',
-                            inputLabel: 'Category Name',
-                            inputValue: currentName,
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Save'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                let newName = result.value;
-
-                                // Make an AJAX request to update the item
-                                $.ajax({
-                                    url: `/admin/kelas/${post_id}`,
-                                    type: 'PUT',
-                                    cache: false,
-                                    data: {
-                                        "_token": token,
-                                        "name": newName
-                                    },
-                                    success: function(response) {
-                                        Swal.fire(
-                                            'Updated!',
-                                            'Your category has been updated.',
-                                            'success'
-                                        );
-
-                                        // Update the table row with the new name
-                                        $(this).closest('tr').find('.category-name').text(
-                                            newName);
-                                    }.bind(
-                                        this
-                                    ), // Bind the context to access `this` inside success callback
-                                    error: function(xhr, status, error) {
-                                        Swal.fire(
-                                            'Error!',
-                                            'There was an error updating the category.',
-                                            'error'
-                                        );
-                                    }
-                                });
-                            }
-                        });
                     }
                 });
 
-
-                $.ajax({
-                    url: apiUrl + 'courses/categories',
-                    method: 'GET',
-                    success: function(response) {
-                        const jenjangSelect = $('#categorySelect');
-                        jenjangSelect.empty(); // Clear existing options
-
-                        jenjangSelect.append(
-                            '<option value="" disabled selected>Select Jenjang</option>'
-                        ); // Default option
-
-                        $.each(response, function(index, category) {
-                            jenjangSelect.append(new Option(category.name, category.id));
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error fetching jenjang data:', error);
-                        console.log('Error response:', xhr.responseText);
-                    }
-                });
-
-                // Fetch instructor data from the API
-                $.ajax({
-                    url: '{{ route('get.instructors') }}',
-                    method: 'GET',
-                    success: function(response) {
-                        console.log("get", response);
-                        const instructorSelect = $('#instructorSelect');
-                        instructorSelect.empty(); // Clear existing options
-
-                        // Add a default option
-                        instructorSelect.append(
-                            '<option value="" disabled selected>Select Instructor</option>'
-                        );
-
-                        // Populate dropdown with options from API response
-                        $.each(response, function(index, item) {
-                            // Asumsi item adalah objek yang memiliki properti 'instructor' di dalamnya
-                            const instructor = item
-                                .instructor; // Akses objek instruktur di dalam item
-
-                            if (instructor) {
-                                instructorSelect.append(new Option(item.full_name, instructor
-                                    .id));
-                                console.log("Instructor:", item.full_name, instructor.id);
-                            } else {
-                                console.error("Instructor data not found:", item);
-                            }
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error fetching instructor data:', error);
-                        console.log('Error response:', xhr.responseText);
-                    }
-                });
 
                 $.ajax({
                     url: apiUrl + 'courses', // API endpoint to fetch course data
@@ -512,20 +484,7 @@
                             const courseData = item.course; // Access course details
 
                             const cardHtml = `
-                    <div class="col-lg-3 col-md-4 col-6">
-                        <div class="card" style="width: 100%;">
-                            <img src="{{ asset('assets/img/values-1.png') }}" class="card-img-top" alt="${courseData.name}">
-                            <div class="card-body">
-                                <div class="header-card d-flex justify-content-between">
-                                    <p class="mr-auto fs-6"><i class="fas fa-star text-warning mr-2"></i>${courseData.rating}</p>
-                                    <p class="ml-auto fs-6">Jenjang: ${courseCategory.name}</p>
-                                </div>
-                                <h5 class="card-title">${courseData.name}</h5>
-                                <p class="card-text">${courseData.description}</p>
-                                <a href="detail-kelas/${courseData.id}" class="btn btn-success">Edit Kelas</a>
-                            </div>
-                        </div>
-                    </div>
+
                 `;
                             coursesContainer.append(cardHtml);
                         });

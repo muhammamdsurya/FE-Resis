@@ -32,7 +32,6 @@ class AdminController extends Controller
 
 
         return $response->json();
-
     }
 
     private function getProfileData()
@@ -60,32 +59,81 @@ class AdminController extends Controller
             'updated_at' => $updated_at,
         ];
     }
-        public function dashboard()
-    {
 
+    protected function fetchApiData($url)
+    {
+        $response = Http::withApiSession()->get($url);
+
+        // Cek jika respons berhasil
+        if ($response->successful()) {
+            return $response->json();
+        } else {
+            // Log kesalahan dan kembalikan null atau default value
+            Log::error('Failed to fetch data from API: ' . $response->body());
+            return null; // Atau bisa menggunakan default value
+        }
+    }
+
+    public function dashboard()
+    {
         $title = 'Dashboard';
 
-        // Lakukan operasi lain yang diperlukan
+        $totalUsersData = $this->fetchApiData($this->apiUrl . 'statistics/users/count');
+        $totalUsers = $totalUsersData['total_users'] ?? 0;
+
+        $totalAdminsData = $this->fetchApiData($this->apiUrl . 'statistics/admins/count');
+        $totalAdmins = $totalAdminsData['total_admins'] ?? 0;
+
+        $totalCoursesData = $this->fetchApiData($this->apiUrl . 'statistics/courses/count');
+        $totalCourses = $totalCoursesData['total_courses'] ?? 0;
+
+        $totalBundlesData = $this->fetchApiData($this->apiUrl . 'statistics/courses/bundle/count');
+        $totalBundles = $totalBundlesData['total_bundles'] ?? 0;
+
+        $totalInstructorsData = $this->fetchApiData($this->apiUrl . 'statistics/instructors/count');
+        $totalInstructors = $totalInstructorsData['total_instructors'] ?? 0;
+
+        $totalSalesData = $this->fetchApiData($this->apiUrl . 'statistics/sales/count');
+        $totalSales = $totalSalesData['total_sales'] ?? 0;
+
+        $SalesData = $this->fetchApiData($this->apiUrl . 'statistics/sales/count');
+        $Sales = $SalesData['total_sales'] ?? 0;
 
         return view('admin.dashboard', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
+            "total_users" => $totalUsers,
+            "total_admins" => $totalAdmins,
+            "total_courses" => $totalCourses,
+            "total_bundles" => $totalBundles,
+            "total_instructors" => $totalInstructors,
+            "total_sales" => $totalSales,
+            "sales" => $Sales,
         ]);
     }
 
-    public function kelas()
+    public function kelas(Request $request)
     {
 
         $title = 'Data Kelas';
+        $page = $request->input('page', 1); // Get the current page or default to 1
 
+        $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
+        $instructors = $this->fetchApiData($this->apiUrl . 'courses/instructors');
+        $courses = $this->fetchApiData($this->apiUrl . 'courses?page=' . $page);
 
         return view('admin.kelas', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
+            "courses" => $courses['data'],
+            "pagination" => $courses['pagination'], // Get pagination data
+            "categories" => json_encode($categories), // Encode the categories for JS
+            "instructors" => json_encode($instructors), // Encode the categories for JS
+
         ]);
     }
 
@@ -150,11 +198,11 @@ class AdminController extends Controller
         ]);
     }
 
-    public function getInstructor(){
+    public function getInstructor()
+    {
         $response = Http::withApiSession()->get($this->apiUrl . 'courses/instructors');
 
         return $response->json();
-
     }
     public function dataPengajar()
     {
@@ -185,7 +233,7 @@ class AdminController extends Controller
     }
 
 
-    public  function detailKelas(Request $request,$id)
+    public  function detailKelas(Request $request, $id)
     {
         $title = '';
 
@@ -217,7 +265,4 @@ class AdminController extends Controller
             "full_name" => $this->user['full_name'],
         ]);
     }
-
-
-
 }
