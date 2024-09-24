@@ -87,6 +87,19 @@
                                         'meta[name="csrf-token"]').getAttribute('content')
                                 },
                                 body: JSON.stringify({}) // Laravel mengharapkan metode POST
+<<<<<<< HEAD
+                    })
+                    .then(response => {
+                        console.log(response);
+                        if (response.ok) {
+                            // Redirect setelah logout
+                            Swal.fire(
+                                'Logged out!',
+                                'Anda telah berhasil logout.',
+                                'success'
+                            ).then(() => {
+                                window.location.href = 'https://staging.akuanalis.com/login'; // Redirect ke halaman login
+=======
                             })
                             .then(response => {
 
@@ -115,6 +128,7 @@
                                     'Terjadi kesalahan saat logout.',
                                     'error'
                                 );
+>>>>>>> 281bedec5e1805b2914a1de6ff336e2876138e8f
                             });
                     }
                 });

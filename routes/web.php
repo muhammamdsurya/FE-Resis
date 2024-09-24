@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\courseContentController;
 use App\Http\Controllers\RegisController;
 use App\Http\Controllers\courseController;
 use App\Http\Controllers\UserDataController;
@@ -31,13 +32,23 @@ Route::get('/terms', function () {
     return view('terms');
 })->name('terms');
 
+Route::get('/privacy-policy', function () {
+    return view('policy');
+})->name('policy');
+
 
 
 // Grup rute untuk rute-rute yang terkait dengan admin
 
 Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+//course
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
+    Route::get('/detail-kelas/{id}',[AdminController::class, 'detailKelas'])->name('detail-kelas');
+    Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
+
+
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
     Route::get('/bundling', [AdminController::class, 'bundling'])->name('bundling');
     Route::get('/sales', [AdminController::class, 'sales'])->name('sales');
@@ -53,6 +64,11 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 
     Route::delete('/kelas/{id}', [courseController::class, 'destroy'])->name('categories.destroy');
     Route::put('/kelas/{id}', [courseController::class, 'editCategory'])->name('categories.edit');
+
+    Route::put('/kelas/{CourseId}', [courseController::class, 'editKelas'])->name('kelas.edit');
+
+
+    Route::post('/data/kelas/{id}/content/create', [courseContentController::class, 'createCourseContent'])->name('data.kelas.content.create');
 });
 
 
