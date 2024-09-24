@@ -32,6 +32,10 @@ Route::get('/terms', function () {
     return view('terms');
 })->name('terms');
 
+Route::get('/privacy-policy', function () {
+    return view('policy');
+})->name('policy');
+
 
 
 // Grup rute untuk rute-rute yang terkait dengan admin
@@ -60,6 +64,8 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 
     Route::delete('/kelas/{id}', [courseController::class, 'destroy'])->name('categories.destroy');
     Route::put('/kelas/{id}', [courseController::class, 'editCategory'])->name('categories.edit');
+
+    Route::put('/kelas/{CourseId}', [courseController::class, 'editKelas'])->name('kelas.edit');
 
 
     Route::post('/data/kelas/{id}/content/create', [courseContentController::class, 'createCourseContent'])->name('data.kelas.content.create');
