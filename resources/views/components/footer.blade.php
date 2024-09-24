@@ -47,7 +47,7 @@
                     <img src="assets/img/logo1.png" alt="" width="30%">
                 </div>
                 <a href="/terms" class="small mb-1">Syarat & Ketentuan</a><br>
-                <a href="/privacy-policy" class="small mb-1">Privacy & Policy</a>
+                <a href="/privacy-policy" class="small mb-1">Kebijakan Privasi</a>
             </div>
 
 
