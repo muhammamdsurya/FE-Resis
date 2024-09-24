@@ -42,7 +42,7 @@
                 </ul>
 
                 <h2 class="text-dark my-5">Pengumpulan dan Penggunaan Data Pribadi Anda</h2>
-                <h3>Jenis Data yang Dikumpulkan</h3>
+                <h3 class="text-dark">Jenis Data yang Dikumpulkan : </h3>
                 <h4>Data Pribadi</h4>
                 <p>Kami mungkin meminta Anda untuk memberikan informasi yang dapat diidentifikasi secara pribadi, termasuk
                     namun
@@ -85,40 +85,36 @@
                     <li>Untuk tujuan lain.</li>
                 </ul>
 
-                <h2>Retensi Data Pribadi Anda</h2>
+                <h3>Retensi Data Pribadi Anda</h3>
                 <p>Kami akan menyimpan Data Pribadi Anda hanya selama diperlukan untuk tujuan yang diuraikan dalam Kebijakan
                     Privasi ini.</p>
 
-                <h2>Transfer Data Pribadi Anda</h2>
+                <h3>Transfer Data Pribadi Anda</h3>
                 <p>Informasi Anda, termasuk Data Pribadi, diproses di lokasi-lokasi di mana pihak-pihak yang terlibat dalam
                     pemrosesan berada.</p>
 
-                <h2>Penghapusan Data Pribadi Anda</h2>
+                <h3>Penghapusan Data Pribadi Anda</h3>
                 <p>Anda memiliki hak untuk menghapus atau meminta Kami membantu menghapus Data Pribadi yang telah Kami
                     kumpulkan
                     tentang Anda.</p>
 
-                <h2>Pengungkapan Data Pribadi Anda</h2>
+                <h3>Pengungkapan Data Pribadi Anda</h3>
                 <p>Data Pribadi Anda mungkin diungkapkan dalam keadaan tertentu, termasuk transaksi bisnis dan penegakan
                     hukum.
                 </p>
 
-                <h2>Keamanan Data Pribadi Anda</h2>
+                <h3>Keamanan Data Pribadi Anda</h3>
                 <p>Keamanan Data Pribadi Anda penting bagi Kami, tetapi tidak ada metode transmisi melalui Internet yang
                     100%
                     aman.</p>
 
-                <h2>Privasi Anak-Anak</h2>
-                <p>Layanan Kami tidak ditujukan untuk siapa pun yang berusia di bawah 13 tahun. Kami tidak secara sengaja
-                    mengumpulkan informasi dari anak-anak di bawah 13 tahun.</p>
-
-                <h2>Tautan ke Situs Web Lain</h2>
+                <h3>Tautan ke Situs Web Lain</h3>
                 <p>Kami tidak bertanggung jawab atas konten atau kebijakan privasi dari situs web pihak ketiga.</p>
 
-                <h2>Perubahan pada Kebijakan Privasi ini</h2>
+                <h3>Perubahan pada Kebijakan Privasi ini</h3>
                 <p>Kami dapat memperbarui Kebijakan Privasi Kami dan akan memberi tahu Anda tentang perubahan tersebut.</p>
 
-                <h2>Hubungi Kami</h2>
+                <h3>Hubungi Kami</h3>
                 <p>Jika Anda memiliki pertanyaan tentang Kebijakan Privasi ini, Anda dapat menghubungi kami melalui email:
                     <a href="mailto:contact@akuanalis.com">contact@akuanalis.com</a>
                 </p>
