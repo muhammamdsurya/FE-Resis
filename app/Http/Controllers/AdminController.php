@@ -66,13 +66,11 @@ class AdminController extends Controller
 
         // Check if the response is successful
         if ($response->successful()) {
-            return $response->json();; // Decode JSON response into an object
+            return $response->json(); // Decode JSON response into an object
         } else {
             // Log the error with more context
             Log::error('Failed to fetch data from API: ' . $response->status() . ' - ' . $response->body());
 
-            // Return a default value or an empty object depending on your needs
-            return (object) []; // Return an empty object
         }
     }
 
