@@ -43,24 +43,28 @@ Route::get('/privacy-policy', function () {
 Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-//course
+    //course
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
-    Route::get('/detail-kelas/{id}',[AdminController::class, 'detailKelas'])->name('detail-kelas');
+    Route::get('/detail-kelas/{id}', [AdminController::class, 'detailKelas'])->name('detail-kelas');
     Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
 
 
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
-    Route::get('/bundling', [AdminController::class, 'bundling'])->name('bundling');
+    Route::get('/bundling', [AdminController::class, 'bundling'])->name('admin.bundling');
     Route::get('/sales', [AdminController::class, 'sales'])->name('sales');
     Route::get('/data-admin', [AdminController::class, 'dataAdmin'])->name('data.admin');
     Route::get('/data-pengajar', [AdminController::class, 'dataPengajar'])->name('data.pengajar');
     Route::get('/data-siswa', [AdminController::class, 'dataSiswa'])->name('data-siswa');
     Route::get('/instructor', [AdminController::class, 'getInstructor'])->name('get.instructors');
-    // Tambahkan rute-rute lain untuk admin di sini
-    // In routes/web.php or routes/api.php->name
+
 
     Route::post('/kelas/categories', [CourseController::class, 'jenjang'])->name('categories.post');
     Route::post('/kelas', [CourseController::class, 'kelas'])->name('kelas.post');
+
+    //bundling
+    Route::get('/detail-bundling/{id}', [AdminController::class, 'detailBundling'])->name('detail-bundling');
+    Route::post('bundling', [CourseController::class, 'bundlePost'])->name('bundle.post');
+    Route::post('detail-bundling/{id}', [CourseController::class, 'bundleEdit'])->name('bundle.edit');
 
     Route::delete('/kelas/{id}', [courseController::class, 'destroy'])->name('categories.destroy');
     Route::put('/kelas/{id}', [courseController::class, 'editCategory'])->name('categories.edit');
@@ -85,7 +89,6 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
 
     Route::post('/complete-data', [UserDataController::class, 'completePost'])->name('complete.post');
-
 });
 
 
@@ -94,7 +97,6 @@ Route::prefix('instructor')->middleware(['whoami:instructor'])->group(function (
     Route::get('/kelas', [InstructorController::class, 'kelas'])->name('instructor.kelas');
     Route::get('/profile', [InstructorController::class, 'profile'])->name('profile');
     Route::get('/diskusi', [InstructorController::class, 'diskusi'])->name('diskusi');
-
 });
 
 // Rute untuk login pengguna biasa
