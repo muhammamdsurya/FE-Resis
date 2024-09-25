@@ -64,15 +64,18 @@ class AdminController extends Controller
     {
         $response = Http::withApiSession()->get($url);
 
-        // Cek jika respons berhasil
+        // Check if the response is successful
         if ($response->successful()) {
-            return $response->json();
+            return $response->json();; // Decode JSON response into an object
         } else {
-            // Log kesalahan dan kembalikan null atau default value
-            Log::error('Failed to fetch data from API: ' . $response->body());
-            return null; // Atau bisa menggunakan default value
+            // Log the error with more context
+            Log::error('Failed to fetch data from API: ' . $response->status() . ' - ' . $response->body());
+
+            // Return a default value or an empty object depending on your needs
+            return (object) []; // Return an empty object
         }
     }
+
 
     public function dashboard()
     {
@@ -157,16 +160,21 @@ class AdminController extends Controller
         ]);
     }
 
-    public function bundling()
+    public function bundling(Request $request)
     {
 
         $title = 'Data Bundling';
+        $page = $request->input('page', 1); // Get the current page or default to 1
+        $bundles = $this->fetchApiData($this->apiUrl . 'courses/bundles?page=' . $page);
+
 
         return view('admin.bundling', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
+            "bundles" => $bundles['data'],
+            "pagination" => $bundles['pagination'], // Get pagination data
         ]);
     }
 
@@ -237,9 +245,7 @@ class AdminController extends Controller
     {
         $title = '';
 
-
-        // $courseCtrl = new courseController();
-        // $courseData =   $courseCtrl->getKelasById($id);
+        $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
 
         $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
 
@@ -250,8 +256,26 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
+            "categories" => json_encode($categories), // Encode the categories for JS
         ]);
     }
+
+    public  function detailBundling($id)
+    {
+        $title = '';
+
+        $bundle = $this->fetchApiData($this->apiUrl . 'courses/bundles/' . $id);
+
+        return view('admin.bundlingDetail', [
+            "title" => $title,
+            "courseId" => $id,
+            "id" => $this->user['id'],
+            "full_name" => $this->user['full_name'],
+            "role" => $this->user['role'],
+            "bundle" => $bundle, // Encode the categories for JS
+        ]);
+    }
+
 
     public function diskusi()
     {

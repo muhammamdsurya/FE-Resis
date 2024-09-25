@@ -284,8 +284,6 @@
                     }
                 });
 
-
-
                 setTimeout(function() {
                     let table = $('#categoriesTable').DataTable({
                         data: categoriesData,
