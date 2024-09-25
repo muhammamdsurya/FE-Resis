@@ -91,17 +91,91 @@ class courseController extends Controller
         ];
 
         // Kirimkan request POST
-        $response = Http::withHeaders($headers)->post($this->apiUrl. 'courses', $body);
+        $response = Http::withHeaders($headers)->post($this->apiUrl . 'courses', $body);
 
         // Tampilkan response body
+        if ($response->successful()) {
 
-
-        return redirect()->route('admin.kelas')->with([
-            'message' => 'Data berhasil ditambahkan.',
-            'details' => null
-        ]);
+            return redirect()->route('admin.kelas')->with([
+                'message' => 'Data berhasil ditambahkan.',
+                'details' => null
+            ]);
+        }
     }
 
+    public function bundlePost(Request $request)
+
+    {
+        $price = (int) $request->input('price');
+
+        $apiSession = session('api_session');
+
+        // Definisikan headers
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Cookie' => 'session=' . $apiSession
+        ];
+
+
+        // Definisikan body sebagai array associative
+        $body = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $price,
+        ];
+
+        // Kirimkan request POST
+        $response = Http::withHeaders($headers)->post($this->apiUrl . 'courses/bundles', $body);
+
+        // Tampilkan response body
+        if ($response->successful()) {
+
+            return redirect()->route('admin.kelas')->with([
+                'message' => 'Data berhasil ditambahkan.',
+                'details' => null
+            ]);
+        }
+    }
+
+    public function bundleEdit(Request $request, $id) // Get $id directly from the route parameter
+    {
+        // Validate the incoming request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric', // Ensure price is a number
+        ]);
+
+        // Fetch the API session from the session
+        $apiSession = session('api_session');
+
+        // Define headers for the API request
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Cookie' => 'session=' . $apiSession,
+        ];
+
+        // Prepare the body of the request
+        $body = [
+            'name' => $request->input('name'), // Directly using input()
+            'description' => $request->input('description'),
+            'price' => (int) $request->input('price'), // Cast to int for price
+        ];
+
+        // Construct the API URL for updating the bundle
+        $apiUrl = $this->apiUrl . 'courses/bundles/' . $id;
+
+        // Send the PUT request to update the bundle
+        $response = Http::withHeaders($headers)->put($apiUrl, $body);
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            return redirect()->route('admin.bundling')->with('message', 'Data berhasil diperbarui.');
+        } else {
+            // Handle the case where the update was not successful
+            return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
+        }
+    }
 
     public function destroy($id)
     {
