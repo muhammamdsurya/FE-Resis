@@ -89,59 +89,78 @@
             <div class="col-md-9">
                 <div class="mt-3">
                     @if($selectedCourseContentId == '')
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="contentName"
-                            placeholder="name@example.com" name="name">
-                        <label for="contentName">Nama Konten</label>
-                    </div>
-                    <textarea id="summernote" name="description"></textarea>
-                    <div class="form-floating mb-3 mt-3">
-                    <select class="form-control" id="contentType" name="level">
-                        <option value="video" selected>video</option>
-                        <option value="quiz">quiz</option>
-                        <option value="additional_source">additional_source</option>
-                    </select>
-                    <label for="contentType">Jenis Konten</label>
-                </div>
-                   
-                <div id="video-type" >
-                    <div class="form-floating mb-3">
-                        <input type="file" class="form-control" id="contentName"
-                            placeholder="name@example.com" name="name">
-                        <label for="contentName">Konten Video</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="file" class="form-control" id="contentName"
-                            placeholder="name@example.com" name="name">
-                        <label for="contentName">Thumbnail</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="contentName"
-                            placeholder="name@example.com" name="name">
-                        <label for="contentName">video article content</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="contentName"
-                            placeholder="name@example.com" name="name">
-                        <label for="contentName">Durasi Video</label>
-                    </div>
-                </div>
-                
-                <div id="additional-src-type" >
-                    <div class="form-floating mb-3">
-                        <input type="file" class="form-control" id="contentName"
-                            placeholder="name@example.com" name="name">
-                        <label for="contentName">Source Tambahan</label>
-                    </div>
-                </div>
+                        <form action="">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="contentName"
+                                    placeholder="name@example.com" name="name">
+                                <label for="contentName">Nama Konten</label>
+                            </div>
+                            <textarea id="contentDesc" name="description"></textarea>
+                            <div class="form-floating mb-3 mt-3">
+                            <select class="form-control" id="contentType" name="level">
+                                <option value="video" selected>video</option>
+                                <option value="quiz">quiz</option>
+                                <option value="additional_source">additional_source</option>
+                            </select>
+                            <label for="contentType">Jenis Konten</label>
+                        </div>
+                        
+                        <div id="video-type" >
+                            <div class="form-floating mb-3">
+                                <input type="file" class="form-control" id="contentVideoFile"
+                                    placeholder="name@example.com" name="name" accept="video/*" >
+                                <label for="contentVideoFile" >Konten Video</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="file" class="form-control" id="contentVideoThumbFile"
+                                    placeholder="name@example.com" accept="image/*">
+                                <label for="contentVideoThumbFile" >Thumbnail</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="contentVideoArticleContent"
+                                    placeholder="name@example.com" name="name">
+                                <label for="contentVideoArticleContent">video article content</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" id="contentVideoDuration"
+                                    placeholder="name@example.com" name="name">
+                                <label for="contentVideoDuration">Durasi Video</label>
+                            </div>
+                        </div>
+                        
+                        <div id="additional-src-type" >
+                            <div class="form-floating mb-3">
+                                <input type="file" class="form-control" id="contentAddSrc"
+                                    placeholder="name@example.com" name="name">
+                                <label for="contentAddSrc">Source Tambahan</label>
+                            </div>
+                        </div>
 
-                <div id="quiz-type" >
-                    <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="contentName"
-                            placeholder="name@example.com" name="name">
-                        <label for="contentName">Nilai Kelulusan</label>
-                    </div>
-                </div>
+                        <div id="quiz-type" >
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" id="contentAddSrc"
+                                    placeholder="name@example.com" name="name">
+                                <label for="contentAddSrc">Nilai Kelulusan</label>
+                            </div>
+                            <div class="p-4">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="contentAddSrc"
+                                        placeholder="name@example.com" name="name">
+                                    <label for="contentAddSrc">Pertanyaan</label>
+                                </div>
+                            
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="contentAddSrc"
+                                        placeholder="name@example.com" name="name">
+                                    <label for="contentAddSrc">Jawaban</label>
+                                </div>
+                                <button type="button" class="btn btn-primary d-flex align-items-center mb-3" data-bs-toggle="modal"
+                                data-bs-target="#modal-kelas" onclick="location.href='/admin/detail-kelas/{{$courseId}}/add'">
+                                <i class="fas fa-plus mr-1"></i>Opsi Jawaban
+                            </button>
+                            </div>
+                        </div>
+                    </form>
                     @else
                     <div class="ratio ratio-16x9">
                     <iframe src="https://www.youtube.com/embed/CpSoqTvSAF0?si=MyY3y8RuEgSAORQk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -152,7 +171,7 @@
                 <div class="mt-5">
                     <button class="btn btn-secondary"><i class="fas fa-arrow-circle-left mr-2"></i>Sebelumnya</button>
                     @if($selectedCourseContentId == '')
-                    <button class="btn btn-primary float-right">Simpan</button>
+                    <button id="saveContent" class="btn btn-primary float-right">Simpan</button>
                     @else
                     <button class="btn btn-primary float-right">Lanjut<i class="fas fa-arrow-circle-right ml-2"></i></button>
                     @endif
@@ -190,7 +209,7 @@
 @if($selectedCourseContentId == '')
 <script>
     $(document).ready(function() {
-        $('#summernote').summernote();
+        $('#contentDesc').summernote();
     });
 </script>
 @endif
@@ -259,11 +278,72 @@
                 $('#additional-src-type').hide()
                 $('#quiz-type').hide()
                 $('#video-type').show()
-
             }
 
         
         });
+
+
+        //POST CONTENT
+        $('#saveContent').on('click', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            
+            const contentName = $('#contentName').val()
+            const contentDesc = $('#contentDesc').val()
+            const contentType = $('#contentType').val()
+            
+            
+            
+            console.log(contentType);
+            
+            var formData = new FormData();
+            formData.append('contentTitle', contentName);
+            formData.append('contentDesc', contentDesc);
+            formData.append('contentType', contentType);
+            
+            
+            if(contentType == 'video'){
+                const contentVideoFile = $('#contentVideoFile')[0].files[0]; 
+                const contentVideoThumbFile = $('#contentVideoThumbFile')[0].files[0]; 
+                
+                const videoArticleContent = $('#contentVideoArticleContent').val()
+                const videoDuration = $('#contentVideoDuration').val()
+                
+                formData.append('videoContentFile', contentVideoFile);
+                formData.append('videoContentThumbFile', contentVideoThumbFile);        
+                formData.append('videoArticleContent', videoArticleContent);        
+                formData.append('videoDuration', videoDuration);        
+            }else if(contentType == 'quiz'){
+
+            }else if(contentType == 'additional_source'){
+
+            }else{
+
+            }
+           
+
+            $.ajax({
+                url: '{{ route("admin.kelas.content.post", $courseId) }}', // Direct API endpoint
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content')
+                },
+                data: formData,
+                processData: false, 
+                contentType: false,
+                success: function(response) {
+                    console.log("data:", response); // Log the response for debugging
+                    Swal.fire('Berhasil', 'Berhasil membuat diskusi', 'success');
+
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error); // Log the error for debugging
+                    console.error('Response Text:', xhr.responseText);
+                    Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                }
+            });
+        })
 </script>
 
 

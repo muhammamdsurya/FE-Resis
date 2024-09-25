@@ -10,9 +10,15 @@
                 Filter
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="#">Belum Bayar</a></li>
+                <li><a class="dropdown-item" href="#">Berhasil</a></li>
                 <li><a class="dropdown-item" href="#">Pending</a></li>
-                <li><a class="dropdown-item" href="#">Dibeli</a></li>
-                <li><a class="dropdown-item" href="#">Selesai</a></li>
+                <li><a class="dropdown-item" href="#">Settlement</a></li>
+                <li><a class="dropdown-item" href="#">Ditolak</a></li>
+                <li><a class="dropdown-item" href="#">DiBatalkan</a></li>
+                <li><a class="dropdown-item" href="#">Expired</a></li>
+                <li><a class="dropdown-item" href="#">Refund</a></li>
+                <li><a class="dropdown-item" href="#">Partial Refund</a></li>
             </ul>
         </div>
     </div>
@@ -25,9 +31,15 @@
         <section class="col-12 mt-2">
             <div class="row mb-3 text-center">
                 <div class="d-grid gap-2 d-none d-md-block">
-                    <button class="btn btn-primary" type="button">Pending</button>
-                    <button class="btn btn-secondary" type="button">Dibeli</button>
-                    <button class="btn btn-secondary" type="button">Selesai</button>
+                    <button class="btn btn-{{ $filter == 'active' ? 'primary' : 'secondary' }}" type="button">Belum Bayar</button>
+                    <button class="btn btn-{{ $filter == 'capture' ? 'primary' : 'secondary' }}" type="button">Berhasil</button>
+                    <button class="btn btn-{{ $filter == 'pending' ? 'primary' : 'secondary' }}" type="button">Pending</button>
+                    <button class="btn btn-{{ $filter == 'settlement' ? 'primary' : 'secondary' }}" type="button">Settlement</button>
+                    <button class="btn btn-{{ $filter == 'deny' ? 'primary' : 'secondary' }}" type="button">Ditolak</button>
+                    <button class="btn btn-{{ $filter == 'cancel' ? 'primary' : 'secondary' }}" type="button">DiBatalkan</button>
+                    <button class="btn btn-{{ $filter == 'expire' ? 'primary' : 'secondary' }}" type="button">Expired</button>
+                    <button class="btn btn-{{ $filter == 'refund' ? 'primary' : 'secondary' }}" type="button">Refund</button>
+                    <button class="btn btn-{{ $filter == 'partial_refund' ? 'primary' : 'secondary' }}" type="button">Partial Refund</button>
                 </div>
             </div>
             <div class="row ">

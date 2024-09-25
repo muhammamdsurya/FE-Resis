@@ -96,11 +96,16 @@ class UserController extends Controller
         ]);
     }
 
-    public function transaksi()
+    public function transaksi(Request $request)
     {
+
+        $filter = $request->get('filter') ?? 'active';
+
+
         $title = 'Data Transaksi';
 
         return view('user.transaksi', [
+            "filter"=> $filter,
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],

@@ -190,10 +190,29 @@ class AdminController extends Controller
         $title = '';
 
 
+
+        // $apiSession = session('api_session');
+        // dd($apiSession);
         // $courseCtrl = new courseController();
         // $courseData =   $courseCtrl->getKelasById($id);
 
         $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
+        $data = [
+            "course_id" => "5a1e0960-2044-4e00-b0a6-a7352c324a1f",
+            "content_title" => "Introduction",
+            "content_description" => "Introduction to web development",
+            "content_type" => "video",
+            "video_article_content" => "Introduction to web development",
+            "video_duration" => 60,
+        ];
+        
+        // Mengencode array menjadi JSON
+        $jsonData = json_encode($data);
+        
+
+        $apiSession = session('api_session');
+        dd([
+            'course_content_form'=>  $jsonData]);
 
         return view('admin.detailKelas', [
             "title" => $title,
@@ -205,13 +224,18 @@ class AdminController extends Controller
         ]);
     }
 
-    public function diskusi()
+    public function diskusi($id)
     {
         $title = 'Diskusi';
 
+        // $apiSession = session('api_session');
+        // dd($apiSession);
+        
+
         // Lakukan operasi lain yang diperlukan
 
-        return view('admin.diskusi', [
+        return view('user.diskusi', [
+            "courseId" => $id,
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],

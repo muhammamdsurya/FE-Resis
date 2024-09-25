@@ -7,8 +7,11 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\courseContentController;
 use App\Http\Controllers\RegisController;
 use App\Http\Controllers\courseController;
+use App\Http\Controllers\courseForumController;
 use App\Http\Controllers\UserDataController;
 use App\Http\Controllers\InstructorController;
+use App\Http\Controllers\publicController;
+use App\Http\Controllers\transactionController;
 
 // Rute standar
 Route::redirect('/', '/beranda');
@@ -16,13 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('beranda');
 
-Route::get('/kelas', function () {
-    return view('kelas');
-})->name('kelas');
+Route::get('/test', [transactionController::class, 'helo'])->name('kelas');
+Route::get('/kelas', [publicController::class, 'kelas'])->name('kelas');
+Route::get('/detail-kelas/{courseId}', [publicController::class, 'detailKelas'])->name('detail-kelas');
 
-Route::get('/detail-kelas', function () {
-    return view('detailKelas');
-})->name('detail-kelas');
 
 Route::get('/kontak', function () {
     return view('kontak');
@@ -42,7 +42,7 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 //course
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
     Route::get('/detail-kelas/{id}',[AdminController::class, 'detailKelas'])->name('detail-kelas');
-    Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
+   
 
 
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
@@ -57,6 +57,10 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 
     Route::post('/kelas/categories', [CourseController::class, 'jenjang'])->name('categories.post');
     Route::post('/kelas', [CourseController::class, 'kelas'])->name('kelas.post');
+    Route::post('/kelas/materi/{courseId}', [courseContentController::class, 'createCourseContent'])->name('admin.kelas.content.post');
+
+
+
 
     Route::delete('/kelas/{id}', [courseController::class, 'destroy'])->name('categories.destroy');
     Route::put('/kelas/{id}', [courseController::class, 'editCategory'])->name('categories.edit');
@@ -76,10 +80,14 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::get('/kelas', [UserController::class, 'kelas'])->name('kelas');
     Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
     Route::get('/materi', [UserController::class, 'materi'])->name('materi');
-    Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
+    Route::get('/diskusi-kelas/{id}', [AdminController::class, 'diskusi'])->name('diskusi');
 
     Route::post('/complete-data', [UserDataController::class, 'completePost'])->name('complete.post');
 
+    Route::post('/diskusi-kelas/{courseId}', [courseForumController::class, 'createCourseForum'])->name('diskusi.post');
+    Route::get('/diskusi-kelas/data/{courseId}', [courseForumController::class, 'courseForumAll'])->name('diskusi.get');
+    
+    Route::post('/checkout', [transactionController::class, 'checkout'])->name('user.checkout');
 });
 
 
