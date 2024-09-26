@@ -11,18 +11,17 @@
                         <div class="row align-self-center align-items-center gy-5">
 
                             <div class="col-lg-5">
-                                <img src="assets/img/values-1.png" alt="" width="100%" >
+                                <img src="{{asset('assets/img/values-1.png')}}" alt="" width="100%" >
                             </div><!-- End Feature Item -->
 
                             <div class="col-lg-7">
                                 <div>
-                                    <h4>Kimia Dasar</h4>
+                                    <h4>{{$courses['course']['name']}}</h4>
                                     <div class="header-card d-flex justify-content-between">
-                                        <p class="mr-auto fs-6"><i class="bi bi-star-fill text-warning me-1"></i>4.9</p>
-                                        <p class="ml-auto fs-6">Jenjang : Umum</p>
+                                        <p class="mr-auto fs-6"><i class="bi bi-star-fill text-warning me-1"></i>{{$courses['course']['rating']}}</p>
+                                        <p class="ml-auto fs-6">Jenjang : {{$courses['course_category']['name']}}</p>
                                     </div>
-                                    <p>100 Siswa Terdaftar</p>
-                                    <p> Pengenalan konsep dasar kimia, termasuk materi, energi, dan perubahan kimia."
+                                    <p> {{$courses['course']['description']}}
                                     </p>
                                 </div>
                             </div><!-- End Feature Item -->
@@ -34,7 +33,8 @@
                     data-aos-delay="100">
                     <div class="card text-bg-light shadow" style="width: 100%;">
                         <div class="card-body mx-auto d-flex flex-column align-items-center">
-                            <h5 class="card-title">Rp. 100.000</h5>
+                            <h5 class="card-title">Rp {{ number_format($courses['course']['price'], 0, ',', '.') }}
+                            </h5>
                             <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
                         </div>
                         <hr class="border border-dark border-1 opacity-20">
@@ -55,12 +55,12 @@
                 <div class="col-lg-7">
                     <div class="container mb-3">
                         <h4>Deskripsi</h4>
-                        <p>Pengenalan konsep dasar kimia, termasuk materi, energi, dan perubahan kimia."
+                        <p>{{$courses['course']['description']}}
                         </p>
                     </div>
                     <div class="container mb-3">
                         <h4>Tujuan</h4>
-                        <p>Memahami konsep dasar kimia dan terminologi kimia
+                        <p>{{$courses['course']['purpose']}}
                         </p>
                     </div>
                     <div class="container mb-3">
@@ -68,9 +68,9 @@
                         <div class="d-flex my-3 align-items-center gap-3">
                             <img src="assets/img/values-1.png" alt="" width="100rem">
                             <div class="container">
-                                <h6>Rahayu, S.Si</h6>
-                                <p>Oxford University</p>
-                                <p>Tutor Online</p>
+                                <h6>{{$courses['instructor']['full_name']}}</h6>
+                                <p>{{$courses['instructor']['instructor']['education']}}</p>
+                                <p>{{$courses['instructor']['instructor']['experience']}}</p>
                             </div>
                         </div>
                     </div>

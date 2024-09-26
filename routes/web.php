@@ -16,13 +16,12 @@ Route::get('/', function () {
     return view('welcome');
 })->name('beranda');
 
-Route::get('/kelas', function () {
-    return view('kelas');
-})->name('kelas');
 
-Route::get('/detail-kelas', function () {
-    return view('detailKelas');
-})->name('detail-kelas');
+Route::get('/kelas', [CourseController::class, 'getCourse'])->name('kelas');
+
+
+Route::get('/detail-kelas/{id}', [CourseController::class, 'detailKelas'])->name('detail-kelas');
+
 
 Route::get('/kontak', function () {
     return view('kontak');
@@ -45,7 +44,6 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 
     //course
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
-    Route::get('/detail-kelas/{id}', [AdminController::class, 'detailKelas'])->name('detail-kelas');
     Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
 
 
@@ -83,7 +81,7 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::get('/', [UserController::class, 'completeData'])->name('user.data');
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
-    Route::get('/kelas', [UserController::class, 'kelas'])->name('kelas');
+    Route::get('/kelas', [UserController::class, 'kelas'])->name('user.kelas');
     Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
     Route::get('/materi', [UserController::class, 'materi'])->name('materi');
     Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');

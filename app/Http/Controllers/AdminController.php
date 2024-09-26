@@ -176,10 +176,13 @@ class AdminController extends Controller
         ]);
     }
 
-    public function sales()
+    public function sales(Request $request)
     {
 
         $title = 'Data Penjualan';
+
+        $page = $request->input('page', 1); // Get the current page or default to 1
+        $dataSales = $this->fetchApiData($this->apiUrl . 'statistics/sales/transactions');
 
 
         return view('admin.sales', [
@@ -187,6 +190,7 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
+            "dataSales" => $dataSales,
         ]);
     }
 
@@ -195,12 +199,14 @@ class AdminController extends Controller
 
         $title = 'Data Admin';
 
+        $dataAdmin = $this->fetchApiData($this->apiUrl . 'statistics/admins');
+
         // Lakukan operasi lain yang diperlukan
         return view('admin.dataAdmin', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
-            "role" => $this->user['role'],
+            "data" => $dataAdmin,
         ]);
     }
 
@@ -241,9 +247,10 @@ class AdminController extends Controller
 
     public  function detailKelas(Request $request, $id)
     {
-        $title = '';
+        $title = 'Detail Kelas';
 
-        $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
+        $courses = $this->fetchApiData($this->apiUrl . 'courses/' . $id);
+
 
         $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
 
@@ -254,7 +261,7 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "categories" => json_encode($categories), // Encode the categories for JS
+            "courses" => $courses,
         ]);
     }
 
@@ -263,6 +270,7 @@ class AdminController extends Controller
         $title = '';
 
         $bundle = $this->fetchApiData($this->apiUrl . 'courses/bundles/' . $id);
+        $courses = $this->fetchApiData($this->apiUrl . 'courses');
 
         return view('admin.bundlingDetail', [
             "title" => $title,
@@ -270,7 +278,8 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "bundle" => $bundle, // Encode the categories for JS
+            "bundle" => $bundle, //
+            "courses" => $courses['data']
         ]);
     }
 

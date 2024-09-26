@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
 
@@ -17,6 +18,19 @@ class courseController extends Controller
     {
         $this->user = session('user');
         $this->apiUrl = env('API_URL');
+    }
+
+    protected function fetchApiData($url)
+    {
+        $response = Http::withApiSession()->get($url);
+
+        // Check if the response is successful
+        if ($response->successful()) {
+            return $response->json(); // Decode JSON response into an object
+        } else {
+            // Log the error with more context
+            Log::error('Failed to fetch data from API: ' . $response->status() . ' - ' . $response->body());
+        }
     }
     public function jenjang(Request $request)
     {
@@ -39,31 +53,38 @@ class courseController extends Controller
         }
     }
 
-    public function getJenjang(Request $request)
+
+    public function getCourse(Request $request)
     {
-        if ($request->ajax()) {
-            $response = Http::get($this->apiUrl + 'courses/categories');
 
-            if ($response->successful()) {
-                return DataTables::of($response)
-                    ->addColumn('action', function ($response) {
-                        return '<a href="/categories/' . $response->id . '/delete" class="btn btn-danger">Hapus</a>
-                            <a href="/categories/' . $response->id . '/edit" class="btn btn-success">Edit</a>';
-                    })
-                    ->make(true);
-                return response()->json([
-                    'success' => true,
-                    'data' => $response->json()
-                ], $response->status());
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Failed load data.'
-                ], $response->status());
-            }
-        }
+        $title = 'Kelas Kami';
+        $page = $request->input('page', 1); // Get the current page or default to 1
 
-        return view('admin.kelas'); // Return the view with the DataTables setup
+        $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
+        $instructors = $this->fetchApiData($this->apiUrl . 'courses/instructors');
+        $courses = $this->fetchApiData($this->apiUrl . 'courses?page=' . $page);
+
+        return view('kelas', [
+            "title" => $title,
+            "courses" => $courses['data'],
+            "pagination" => $courses['pagination'], // Get pagination data
+            "categories" => json_encode($categories), // Encode the categories for JS
+            "instructors" => json_encode($instructors), // Encode the categories for JS
+
+        ]);
+    }
+
+    public  function detailKelas($id)
+    {
+        $title = 'Detail Kelas';
+
+        $courses = $this->fetchApiData($this->apiUrl . 'courses/' . $id);
+
+        return view('detailKelas', [
+            "title" => $title,
+            "courseId" => $id,
+            "courses" => $courses, // Encode the categories for JS
+        ]);
     }
 
     public function kelas(Request $request)
@@ -98,6 +119,40 @@ class courseController extends Controller
 
             return redirect()->route('admin.kelas')->with([
                 'message' => 'Data berhasil ditambahkan.',
+                'details' => null
+            ]);
+        }
+    }
+
+
+    public function editKelas (Request $request) {
+
+        $apiSession = session('api_session');
+
+        // Definisikan headers
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Cookie' => 'session='. $apiSession
+        ];
+
+        // Definisikan body sebagai array associative
+        $body = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'price' => (int) $request->price,
+            'purpose'  => $request->purpose,
+            'instructor_id' => $request->instructor_id,
+
+        ];
+
+        // Kirimkan request PUT
+        $response = Http::withHeaders($headers)->put($this->apiUrl. 'courses/'. $request->id, $body);
+
+        // Tampilkan response body
+        if ($response->successful()) {
+            return redirect()->route('admin.detailKelas')->with([
+               'message' => 'Data berhasil diperbarui.',
                 'details' => null
             ]);
         }

@@ -466,31 +466,6 @@
                     }
                 });
 
-
-                $.ajax({
-                    url: apiUrl + 'courses', // API endpoint to fetch course data
-                    method: 'GET',
-                    success: function(response) {
-                        console.log(response.data); // Log the
-                        const coursesContainer = $('#coursesContainer');
-                        coursesContainer.empty(); // Clear existing content
-
-                        // Assuming response is an array of course objects
-                        $.each(response.data, function(index, item) {
-                            const courseCategory = item
-                                .course_category; // Access course category details
-                            const courseData = item.course; // Access course details
-
-                            const cardHtml = `
-
-                `;
-                            coursesContainer.append(cardHtml);
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error fetching courses:', error);
-                    }
-                });
             });
         </script>
 

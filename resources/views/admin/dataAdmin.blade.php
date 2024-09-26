@@ -7,6 +7,7 @@
             <button type="submit" class="btn btn-success">Ekspor Data</button>
           </div>
         <!-- /.card-header -->
+        @dd($data);
        <div class="card-body">
         <table id="employeeTable" class="table table-striped table-bordered" style="width:100%">
             <thead>

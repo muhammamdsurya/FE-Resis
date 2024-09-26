@@ -1,3 +1,4 @@
+
 @extends('layout.adminLayout')
 @section('title', $title)
 
