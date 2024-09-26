@@ -47,9 +47,7 @@
     <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
 
     <!-- Main JS File -->
-<<<<<<< HEAD
     <script src="{{ asset('assets/js/main.js') }}"></script>
-=======
     <script src="{{asset('assets/js/main.js')}}"></script>
     <script src="{{asset('assets/js/midtrans_snap.js')}}"></script>
 
@@ -59,7 +57,6 @@
     <!-- AdminLTE App -->
      <!-- summernote -->
      <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
->>>>>>> edca9f6bbbe5ab45cd2664448047acf904ba4bbc
 
 </body>
 

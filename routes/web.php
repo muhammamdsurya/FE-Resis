@@ -19,13 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('beranda');
 
-Route::get('/kelas', function () {
-    return view('kelas');
-})->name('kelas');
+// Route::get('/test', [transactionController::class, 'helo'])->name('kelas'); testing, nanti di awasin
+Route::get('/kelas', [publicController::class, 'kelas'])->name('kelas');
+Route::get('/detail-kelas/{courseId}', [publicController::class, 'detailKelas'])->name('detail-kelas');
 
-Route::get('/detail-kelas', function () {
-    return view('detailKelas');
-})->name('detail-kelas');
 
 Route::get('/kontak', function () {
     return view('kontak');
@@ -49,6 +46,9 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     //course
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
     Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
+    Route::get('/detail-kelas/{courseId}', [courseController::class, 'detailKelas'])->name('detail.kelas');
+    Route::post('/kelas', [CourseController::class, 'kelas'])->name('kelas.post');
+    Route::put('/kelas/{CourseId}', [courseController::class, 'editKelas'])->name('kelas.edit');
 
 
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
@@ -61,17 +61,16 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 
 
     Route::post('/kelas/categories', [CourseController::class, 'jenjang'])->name('categories.post');
-    Route::post('/kelas', [CourseController::class, 'kelas'])->name('kelas.post');
 
     //bundling
     Route::get('/detail-bundling/{id}', [AdminController::class, 'detailBundling'])->name('detail-bundling');
     Route::post('bundling', [CourseController::class, 'bundlePost'])->name('bundle.post');
-    Route::post('detail-bundling/{id}', [CourseController::class, 'bundleEdit'])->name('bundle.edit');
+    Route::post('/detail-bundling/{id}/edit', [CourseController::class, 'bundleEdit'])->name('bundle.edit');
+    Route::post('/detail-bundling/{id}/bundle-course', [CourseController::class, 'bundleCoursePost'])->name('bundleCourse.post');
 
     Route::delete('/kelas/{id}', [courseController::class, 'destroy'])->name('categories.destroy');
     Route::put('/kelas/{id}', [courseController::class, 'editCategory'])->name('categories.edit');
 
-    Route::put('/kelas/{CourseId}', [courseController::class, 'editKelas'])->name('kelas.edit');
 
 
     Route::post('/data/kelas/{id}/content/create', [courseContentController::class, 'createCourseContent'])->name('admin.kelas.content.post');

@@ -16,14 +16,6 @@
 
                             <div class="col-lg-7">
                                 <div>
-<<<<<<< HEAD
-                                    <h4>{{$courses['course']['name']}}</h4>
-                                    <div class="header-card d-flex justify-content-between">
-                                        <p class="mr-auto fs-6"><i class="bi bi-star-fill text-warning me-1"></i>{{$courses['course']['rating']}}</p>
-                                        <p class="ml-auto fs-6">Jenjang : {{$courses['course_category']['name']}}</p>
-                                    </div>
-                                    <p> {{$courses['course']['description']}}
-=======
                                     <h4>{{$course->course->name}}</h4>
                                     <div class="header-card d-flex justify-content-between">
                                         <p class="mr-auto fs-6"><i class="bi bi-star-fill text-warning me-1"></i>{{$course->course->rating}}</p>
@@ -31,7 +23,6 @@
                                     </div>
                                     <p>100 Siswa Terdaftar</p>
                                     <p> {{$course->course->description}}
->>>>>>> edca9f6bbbe5ab45cd2664448047acf904ba4bbc
                                     </p>
                                 </div>
                             </div><!-- End Feature Item -->
@@ -43,14 +34,8 @@
                     data-aos-delay="100">
                     <div class="card text-bg-light shadow" style="width: 100%;">
                         <div class="card-body mx-auto d-flex flex-column align-items-center">
-<<<<<<< HEAD
-                            <h5 class="card-title">Rp {{ number_format($courses['course']['price'], 0, ',', '.') }}
-                            </h5>
-                            <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
-=======
                             <h5 class="card-title">Rp. {{$course->course->price}}</h5>
                             <button id="checkoutBtn" class="btn btn-success">Belajar Sekarang</button>
->>>>>>> edca9f6bbbe5ab45cd2664448047acf904ba4bbc
                         </div>
                         <hr class="border border-dark border-1 opacity-20">
                         <div class="card-body mx-auto d-grid flex-column align-items-center">
@@ -63,7 +48,7 @@
         </div>
     </section>
 
-    
+
 
     {{-- Deskrpsi Kelas --}}
     <section id="informasi-kelas" class="section">
@@ -311,11 +296,11 @@
 		src="https://app.sandbox.midtrans.com/snap/snap.js"></script>
     @endif
     <script>
-        
+
          $('#checkoutBtn').on('click', function(event) {
             event.preventDefault();
 
-            
+
             if('{{$isLogin}}' == 'y'){
 
                 $.ajax({
@@ -330,7 +315,7 @@
                     courseId: '{{$course->course->id}}'
                 }),
                 success: function(response) {
-                 
+
                     // Swal.fire('Berhasil', response.data.message, 'success');
                     if(response.data.midtrans_snap_token){
                         const midTransSnap = new MidTransSnap(response.data.midtrans_snap_token);
@@ -344,7 +329,7 @@
                     Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                 }
                 });
-                
+
             }else{
                 document.location.href = '/login'
             }

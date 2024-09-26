@@ -66,7 +66,7 @@ class AdminController extends Controller
 
         // Check if the response is successful
         if ($response->successful()) {
-            return $response->body(); // Decode JSON response into an object
+            return $response->json(); // Decode JSON response into an object
         } else {
             // Log the error with more context
             Log::error('Failed to fetch data from API: ' . $response->status() . ' - ' . $response->body());
@@ -249,13 +249,9 @@ class AdminController extends Controller
     {
         $title = 'Detail Kelas';
 
-        $courses = $this->fetchApiData($this->apiUrl . 'courses/' . $id);
 
-<<<<<<< HEAD
-=======
         $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
         $course = $this->fetchApiData($this->apiUrl . 'courses/'.$id);
->>>>>>> edca9f6bbbe5ab45cd2664448047acf904ba4bbc
 
         $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
         // dd( json_decode($course));
@@ -267,10 +263,10 @@ class AdminController extends Controller
         //     "video_article_content" => "Introduction to web development",
         //     "video_duration" => 60,
         // ];
-        
+
         // // Mengencode array menjadi JSON
         // $jsonData = json_encode($data);
-        
+
 
         // $apiSession = session('api_session');
         // dd($apiSession);
@@ -282,12 +278,8 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-<<<<<<< HEAD
-            "courses" => $courses,
-=======
             "categories" => json_decode($categories), // Encode the categories for JS
             "course" => json_decode($course), // Encode the categories for JS
->>>>>>> edca9f6bbbe5ab45cd2664448047acf904ba4bbc
         ]);
     }
 
@@ -296,6 +288,8 @@ class AdminController extends Controller
         $title = '';
 
         $bundle = $this->fetchApiData($this->apiUrl . 'courses/bundles/' . $id);
+        $idCourse = $this->fetchApiData($this->apiUrl . 'courses/bundles/' . $id . '/courses');
+        dd($idCourse);
         $courses = $this->fetchApiData($this->apiUrl . 'courses');
 
         return view('admin.bundlingDetail', [
@@ -316,7 +310,7 @@ class AdminController extends Controller
 
         // $apiSession = session('api_session');
         // dd($apiSession);
-        
+
 
         // Lakukan operasi lain yang diperlukan
 

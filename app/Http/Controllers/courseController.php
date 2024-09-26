@@ -125,14 +125,15 @@ class courseController extends Controller
     }
 
 
-    public function editKelas (Request $request) {
+    public function editKelas(Request $request, $id)
+    {
 
         $apiSession = session('api_session');
 
         // Definisikan headers
         $headers = [
             'Content-Type' => 'application/json',
-            'Cookie' => 'session='. $apiSession
+            'Cookie' => 'session=' . $apiSession
         ];
 
         // Definisikan body sebagai array associative
@@ -147,12 +148,12 @@ class courseController extends Controller
         ];
 
         // Kirimkan request PUT
-        $response = Http::withHeaders($headers)->put($this->apiUrl. 'courses/'. $request->id, $body);
+        $response = Http::withHeaders($headers)->put($this->apiUrl . 'courses/' . $request->id, $body);
 
         // Tampilkan response body
         if ($response->successful()) {
             return redirect()->route('admin.detailKelas')->with([
-               'message' => 'Data berhasil diperbarui.',
+                'message' => 'Data berhasil diperbarui.',
                 'details' => null
             ]);
         }
@@ -185,7 +186,7 @@ class courseController extends Controller
         // Tampilkan response body
         if ($response->successful()) {
 
-            return redirect()->route('admin.kelas')->with([
+            return redirect()->route('admin.bundling')->with([
                 'message' => 'Data berhasil ditambahkan.',
                 'details' => null
             ]);
@@ -232,6 +233,43 @@ class courseController extends Controller
         }
     }
 
+    public function bundleCoursePost(Request $request, $id)
+    {
+        // Validate the incoming request data
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric', // Ensure price is a number
+        ]);
+
+        // Fetch the API session from the session
+        $apiSession = session('api_session');
+
+        // Define headers for the API request
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Cookie' => 'session=' . $apiSession,
+        ];
+
+        // Prepare the body of the request
+        $body = [
+            'bundleSelect' => $request->input('bundleSelect'), // Menangkap array dari select input
+        ];
+
+        // Construct the API URL for updating the bundle
+        $apiUrl = $this->apiUrl . 'courses/bundles/' . $id . '/courses';
+
+        // Send the PUT request to update the bundle
+        $response = Http::withHeaders($headers)->post($apiUrl, $body);
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            return redirect()->route('admin.bundling')->with('message', 'Data berhasil diperbarui.');
+        } else {
+            // Handle the case where the update was not successful
+            return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
+        }
+    }
     public function destroy($id)
     {
         try {
@@ -285,13 +323,15 @@ class courseController extends Controller
         }
     }
 
-    function getAllCourse($page)  {
-        $response = Http::withApiSession()->get($this->apiUrl. 'courses');
+    function getAllCourse($page)
+    {
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses');
 
         return json_decode($response->getBody()->getContents());
     }
-    function getCourseById($courseId)  {
-        $response = Http::withApiSession()->get($this->apiUrl. 'courses/'.$courseId);
+    function getCourseById($courseId)
+    {
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/' . $courseId);
 
         return json_decode($response->getBody()->getContents());
     }
