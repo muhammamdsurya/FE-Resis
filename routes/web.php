@@ -19,7 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('beranda');
 
-Route::get('/test', [transactionController::class, 'helo'])->name('kelas');
+// Route::get('/test', [transactionController::class, 'helo'])->name('kelas'); testing, nanti di awasin
 Route::get('/kelas', [publicController::class, 'kelas'])->name('kelas');
 Route::get('/detail-kelas/{courseId}', [publicController::class, 'detailKelas'])->name('detail-kelas');
 
@@ -132,7 +132,7 @@ Route::prefix('')->group(function () {
 });
 
 
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::post('/activate', [AuthController::class, 'activation'])->name('activate.post');
 Route::get('/activate', [AuthController::class, 'activate'])->name('activate');
