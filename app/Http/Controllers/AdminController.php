@@ -66,7 +66,7 @@ class AdminController extends Controller
 
         // Check if the response is successful
         if ($response->successful()) {
-            return $response->body(); // Decode JSON response into an object
+            return $response->json(); // Decode JSON response into an object
         } else {
             // Log the error with more context
             Log::error('Failed to fetch data from API: ' . $response->status() . ' - ' . $response->body());
@@ -271,8 +271,8 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "categories" => json_decode($categories), // Encode the categories for JS
-            "course" => json_decode($course), // Encode the categories for JS
+            "categories" => json_decode(json_encode($categories)), // Encode the categories for JS
+            "course" => json_decode(json_encode($course)), // Encode the categories for JS
         ]);
     }
 

@@ -41,7 +41,7 @@
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="priceInput" placeholder="Price" name="price" value="$course->course->price">
+                        <input type="number" class="form-control" id="priceInput" placeholder="Price" name="price" value="{{$course->course->price}}">
                         <label for="priceInput">Harga</label>
                     </div>
 
@@ -65,12 +65,12 @@
 
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="instructorInput" placeholder="Instructor"
-                            name="instructor" value="$course->instructor->full_name">
+                            name="instructor" value="{{$course->instructor->full_name}}">
                         <label for="instructorInput">Pengajar</label>
                     </div>
 
                     <div class="form-floating">
-                        <textarea class="form-control" placeholder="Purpose" id="purposeTextarea" name="purpose" style="height: 100px">$course->course->purpose</textarea>
+                        <textarea class="form-control" placeholder="Purpose" id="purposeTextarea" name="purpose" style="height: 100px">{{$course->course->purpose}}</textarea>
                         <label for="purposeTextarea">Tujuan</label>
                     </div>
                 </div>
