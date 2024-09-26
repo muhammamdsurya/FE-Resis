@@ -13,10 +13,14 @@ class UserController extends Controller
 {
     private $user;
     private $apiUrl;
+    private $transactionCtrl;
+    private $userCourseCtrl;
     public function __construct()
     {
         $this->user = session('user');
         $this->apiUrl = env('API_URL');
+        $this->transactionCtrl = new transactionController();
+        $this->userCourseCtrl = new userCourseController();
     }
 
 
@@ -89,8 +93,13 @@ class UserController extends Controller
     {
         $title = 'Data Kelas';
 
+        $userCourses = $this->userCourseCtrl->getCoursesUser();
+
+        // dd($userCourse); 
+
         return view('user.kelas', [
             "title" => $title,
+            "userCourses" => $userCourses,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
         ]);
@@ -99,8 +108,12 @@ class UserController extends Controller
     public function transaksi(Request $request)
     {
 
-        $filter = $request->get('filter') ?? 'active';
+        $filter = $request->get('filter') ?? 'all';
+        $page = $request->get('page') ?? 0;
+        $transactions = $this->transactionCtrl->getTransactions($page, $filter);
+        $transactionsActive = $this->transactionCtrl->getTransactionsActive();
 
+        dd($transactionsActive);
 
         $title = 'Data Transaksi';
 
@@ -108,6 +121,8 @@ class UserController extends Controller
             "filter"=> $filter,
             "title" => $title,
             "id" => $this->user['id'],
+            'transactions' => $transactions,
+            'transactionsActive' => $transactionsActive,
             "full_name" => $this->user['full_name'],
         ]);
     }

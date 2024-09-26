@@ -231,12 +231,12 @@ class courseController extends Controller
     }
 
     function getAllCourse($page)  {
-        $response = Http::withClientUserIP()->get($this->apiUrl. 'courses');
+        $response = Http::withApiSession()->get($this->apiUrl. 'courses');
 
         return json_decode($response->getBody()->getContents());
     }
     function getCourseById($courseId)  {
-        $response = Http::withClientUserIP()->get($this->apiUrl. 'courses/'.$courseId);
+        $response = Http::withApiSession()->get($this->apiUrl. 'courses/'.$courseId);
 
         return json_decode($response->getBody()->getContents());
     }

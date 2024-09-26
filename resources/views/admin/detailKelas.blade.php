@@ -36,25 +36,28 @@
                 <div class="col-lg-6 col-md-6 mx-auto">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="nameInput" placeholder="name@example.com"
-                            name="name">
+                            name="name" value="{{$course->course->name}}">
                         <label for="nameInput">Nama Kelas</label>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="priceInput" placeholder="Price" name="price">
+                        <input type="number" class="form-control" id="priceInput" placeholder="Price" name="price" value="$course->course->price">
                         <label for="priceInput">Harga</label>
                     </div>
 
                     <div class="form-floating">
                         <textarea class="form-control" placeholder="Leave a comment here" id="descriptionTextarea" name="description"
-                            style="height: 100px"></textarea>
+                            style="height: 100px">{{$course->course->description}}</textarea>
                         <label for="descriptionTextarea">Deskripsi</label>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 mx-auto">
                     <div class="form-floating mb-3">
                         <select class="form-control" id="categorySelect" name="level">
-                            <option value="" disabled selected>Select Jenjang</option>
+                            <option value="" disabled>Select Jenjang</option>
+                            @foreach($categories as $category)
+                            <option value="{{$category->id}}" {{$course->course->course_category_id ==$category->id ?'selected' : '' }}  >{{$category->name}}</option>
+                            @endforeach
                             <!-- Options will be populated here -->
                         </select>
                         <label for="jenjangSelect">Jenjang</label>
@@ -62,12 +65,12 @@
 
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="instructorInput" placeholder="Instructor"
-                            name="instructor">
+                            name="instructor" value="$course->instructor->full_name">
                         <label for="instructorInput">Pengajar</label>
                     </div>
 
                     <div class="form-floating">
-                        <textarea class="form-control" placeholder="Purpose" id="purposeTextarea" name="purpose" style="height: 100px"></textarea>
+                        <textarea class="form-control" placeholder="Purpose" id="purposeTextarea" name="purpose" style="height: 100px">$course->course->purpose</textarea>
                         <label for="purposeTextarea">Tujuan</label>
                     </div>
                 </div>
@@ -105,23 +108,29 @@
 
                             <div id="video-type">
                                 <div class="form-floating mb-3">
-                                    <input type="file" class="form-control" id="contentName"
+                                    <input type="text" class="form-control" id="contentVideoArticleContent" placeholder="name@example.com"
+                                        name="name">
+                                    <label for="contentVideoArticleContent">Judul Konten</label>
+                                </div>
+
+                                <div class="form-floating mb-3">
+                                    <input type="file" class="form-control" id="contentVideoFile"
                                         placeholder="name@example.com" name="name">
-                                    <label for="contentName">Konten Video</label>
+                                    <label for="contentVideoFile">Konten Video</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="file" class="form-control" id="contentName"
+                                    <input type="file" class="form-control" id="contentVideoThumbFile"
                                         placeholder="name@example.com" name="name">
-                                    <label for="contentName">Thumbnail</label>
+                                    <label for="contentVideoThumbFile">Thumbnail</label>
                                 </div>
-                                <label for="contentName">Materi</label>
+                                <label >Materi</label>
                                 <div class="form-floating mb-3">
                                     <textarea id="summernote" name="description"></textarea>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input type="number" class="form-control" id="contentName"
+                                    <input type="number" class="form-control" id="contentVideoDuration"
                                         placeholder="name@example.com" name="name">
-                                    <label for="contentName">Durasi Video</label>
+                                    <label for="contentVideoDuration">Durasi Video</label>
                                 </div>
                             </div>
 
@@ -162,7 +171,7 @@
                     <div class="mt-5">
                         <button class="btn btn-secondary"><i class="fas fa-arrow-circle-left mr-2"></i>Sebelumnya</button>
                         @if ($selectedCourseContentId == '')
-                            <button class="btn btn-primary float-right">Simpan</button>
+                            <button id="saveContent" class="btn btn-primary float-right">Simpan</button>
                         @else
                             <button class="btn btn-primary float-right">Lanjut<i
                                     class="fas fa-arrow-circle-right ml-2"></i></button>
@@ -222,47 +231,47 @@
     <script>
         const apiUrl = '{{ env('API_URL') }}';
 
-        $.ajax({
-            url: apiUrl + 'courses/categories',
-            method: 'GET',
-            success: function(response) {
+        // $.ajax({
+        //     url: apiUrl + 'courses/categories',
+        //     method: 'GET',
+        //     success: function(response) {
 
-                const jenjangSelect = $('#categorySelect');
-                jenjangSelect.empty(); // Clear existing options
+        //         const jenjangSelect = $('#categorySelect');
+        //         jenjangSelect.empty(); // Clear existing options
 
-                jenjangSelect.append(
-                    '<option value="" disabled selected>Select Jenjang</option>'
-                ); // Default option
+        //         jenjangSelect.append(
+        //             '<option value="" disabled selected>Select Jenjang</option>'
+        //         ); // Default option
 
-                $.each(response, function(index, category) {
-                    jenjangSelect.append(new Option(category.name, category.id));
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching jenjang data:', error);
-                console.log('Error response:', xhr.responseText);
-            }
-        });
+        //         $.each(response, function(index, category) {
+        //             jenjangSelect.append(new Option(category.name, category.id));
+        //         });
+        //     },
+        //     error: function(xhr, status, error) {
+        //         console.error('Error fetching jenjang data:', error);
+        //         console.log('Error response:', xhr.responseText);
+        //     }
+        // });
 
 
-        $.ajax({
-            url: apiUrl + 'courses/' + "{{ $courseId }}", // API endpoint to fetch course data
-            method: 'GET',
-            success: function(response) {
+        // $.ajax({
+        //     url: apiUrl + 'courses/' + "{{ $courseId }}", // API endpoint to fetch course data
+        //     method: 'GET',
+        //     success: function(response) {
 
-                $('#nameInput').val(response.course.name)
-                $('#priceInput').val(response.course.price)
-                $('#descriptionTextarea').val(response.course.name)
-                $('#descriptionTextarea').val(response.course.description)
-                $('#instructorInput').val(response.instructor.full_name)
-                $('#purposeTextarea').val(response.course.purpose)
-                $('#categorySelect').val(response.course_category.id).change()
+        //         $('#nameInput').val(response.course.name)
+        //         $('#priceInput').val(response.course.price)
+        //         $('#descriptionTextarea').val(response.course.name)
+        //         $('#descriptionTextarea').val(response.course.description)
+        //         $('#instructorInput').val(response.instructor.full_name)
+        //         $('#purposeTextarea').val(response.course.purpose)
+        //         $('#categorySelect').val(response.course_category.id).change()
 
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching courses:', error);
-            }
-        });
+        //     },
+        //     error: function(xhr, status, error) {
+        //         console.error('Error fetching courses:', error);
+        //     }
+        // });
 
         $('#additional-src-type').hide()
         $('#quiz-type').hide()
@@ -339,7 +348,7 @@
                 contentType: false,
                 success: function(response) {
                     console.log("data:", response); // Log the response for debugging
-                    Swal.fire('Berhasil', 'Berhasil membuat diskusi', 'success');
+                    Swal.fire('Berhasil', 'Berhasil membuat konten', 'success');
 
                 },
                 error: function(xhr, status, error) {

@@ -32,7 +32,7 @@
             <div class="row mb-3 text-center">
                 <div class="d-grid gap-2 d-none d-md-block">
                     <button class="btn btn-{{ $filter == 'active' ? 'primary' : 'secondary' }}" type="button">Belum Bayar</button>
-                    <button class="btn btn-{{ $filter == 'capture' ? 'primary' : 'secondary' }}" type="button">Berhasil</button>
+                    <button class="btn btn-{{ $filter == 'capture' ? 'primary' : 'secondary' }}" type="button">Capture</button>
                     <button class="btn btn-{{ $filter == 'pending' ? 'primary' : 'secondary' }}" type="button">Pending</button>
                     <button class="btn btn-{{ $filter == 'settlement' ? 'primary' : 'secondary' }}" type="button">Settlement</button>
                     <button class="btn btn-{{ $filter == 'deny' ? 'primary' : 'secondary' }}" type="button">Ditolak</button>
@@ -43,17 +43,20 @@
                 </div>
             </div>
             <div class="row ">
+                @foreach($transactions->data as $transaction)
                 <div class="col-lg-3 col-md-4 col-6">
                     <div class="card" style="width: 100%;">
                         <img src="{{ asset('assets/img/values-1.png') }}" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <p class="text-center text-danger mb-1">Belum Bayar</p>
-                            <h5 class="card-title">Praktikum Laboratorium Dasar</h5>
+                            <p class="text-center text-danger mb-1">{{$transaction->transaction->payment_status}}</p>
+                            <h5 class="card-title">{{$transaction->course->name}}</h5>
                             <a href="#" class="btn btn-primary mt-2">Bayar <i
                                     class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                 </div>
+                @endforeach
+               
             </div>
 
             <nav aria-label="Page navigation example">

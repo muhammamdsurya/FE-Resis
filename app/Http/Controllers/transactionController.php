@@ -52,10 +52,21 @@ class transactionController extends Controller
                 }
     }
 
+    function getTransactions($page, $status)  {
+        $response = Http::withApiSession()->get($this->apiUrl. 'courses/transactions?status='.$status.'&page='.$page);
+
+        return  json_decode($response->getBody()->getContents());
+    }
+    function getTransactionsActive()  {
+        $response = Http::withApiSession()->get($this->apiUrl. 'courses/transactions/active');
+
+        return  json_decode($response->getBody()->getContents());
+    }
+
 
     function helo() {
         // $response = Http::withApiSession()->get(env('API_URL'). 'user/'.$this->user['id'].'/courses');
-        $response = Http::withApiSession()->get(env('API_URL'). 'user/'.$this->user['id'].'/courses');
-        dd(json_decode($response->body()));
+        $response = Http::withApiSession()->get(env('API_URL'). 'courses/9fc1f3e6-be61-424e-9c09-414f9a39b4da/forums');
+        dd($response->body());
     }
 }

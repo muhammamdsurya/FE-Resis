@@ -66,7 +66,7 @@ class AdminController extends Controller
 
         // Check if the response is successful
         if ($response->successful()) {
-            return $response->json(); // Decode JSON response into an object
+            return $response->body(); // Decode JSON response into an object
         } else {
             // Log the error with more context
             Log::error('Failed to fetch data from API: ' . $response->status() . ' - ' . $response->body());
@@ -244,24 +244,25 @@ class AdminController extends Controller
         $title = '';
 
         $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
+        $course = $this->fetchApiData($this->apiUrl . 'courses/'.$id);
 
         $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
-        $data = [
-            "course_id" => "5a1e0960-2044-4e00-b0a6-a7352c324a1f",
-            "content_title" => "Introduction",
-            "content_description" => "Introduction to web development",
-            "content_type" => "video",
-            "video_article_content" => "Introduction to web development",
-            "video_duration" => 60,
-        ];
+        // dd( json_decode($course));
+        // $data = [
+        //     "course_id" => "5a1e0960-2044-4e00-b0a6-a7352c324a1f",
+        //     "content_title" => "Introduction",
+        //     "content_description" => "Introduction to web development",
+        //     "content_type" => "video",
+        //     "video_article_content" => "Introduction to web development",
+        //     "video_duration" => 60,
+        // ];
         
-        // Mengencode array menjadi JSON
-        $jsonData = json_encode($data);
+        // // Mengencode array menjadi JSON
+        // $jsonData = json_encode($data);
         
 
-        $apiSession = session('api_session');
-        dd([
-            'course_content_form'=>  $jsonData]);
+        // $apiSession = session('api_session');
+        // dd($apiSession);
 
         return view('admin.detailKelas', [
             "title" => $title,
@@ -270,7 +271,8 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "categories" => json_encode($categories), // Encode the categories for JS
+            "categories" => json_decode($categories), // Encode the categories for JS
+            "course" => json_decode($course), // Encode the categories for JS
         ]);
     }
 

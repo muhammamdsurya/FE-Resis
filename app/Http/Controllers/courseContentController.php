@@ -108,8 +108,18 @@ class courseContentController extends Controller
 
         $courseContentForm = json_encode($jsonData);
         
-        $response = Http::withHeaders($headers)->asForm()->contentType( 'multipart/form-data')->post($this->apiUrl . 'courses/' . $courseId . '/contents', [
-           'course_content_form'=>$courseContentForm
+        // $response = Http::asForm()->contentType('multipart/form-data')->withHeaders($headers)->post($this->apiUrl . 'courses/' . $courseId . '/contents', [
+            
+        //         'course_content_form'=> $courseContentForm,
+        //         'type' => 'application/json'
+        //     ]);
+        $response = Http::withHeaders($headers)->attach(
+            'course_content_form', '{}'
+        )->post($this->apiUrl . 'courses/' . $courseId . '/contents', [
+                'form_params'=> [
+                    'course_content_form'=> '{}'
+
+                ]
             ]);
 
         if ($response->successful()) {

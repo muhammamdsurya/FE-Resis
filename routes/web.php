@@ -72,7 +72,7 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::put('/kelas/{CourseId}', [courseController::class, 'editKelas'])->name('kelas.edit');
 
 
-    Route::post('/data/kelas/{id}/content/create', [courseContentController::class, 'createCourseContent'])->name('data.kelas.content.create');
+    Route::post('/data/kelas/{id}/content/create', [courseContentController::class, 'createCourseContent'])->name('admin.kelas.content.post');
 });
 
 
@@ -132,7 +132,7 @@ Route::prefix('')->group(function () {
 });
 
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::post('/activate', [AuthController::class, 'activation'])->name('activate.post');
 Route::get('/activate', [AuthController::class, 'activate'])->name('activate');
