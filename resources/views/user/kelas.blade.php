@@ -17,6 +17,7 @@
         </div>
         <div class="row g-2">
 
+            @foreach($userCourses->data as $userCourse)
             <div class="col-lg-3 col-md-4 col-6">
                 <div class="card" style="width: 100%;">
                     <img src="{{asset ('assets/img/values-1.png') }}" class="card-img-top" alt="...">
@@ -25,25 +26,14 @@
                             <div class="progress-bar bg-success" style="width: 25%">25%</div>
                           </div>
 
-                        <h5 class="card-title my-2">Praktikum Laboratorium Dasar</h5>
-                        <a href="/user/materi" class="fs-6 text-decoration-none">Lanjutkan <i class="fas fa-arrow-circle-right"></i></a>
+                        <div class="d-flex flex-column">
+                            <h5 class="card-title my-2">{{$userCourse->course->name}}</h5>
+                            <a href="/user/diskusi-kelas/{{$userCourse->course->id}}" class="fs-6 text-decoration-none">Lanjutkan <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-6">
-                <div class="card" style="width: 100%;">
-                    <img src="{{asset ('assets/img/values-1.png') }}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-success" style="width: 25%">25%</div>
-                          </div>
-
-                        <h5 class="card-title my-2">Praktikum Laboratorium Dasar</h5>
-                        <a href="/user/materi" class="fs-6 text-decoration-none">Lanjutkan <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                </div>
-            </div>
+            </div> 
+            @endforeach
 
         </div>
         <nav aria-label="Page navigation example">

@@ -284,4 +284,15 @@ class courseController extends Controller
             ], 500);
         }
     }
+
+    function getAllCourse($page)  {
+        $response = Http::withApiSession()->get($this->apiUrl. 'courses');
+
+        return json_decode($response->getBody()->getContents());
+    }
+    function getCourseById($courseId)  {
+        $response = Http::withApiSession()->get($this->apiUrl. 'courses/'.$courseId);
+
+        return json_decode($response->getBody()->getContents());
+    }
 }

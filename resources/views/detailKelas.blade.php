@@ -16,12 +16,22 @@
 
                             <div class="col-lg-7">
                                 <div>
+<<<<<<< HEAD
                                     <h4>{{$courses['course']['name']}}</h4>
                                     <div class="header-card d-flex justify-content-between">
                                         <p class="mr-auto fs-6"><i class="bi bi-star-fill text-warning me-1"></i>{{$courses['course']['rating']}}</p>
                                         <p class="ml-auto fs-6">Jenjang : {{$courses['course_category']['name']}}</p>
                                     </div>
                                     <p> {{$courses['course']['description']}}
+=======
+                                    <h4>{{$course->course->name}}</h4>
+                                    <div class="header-card d-flex justify-content-between">
+                                        <p class="mr-auto fs-6"><i class="bi bi-star-fill text-warning me-1"></i>{{$course->course->rating}}</p>
+                                        <p class="ml-auto fs-6">Jenjang : '{{$course->course_category->name}}'</p>
+                                    </div>
+                                    <p>100 Siswa Terdaftar</p>
+                                    <p> {{$course->course->description}}
+>>>>>>> edca9f6bbbe5ab45cd2664448047acf904ba4bbc
                                     </p>
                                 </div>
                             </div><!-- End Feature Item -->
@@ -33,9 +43,14 @@
                     data-aos-delay="100">
                     <div class="card text-bg-light shadow" style="width: 100%;">
                         <div class="card-body mx-auto d-flex flex-column align-items-center">
+<<<<<<< HEAD
                             <h5 class="card-title">Rp {{ number_format($courses['course']['price'], 0, ',', '.') }}
                             </h5>
                             <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
+=======
+                            <h5 class="card-title">Rp. {{$course->course->price}}</h5>
+                            <button id="checkoutBtn" class="btn btn-success">Belajar Sekarang</button>
+>>>>>>> edca9f6bbbe5ab45cd2664448047acf904ba4bbc
                         </div>
                         <hr class="border border-dark border-1 opacity-20">
                         <div class="card-body mx-auto d-grid flex-column align-items-center">
@@ -48,6 +63,8 @@
         </div>
     </section>
 
+    
+
     {{-- Deskrpsi Kelas --}}
     <section id="informasi-kelas" class="section">
         <div class="container shadow p-3">
@@ -55,12 +72,20 @@
                 <div class="col-lg-7">
                     <div class="container mb-3">
                         <h4>Deskripsi</h4>
+<<<<<<< HEAD
                         <p>{{$courses['course']['description']}}
+=======
+                        <p>{{$course->course->description}}
+>>>>>>> edca9f6bbbe5ab45cd2664448047acf904ba4bbc
                         </p>
                     </div>
                     <div class="container mb-3">
                         <h4>Tujuan</h4>
+<<<<<<< HEAD
                         <p>{{$courses['course']['purpose']}}
+=======
+                        <p>{{$course->course->purpose}}
+>>>>>>> edca9f6bbbe5ab45cd2664448047acf904ba4bbc
                         </p>
                     </div>
                     <div class="container mb-3">
@@ -68,9 +93,15 @@
                         <div class="d-flex my-3 align-items-center gap-3">
                             <img src="assets/img/values-1.png" alt="" width="100rem">
                             <div class="container">
+<<<<<<< HEAD
                                 <h6>{{$courses['instructor']['full_name']}}</h6>
                                 <p>{{$courses['instructor']['instructor']['education']}}</p>
                                 <p>{{$courses['instructor']['instructor']['experience']}}</p>
+=======
+                                <h6>{{$course->instructor->full_name}}</h6>
+                                <p>{{$course->instructor->instructor->education}}</p>
+                                <p>Tutor Online</p>
+>>>>>>> edca9f6bbbe5ab45cd2664448047acf904ba4bbc
                             </div>
                         </div>
                     </div>
@@ -272,5 +303,54 @@
         </div>
 
     </section><!-- /Testimonials Section -->
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @if($isLogin == 'y')
+    <script type="text/javascript"
+		src="https://app.sandbox.midtrans.com/snap/snap.js"></script>
+    @endif
+    <script>
+        
+         $('#checkoutBtn').on('click', function(event) {
+            event.preventDefault();
+
+            
+            if('{{$isLogin}}' == 'y'){
+
+                $.ajax({
+                url: '{{ route("user.checkout") }}', // Direct API endpoint
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content')
+                },
+                data: JSON.stringify({
+                    courseId: '{{$course->course->id}}'
+                }),
+                success: function(response) {
+                 
+                    // Swal.fire('Berhasil', response.data.message, 'success');
+                    if(response.data.midtrans_snap_token){
+                        const midTransSnap = new MidTransSnap(response.data.midtrans_snap_token);
+                        midTransSnap.pay();
+                    }
+
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error); // Log the error for debugging
+                    console.error('Response Text:', xhr.responseText);
+                    Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                }
+                });
+                
+            }else{
+                document.location.href = '/login'
+            }
+         })
+    </script>
+
+
 
 @endsection
