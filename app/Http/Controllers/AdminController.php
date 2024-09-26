@@ -278,8 +278,8 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "categories" => json_decode($categories), // Encode the categories for JS
-            "course" => json_decode($course), // Encode the categories for JS
+            "categories" => json_decode(json_encode($categories)), // Encode the categories for JS
+            "course" => json_decode(json_encode($course)), // Encode the categories for JS
         ]);
     }
 
