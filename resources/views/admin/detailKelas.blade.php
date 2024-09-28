@@ -64,10 +64,10 @@
                     </div>
 
                     <div class="form-floating mb-3">
-                          <option value="" disabled>Select Jenjang</option>
+                          {{-- <option value="" disabled>Select Jenjang</option>
                             @foreach($categories as $category)
                             <option value="{{$category->id}}" {{$course->course->course_category_id ==$category->id ?'selected' : '' }}  >{{$category->name}}</option>
-                            @endforeach
+                            @endforeach --}}
                         <label for="instructorInput">Pengajar</label>
                     </div>
 

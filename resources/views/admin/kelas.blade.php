@@ -47,7 +47,6 @@
                             name="q" aria-label="Search" value="{{ request('q') }}">
                         <button type="submit" class="btn btn-primary ml-2">Search</button>
                     </form>
-
                 </div>
             </div>
             <div class="col-5 d-flex justify-content-end gap-1 pl-2">
@@ -189,7 +188,7 @@
                 @if ($pagination ?? false) {{-- Jika ada pagination --}}
                     @foreach ($courses['data'] as $item) {{-- Akses data dari courses['data'] --}}
                         <div class="col-lg-3 col-md-4 col-6">
-                            <a href="{{ route('admin.detailKelas', ['CourseId' => $item['course']['id']]) }}" class="text-decoration-none">
+                            <a href="{{ route('detail-kelas', ['id' => $item['course']['id']]) }}" class="text-decoration-none">
                                 <div class="card shadow-sm border-light rounded">
                                     <img src="{{ asset('assets/img/values-1.png') }}" class="card-img-top"
                                          alt="{{ $item['course']['name'] }}"
@@ -210,7 +209,7 @@
                 @else {{-- Jika tidak ada pagination --}}
                     @foreach ($courses as $item)
                         <div class="col-lg-3 col-md-4 col-6">
-                            <a href="{{ route('detail-kelas', ['id' => $item['course']['id']]) }}" class="text-decoration-none">
+                            <a href="{{ route('detail-kelas', ['id' => $item['id']]) }}" class="text-decoration-none">
                                 <div class="card shadow-sm border-light rounded">
                                     <img src="{{ asset('assets/img/values-1.png') }}" class="card-img-top"
                                          alt="{{ $item['name'] }}"
@@ -230,9 +229,6 @@
                     @endforeach
                 @endif
             </div>
-
-
-
 
             <!-- Bootstrap Modal HTML -->
             <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel"

@@ -204,13 +204,14 @@ class courseController extends Controller
     }
 
 
-    public function bundleEdit(Request $request, $id) // Get $id directly from the route parameter
+    public function bundleEdit(Request $request, $id)
     {
         // Validate the incoming request data
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'price' => 'required|numeric', // Ensure price is a number
+            'price' => 'required|numeric', // Validate price as numeric
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validasi gambar (opsional)
         ]);
 
         // Fetch the API session from the session
@@ -222,27 +223,51 @@ class courseController extends Controller
             'Cookie' => 'session=' . $apiSession,
         ];
 
-        // Prepare the body of the request
+        // Prepare the body of the request for updating the bundle data
         $body = [
-            'name' => $request->input('name'), // Directly using input()
+            'name' => $request->input('name'),
             'description' => $request->input('description'),
-            'price' => (int) $request->input('price'), // Cast to int for price
+            'price' => (int) $request->input('price'),
         ];
 
-        // Construct the API URL for updating the bundle
+        // API URL for updating the bundle data
         $apiUrl = $this->apiUrl . 'courses/bundles/' . $id;
 
-        // Send the PUT request to update the bundle
+        // Send the PUT request to update the bundle data
         $response = Http::withHeaders($headers)->put($apiUrl, $body);
 
-        // Check if the request was successful
+        // Check if the bundle data update was successful
         if ($response->successful()) {
+            // Check if a new thumbnail was uploaded
+            // Prepare for the image upload (second API request)
+            if ($request->hasFile('image')) {
+                // Use the attach method for a multipart/form-data request
+                $imageResponse = Http::withHeaders(['Cookie' => 'session=' . $apiSession])
+                    ->attach(
+                        'thumbnail_image',
+                        fopen($request->file('image')->getRealPath(), 'r'), // Open the file for reading
+                        $request->file('image')->getClientOriginalName() // Get the original filename
+                    )
+                    ->put($this->apiUrl . "courses/bundles/" . $id . "/thumbnail");
+
+                // Check if the image upload was successful
+
+                // Cek respons API
+                if ($imageResponse->successful()) {
+                    // Debugging: Print response body to see if image upload succeeded
+                    return redirect()->route('admin.bundling')->with('message', 'Data dan thumbnail berhasil diperbarui.');
+                } else {
+                    return redirect()->route('admin.bundling')->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
+                }
+            }
+            // If no thumbnail is uploaded, only update the body
             return redirect()->route('admin.bundling')->with('message', 'Data berhasil diperbarui.');
         } else {
-            // Handle the case where the update was not successful
+            // Handle case where the bundle data update fails
             return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
         }
     }
+
 
     public function bundleCoursePost(Request $request, $id)
     {
@@ -274,19 +299,36 @@ class courseController extends Controller
         }
     }
 
-    public function bundleCourseDelete($id) {
-        $apiUrl = $this->apiUrl . 'courses/bundles/'. $id . '/courses';
+    public function bundleCourseDelete(Request $request, $id)
+    {
+        // Validasi incoming request untuk courseIds
+        $request->validate([
+            'courseIds' => 'required|array', // Memastikan courseIds adalah array
+            'courseIds.*' => 'required|string', // Memastikan setiap courseId adalah string
+        ]);
 
-        $response = Http::withApiSession()->delete($apiUrl);
+        // Ambil courseIds dari request
+        $courseIds = $request->input('courseIds');
 
-        dd($response);
+        // Buat URL API untuk menghapus kursus dari bundel
+        $apiUrl = $this->apiUrl . 'courses/bundles/' . $id . '/courses';
 
+        // Kirim permintaan DELETE ke API dengan courseIds dalam body
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json', // Pastikan konten adalah JSON
+            'Cookie' => 'session=' . session('api_session') // Ambil sesi dari session
+        ])->delete($apiUrl, $courseIds); // Mengirimkan courseIds sebagai body
+
+        // Periksa apakah permintaan berhasil
         if ($response->successful()) {
-            return redirect()->route('admin.bundling')->with('message', 'Data berhasil dihapus.');
+            return response()->json(['success' => true, 'message' => 'Kelas berhasil dihapus.'], 200);
         } else {
-            return redirect()->back()->withErrors(['msg' => 'Gagal menghapus data.']);
+            return response()->json(['success' => false, 'message' => 'Failed to delete course bundle.'], 500);
         }
+
     }
+
+
 
     public function destroyBundle($id)
     {

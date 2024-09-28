@@ -126,7 +126,7 @@ class AdminController extends Controller
 
         if ($query) {
             // Fetch courses dengan parameter query
-            $courses = $this->fetchApiData($this->apiUrl . 'courses/search?q=' . urlencode($query) );
+            $courses = $this->fetchApiData($this->apiUrl . 'courses/search?q=' . urlencode($query));
         } else {
             // Fetch courses tanpa pencarian
             $courses = $this->fetchApiData($this->apiUrl . 'courses?page=' . $page);
@@ -173,16 +173,25 @@ class AdminController extends Controller
 
         $title = 'Data Bundling';
         $page = $request->input('page', 1); // Get the current page or default to 1
-        $bundles = $this->fetchApiData($this->apiUrl . 'courses/bundles?page=' . $page);
 
+        // Ambil nilai input 'q' dari form
+        $query = $request->input('q');
+
+        if ($query) {
+            // Fetch courses dengan parameter query
+            $bundles = $this->fetchApiData($this->apiUrl . 'courses/bundles/search?q=' . urlencode($query));
+        } else {
+            // Fetch courses tanpa pencarian
+            $bundles = $this->fetchApiData($this->apiUrl . 'courses/bundles?page=' . $page);
+        }
 
         return view('admin.bundling', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "bundles" => $bundles['data'],
-            "pagination" => $bundles['pagination'], // Get pagination data
+            "bundles" => $bundles,
+            "pagination" => $bundles['pagination'] ?? null,
         ]);
     }
 
@@ -262,51 +271,51 @@ class AdminController extends Controller
 
         $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
         $course = $this->fetchApiData($this->apiUrl . 'courses/' . $id);
-        $courseContents = $this->courseContentCtrl->courseContents($id);
+        // $courseContents = $this->courseContentCtrl->courseContents($id);
         $courseContent = null;
         $previousCourseContentId = '';
         $nextCourseContentId = '';
 
         $videoType = 'video';
         $addSrcType = 'additional_source';
-        $quizType= 'quiz';
+        $quizType = 'quiz';
 
         $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
 
 
-        if($selectedCourseContentId != ''){
-            $courseContent = $this->courseContentCtrl->courseContentsById($id, $selectedCourseContentId);
+        // if($selectedCourseContentId != ''){
+        //     $courseContent = $this->courseContentCtrl->courseContentsById($id, $selectedCourseContentId);
 
-            if(!$courseContent){
-                $selectedCourseContentId = '';
-            }
+        //     if(!$courseContent){
+        //         $selectedCourseContentId = '';
+        //     }
 
-            if ($selectedCourseContentId != '') {
-                $selectedIndex = -1; // Use -1 to indicate not found initially
-                foreach ($courseContents as $index => $content) {
-                    if ($content->id === $selectedCourseContentId) {
-                        $selectedIndex = $index; // Set the selected index
-                        break;
-                    }
-                }
+        //     if ($selectedCourseContentId != '') {
+        //         $selectedIndex = -1; // Use -1 to indicate not found initially
+        //         foreach ($courseContents as $index => $content) {
+        //             if ($content->id === $selectedCourseContentId) {
+        //                 $selectedIndex = $index; // Set the selected index
+        //                 break;
+        //             }
+        //         }
 
-                $nextCourseContentId = null;
-                $previousCourseContentId = null;
+        //         $nextCourseContentId = null;
+        //         $previousCourseContentId = null;
 
-                if ($selectedIndex !== -1) { // Ensure we found the selected index
-                    // Check for previous and next content
-                    if ($selectedIndex > 0) {
-                        $previousCourseContentId = $courseContents[$selectedIndex - 1]->id;
-                    }
+        //         if ($selectedIndex !== -1) { // Ensure we found the selected index
+        //             // Check for previous and next content
+        //             if ($selectedIndex > 0) {
+        //                 $previousCourseContentId = $courseContents[$selectedIndex - 1]->id;
+        //             }
 
-                    if ($selectedIndex < count($courseContents) - 1) {
-                        $nextCourseContentId = $courseContents[$selectedIndex + 1]->id;
-                    }
-                }
-            }
+        //             if ($selectedIndex < count($courseContents) - 1) {
+        //                 $nextCourseContentId = $courseContents[$selectedIndex + 1]->id;
+        //             }
+        //         }
+        //     }
 
 
-        }
+        // }
 
         // if($selectedCourseContentId == ''){
         //     if(isset($courseContents)){
@@ -330,11 +339,11 @@ class AdminController extends Controller
             "role" => $this->user['role'],
             "categories" => json_decode(json_encode($categories)), // Encode the categories for JS
             "course" => json_decode(json_encode($course)), // Encode the categories for JS
-            "courseContents" => $courseContents, // Encode the categories for JS
+            // "courseContents" => $courseContents, // Encode the categories for JS
             "courseContent" => $courseContent, // Encode the categories for JS
-            "videoType"=>$videoType,
-            "addSrcType"=>$addSrcType,
-            "quizType"=>$quizType,
+            "videoType" => $videoType,
+            "addSrcType" => $addSrcType,
+            "quizType" => $quizType,
         ]);
     }
 
@@ -346,7 +355,6 @@ class AdminController extends Controller
         $courses = $this->fetchApiData($this->apiUrl . 'courses');
         // Fetch the course IDs from the API
         $idCourse = $this->fetchApiData($this->apiUrl . 'courses/bundles/' . $id . '/courses');
-
         // Check if $idCourse is an array and not empty
         if (is_array($idCourse) && !empty($idCourse)) {
             // Initialize an array to hold course details
@@ -360,9 +368,13 @@ class AdminController extends Controller
                 // Store the details in the courseDetails array
                 $courseDetails[] = $detail;
             }
+            // If course details are empty, set a message
+            if (empty($courseDetails)) {
+                $courseDetails = ['message' => 'Belum ada data'];
+            }
         } else {
             // Handle the case where no course IDs were returned
-            echo json_encode('message', 'Belum ada data');
+            $courseDetails = ['message' => 'Belum ada data'];
         }
 
 

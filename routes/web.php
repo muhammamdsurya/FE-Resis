@@ -68,7 +68,7 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::post('/detail-bundling/{id}/edit', [CourseController::class, 'bundleEdit'])->name('bundle.edit');
     Route::post('/detail-bundling/{id}/course', [CourseController::class, 'bundleCoursePost'])->name('bundleCourse.post');
     Route::delete('/detail-bundling/delete/{id}', [courseController::class, 'destroyBundle'])->name('bundles.destroy');
-    Route::delete('/detail-bundling/course/delete', [CourseController::class, 'bundleCourseDelete'])->name('bundleCourse.delete');
+    Route::delete('/detail-bundling/{bundleId}/course/delete', [CourseController::class, 'bundleCourseDelete'])->name('bundleCourse.delete');
 
 
     Route::delete('/kelas/{id}', [courseController::class, 'destroy'])->name('categories.destroy');

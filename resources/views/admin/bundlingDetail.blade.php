@@ -3,6 +3,44 @@
 
 @section('content')
 
+    <style>
+        .image-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-container img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5) !important;
+            /* Warna hitam transparan */
+            color: white !important;
+            opacity: 0;
+            /* Awalnya disembunyikan */
+            transition: opacity 0.3s ease;
+            /* Animasi saat hover */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border-radius: 10px;
+        }
+
+        .image-container:hover .overlay {
+            opacity: 1;
+            cursor: pointer;
+            /* Muncul saat di-hover */
+        }
+    </style>
     <div class="container">
         <div class="row">
             <!-- Left Column: Data Bundling -->
@@ -12,14 +50,20 @@
                         <h5 class="card-title">Data Bundling</h5>
                     </div>
                     <div class="card-body">
-                        <!-- Image Section -->
-                        <div class="image text-center mb-4">
-                            <img src="{{ $bundle['thumbnail_image'] }}" alt="Bundle Image" class="img-fluid rounded shadow">
-                        </div>
-
-                        <!-- Bundle Details Form -->
-                        <form id="courseForm" method="POST" action="{{ route('bundle.edit', ['id' => $bundle['id']]) }}">
+                        <form id="courseForm" method="POST" action="{{ route('bundle.edit', ['id' => $bundle['id']]) }}"
+                            enctype="multipart/form-data">
                             @csrf
+
+                            <!-- Image Section -->
+                            <div class="image-container text-center mb-4">
+                                <img src="{{ $bundle['thumbnail_image'] }}" alt="Bundle Image"
+                                    class="img-fluid rounded shadow image-preview" id="imagePreview">
+                                <div class="overlay">Ganti Gambar</div>
+                            </div>
+                            <input type="file" id="imageUpload" name="image" style="display: none;" accept="image/*">
+
+                            <!-- Bundle Details Form -->
+
                             <div class="row gy-4">
                                 <!-- Bundle Name -->
                                 <div class="col-md-12">
@@ -69,7 +113,7 @@
             <div class="col-md-6 mb-4">
                 <div class="card shadow">
                     <div class="card-header">
-                        <h5 class="card-title">Data Bundling</h5>
+                        <h5 class="card-title">Kelas Bundling</h5>
                     </div>
                     <div class="card-body">
                         <!-- Courses Selection Form -->
@@ -103,7 +147,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (!empty($courseDetails))
+                                    @if (isset($courseDetails['message']))
+                                        <tr>
+                                            <td colspan="2" class="text-center">Tidak ada kelas tersedia.</td>
+                                        </tr>
+                                    @else
                                         @foreach ($courseDetails as $item)
                                             <tr>
                                                 <td>{{ $item['course']['name'] ?? 'Unknown Course' }}</td>
@@ -116,10 +164,7 @@
 
                                             </tr>
                                         @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="2" class="text-center">Tidak ada kelas tersedia.</td>
-                                        </tr>
+
                                     @endif
                                 </tbody>
 
@@ -139,6 +184,22 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        $(document).ready(function() {
+            // Ketika gambar di-klik, trigger input file
+            $('.image-container').on('click', function() {
+                $('#imageUpload').click();
+            });
+
+            // Mengubah tampilan gambar setelah memilih file
+            $('#imageUpload').on('change', function(e) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    $('#imagePreview').attr('src', event.target.result);
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            });
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
 
             document.getElementById('deleteButton').addEventListener('click', function() {
@@ -214,15 +275,15 @@
                     const nameCell = newRow.insertCell(0);
                     nameCell.textContent = courseName;
 
-                    // // Insert action (delete button)
-                    // const actionCell = newRow.insertCell(1);
-                    // const deleteButton = document.createElement('button');
-                    // deleteButton.className = 'btn btn-danger';
-                    // deleteButton.textContent = 'Hapus';
-                    // deleteButton.addEventListener('click', function() {
-                    //     courseTable.deleteRow(newRow.rowIndex - 1); // Delete the row
-                    // });
-                    // actionCell.appendChild(deleteButton);
+                    // Insert action (delete button)
+                    const actionCell = newRow.insertCell(1);
+                    const deleteButton = document.createElement('button');
+                    deleteButton.className = 'btn btn-info';
+                    deleteButton.textContent = 'ganti';
+                    deleteButton.addEventListener('click', function() {
+                        courseTable.deleteRow(newRow.rowIndex - 1); // Delete the row
+                    });
+                    actionCell.appendChild(deleteButton);
 
                     // Append hidden input to the form for submission
                     const hiddenInput = document.createElement('input');
@@ -231,7 +292,13 @@
                     hiddenInput.value = courseId;
                     newRow.appendChild(hiddenInput);
                 } else {
-                    alert('Kelas ini sudah ditambahkan!');
+                    Swal.fire({
+                        title: 'Info!',
+                        text: 'Kelas ini sudah ditambahkan!',
+                        icon: 'info',
+                        showConfirmButton: false,
+                        timer: 1000, // Set the timer in milliseconds (e.g., 2000 ms = 2 seconds)
+                    });
                 }
             });
         });
@@ -251,6 +318,9 @@
         });
 
         function confirmDelete(courseId) {
+            let bundleId = {!! json_encode($bundle['id']) !!};
+            console.log('bundle id' + bundleId); // Ini akan mencetak id bundel
+
             Swal.fire({
                 title: 'Konfirmasi Hapus',
                 text: "Apakah Anda yakin ingin menghapus kelas ini?",
@@ -262,33 +332,48 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Send DELETE request to Laravel route
-                    fetch(`/admin/detail-bundling/course/delete`, {
+                    fetch(`/admin/detail-bundling/${bundleId}/course/delete`, {
                             method: 'DELETE',
                             headers: {
-                                'X-CSRF-Token': '{{ csrf_token() }}' // Include CSRF token for Laravel
-                            }
+                                'X-CSRF-Token': '{{ csrf_token() }}', // Sertakan token CSRF untuk Laravel
+                                'Content-Type': 'application/json' // Setel konten tipe ke JSON
+                            },
+                            body: JSON.stringify({
+                                courseIds: [courseId] // Mengirim courseId dalam array
+                            })
                         })
                         .then(response => {
-                            console.log(response);
-                            if (response.ok) {
-                                Swal.fire(
-                                    'Yess!',
-                                    'Berhasil Dihapus!',
-                                    'success'
-                                ).then(() => {
-                                    // Redirect to the specified route
-                                    window.location.href =
-                                        '{{ route('admin.bundling') }}'; // Redirect to the admin bundling page
+                            // Check if the response is OK (status in the range 200-299)
+                            if (!response.ok) {
+                                return response.json().then(data => {
+                                    throw new Error(data.message);
                                 });
                             }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // Handle success
+                            // Handle success with SweetAlert
+                            Swal.fire({
+                                title: 'Success!',
+                                text: data.message,
+                                icon: 'success',
+                                confirmButtonText: 'Okay'
+                            });
+                            window.location.href = `/admin/detail-bundling/${bundleId}`;
+
                         })
                         .catch(error => {
-                            Swal.fire(
-                                'Error!',
-                                'There was an error deleting the course bundle.',
-                                'error'
-                            );
+                            // Handle error
+                            // Handle error with SweetAlert
+                            Swal.fire({
+                                title: 'Error!',
+                                text: error.message,
+                                icon: 'error',
+                                confirmButtonText: 'Try Again'
+                            });
                         });
+
                 }
             });
         };
