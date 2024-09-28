@@ -288,16 +288,23 @@ class AdminController extends Controller
                         $nextCourseContentId = $courseContents[$selectedIndex + 1]->id;
                     }
                 }
+
+                if($courseContent->content_type == $videoType){
+                    $courseContentVideo = $this->courseContentCtrl->courseContentVideo($id, $selectedCourseContentId);
+                    $courseContent->video = $courseContentVideo;
+                    // dd($courseContentVideo);
+                }else if($courseContent->content_type == $addSrcType){
+                    $courseContentSrc = $this->courseContentCtrl->courseContentSrc($id, $selectedCourseContentId);
+                    $courseContent->src = $courseContentSrc;
+                }else if($courseContent->content_type == $quizType){
+                    $courseContentQuiz = $this->courseContentCtrl->courseContentQuiz($id, $selectedCourseContentId);
+                    $courseContent->quiz = $courseContentQuiz;
+
+                }
             }
             
 
         }
-
-        // if($selectedCourseContentId == ''){
-        //     if(isset($courseContents)){
-        //         $selectedCourseContentId = $courseContents[0]->id;
-        // }
-        // }
 
         // dd($courseContent);
        
