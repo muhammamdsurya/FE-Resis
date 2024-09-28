@@ -77,6 +77,7 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 
 
     Route::post('/data/kelas/{id}/content/create', [courseContentController::class, 'createCourseContent'])->name('admin.kelas.content.post');
+    Route::delete('/data/kelas/{courseId}/content/{id}/delete', [courseContentController::class, 'deleteContent'])->name('admin.kelas.content.delete');
 });
 
 
@@ -90,12 +91,13 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::get('/kelas', [UserController::class, 'kelas'])->name('user.kelas');
     Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
     Route::get('/materi', [UserController::class, 'materi'])->name('materi');
-    Route::get('/diskusi-kelas/{id}', [AdminController::class, 'diskusi'])->name('diskusi');
+    Route::get('/diskusi-kelas/{courseId}', [UserController::class, 'diskusi'])->name('diskusi');
+    Route::get('/detail-kelas/{courseId}', [UserController::class, 'detailKelas'])->name('user.detail');
 
     Route::post('/complete-data', [UserDataController::class, 'completePost'])->name('complete.post');
 
     Route::post('/diskusi-kelas/{courseId}', [courseForumController::class, 'createCourseForum'])->name('diskusi.post');
-    Route::get('/diskusi-kelas/data/{courseId}', [courseForumController::class, 'courseForumAll'])->name('diskusi.get');
+    Route::post('/quiz/answer/{contentId}', [courseContentController::class, 'answerQuiz'])->name('quiz.answer');
 
     Route::post('/checkout', [transactionController::class, 'checkout'])->name('user.checkout');
 });
@@ -136,7 +138,7 @@ Route::prefix('')->group(function () {
 });
 
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::post('/activate', [AuthController::class, 'activation'])->name('activate.post');
 Route::get('/activate', [AuthController::class, 'activate'])->name('activate');
