@@ -15,12 +15,14 @@ class AdminController extends Controller
 {
     private $user;
     private $apiUrl;
+    private $courseContentCtrl;
 
 
     public function __construct()
     {
         $this->user = session('user');
         $this->apiUrl = env('API_URL');
+        $this->courseContentCtrl = new courseContentController();
     }
 
     private function getDetailData()
@@ -245,34 +247,79 @@ class AdminController extends Controller
 
         $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
         $course = $this->fetchApiData($this->apiUrl . 'courses/'.$id);
+        $courseContents = $this->courseContentCtrl->courseContents($id);
+        $courseContent = null;
+        $previousCourseContentId = '';
+        $nextCourseContentId = '';
+
+        $videoType = 'video';
+        $addSrcType = 'additional_source';
+        $quizType= 'quiz';
 
         $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
-        // dd( json_decode($course));
-        // $data = [
-        //     "course_id" => "5a1e0960-2044-4e00-b0a6-a7352c324a1f",
-        //     "content_title" => "Introduction",
-        //     "content_description" => "Introduction to web development",
-        //     "content_type" => "video",
-        //     "video_article_content" => "Introduction to web development",
-        //     "video_duration" => 60,
-        // ];
-        
-        // // Mengencode array menjadi JSON
-        // $jsonData = json_encode($data);
-        
+    
 
-        // $apiSession = session('api_session');
-        // dd($apiSession);
+        if($selectedCourseContentId != ''){
+            $courseContent = $this->courseContentCtrl->courseContentsById($id, $selectedCourseContentId);
+
+            if(!$courseContent){
+                $selectedCourseContentId = '';
+            }
+
+            if ($selectedCourseContentId != '') {
+                $selectedIndex = -1; // Use -1 to indicate not found initially
+                foreach ($courseContents as $index => $content) {
+                    if ($content->id === $selectedCourseContentId) {
+                        $selectedIndex = $index; // Set the selected index
+                        break;
+                    }
+                }
+            
+                $nextCourseContentId = null;
+                $previousCourseContentId = null;
+            
+                if ($selectedIndex !== -1) { // Ensure we found the selected index
+                    // Check for previous and next content
+                    if ($selectedIndex > 0) {
+                        $previousCourseContentId = $courseContents[$selectedIndex - 1]->id;
+                    }
+            
+                    if ($selectedIndex < count($courseContents) - 1) {
+                        $nextCourseContentId = $courseContents[$selectedIndex + 1]->id;
+                    }
+                }
+            }
+            
+
+        }
+
+        // if($selectedCourseContentId == ''){
+        //     if(isset($courseContents)){
+        //         $selectedCourseContentId = $courseContents[0]->id;
+        // }
+        // }
+
+        // dd($courseContent);
+       
+        
+        
 
         return view('admin.detailKelas', [
             "title" => $title,
             "courseId" => $id,
             "selectedCourseContentId" => $selectedCourseContentId,
+            "previousCourseContentId" => $previousCourseContentId,
+            "nextCourseContentId" => $nextCourseContentId,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
             "categories" => json_decode(json_encode($categories)), // Encode the categories for JS
             "course" => json_decode(json_encode($course)), // Encode the categories for JS
+            "courseContents" => $courseContents, // Encode the categories for JS
+            "courseContent" => $courseContent, // Encode the categories for JS
+            "videoType"=>$videoType,
+            "addSrcType"=>$addSrcType,
+            "quizType"=>$quizType,
         ]);
     }
 
