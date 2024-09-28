@@ -57,20 +57,12 @@
                 <div class="col-lg-7">
                     <div class="container mb-3">
                         <h4>Deskripsi</h4>
-<<<<<<< HEAD
-                        <p>{{$courses['course']['description']}}
-=======
                         <p>{{$course->course->description}}
->>>>>>> edca9f6bbbe5ab45cd2664448047acf904ba4bbc
                         </p>
                     </div>
                     <div class="container mb-3">
                         <h4>Tujuan</h4>
-<<<<<<< HEAD
-                        <p>{{$courses['course']['purpose']}}
-=======
                         <p>{{$course->course->purpose}}
->>>>>>> edca9f6bbbe5ab45cd2664448047acf904ba4bbc
                         </p>
                     </div>
                     <div class="container mb-3">
@@ -78,15 +70,9 @@
                         <div class="d-flex my-3 align-items-center gap-3">
                             <img src="assets/img/values-1.png" alt="" width="100rem">
                             <div class="container">
-<<<<<<< HEAD
-                                <h6>{{$courses['instructor']['full_name']}}</h6>
-                                <p>{{$courses['instructor']['instructor']['education']}}</p>
-                                <p>{{$courses['instructor']['instructor']['experience']}}</p>
-=======
                                 <h6>{{$course->instructor->full_name}}</h6>
                                 <p>{{$course->instructor->instructor->education}}</p>
                                 <p>Tutor Online</p>
->>>>>>> edca9f6bbbe5ab45cd2664448047acf904ba4bbc
                             </div>
                         </div>
                     </div>

@@ -229,49 +229,6 @@
     @endif
 
     <script>
-        const apiUrl = '{{ env('API_URL') }}';
-
-        // $.ajax({
-        //     url: apiUrl + 'courses/categories',
-        //     method: 'GET',
-        //     success: function(response) {
-
-        //         const jenjangSelect = $('#categorySelect');
-        //         jenjangSelect.empty(); // Clear existing options
-
-        //         jenjangSelect.append(
-        //             '<option value="" disabled selected>Select Jenjang</option>'
-        //         ); // Default option
-
-        //         $.each(response, function(index, category) {
-        //             jenjangSelect.append(new Option(category.name, category.id));
-        //         });
-        //     },
-        //     error: function(xhr, status, error) {
-        //         console.error('Error fetching jenjang data:', error);
-        //         console.log('Error response:', xhr.responseText);
-        //     }
-        // });
-
-
-        // $.ajax({
-        //     url: apiUrl + 'courses/' + "{{ $courseId }}", // API endpoint to fetch course data
-        //     method: 'GET',
-        //     success: function(response) {
-
-        //         $('#nameInput').val(response.course.name)
-        //         $('#priceInput').val(response.course.price)
-        //         $('#descriptionTextarea').val(response.course.name)
-        //         $('#descriptionTextarea').val(response.course.description)
-        //         $('#instructorInput').val(response.instructor.full_name)
-        //         $('#purposeTextarea').val(response.course.purpose)
-        //         $('#categorySelect').val(response.course_category.id).change()
-
-        //     },
-        //     error: function(xhr, status, error) {
-        //         console.error('Error fetching courses:', error);
-        //     }
-        // });
 
         $('#additional-src-type').hide()
         $('#quiz-type').hide()
@@ -294,39 +251,39 @@
                 $('#video-type').show()
             }
 
-        
+
         });
 
 
         //POST CONTENT
         $('#saveContent').on('click', function(event) {
             event.preventDefault(); // Prevent the default form submission
-            
+
             const contentName = $('#contentName').val()
             const contentDesc = $('#contentDesc').val()
             const contentType = $('#contentType').val()
-            
-            
-            
+
+
+
             console.log(contentType);
-            
+
             var formData = new FormData();
             formData.append('contentTitle', contentName);
             formData.append('contentDesc', contentDesc);
             formData.append('contentType', contentType);
-            
-            
+
+
             if(contentType == 'video'){
-                const contentVideoFile = $('#contentVideoFile')[0].files[0]; 
-                const contentVideoThumbFile = $('#contentVideoThumbFile')[0].files[0]; 
-                
+                const contentVideoFile = $('#contentVideoFile')[0].files[0];
+                const contentVideoThumbFile = $('#contentVideoThumbFile')[0].files[0];
+
                 const videoArticleContent = $('#contentVideoArticleContent').val()
                 const videoDuration = $('#contentVideoDuration').val()
-                
+
                 formData.append('videoContentFile', contentVideoFile);
-                formData.append('videoContentThumbFile', contentVideoThumbFile);        
-                formData.append('videoArticleContent', videoArticleContent);        
-                formData.append('videoDuration', videoDuration);        
+                formData.append('videoContentThumbFile', contentVideoThumbFile);
+                formData.append('videoArticleContent', videoArticleContent);
+                formData.append('videoDuration', videoDuration);
             }else if(contentType == 'quiz'){
 
             }else if(contentType == 'additional_source'){
@@ -334,7 +291,7 @@
             }else{
 
             }
-           
+
 
             $.ajax({
                 url: '{{ route("admin.kelas.content.post", $courseId) }}', // Direct API endpoint
@@ -344,7 +301,7 @@
                         .getAttribute('content')
                 },
                 data: formData,
-                processData: false, 
+                processData: false,
                 contentType: false,
                 success: function(response) {
                     console.log("data:", response); // Log the response for debugging

@@ -46,7 +46,6 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     //course
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
     Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
-    Route::get('/detail-kelas/{courseId}', [courseController::class, 'detailKelas'])->name('detail.kelas');
     Route::post('/kelas', [CourseController::class, 'kelas'])->name('kelas.post');
     Route::put('/kelas/{CourseId}', [courseController::class, 'editKelas'])->name('kelas.edit');
 
@@ -66,7 +65,10 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/detail-bundling/{id}', [AdminController::class, 'detailBundling'])->name('detail-bundling');
     Route::post('bundling', [CourseController::class, 'bundlePost'])->name('bundle.post');
     Route::post('/detail-bundling/{id}/edit', [CourseController::class, 'bundleEdit'])->name('bundle.edit');
-    Route::post('/detail-bundling/{id}/bundle-course', [CourseController::class, 'bundleCoursePost'])->name('bundleCourse.post');
+    Route::post('/detail-bundling/{id}/course', [CourseController::class, 'bundleCoursePost'])->name('bundleCourse.post');
+    Route::delete('/detail-bundling/delete/{id}', [courseController::class, 'destroyBundle'])->name('bundles.destroy');
+    Route::delete('/detail-bundling/course/delete', [CourseController::class, 'bundleCourseDelete'])->name('bundleCourse.delete');
+
 
     Route::delete('/kelas/{id}', [courseController::class, 'destroy'])->name('categories.destroy');
     Route::put('/kelas/{id}', [courseController::class, 'editCategory'])->name('categories.edit');

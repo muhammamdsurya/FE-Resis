@@ -74,18 +74,6 @@ class courseController extends Controller
         ]);
     }
 
-    public  function detailKelas($id)
-    {
-        $title = 'Detail Kelas';
-
-        $courses = $this->fetchApiData($this->apiUrl . 'courses/' . $id);
-
-        return view('detailKelas', [
-            "title" => $title,
-            "courseId" => $id,
-            "courses" => $courses, // Encode the categories for JS
-        ]);
-    }
 
     public function kelas(Request $request)
 
@@ -158,40 +146,63 @@ class courseController extends Controller
             ]);
         }
     }
-
     public function bundlePost(Request $request)
-
     {
-        $price = (int) $request->input('price');
+        // Validate the incoming request
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric',
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048', // Validate the image
+        ]);
 
+        // Initialize API session
         $apiSession = session('api_session');
 
-        // Definisikan headers
+        // Define headers for the API requests
         $headers = [
             'Content-Type' => 'application/json',
-            'Cookie' => 'session=' . $apiSession
+            'Cookie' => 'session=' . $apiSession,
         ];
 
-
-        // Definisikan body sebagai array associative
+        // Prepare the body for the first API request as JSON
         $body = [
             'name' => $request->name,
             'description' => $request->description,
-            'price' => $price,
+            'price' => (int) $request->input('price'),
         ];
 
-        // Kirimkan request POST
+        // Send the POST request for creating a bundle (first API request)
         $response = Http::withHeaders($headers)->post($this->apiUrl . 'courses/bundles', $body);
 
-        // Tampilkan response body
+        // Check if the first API request was successful
         if ($response->successful()) {
+            // Get the new bundle ID from the response
+            $courseBundleId = $response->json()['id'];
 
-            return redirect()->route('admin.bundling')->with([
-                'message' => 'Data berhasil ditambahkan.',
-                'details' => null
-            ]);
+            // Prepare for the image upload (second API request)
+            if ($request->hasFile('image')) {
+                // Use the attach method for a multipart/form-data request
+                $imageResponse = Http::withHeaders(['Cookie' => 'session=' . $apiSession])
+                    ->attach(
+                        'thumbnail_image',
+                        fopen($request->file('image')->getRealPath(), 'r'), // Open the file for reading
+                        $request->file('image')->getClientOriginalName() // Get the original filename
+                    )
+                    ->put($this->apiUrl . "courses/bundles/{$courseBundleId}/thumbnail");
+
+                // Check if the image upload was successful
+                if (!$imageResponse->successful()) {
+                    return redirect()->route('admin.bundling')->with('error', 'Image upload failed: ' . $imageResponse->body());
+                }
+            }
+
+            return redirect()->route('admin.bundling')->with('message', 'Data berhasil ditambahkan.');
         }
+
+        return redirect()->route('admin.bundling')->with('error', 'Failed to create bundle: ' . $response->body());
     }
+
 
     public function bundleEdit(Request $request, $id) // Get $id directly from the route parameter
     {
@@ -235,13 +246,6 @@ class courseController extends Controller
 
     public function bundleCoursePost(Request $request, $id)
     {
-        // Validate the incoming request data
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric', // Ensure price is a number
-        ]);
-
         // Fetch the API session from the session
         $apiSession = session('api_session');
 
@@ -251,10 +255,9 @@ class courseController extends Controller
             'Cookie' => 'session=' . $apiSession,
         ];
 
-        // Prepare the body of the request
-        $body = [
-            'bundleSelect' => $request->input('bundleSelect'), // Menangkap array dari select input
-        ];
+        $bundleSelect = $request->input('bundleSelect');
+
+        $body = array_values(array_unique($bundleSelect)); // Remove duplicates if needed
 
         // Construct the API URL for updating the bundle
         $apiUrl = $this->apiUrl . 'courses/bundles/' . $id . '/courses';
@@ -270,6 +273,36 @@ class courseController extends Controller
             return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
         }
     }
+
+    public function bundleCourseDelete($id) {
+        $apiUrl = $this->apiUrl . 'courses/bundles/'. $id . '/courses';
+
+        $response = Http::withApiSession()->delete($apiUrl);
+
+        dd($response);
+
+        if ($response->successful()) {
+            return redirect()->route('admin.bundling')->with('message', 'Data berhasil dihapus.');
+        } else {
+            return redirect()->back()->withErrors(['msg' => 'Gagal menghapus data.']);
+        }
+    }
+
+    public function destroyBundle($id)
+    {
+
+        $apiUrl = $this->apiUrl . 'courses/bundles/' . $id;
+
+        $response = Http::withApiSession()->delete($apiUrl);
+
+        if ($response->successful()) {
+            // Optionally, add logic to remove the item from your database
+            return response()->json(['message' => 'Course bundle deleted successfully.'], 200);
+        }
+
+        return response()->json(['message' => 'Failed to delete course bundle.'], 500);
+    }
+
     public function destroy($id)
     {
         try {

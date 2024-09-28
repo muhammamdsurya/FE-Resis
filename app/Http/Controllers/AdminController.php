@@ -66,11 +66,10 @@ class AdminController extends Controller
 
         // Check if the response is successful
         if ($response->successful()) {
-            return $response->json(); // Decode JSON response into an object
+            return $response->json();
         } else {
             // Log the error with more context
             Log::error('Failed to fetch data from API: ' . $response->status() . ' - ' . $response->body());
-
         }
     }
 
@@ -117,24 +116,33 @@ class AdminController extends Controller
 
     public function kelas(Request $request)
     {
-
         $title = 'Data Kelas';
-        $page = $request->input('page', 1); // Get the current page or default to 1
+        $page = $request->input('page', 1); // Default ke halaman 1 jika tidak ada
 
+        // Ambil nilai input 'q' dari form
+        $query = $request->input('q');
+
+        if ($query) {
+            // Fetch courses dengan parameter query
+            $courses = $this->fetchApiData($this->apiUrl . 'courses/search?q=' . urlencode($query) );
+        } else {
+            // Fetch courses tanpa pencarian
+            $courses = $this->fetchApiData($this->apiUrl . 'courses?page=' . $page);
+        }
+
+        // Kode lain untuk categories, instructors, dll.
         $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
         $instructors = $this->fetchApiData($this->apiUrl . 'courses/instructors');
-        $courses = $this->fetchApiData($this->apiUrl . 'courses?page=' . $page);
 
         return view('admin.kelas', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "courses" => $courses['data'],
-            "pagination" => $courses['pagination'], // Get pagination data
-            "categories" => json_encode($categories), // Encode the categories for JS
-            "instructors" => json_encode($instructors), // Encode the categories for JS
-
+            "courses" => $courses,
+            "pagination" => $courses['pagination'] ?? null,
+            "categories" => json_encode($categories),
+            "instructors" => json_encode($instructors),
         ]);
     }
 
@@ -251,25 +259,9 @@ class AdminController extends Controller
 
 
         $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
-        $course = $this->fetchApiData($this->apiUrl . 'courses/'.$id);
+        $course = $this->fetchApiData($this->apiUrl . 'courses/' . $id);
 
         $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
-        // dd( json_decode($course));
-        // $data = [
-        //     "course_id" => "5a1e0960-2044-4e00-b0a6-a7352c324a1f",
-        //     "content_title" => "Introduction",
-        //     "content_description" => "Introduction to web development",
-        //     "content_type" => "video",
-        //     "video_article_content" => "Introduction to web development",
-        //     "video_duration" => 60,
-        // ];
-
-        // // Mengencode array menjadi JSON
-        // $jsonData = json_encode($data);
-
-
-        // $apiSession = session('api_session');
-        // dd($apiSession);
 
         return view('admin.detailKelas', [
             "title" => $title,
@@ -278,8 +270,8 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "categories" => json_decode(json_encode($categories)), // Encode the categories for JS
-            "course" => json_decode(json_encode($course)), // Encode the categories for JS
+            "categories" => json_decode($categories), // Encode the categories for JS
+            "course" => json_decode($course), // Encode the categories for JS
         ]);
     }
 
@@ -288,9 +280,28 @@ class AdminController extends Controller
         $title = '';
 
         $bundle = $this->fetchApiData($this->apiUrl . 'courses/bundles/' . $id);
-        $idCourse = $this->fetchApiData($this->apiUrl . 'courses/bundles/' . $id . '/courses');
-        dd($idCourse);
         $courses = $this->fetchApiData($this->apiUrl . 'courses');
+        // Fetch the course IDs from the API
+        $idCourse = $this->fetchApiData($this->apiUrl . 'courses/bundles/' . $id . '/courses');
+
+        // Check if $idCourse is an array and not empty
+        if (is_array($idCourse) && !empty($idCourse)) {
+            // Initialize an array to hold course details
+            $courseDetails = [];
+
+            // Iterate over the course IDs
+            foreach ($idCourse as $courseId) {
+                // Fetch details for each course ID
+                $detail = $this->fetchApiData($this->apiUrl . 'courses/' . $courseId);
+
+                // Store the details in the courseDetails array
+                $courseDetails[] = $detail;
+            }
+        } else {
+            // Handle the case where no course IDs were returned
+            echo json_encode('message', 'Belum ada data');
+        }
+
 
         return view('admin.bundlingDetail', [
             "title" => $title,
@@ -299,7 +310,8 @@ class AdminController extends Controller
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
             "bundle" => $bundle, //
-            "courses" => $courses['data']
+            "courses" => $courses['data'],
+            "courseDetails" => $courseDetails
         ]);
     }
 
