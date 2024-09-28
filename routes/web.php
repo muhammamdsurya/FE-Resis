@@ -46,6 +46,7 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     //course
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
     Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
+    Route::get('/detail-kelas/{id}', [AdminController::class, 'detailKelas'])->name('detail-kelas');
     Route::post('/kelas', [CourseController::class, 'kelas'])->name('kelas.post');
     Route::put('/kelas/{CourseId}', [courseController::class, 'editKelas'])->name('kelas.edit');
 

@@ -64,8 +64,10 @@
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="instructorInput" placeholder="Instructor"
-                            name="instructor" value="{{$course->instructor->full_name}}">
+                          <option value="" disabled>Select Jenjang</option>
+                            @foreach($categories as $category)
+                            <option value="{{$category->id}}" {{$course->course->course_category_id ==$category->id ?'selected' : '' }}  >{{$category->name}}</option>
+                            @endforeach
                         <label for="instructorInput">Pengajar</label>
                     </div>
 

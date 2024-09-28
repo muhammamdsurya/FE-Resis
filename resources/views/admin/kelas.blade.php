@@ -210,7 +210,7 @@
                 @else {{-- Jika tidak ada pagination --}}
                     @foreach ($courses as $item)
                         <div class="col-lg-3 col-md-4 col-6">
-                            <a href="{{ route('admin.detailKelas', ['CourseId' => $item['course']['id']]) }}" class="text-decoration-none">
+                            <a href="{{ route('detail-kelas', ['id' => $item['course']['id']]) }}" class="text-decoration-none">
                                 <div class="card shadow-sm border-light rounded">
                                     <img src="{{ asset('assets/img/values-1.png') }}" class="card-img-top"
                                          alt="{{ $item['name'] }}"
