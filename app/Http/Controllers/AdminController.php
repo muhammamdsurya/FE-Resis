@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Course;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -263,15 +260,15 @@ class AdminController extends Controller
         ]);
     }
 
-
-    public  function detailKelas(Request $request, $id)
+    public function detailKelas(Request $request, $id)
     {
         $title = 'Detail Kelas';
 
-
         $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
+        $instructors = $this->fetchApiData($this->apiUrl . 'courses/instructors');
         $course = $this->fetchApiData($this->apiUrl . 'courses/' . $id);
-        // $courseContents = $this->courseContentCtrl->courseContents($id);
+        // Initialize course contents, assuming it's fetched properly
+        $courseContents = $this->courseContentCtrl->courseContents($id) ?? []; // Fetch course contents safely
         $courseContent = null;
         $previousCourseContentId = '';
         $nextCourseContentId = '';
@@ -282,51 +279,40 @@ class AdminController extends Controller
 
         $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
 
+        if ($selectedCourseContentId != '') {
+            $selectedIndex = -1; // Use -1 to indicate not found initially
+            foreach ($courseContents as $index => $content) {
+                if ($content->id === $selectedCourseContentId) {
+                    $selectedIndex = $index; // Set the selected index
+                    $courseContent = $content; // Assign selected course content
+                    break;
+                }
+            }
 
-        // if($selectedCourseContentId != ''){
-        //     $courseContent = $this->courseContentCtrl->courseContentsById($id, $selectedCourseContentId);
+            // Initialize next and previous IDs
+            if ($selectedIndex !== -1) { // Ensure we found the selected index
+                if ($selectedIndex > 0) {
+                    $previousCourseContentId = $courseContents[$selectedIndex - 1]->id;
+                }
+                if ($selectedIndex < count($courseContents) - 1) {
+                    $nextCourseContentId = $courseContents[$selectedIndex + 1]->id;
+                }
+            }
 
-        //     if(!$courseContent){
-        //         $selectedCourseContentId = '';
-        //     }
-
-        //     if ($selectedCourseContentId != '') {
-        //         $selectedIndex = -1; // Use -1 to indicate not found initially
-        //         foreach ($courseContents as $index => $content) {
-        //             if ($content->id === $selectedCourseContentId) {
-        //                 $selectedIndex = $index; // Set the selected index
-        //                 break;
-        //             }
-        //         }
-
-        //         $nextCourseContentId = null;
-        //         $previousCourseContentId = null;
-
-        //         if ($selectedIndex !== -1) { // Ensure we found the selected index
-        //             // Check for previous and next content
-        //             if ($selectedIndex > 0) {
-        //                 $previousCourseContentId = $courseContents[$selectedIndex - 1]->id;
-        //             }
-
-        //             if ($selectedIndex < count($courseContents) - 1) {
-        //                 $nextCourseContentId = $courseContents[$selectedIndex + 1]->id;
-        //             }
-        //         }
-        //     }
-
-
-        // }
-
-        // if($selectedCourseContentId == ''){
-        //     if(isset($courseContents)){
-        //         $selectedCourseContentId = $courseContents[0]->id;
-        // }
-        // }
-
-        // dd($courseContent);
-
-
-
+            // Check if $courseContent is not null before accessing its properties
+            if ($courseContent) {
+                if ($courseContent->content_type == $videoType) {
+                    $courseContentVideo = $this->courseContentCtrl->courseContentVideo($id, $selectedCourseContentId);
+                    $courseContent->video = $courseContentVideo;
+                } elseif ($courseContent->content_type == $addSrcType) {
+                    $courseContentSrc = $this->courseContentCtrl->courseContentSrc($id, $selectedCourseContentId);
+                    $courseContent->src = $courseContentSrc;
+                } elseif ($courseContent->content_type == $quizType) {
+                    $courseContentQuiz = $this->courseContentCtrl->courseContentQuiz($id, $selectedCourseContentId);
+                    $courseContent->quiz = $courseContentQuiz;
+                }
+            }
+        }
 
         return view('admin.detailKelas', [
             "title" => $title,
@@ -339,13 +325,14 @@ class AdminController extends Controller
             "role" => $this->user['role'],
             "categories" => json_decode(json_encode($categories)), // Encode the categories for JS
             "course" => json_decode(json_encode($course)), // Encode the categories for JS
-            // "courseContents" => $courseContents, // Encode the categories for JS
+            "instructors" => json_decode(json_encode($instructors)), // Encode the categories for JS
             "courseContent" => $courseContent, // Encode the categories for JS
             "videoType" => $videoType,
             "addSrcType" => $addSrcType,
             "quizType" => $quizType,
         ]);
     }
+
 
     public  function detailBundling($id)
     {

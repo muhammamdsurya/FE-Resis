@@ -21,7 +21,7 @@ Route::get('/', function () {
 
 // Route::get('/test', [transactionController::class, 'helo'])->name('kelas'); testing, nanti di awasin
 Route::get('/kelas', [publicController::class, 'kelas'])->name('kelas');
-Route::get('/detail-kelas/{courseId}', [publicController::class, 'detailKelas'])->name('detail-kelas');
+Route::get('/detail-kelas/{courseId}', [publicController::class, 'detailKelas'])->name('detail.kelas');
 
 
 Route::get('/kontak', function () {

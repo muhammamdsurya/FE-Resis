@@ -102,8 +102,27 @@ class courseController extends Controller
         // Kirimkan request POST
         $response = Http::withHeaders($headers)->post($this->apiUrl . 'courses', $body);
 
-        // Tampilkan response body
+        // Check if the first API request was successful
         if ($response->successful()) {
+            // Get the new bundle ID from the response
+            $courseId = $response->json()['course']['id'];
+
+            // Prepare for the image upload (second API request)
+            if ($request->hasFile('image')) {
+                // Use the attach method for a multipart/form-data request
+                $imageResponse = Http::withHeaders(['Cookie' => 'session=' . $apiSession])
+                    ->attach(
+                        'thumbnail_image',
+                        fopen($request->file('image')->getRealPath(), 'r'), // Open the file for reading
+                        $request->file('image')->getClientOriginalName() // Get the original filename
+                    )
+                    ->put($this->apiUrl . "courses/{$courseId}/thumbnail");
+
+                // Check if the image upload was successful
+                if (!$imageResponse->successful()) {
+                    return redirect()->route('admin.kelas')->with('error', 'Image upload failed: ' . $imageResponse->body());
+                }
+            }
 
             return redirect()->route('admin.kelas')->with([
                 'message' => 'Data berhasil ditambahkan.',
@@ -325,7 +344,6 @@ class courseController extends Controller
         } else {
             return response()->json(['success' => false, 'message' => 'Failed to delete course bundle.'], 500);
         }
-
     }
 
 
