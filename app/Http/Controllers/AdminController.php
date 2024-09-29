@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
@@ -194,21 +195,32 @@ class AdminController extends Controller
 
     public function sales(Request $request)
     {
-
         $title = 'Data Penjualan';
 
-        $page = $request->input('page', 1); // Get the current page or default to 1
-        $dataSales = $this->fetchApiData($this->apiUrl . 'statistics/sales/transactions');
+        // Check if the request is AJAX
+        if ($request->ajax()) {
+            $dataSales = $this->fetchApiData($this->apiUrl . 'statistics/sales/transactions');
 
+            // Here, you would typically handle pagination, searching, and ordering if your API supports it.
+            $data = $dataSales['data']; // Assuming your API returns the relevant data
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('created_at', function ($row) {
+                    return \Carbon\Carbon::parse($row['created_at'])->format('Y-m-d H:i:s');
+                })
+                ->make(true);
+        }
 
+        // For non-AJAX requests, load the view normally
         return view('admin.sales', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "dataSales" => $dataSales,
+            // You can remove "dataSales" and "pagination" if you don't need to pass it to the view
         ]);
     }
+
 
     public function dataAdmin()
     {
