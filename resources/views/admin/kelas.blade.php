@@ -301,6 +301,7 @@
     <script>
         $(document).ready(function() {
             let categoriesData = {!! $categories !!};
+            console.log(categoriesData);
             let instructorsData = {!! $instructors !!};
 
             // Get the select element
@@ -340,57 +341,51 @@
                 }
             });
 
-            setTimeout(function() {
-                let table = $('#categoriesTable').DataTable({
-                    data: categoriesData,
-                    pageLength: 5, // Display 2 records per page
-                    ordering: true, // Keep ordering functionality
-                    searching: false, // Keep search functionality
-                    lengthChange: false, // Disable page length options dropdown
-                    info: false, // Remove info like "Showing 1 to 2 of 5 entries"
-                    paging: true, // Enable pagination
-                    columns: [{
-                            data: null,
-                            render: function(data, type, row, meta) {
-                                return meta.row + 1; // Auto-incrementing number
-                            }
-                        },
-                        {
-                            data: 'name' // Assuming 'name' refers to the category name
-                        },
-                        {
-                            data: 'id',
-                            render: function(data, type, row) {
-                                return `
-                        <a href="javascript:void(0)" class="btn btn-danger btn-sm delete-btn" data-id="${data}">Hapus</a>
-                        <a href="javascript:void(0)" class="btn btn-success btn-sm edit-btn" data-id="${data}">Edit</a>
-                    `;
-                            }
+            let table = $('#categoriesTable').DataTable({
+                processing: true, // Show processing indicator
+                serverSide: true, // Enable server-side processing
+                ajax: "{{ route('get.category') }}", // The route that returns the AJAX data
+                pageLength: 5, // Set the number of records per page
+                ordering: true, // Enable ordering
+                searching: false, // Disable searching for now
+                lengthChange: false, // Disable the page length dropdown
+                info: false, // Hide the "Showing X of Y entries" text
+                paging: true, // Enable pagination
+                columns: [{
+                        data: null, // For auto-incrementing numbers
+                        render: function(data, type, row, meta) {
+                            return meta.row + 1; // Display row number
                         }
-                    ],
-                    dom: 'tip', // 'tip' = Table, Info, Pagination (hides other controls)
-                    autoWidth: false, // Automatically adjust column widths to fit the table width
-                });
-                // Handle the Edit button click
-                $('#categoriesTable').on('click', '.edit-btn', function(e) {
-                    e.preventDefault(); // Prevent the default anchor behavior
+                    },
+                    {
+                        data: 'name' // Assuming 'name' is the category name field from the API
+                    },
+                    {
+                        data: 'actions', // Custom actions column with Edit and Delete buttons
+                        orderable: false, // Disable ordering for this column
+                        searchable: false // Disable searching for this column
+                    }
+                ],
+                dom: 'tip', // Hide unwanted elements (e.g., search input, length dropdown)
+                autoWidth: false, // Disable auto width adjustment
+            });
 
-                    // Get the row that contains the clicked button
-                    let row = $(this).closest('tr');
-                    let rowData = table.row(row).data(); // Get the DataTable row data
+            // Handle the Edit button click
+            $('#categoriesTable').on('click', '.edit-btn', function(e) {
+                e.preventDefault(); // Prevent default link behavior
 
-                    // Extract the 'name' value and 'id' from the row data
-                    let currentName = rowData.name;
-                    let post_id = $(this).data('id');
+                // Get the row that contains the clicked button
+                let row = $(this).closest('tr');
+                let rowData = table.row(row).data(); // Get the data for that row
 
-                    // Populate the modal form with the current name and category ID
-                    $('#categoryName').val(currentName);
-                    $('#categoryId').val(post_id);
+                // Populate the modal form with the current name and category ID
+                $('#categoryName').val(rowData.name);
+                $('#categoryId').val($(this).data('id'));
 
-                    // Show the modal
-                    $('#editCategoryModal').modal('show');
-                });
-            }, 100);
+                // Show the modal
+                $('#editCategoryModal').modal('show');
+            });
+
 
 
             $('#saveCategoryBtn').on('click', function() {
@@ -401,7 +396,7 @@
 
                 // Make an AJAX request to update the item
                 $.ajax({
-                    url: `/admin/kelas/${post_id}`,
+                    url: `/admin/kelas/${post_id}/edit`,
                     type: 'PUT',
                     cache: false,
                     data: {
@@ -409,11 +404,13 @@
                         "name": newName
                     },
                     success: function(response) {
+                        console.log(response);
+
                         $('#editCategoryModal').modal('hide'); // Hide the modal
 
                         Swal.fire(
-                            'Updated!',
-                            'Your category has been updated.',
+                            'Yess!',
+                            'Kategori berhasil diupdate.',
                             'success'
                         );
 
@@ -493,13 +490,15 @@
                         if (result.isConfirmed) {
                             // Make an AJAX request to delete the item
                             $.ajax({
-                                url: `/admin/kelas/${post_id}`,
+                                url: `/admin/kelas/${post_id}/destroy`,
                                 type: 'DELETE',
                                 cache: false,
                                 data: {
-                                    "_token": token
+                                    "_token": token,
+                                    "id": post_id
                                 },
                                 success: function(response) {
+                                    console.log(response);
                                     Swal.fire(
                                         'Dihapus!',
                                         'Kategori berhasil di hapus.',
@@ -510,6 +509,8 @@
                                     $('#categoriesTable').DataTable().ajax.reload();
                                 },
                                 error: function(xhr, status, error) {
+                                    console.error('Error details:', xhr.responseText, status, error);
+
                                     Swal.fire(
                                         'Error!',
                                         'There was an error deleting the category.',

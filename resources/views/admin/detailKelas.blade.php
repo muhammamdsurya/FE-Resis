@@ -24,66 +24,187 @@
 
 @section('content')
 
+    <style>
+        .image-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-container img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5) !important;
+            /* Warna hitam transparan */
+            color: white !important;
+            opacity: 0;
+            /* Awalnya disembunyikan */
+            transition: opacity 0.3s ease;
+            /* Animasi saat hover */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border-radius: 10px;
+        }
+
+        .image-container:hover .overlay {
+            opacity: 1;
+            cursor: pointer;
+            /* Muncul saat di-hover */
+        }
+    </style>
+
     <form id="courseForm" method="POST" action="{{ route('kelas.post') }}">
         @csrf
 
         <div class="container">
-            <div class="image text-center mb-5">
-                <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}" alt="" class="img-fluid"
-                    width="200rem" height="200rem">
-            </div>
-            <div class="row gy-3 ">
-                <div class="col-lg-6 col-md-6 mx-auto">
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="nameInput" placeholder="name@example.com"
-                            name="name" value="{{$course->course->name}}">
-                        <label for="nameInput">Nama Kelas</label>
-                    </div>
+            <div class="row">
+                <!-- Data Kelas Section -->
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            Data Kelas
+                        </div>
+                        <div class="card-body">
+                            <div class="image-container text-center mb-4 position-relative">
+                                <img src="{{ $course->course->thumbnail_image }}" alt="{{ $course->course->name }}"
+                                    class="img-fluid" id="imagePreview" width="200rem" height="200rem"
+                                    style="cursor: pointer;">
+                                <div class="overlay position-absolute w-100 h-100 d-flex align-items-center justify-content-center"
+                                    style="top: 0; left: 0; background: rgba(0, 0, 0, 0.5); color: white; font-size: 1.5rem; display: none;">
+                                    Ganti Gambar
+                                </div>
+                                <input type="file" id="imageUpload" name="image" style="display: none;"
+                                    accept="image/*">
+                            </div>
 
-                    <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="priceInput" placeholder="Price" name="price" value="{{$course->course->price}}">
-                        <label for="priceInput">Harga</label>
-                    </div>
+                            <!-- Form Row 1: Name and Jenjang -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="nameInput" placeholder="Nama Kelas"
+                                            name="name" value="{{ $course->course->name }}">
+                                        <label for="nameInput">Nama Kelas</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="number" class="form-control" id="priceInput" placeholder="Harga"
+                                            name="price" value="{{ $course->course->price }}">
+                                        <label for="priceInput">Harga</label>
+                                    </div>
+                                </div>
 
-                    <div class="form-floating">
-                        <textarea class="form-control" placeholder="Leave a comment here" id="descriptionTextarea" name="description"
-                            style="height: 100px">{{$course->course->description}}</textarea>
-                        <label for="descriptionTextarea">Deskripsi</label>
+                            </div>
+
+                            <!-- Form Row 2: Description and Price -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-control" id="categorySelect" name="level">
+                                            <option value="" disabled>Select Jenjang</option>
+                                            @foreach ($categories as $category)
+                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <label for="categorySelect">Jenjang</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <select class="form-control" id="instructorSelect" name="instructor">
+                                            <option value="" disabled>Select Pengajar</option>
+                                            @foreach ($instructors as $instructor)
+                                                <option value="{{ $instructor->instructor->id }}">
+                                                    {{ $instructor->full_name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <label for="instructorSelect">Pengajar</label>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <!-- Form Row 3: Instructor and Purpose -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Deskripsi" id="descriptionTextarea" name="description"
+                                            style="height: 100px">{{ $course->course->description }}</textarea>
+                                        <label for="descriptionTextarea">Deskripsi</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Tujuan" id="purposeTextarea" name="purpose" style="height: 100px">{{ $course->course->purpose }}</textarea>
+                                        <label for="purposeTextarea">Tujuan</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-4">
+                                <!-- Save Button on the left -->
+                                <div>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                                <!-- Delete Button on the right -->
+                                <div>
+                                    <button type="button" class="btn btn-danger" id="deleteButton"
+                                        data-id="{{ $course->course->id }}">Hapus</button>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-6 mx-auto">
-                    <div class="form-floating mb-3">
-                        <select class="form-control" id="categorySelect" name="level">
-                            <option value="" disabled>Select Jenjang</option>
-                            @foreach($categories as $category)
-                            <option value="{{$category->id}}" >{{$category->name}}</option>
-                            @endforeach
-                            <!-- Options will be populated here -->
-                        </select>
-                        <label for="jenjangSelect">Jenjang</label>
-                    </div>
 
-                    <div class="form-floating mb-3">
-                        <select class="form-control" id="categorySelect" name="level">
-                            <option value="" disabled>Select Jenjang</option>
-                            @foreach($instructors as $instructor)
-                            <option value="{{$instructor->instructor->id}}">{{$instructor->full_name}}</option>
-                            @endforeach
-                            <!-- Options will be populated here -->
-                        </select>
-                        <label for="jenjangSelect">Pengajar</label>
-                    </div>
+                <!-- Data Materi Section -->
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            Data Materi
+                        </div>
+                        <div class="card-body">
+                            <div class="filter-dropdown d-none d-lg-block">
+                                <ul class="list-group">
+                                    <li class="list-group-item"><a href="#">Pendahuluan</a></li>
+                                    <li class="list-group-item"><a href="#">Materi 2</a></li>
+                                    <li class="list-group-item"><a href="#">Materi 3</a></li>
+                                    <li class="list-group-item"><a href="#">Materi 4</a></li>
+                                    <li class="list-group-item"><a href="/user/diskusi">Diskusi</a></li>
+                                </ul>
+                            </div>
 
-                    <div class="form-floating">
-                        <textarea class="form-control" placeholder="Purpose" id="purposeTextarea" name="purpose" style="height: 100px">{{$course->course->purpose}}</textarea>
-                        <label for="purposeTextarea">Tujuan</label>
+                            <!-- Dropdown for smaller screens -->
+                            <div class="filter-dropdown d-lg-none d-sm-block ms-md-3">
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                        id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Materi
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Pendahuluan</a></li>
+                                        <li><a class="dropdown-item" href="#">Materi 2</a></li>
+                                        <li><a class="dropdown-item" href="#">Materi 3</a></li>
+                                        <li><a class="dropdown-item" href="#">Materi 4</a></li>
+                                        <li><a class="dropdown-item" href="/user/diskusi">Diskusi</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary mt-3" id="course">Simpan</button>
         </div>
-
-
     </form>
 
 
@@ -95,111 +216,114 @@
                 <!-- Kolom untuk Video dan Penjelasan -->
                 <div class="col-md-9">
                     <div class="mt-3">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="contentName" placeholder="name@example.com"
+                                name="name">
+                            <label for="contentName">Judul Materi</label>
+                        </div>
+
+                        <label>Materi</label>
+                        <div class="form-floating mb-3">
+                            <textarea id="contentDesc" name="description"></textarea>
+                        </div>
+
+                        <div class="form-floating mb-3 mt-3">
+                            <select class="form-control" id="contentType" name="level">
+                                <option value="{{ $videoType }}" selected>video</option>
+                                <option value="{{ $addSrcType }}">additional_source</option>
+                                <option value="{{ $quizType }}">quiz</option>
+                            </select>
+                            <label for="contentType">Jenis Konten</label>
+                        </div>
+
+                        <div id="video-type">
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="contentName" placeholder="name@example.com"
-                                    name="name">
-                                <label for="contentName">Judul Materi</label>
+                                <input type="text" class="form-control" id="contentVideoArticleContent"
+                                    placeholder="name@example.com" name="name">
+                                <label for="contentVideoArticleContent">Judul Konten</label>
                             </div>
 
-                            <label >Materi</label>
-                                <div class="form-floating mb-3">
-                                    <textarea id="contentDesc" name="description"></textarea>
-                                </div>
-
-                            <div class="form-floating mb-3 mt-3">
-                                <select class="form-control" id="contentType" name="level">
-                                    <option value="{{$videoType}}" selected>video</option>
-                                    <option value="{{$addSrcType}}">additional_source</option>
-                                    <option value="{{$quizType}}">quiz</option>
-                                </select>
-                                <label for="contentType">Jenis Konten</label>
-                            </div>
-
-                            <div id="video-type">
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="contentVideoArticleContent" placeholder="name@example.com"
-                                        name="name">
-                                    <label for="contentVideoArticleContent">Judul Konten</label>
-                                </div>
-
-                                @if ($selectedCourseContentId != '')
-                                    @if ($courseContent->content_type == $videoType)
+                            @if ($selectedCourseContentId != '')
+                                @if ($courseContent->content_type == $videoType)
                                     <!-- <div class="ratio ratio-16x9 mb-3">
-                                        <iframe src=""
-                                            frameborder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowfullscreen ></iframe>
-                                    </div> -->
+                                                                        <iframe src=""
+                                                                            frameborder="0"
+                                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                                            allowfullscreen ></iframe>
+                                                                    </div> -->
                                     <div class="ratio ratio-16x9 mb-3">
-                                        <video controls poster="{{$courseContent->video->thumbnail_image}}">
-                                            <source src="{{$courseContent->video->video_file}}" type="video/mp4">
+                                        <video controls poster="{{ $courseContent->video->thumbnail_image }}">
+                                            <source src="{{ $courseContent->video->video_file }}" type="video/mp4">
                                             Your browser does not support the video tag.
                                         </video>
                                     </div>
-                                    @endif
                                 @endif
+                            @endif
 
-                                <div class="form-floating mb-3">
-                                    <input type="file" class="form-control" id="contentVideoFile"
-                                        placeholder="name@example.com" name="name">
-                                    <label for="contentVideoFile">Konten Video</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="file" class="form-control" id="contentVideoThumbFile"
-                                        placeholder="name@example.com" name="name">
-                                    <label for="contentVideoThumbFile">Thumbnail</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input type="number" class="form-control" id="contentVideoDuration"
-                                        placeholder="name@example.com" name="name">
-                                    <label for="contentVideoDuration">Durasi Video</label>
-                                </div>
+                            <div class="form-floating mb-3">
+                                <input type="file" class="form-control" id="contentVideoFile"
+                                    placeholder="name@example.com" name="name">
+                                <label for="contentVideoFile">Konten Video</label>
                             </div>
+                            <div class="form-floating mb-3">
+                                <input type="file" class="form-control" id="contentVideoThumbFile"
+                                    placeholder="name@example.com" name="name">
+                                <label for="contentVideoThumbFile">Thumbnail</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" id="contentVideoDuration"
+                                    placeholder="name@example.com" name="name">
+                                <label for="contentVideoDuration">Durasi Video</label>
+                            </div>
+                        </div>
 
-                            <div id="additional-src-type">
+                        <div id="additional-src-type">
                             @if ($selectedCourseContentId != '')
                                 @if ($courseContent->content_type == $addSrcType)
                                     <div class="ratio ratio-16x9 mb-3">
-                                        <iframe src="{{$courseContent->src->file}}"
-                                            frameborder="0"
+                                        <iframe src="{{ $courseContent->src->file }}" frameborder="0"
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowfullscreen ></iframe>
+                                            allowfullscreen></iframe>
                                     </div>
-                                    @endif
                                 @endif
-                                <div class="form-floating mb-3">
-                                    <input type="file" class="form-control" id="contentAddSrcFile"
-                                         name="name">
-                                    <label for="contentAddSrcFile">Source Tambahan</label>
-                                </div>
+                            @endif
+                            <div class="form-floating mb-3">
+                                <input type="file" class="form-control" id="contentAddSrcFile" name="name">
+                                <label for="contentAddSrcFile">Source Tambahan</label>
+                            </div>
+                        </div>
+
+                        <div id="quiz-type">
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" id="contentPassingGrade"
+                                    placeholder="name@example.com" name="name">
+                                <label for="contentPassingGrade">Nilai Kelulusan</label>
                             </div>
 
-                            <div id="quiz-type">
-                                <div class="form-floating mb-3">
-                                    <input type="number" class="form-control" id="contentPassingGrade"
-                                        placeholder="name@example.com" name="name">
-                                    <label for="contentPassingGrade">Nilai Kelulusan</label>
-                                </div>
+                            <button type="button" class="btn btn-primary d-flex align-items-center mb-2"
+                                onclick="showQuizModal(null)">
+                                <i class="fas fa-plus mr-1"></i>Tambah Quiz
+                            </button>
+                            <div class="quizzesList">
 
-                                 <button type="button" class="btn btn-primary d-flex align-items-center mb-2" onclick="showQuizModal(null)">
-                                    <i class="fas fa-plus mr-1"></i>Tambah Quiz
-                                </button>
-                                <div class="quizzesList">
-
-                                </div>
                             </div>
+                        </div>
 
 
                     </div>
                     <div class="mt-5">
-                        <button onclick="window.location.href='?selectedCourseContentId={{$previousCourseContentId}}'" {{$previousCourseContentId == ''? 'disabled':''}} class="btn btn-secondary"><i class="fas fa-arrow-circle-left mr-2"></i>Sebelumnya</button>
+                        <button onclick="window.location.href='?selectedCourseContentId={{ $previousCourseContentId }}'"
+                            {{ $previousCourseContentId == '' ? 'disabled' : '' }} class="btn btn-secondary"><i
+                                class="fas fa-arrow-circle-left mr-2"></i>Sebelumnya</button>
                         @if ($selectedCourseContentId == '')
                             <button id="saveContent" class="btn btn-primary float-right">Simpan</button>
                         @else
                             <button class="btn btn-danger ml-3" onclick="deleteContent()">Hapus</button>
                             <button id="saveContent" class="btn btn-primary">Simpan</button>
 
-                            <button  onclick="window.location.href='?selectedCourseContentId={{$nextCourseContentId}}'" {{$nextCourseContentId == ''? 'disabled':''}} class="btn btn-primary float-right">Lanjut<i
+                            <button onclick="window.location.href='?selectedCourseContentId={{ $nextCourseContentId }}'"
+                                {{ $nextCourseContentId == '' ? 'disabled' : '' }}
+                                class="btn btn-primary float-right">Lanjut<i
                                     class="fas fa-arrow-circle-right ml-2"></i></button>
                         @endif
                     </div>
@@ -207,86 +331,86 @@
                 <!-- Kolom untuk Materi Selanjutnya -->
                 <div class="col-md-3 d-none d-lg-block materi-container px-3">
                     <div class="list-group mt-3">
-                        @if(isset($courseContents))
-                        @foreach($courseContents as $courseContentSidebar)
-                        <a href="?selectedCourseContentId={{$courseContentSidebar->id}}" class="list-group-item list-group-item-action {{$selectedCourseContentId == $courseContentSidebar->id? 'list-group-item-primary' : ''}}">{{$courseContentSidebar->content_title}}</a>
-                        @endforeach
+                        @if (isset($courseContents))
+                            @foreach ($courseContents as $courseContentSidebar)
+                                <a href="?selectedCourseContentId={{ $courseContentSidebar->id }}"
+                                    class="list-group-item list-group-item-action {{ $selectedCourseContentId == $courseContentSidebar->id ? 'list-group-item-primary' : '' }}">{{ $courseContentSidebar->content_title }}</a>
+                            @endforeach
                         @endif
                         <a href="?selectedCourseContentId="
-                                class="list-group-item list-group-item-action {{$selectedCourseContentId == ''? 'list-group-item-primary' : ''}}"><i class="fas fa-plus mr-2"></i>Tambah Materi Baru</a>
+                            class="list-group-item list-group-item-action {{ $selectedCourseContentId == '' ? 'list-group-item-primary' : '' }}"><i
+                                class="fas fa-plus mr-2"></i>Tambah Materi Baru</a>
                         <a href="/user/diskusi" class="list-group-item list-group-item-action ">Diskusi</a>
                     </div>
                 </div>
             </div>
-
         </section>
     </div>
 
-      <!-- Modal Kelas -->
-      <div class="modal fade" id="modal-quiz" tabindex="-1" aria-labelledby="modal-defaultLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modal-defaultLabel">Tambah Pertanyaan</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+    <!-- Modal Kelas -->
+    <div class="modal fade" id="modal-quiz" tabindex="-1" aria-labelledby="modal-defaultLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-defaultLabel">Tambah Pertanyaan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ route('kelas.post') }}">
+                        @csrf
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="questionQuizInput"
+                                        placeholder="Class Name" name="name">
+                                    <label for="questionQuizInput">Pertanyaan</label>
+                                </div>
                             </div>
-                            <div class="modal-body">
-                                <form method="POST" action="{{ route('kelas.post') }}">
-                                    @csrf
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="questionQuizInput"
-                                                    placeholder="Class Name" name="name">
-                                                <label for="questionQuizInput">Pertanyaan</label>
-                                            </div>
-                                        </div>
 
 
-                                        <div class="col">
-                                            <div class="form-floating mb-3">
-                                                <select class="form-control" id="answerQuizInput" >
-                                                </select>
-                                                <label for="answerQuizInput">Jawaban</label>
-                                            </div>
-                                        </div>
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <select class="form-control" id="answerQuizInput">
+                                    </select>
+                                    <label for="answerQuizInput">Jawaban</label>
+                                </div>
+                            </div>
 
 
-                                    </div>
+                        </div>
 
 
 
-                                    <div class="row">
-                                        <div class="col">
-                                            <div class="form-floating mb-3">
-                                                <input type="text" class="form-control" id="optionQuizInput"
-                                                    placeholder="Class Name" name="name">
-                                                <label for="optionQuizInput">Opsi</label>
-                                            </div>
-                                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="optionQuizInput"
+                                        placeholder="Class Name" name="name">
+                                    <label for="optionQuizInput">Opsi</label>
+                                </div>
+                            </div>
 
-                                        <div class="col">
-                                                <button type="button" class="btn btn-primary d-flex align-items-center" onclick="addOptionQuiz(null)">
-                                                <i class="fas fa-plus mr-1"></i>Tambah Opsi
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div class="option-quiz-add">
-
-                                           </div>
-
-
-                                    <button onclick="submitOptionQuiz()" type="button"  class="btn btn-primary">Submit</button>
-                                </form>
-
-
+                            <div class="col">
+                                <button type="button" class="btn btn-primary d-flex align-items-center"
+                                    onclick="addOptionQuiz(null)">
+                                    <i class="fas fa-plus mr-1"></i>Tambah Opsi
+                                </button>
                             </div>
                         </div>
-                    </div>
+
+                        <div class="option-quiz-add">
+
+                        </div>
+
+
+                        <button onclick="submitOptionQuiz()" type="button" class="btn btn-primary">Submit</button>
+                    </form>
+
+
                 </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
@@ -296,25 +420,38 @@
 
 
     <script>
-        const apiUrl = '{{ env('API_URL') }}';
+        $(document).ready(function() {
+            // Ketika gambar di-klik, trigger input file
+            $('.image-container').on('click', function() {
+                $('#imageUpload').click();
+            });
 
+            // Mengubah tampilan gambar setelah memilih file
+            $('#imageUpload').on('change', function(e) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    $('#imagePreview').attr('src', event.target.result);
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            });
+        });
         $('#additional-src-type').hide()
         $('#quiz-type').hide()
 
         $(document).ready(function() {
-                $('#contentDesc').summernote({
-                    toolbar: [
-                        // [groupName, [list of button]]
-                        ['style', ['bold', 'italic', 'underline']], // Text styles
-                        ['color', ['color']], // Text color
-                        ['para', ['ul', 'ol']], // Lists
-                        ['insert', ['link', 'picture']], // Insert link and image
-                        ['misc', ['undo', 'redo']] // Miscellaneous
-                    ],
-                    height: 300, // Set editor height
-                    placeholder: 'Type your text here...' // Placeholder text
-                });
+            $('#contentDesc').summernote({
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline']], // Text styles
+                    ['color', ['color']], // Text color
+                    ['para', ['ul', 'ol']], // Lists
+                    ['insert', ['link', 'picture']], // Insert link and image
+                    ['misc', ['undo', 'redo']] // Miscellaneous
+                ],
+                height: 300, // Set editor height
+                placeholder: 'Type your text here...' // Placeholder text
             });
+        });
 
         //QUIZ
         var optionQuiz = []
@@ -348,7 +485,7 @@
             ]
         })
 
-        function showQuizzes(){
+        function showQuizzes() {
             $('.quizzesList').empty();
             quizees.forEach((quiz, index) => {
                 // Create a list item for each quiz
@@ -377,7 +514,7 @@
         });
 
 
-        function changeForm(){
+        function changeForm() {
             var selectedValue = $('#contentType').val();
 
             if (selectedValue == 'additional_source') {
@@ -411,7 +548,7 @@
             formData.append('contentType', contentType);
 
 
-            if(contentType == 'video'){
+            if (contentType == 'video') {
                 const contentVideoFile = $('#contentVideoFile')[0].files[0];
                 const contentVideoThumbFile = $('#contentVideoThumbFile')[0].files[0];
 
@@ -422,24 +559,24 @@
                 formData.append('videoContentThumbFile', contentVideoThumbFile);
                 formData.append('videoArticleContent', videoArticleContent);
                 formData.append('videoDuration', videoDuration);
-            }else if(contentType == 'quiz'){
+            } else if (contentType == 'quiz') {
                 const passingGrade = $('#contentPassingGrade').val()
 
-                formData.append('quizzes',  JSON.stringify({
+                formData.append('quizzes', JSON.stringify({
                     'passing_grade': +passingGrade,
-                    'quiz_content':quizees
+                    'quiz_content': quizees
                 }))
-            }else if(contentType == 'additional_source'){
+            } else if (contentType == 'additional_source') {
                 const additionalSrcFile = $('#contentAddSrcFile')[0].files[0];
 
                 formData.append('additionalSrcFile', additionalSrcFile);
-            }else{
+            } else {
 
             }
 
 
             $.ajax({
-                url: '{{ route("admin.kelas.content.post", $courseId) }}', // Direct API endpoint
+                url: '{{ route('admin.kelas.content.post', $courseId) }}', // Direct API endpoint
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
@@ -451,7 +588,7 @@
                 success: function(response) {
                     Swal.fire('Berhasil', 'Berhasil membuat konten', 'success');
 
-                    window.location.href='?selectedCourseContentId='+response.data.id
+                    window.location.href = '?selectedCourseContentId=' + response.data.id
 
                 },
                 error: function(xhr, status, error) {
@@ -462,49 +599,50 @@
 
 
         var idQuizzesEdit = null
-        function showQuizModal(indexQuiz){
+
+        function showQuizModal(indexQuiz) {
             idQuizzesEdit = null
-           $('#questionQuizInput').val(''),
-            optionQuiz.splice(0, optionQuiz.length);
+            $('#questionQuizInput').val(''),
+                optionQuiz.splice(0, optionQuiz.length);
             const modal = new bootstrap.Modal(document.getElementById('modal-quiz'));
-            if(indexQuiz != null){
+            if (indexQuiz != null) {
                 idQuizzesEdit = indexQuiz
                 console.log(quizees[indexQuiz]);
 
                 $('#questionQuizInput').val(quizees[indexQuiz].question)
-                quizees[indexQuiz].options.forEach((option, index)=>{
+                quizees[indexQuiz].options.forEach((option, index) => {
                     optionQuiz.push(option)
                 })
 
 
             }
             showOptionQuiz()
-            if(indexQuiz != null){
+            if (indexQuiz != null) {
                 $('#answerQuizInput').val(quizees[indexQuiz].answer).change()
             }
             modal.show();
         }
 
-        function deleteQuiz(indexQuiz){
-            if(indexQuiz != null){
+        function deleteQuiz(indexQuiz) {
+            if (indexQuiz != null) {
                 quizees.splice(indexQuiz, 1);
                 showQuizzes()
             }
         }
 
-        function addOptionQuiz(index){
-            if(index != null){
+        function addOptionQuiz(index) {
+            if (index != null) {
                 $('#optionQuizInput').val(optionQuiz[index])
             }
 
             val = $('#optionQuizInput').val()
-            if(val == ''){
+            if (val == '') {
                 return
             }
 
-            if(index != null){
+            if (index != null) {
                 optionQuiz[index] = val
-            }else{
+            } else {
                 optionQuiz.push(val)
             }
 
@@ -512,10 +650,10 @@
             showOptionQuiz()
         }
 
-        function showOptionQuiz(){
+        function showOptionQuiz() {
             // option-quiz-add
             $('.option-quiz-add').empty();
-            optionQuiz.forEach((option, index)=>{
+            optionQuiz.forEach((option, index) => {
                 var quizItem = `<div class='card p-4'>
                     <p>${option}</p>` +
                     `
@@ -532,16 +670,16 @@
         }
 
 
-        function deleteOptionQuiz(index){
-            if(index != null){
+        function deleteOptionQuiz(index) {
+            if (index != null) {
                 optionQuiz.splice(index, 1);
                 showOptionQuiz()
             }
         }
 
-        function mergeAnswerAndOption(){
+        function mergeAnswerAndOption() {
             $('#answerQuizInput').empty();
-            optionQuiz.forEach((option, index)=>{
+            optionQuiz.forEach((option, index) => {
                 $('#answerQuizInput').append(
                     $('<option>', {
                         value: index,
@@ -551,15 +689,15 @@
             })
         }
 
-        function submitOptionQuiz(){
-            if(idQuizzesEdit != null){
+        function submitOptionQuiz() {
+            if (idQuizzesEdit != null) {
                 quizees[idQuizzesEdit] = {
                     'question': $('#questionQuizInput').val(),
                     'answer': +$('#answerQuizInput').val(),
                     'options': Array.from(optionQuiz)
                 }
 
-            }else{
+            } else {
                 quizees.push({
                     'question': $('#questionQuizInput').val(),
                     'answer': +$('#answerQuizInput').val(),
@@ -569,22 +707,16 @@
             $('#modal-quiz').modal('hide');
             showQuizzes()
         }
+    </script>
 
 
-
-
-
-</script>
-
-
-@if ($selectedCourseContentId != '')
-    <script>
-
-            $('#contentName').val('{{$courseContent->content_title}}')
-            $('#contentType').val('{{$courseContent->content_type}}').change()
+    @if ($selectedCourseContentId != '')
+        <script>
+            $('#contentName').val('{{ $courseContent->content_title }}')
+            $('#contentType').val('{{ $courseContent->content_type }}').change()
             $('#contentType').prop('disabled', true);
             changeForm()
-            $('#contentDesc').val('{!!$courseContent->content_description!!}')
+            $('#contentDesc').val('{!! $courseContent->content_description !!}')
 
             const contentType = $('#contentType').val()
 
@@ -595,41 +727,39 @@
 
 
 
-         function deleteContent(){
-            $.ajax({
-              url: '{{ route("admin.kelas.content.delete", ["courseId" => $courseId, "id" => $selectedCourseContentId]) }}', // Direct API endpoint
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content')
-                },
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    Swal.fire('Berhasil', 'Berhasil mengapus konten', 'success');
-                    window.location.href='?selectedCourseContentId='
+            function deleteContent() {
+                $.ajax({
+                    url: '{{ route('admin.kelas.content.delete', ['courseId' => $courseId, 'id' => $selectedCourseContentId]) }}', // Direct API endpoint
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content')
+                    },
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        Swal.fire('Berhasil', 'Berhasil mengapus konten', 'success');
+                        window.location.href = '?selectedCourseContentId='
 
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire('Oops!', xhr.responseJSON.message, 'error');
-                }
-            });
-        }
-    </script>
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                    }
+                });
+            }
+        </script>
 
-        @if($courseContent->content_type == $videoType)
+        @if ($courseContent->content_type == $videoType)
             <script>
-                $('#contentVideoArticleContent').val('{{$courseContent->video->article_content}}')
-                $('#contentVideoDuration').val('{{$courseContent->video->video_duration}}')
-
-                </script>
+                $('#contentVideoArticleContent').val('{{ $courseContent->video->article_content }}')
+                $('#contentVideoDuration').val('{{ $courseContent->video->video_duration }}')
+            </script>
         @elseif($courseContent->content_type == $quizType)
-
-        <script>
-            $('#contentPassingGrade').val('{{$courseContent->quiz->passing_grade}}')
+            <script>
+                $('#contentPassingGrade').val('{{ $courseContent->quiz->passing_grade }}')
                 quizees.splice(0, quizees.length);
                 var quizzesFromPhp = @json($courseContent->quiz->questions);
-                quizzesFromPhp.forEach((quiz, index)=>{
+                quizzesFromPhp.forEach((quiz, index) => {
                     quizees.push({
                         'question': quiz.question,
                         'answer': quiz.answer,
@@ -637,7 +767,6 @@
                     })
                 })
                 showQuizzes()
-
             </script>
         @endif
 

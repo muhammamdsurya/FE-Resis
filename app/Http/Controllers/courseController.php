@@ -365,25 +365,20 @@ class courseController extends Controller
 
     public function destroy($id)
     {
-        try {
-            // Replace this with the actual URL of your API
-            $apiUrl = $this->apiUrl . 'courses/categories/' . $id;
 
-            // Make the DELETE request to the external API
-            $response = Http::withApiSession()->delete($apiUrl);
+        $apiUrl = $this->apiUrl . 'courses/categories/' . $id;
 
-            if ($response->successful()) {
-                // If the request was successful, return a success response
-                return response()->json(['message' => 'Category deleted successfully.'], 200);
-            } else {
-                // Handle failure response from the API
-                return response()->json(['error' => 'Failed to delete category.'], $response->status());
-            }
-        } catch (\Exception $e) {
-            // Handle any exceptions
-            return response()->json(['error' => 'An error occurred.'], 500);
+        $response = Http::withApiSession()->delete($apiUrl);
+        print_r($response->body());
+
+        if ($response->successful()) {
+            // Optionally, add logic to remove the item from your database
+            return response()->json(['message' => 'Course bundle deleted successfully.'], 200);
         }
+
+        return response()->json(['message' => $id. 'Failed to delete course bundle'], 500);
     }
+
 
     public function editCategory(Request $request, $id)
     {
@@ -393,35 +388,49 @@ class courseController extends Controller
 
             // Make the PUT request to the external API
             $response = Http::withApiSession()->put($apiUrl, [
-                // Assuming you need to send data with the request, include it here
                 'name' => $request->name // Example data if you are updating the category's name
             ]);
 
+            // Check if the request was successful
             if ($response->successful()) {
-                // If the request was successful, return a success response
-                return response()->json(['message' => 'Category successfully updated.'], 200);
+                // Check if the response has content
+                $responseData = $response->json(); // If there's any JSON response
+                if (!empty($responseData)) {
+                    return response()->json([
+                        'message' => 'Category updated successfully',
+                        'data' => $responseData // Return the data from the API if present
+                    ]);
+                } else {
+                    // No data returned, just return success
+                    return response()->json([
+                        'message' => 'Category updated successfully but no data returned from API.'
+                    ]);
+                }
             } else {
-                // Handle failure response from the API
+                // Handle failure cases, including client errors
                 return response()->json([
-                    'error' => 'Failed to update category.',
-                    'details' => $response->json() // Include API response details if available
+                    'message' => 'Failed to update category',
+                    'error' => $response->body() // Return the error message if any
                 ], $response->status());
             }
         } catch (\Exception $e) {
-            // Handle any exceptions
             return response()->json([
-                'error' => 'An error occurred while updating the category.',
-                'exception' => $e->getMessage() // Provide exception message for debugging
+                'message' => 'An error occurred while updating the category',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
 
-    function getAllCourse($page)
+    public function getAllCourse($page)
     {
-        $response = Http::withApiSession()->get($this->apiUrl . 'courses');
+        // Pass the page parameter in the API request
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses', [
+            'page' => $page
+        ]);
 
         return json_decode($response->getBody()->getContents());
     }
+
     function getCourseById($courseId)
     {
         $response = Http::withApiSession()->get($this->apiUrl . 'courses/' . $courseId);

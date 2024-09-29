@@ -32,7 +32,7 @@
         $('#sales-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('sales') }}", // Adjust the route as needed
+            ajax: "{{ url('/admin/sales') }}", // Adjust the route as needed
             columns: [{
                     data: 'name',
                     name: 'name'

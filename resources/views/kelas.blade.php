@@ -41,7 +41,7 @@
             <div class="row gx-3 gy-4">
                 @foreach ($courses->data as $course)
                     <div class="col-lg-3 col-md-4 col-6">
-                        <a href="{{route('detail.kelas', ['courseId' => $course->course->id])}}">
+                        <a href="{{ route('detail.kelas', ['courseId' => $course->course->id]) }}">
                             <div class="card h-100 shadow border-0 position-relative"
                                 style="border-radius: 15px; overflow: hidden;">
                                 <img src="assets/img/values-1.png" class="card-img-top" alt="..."
@@ -70,14 +70,37 @@
                     </div>
                 @endforeach
 
-
                 <nav aria-label="Page navigation example">
-                    <ul class="pagination">
-                        <li id="btnIncrementPagination" class="page-item"><button class="page-link">Previous</button></li>
-                        @for ($i = 1; $i <= $courses->pagination->total_page; $i++)
-                            <li class="page-item"><button class="page-link">{{ $i }}</button></li>
+                    <ul class="pagination justify-content-center">
+                        <!-- Previous Button -->
+                        @if ($pagination->page > 1)
+                            <li class="page-item">
+                                <a class="page-link"
+                                    href="{{ route('kelas', ['page' => $pagination->page - 1]) }}">Previous</a>
+                            </li>
+                        @else
+                            <li class="page-item disabled">
+                                <a class="page-link">Previous</a>
+                            </li>
+                        @endif
+
+                        <!-- Page Numbers -->
+                        @for ($i = 1; $i <= $pagination->total_page; $i++)
+                            <li class="page-item {{ $pagination->page === $i ? 'active' : '' }}">
+                                <a class="page-link" href="{{ route('kelas', ['page' => $i]) }}">{{ $i }}</a>
+                            </li>
                         @endfor
-                        <li id="btnDecrementPagination" class="page-item"><button class="page-link">Next</button></li>
+
+                        <!-- Next Button -->
+                        @if ($pagination->page < $pagination->total_page)
+                            <li class="page-item">
+                                <a class="page-link" href="{{ route('kelas', ['page' => $pagination->page + 1]) }}">Next</a>
+                            </li>
+                        @else
+                            <li class="page-item disabled">
+                                <a class="page-link">Next</a>
+                            </li>
+                        @endif
                     </ul>
                 </nav>
 

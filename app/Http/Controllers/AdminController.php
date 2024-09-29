@@ -114,6 +114,28 @@ class AdminController extends Controller
         ]);
     }
 
+
+    public function getCategories(Request $request)
+    {
+        if ($request->ajax()) {
+            // Fetch categories data from API
+            $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
+
+            // Return data for DataTables
+            return DataTables::of($categories)
+                ->addIndexColumn()
+                ->addColumn('actions', function ($row) {
+                    return '
+                        <a href="javascript:void(0)" class="btn btn-sm btn-primary edit-btn" data-id="' . $row['id'] . '">Edit</a>
+                        <a href="javascript:void(0)" class="btn btn-sm btn-danger delete-btn" data-id="' . $row['id'] . '">Delete</a>
+                    ';
+                })
+                ->rawColumns(['actions']) // Render the actions column as raw HTML
+                ->make(true);
+        }
+    }
+
+
     public function kelas(Request $request)
     {
         $title = 'Data Kelas';
@@ -271,6 +293,7 @@ class AdminController extends Controller
             "role" => $this->user['role'],
         ]);
     }
+
 
     public function detailKelas(Request $request, $id)
     {
