@@ -28,7 +28,7 @@
 
                         <div class="d-flex flex-column">
                             <h5 class="card-title my-2">{{$userCourse->course->name}}</h5>
-                            <a href="/user/diskusi-kelas/{{$userCourse->course->id}}" class="fs-6 text-decoration-none">Lanjutkan <i class="fas fa-arrow-circle-right"></i></a>
+                            <a href="/user/detail-kelas/{{$userCourse->course->id}}" class="fs-6 text-decoration-none">Lanjutkan <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                 </div>

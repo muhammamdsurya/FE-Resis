@@ -12,6 +12,7 @@ use App\Http\Controllers\UserDataController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\publicController;
 use App\Http\Controllers\transactionController;
+use App\Http\Controllers\userCourseController;
 
 // Rute standar
 Route::redirect('/', '/beranda');
@@ -97,7 +98,8 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::post('/complete-data', [UserDataController::class, 'completePost'])->name('complete.post');
 
     Route::post('/diskusi-kelas/{courseId}', [courseForumController::class, 'createCourseForum'])->name('diskusi.post');
-    Route::post('/quiz/answer/{contentId}', [courseContentController::class, 'answerQuiz'])->name('quiz.answer');
+    Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('diskusi.post.reply');
+    Route::post('/quiz/answer/{contentId}', [userCourseController::class, 'answerQuiz'])->name('quiz.answer');
 
     Route::post('/checkout', [transactionController::class, 'checkout'])->name('user.checkout');
 });

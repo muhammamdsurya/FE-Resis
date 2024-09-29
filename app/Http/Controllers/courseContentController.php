@@ -170,7 +170,7 @@ class courseContentController extends Controller
     public function courseContentVideo($courseId, $id) {
         $response = Http::withApiSession()->get($this->apiUrl. 'courses/'.$courseId.'/contents/'.$id.'/video');
 
-        return $response->body();
+        return  json_decode(json_encode($response->json()));
     }
     public function courseContentQuiz($courseId, $id) {
         $response = Http::withApiSession()->get($this->apiUrl. 'courses/'.$courseId.'/contents/'.$id.'/quiz');
@@ -180,34 +180,10 @@ class courseContentController extends Controller
     public function courseContentSrc($courseId, $id) {
         $response = Http::withApiSession()->get($this->apiUrl. 'courses/'.$courseId.'/contents/'.$id.'/additional_source');
 
-        return $response->body();
+        return  json_decode(json_encode($response->json()));
     }
 
-    public function answerQuiz($contentId, Request $request) {
-        $answer =$request->get('answers');
-
-        $response = Http::withApiSession()->delete($this->apiUrl. 'user/'.$this->user['id'].'/courses/'.$id.'/contents/'.$contentId.'/quiz');
-
-           
-
-        if ($response->successful()) {
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'data' =>$answer,
-                    'title' => json_decode(json_encode($response->json()))->passed_status == true ? 'Selamat anda lulus kuis ini': 'Maaf kamu belum lulus kuis ini',
-                    'content' => 'Skor yang kamu dapatkan adalah '. json_decode(json_encode($response->json()))->score
-                ],
-                'dataServer' => json_decode(json_encode($response->json()))
-            ], $response->status());
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => $response->body()  ,
-                'error' => $response->json() 
-            ], $response->status());
-        }
-    }
+   
 
 
  
