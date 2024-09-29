@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Course;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
@@ -15,12 +13,14 @@ class AdminController extends Controller
 {
     private $user;
     private $apiUrl;
+    private $courseContentCtrl;
 
 
     public function __construct()
     {
         $this->user = session('user');
         $this->apiUrl = env('API_URL');
+        $this->courseContentCtrl = new courseContentController();
     }
 
     private function getDetailData()
@@ -66,11 +66,10 @@ class AdminController extends Controller
 
         // Check if the response is successful
         if ($response->successful()) {
-            return $response->json(); // Decode JSON response into an object
+            return $response->json();
         } else {
             // Log the error with more context
             Log::error('Failed to fetch data from API: ' . $response->status() . ' - ' . $response->body());
-
         }
     }
 
@@ -117,24 +116,33 @@ class AdminController extends Controller
 
     public function kelas(Request $request)
     {
-
         $title = 'Data Kelas';
-        $page = $request->input('page', 1); // Get the current page or default to 1
+        $page = $request->input('page', 1); // Default ke halaman 1 jika tidak ada
 
+        // Ambil nilai input 'q' dari form
+        $query = $request->input('q');
+
+        if ($query) {
+            // Fetch courses dengan parameter query
+            $courses = $this->fetchApiData($this->apiUrl . 'courses/search?q=' . urlencode($query));
+        } else {
+            // Fetch courses tanpa pencarian
+            $courses = $this->fetchApiData($this->apiUrl . 'courses?page=' . $page);
+        }
+
+        // Kode lain untuk categories, instructors, dll.
         $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
         $instructors = $this->fetchApiData($this->apiUrl . 'courses/instructors');
-        $courses = $this->fetchApiData($this->apiUrl . 'courses?page=' . $page);
 
         return view('admin.kelas', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "courses" => $courses['data'],
-            "pagination" => $courses['pagination'], // Get pagination data
-            "categories" => json_encode($categories), // Encode the categories for JS
-            "instructors" => json_encode($instructors), // Encode the categories for JS
-
+            "courses" => $courses,
+            "pagination" => $courses['pagination'] ?? null,
+            "categories" => json_encode($categories),
+            "instructors" => json_encode($instructors),
         ]);
     }
 
@@ -163,44 +171,70 @@ class AdminController extends Controller
 
         $title = 'Data Bundling';
         $page = $request->input('page', 1); // Get the current page or default to 1
-        $bundles = $this->fetchApiData($this->apiUrl . 'courses/bundles?page=' . $page);
 
+        // Ambil nilai input 'q' dari form
+        $query = $request->input('q');
+
+        if ($query) {
+            // Fetch courses dengan parameter query
+            $bundles = $this->fetchApiData($this->apiUrl . 'courses/bundles/search?q=' . urlencode($query));
+        } else {
+            // Fetch courses tanpa pencarian
+            $bundles = $this->fetchApiData($this->apiUrl . 'courses/bundles?page=' . $page);
+        }
 
         return view('admin.bundling', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "bundles" => $bundles['data'],
-            "pagination" => $bundles['pagination'], // Get pagination data
+            "bundles" => $bundles,
+            "pagination" => $bundles['pagination'] ?? null,
         ]);
     }
 
-    public function sales()
+    public function sales(Request $request)
     {
-
         $title = 'Data Penjualan';
 
+        // Check if the request is AJAX
+        if ($request->ajax()) {
+            $dataSales = $this->fetchApiData($this->apiUrl . 'statistics/sales/transactions');
 
+            // Here, you would typically handle pagination, searching, and ordering if your API supports it.
+            $data = $dataSales['data']; // Assuming your API returns the relevant data
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('created_at', function ($row) {
+                    return \Carbon\Carbon::parse($row['created_at'])->format('Y-m-d H:i:s');
+                })
+                ->make(true);
+        }
+
+        // For non-AJAX requests, load the view normally
         return view('admin.sales', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
+            // You can remove "dataSales" and "pagination" if you don't need to pass it to the view
         ]);
     }
+
 
     public function dataAdmin()
     {
 
         $title = 'Data Admin';
 
+        $dataAdmin = $this->fetchApiData($this->apiUrl . 'statistics/admins');
+
         // Lakukan operasi lain yang diperlukan
         return view('admin.dataAdmin', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
-            "role" => $this->user['role'],
+            "data" => $dataAdmin,
         ]);
     }
 
@@ -238,31 +272,110 @@ class AdminController extends Controller
         ]);
     }
 
-
-    public  function detailKelas(Request $request, $id)
+    public function detailKelas(Request $request, $id)
     {
-        $title = '';
+        $title = 'Detail Kelas';
 
         $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
+        $instructors = $this->fetchApiData($this->apiUrl . 'courses/instructors');
+        $course = $this->fetchApiData($this->apiUrl . 'courses/' . $id);
+        // Initialize course contents, assuming it's fetched properly
+        $courseContents = $this->courseContentCtrl->courseContents($id) ?? []; // Fetch course contents safely
+        $courseContent = null;
+        $previousCourseContentId = '';
+        $nextCourseContentId = '';
+
+        $videoType = 'video';
+        $addSrcType = 'additional_source';
+        $quizType = 'quiz';
 
         $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
+
+        if ($selectedCourseContentId != '') {
+            $selectedIndex = -1; // Use -1 to indicate not found initially
+            foreach ($courseContents as $index => $content) {
+                if ($content->id === $selectedCourseContentId) {
+                    $selectedIndex = $index; // Set the selected index
+                    $courseContent = $content; // Assign selected course content
+                    break;
+                }
+            }
+
+            // Initialize next and previous IDs
+            if ($selectedIndex !== -1) { // Ensure we found the selected index
+                if ($selectedIndex > 0) {
+                    $previousCourseContentId = $courseContents[$selectedIndex - 1]->id;
+                }
+                if ($selectedIndex < count($courseContents) - 1) {
+                    $nextCourseContentId = $courseContents[$selectedIndex + 1]->id;
+                }
+            }
+
+            // Check if $courseContent is not null before accessing its properties
+            if ($courseContent) {
+                if ($courseContent->content_type == $videoType) {
+                    $courseContentVideo = $this->courseContentCtrl->courseContentVideo($id, $selectedCourseContentId);
+                    $courseContent->video = $courseContentVideo;
+                } elseif ($courseContent->content_type == $addSrcType) {
+                    $courseContentSrc = $this->courseContentCtrl->courseContentSrc($id, $selectedCourseContentId);
+                    $courseContent->src = $courseContentSrc;
+                } elseif ($courseContent->content_type == $quizType) {
+                    $courseContentQuiz = $this->courseContentCtrl->courseContentQuiz($id, $selectedCourseContentId);
+                    $courseContent->quiz = $courseContentQuiz;
+                }
+            }
+        }
 
         return view('admin.detailKelas', [
             "title" => $title,
             "courseId" => $id,
             "selectedCourseContentId" => $selectedCourseContentId,
+            "previousCourseContentId" => $previousCourseContentId,
+            "nextCourseContentId" => $nextCourseContentId,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "categories" => json_encode($categories), // Encode the categories for JS
+            "categories" => json_decode(json_encode($categories)), // Encode the categories for JS
+            "course" => json_decode(json_encode($course)), // Encode the categories for JS
+            "instructors" => json_decode(json_encode($instructors)), // Encode the categories for JS
+            "courseContent" => $courseContent, // Encode the categories for JS
+            "videoType" => $videoType,
+            "addSrcType" => $addSrcType,
+            "quizType" => $quizType,
         ]);
     }
+
 
     public  function detailBundling($id)
     {
         $title = '';
 
         $bundle = $this->fetchApiData($this->apiUrl . 'courses/bundles/' . $id);
+        $courses = $this->fetchApiData($this->apiUrl . 'courses');
+        // Fetch the course IDs from the API
+        $idCourse = $this->fetchApiData($this->apiUrl . 'courses/bundles/' . $id . '/courses');
+        // Check if $idCourse is an array and not empty
+        if (is_array($idCourse) && !empty($idCourse)) {
+            // Initialize an array to hold course details
+            $courseDetails = [];
+
+            // Iterate over the course IDs
+            foreach ($idCourse as $courseId) {
+                // Fetch details for each course ID
+                $detail = $this->fetchApiData($this->apiUrl . 'courses/' . $courseId);
+
+                // Store the details in the courseDetails array
+                $courseDetails[] = $detail;
+            }
+            // If course details are empty, set a message
+            if (empty($courseDetails)) {
+                $courseDetails = ['message' => 'Belum ada data'];
+            }
+        } else {
+            // Handle the case where no course IDs were returned
+            $courseDetails = ['message' => 'Belum ada data'];
+        }
+
 
         return view('admin.bundlingDetail', [
             "title" => $title,
@@ -270,18 +383,25 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "bundle" => $bundle, // Encode the categories for JS
+            "bundle" => $bundle, //
+            "courses" => $courses['data'],
+            "courseDetails" => $courseDetails
         ]);
     }
 
 
-    public function diskusi()
+    public function diskusi($id)
     {
         $title = 'Diskusi';
 
+        // $apiSession = session('api_session');
+        // dd($apiSession);
+
+
         // Lakukan operasi lain yang diperlukan
 
-        return view('admin.diskusi', [
+        return view('user.diskusi', [
+            "courseId" => $id,
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],

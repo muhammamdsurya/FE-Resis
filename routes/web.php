@@ -7,8 +7,12 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\courseContentController;
 use App\Http\Controllers\RegisController;
 use App\Http\Controllers\courseController;
+use App\Http\Controllers\courseForumController;
 use App\Http\Controllers\UserDataController;
 use App\Http\Controllers\InstructorController;
+use App\Http\Controllers\publicController;
+use App\Http\Controllers\transactionController;
+use App\Http\Controllers\userCourseController;
 
 // Rute standar
 Route::redirect('/', '/beranda');
@@ -16,13 +20,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('beranda');
 
-Route::get('/kelas', function () {
-    return view('kelas');
-})->name('kelas');
+// Route::get('/test', [transactionController::class, 'helo'])->name('kelas'); testing, nanti di awasin
+Route::get('/kelas', [publicController::class, 'kelas'])->name('kelas');
+Route::get('/detail-kelas/{courseId}', [publicController::class, 'detailKelas'])->name('detail.kelas');
 
-Route::get('/detail-kelas', function () {
-    return view('detailKelas');
-})->name('detail-kelas');
 
 Route::get('/kontak', function () {
     return view('kontak');
@@ -45,8 +46,10 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 
     //course
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
-    Route::get('/detail-kelas/{id}', [AdminController::class, 'detailKelas'])->name('detail-kelas');
     Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
+    Route::get('/detail-kelas/{id}', [AdminController::class, 'detailKelas'])->name('detail-kelas');
+    Route::post('/kelas', [CourseController::class, 'kelas'])->name('kelas.post');
+    Route::put('/kelas/{CourseId}', [courseController::class, 'editKelas'])->name('kelas.edit');
 
 
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
@@ -57,22 +60,21 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/data-siswa', [AdminController::class, 'dataSiswa'])->name('data-siswa');
     Route::get('/instructor', [AdminController::class, 'getInstructor'])->name('get.instructors');
 
-
     Route::post('/kelas/categories', [CourseController::class, 'jenjang'])->name('categories.post');
-    Route::post('/kelas', [CourseController::class, 'kelas'])->name('kelas.post');
 
     //bundling
     Route::get('/detail-bundling/{id}', [AdminController::class, 'detailBundling'])->name('detail-bundling');
     Route::post('bundling', [CourseController::class, 'bundlePost'])->name('bundle.post');
-    Route::post('detail-bundling/{id}', [CourseController::class, 'bundleEdit'])->name('bundle.edit');
+    Route::post('/detail-bundling/{id}/edit', [CourseController::class, 'bundleEdit'])->name('bundle.edit');
+    Route::post('/detail-bundling/{id}/course', [CourseController::class, 'bundleCoursePost'])->name('bundleCourse.post');
+    Route::delete('/detail-bundling/delete/{id}', [courseController::class, 'destroyBundle'])->name('bundles.destroy');
+    Route::delete('/detail-bundling/{bundleId}/course/delete', [CourseController::class, 'bundleCourseDelete'])->name('bundleCourse.delete');
 
     Route::delete('/kelas/{id}', [courseController::class, 'destroy'])->name('categories.destroy');
     Route::put('/kelas/{id}', [courseController::class, 'editCategory'])->name('categories.edit');
 
-    Route::put('/kelas/{CourseId}', [courseController::class, 'editKelas'])->name('kelas.edit');
-
-
-    Route::post('/data/kelas/{id}/content/create', [courseContentController::class, 'createCourseContent'])->name('data.kelas.content.create');
+    Route::post('/data/kelas/{id}/content/create', [courseContentController::class, 'createCourseContent'])->name('admin.kelas.content.post');
+    Route::delete('/data/kelas/{courseId}/content/{id}/delete', [courseContentController::class, 'deleteContent'])->name('admin.kelas.content.delete');
 });
 
 
@@ -83,12 +85,19 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::get('/', [UserController::class, 'completeData'])->name('user.data');
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
-    Route::get('/kelas', [UserController::class, 'kelas'])->name('kelas');
+    Route::get('/kelas', [UserController::class, 'kelas'])->name('user.kelas');
     Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
     Route::get('/materi', [UserController::class, 'materi'])->name('materi');
-    Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
+    Route::get('/diskusi-kelas/{courseId}', [UserController::class, 'diskusi'])->name('diskusi');
+    Route::get('/detail-kelas/{courseId}', [UserController::class, 'detailKelas'])->name('user.detail');
 
     Route::post('/complete-data', [UserDataController::class, 'completePost'])->name('complete.post');
+
+    Route::post('/diskusi-kelas/{courseId}', [courseForumController::class, 'createCourseForum'])->name('diskusi.post');
+    Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('diskusi.post.reply');
+    Route::post('/quiz/answer/{contentId}', [userCourseController::class, 'answerQuiz'])->name('quiz.answer');
+
+    Route::post('/checkout', [transactionController::class, 'checkout'])->name('user.checkout');
 });
 
 
@@ -127,7 +136,7 @@ Route::prefix('')->group(function () {
 });
 
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::post('/activate', [AuthController::class, 'activation'])->name('activate.post');
 Route::get('/activate', [AuthController::class, 'activate'])->name('activate');

@@ -1,46 +1,97 @@
 @extends('layout.layout')
 
 @section('content')
-    <section id="detail-kelas" class="hero section">
+    <style>
+        .section {
+            background-color: #f9f9f9;
+        }
+
+        h4.fw-bold {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .text-muted {
+            color: #6c757d !important;
+        }
+
+        .list-unstyled li {
+            margin-bottom: 10px;
+        }
+
+        .rounded-circle {
+            border-radius: 50%;
+        }
+
+        .badge.bg-primary {
+            background-color: #007bff;
+            font-size: 0.9rem;
+            padding: 0.5em 0.75em;
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        #checkoutBtn {
+            transition: background-color 0.3s ease;
+        }
+
+        #checkoutBtn:hover {
+            background-color: #28a745;
+        }
+    </style>
+    <section id="detail-kelas" class="hero section py-5" style="background-color: #f9f9f9;">
         <div class="container my-5">
 
             <div class="row gy-4 g-4">
-                <div class="col-lg-9 col-md-8 d-flex order-2 order-xl-1" data-aos="fade-up" data-aos-delay="200">
+                <!-- Left Content: Course Info -->
+                <div class="col-lg-9 col-md-8 order-2 order-xl-1" data-aos="fade-up" data-aos-delay="200">
 
-                    <div class="container">
-                        <div class="row align-self-center align-items-center gy-5">
+                    <div class="container bg-white p-4 shadow rounded" style="border-radius: 15px;">
+                        <div class="row align-items-center gy-5">
 
                             <div class="col-lg-5">
-                                <img src="assets/img/values-1.png" alt="" width="100%" >
-                            </div><!-- End Feature Item -->
+                                <img src="{{ asset('assets/img/values-1.png') }}" alt="" class="img-fluid rounded"
+                                    style="object-fit: cover; height: 100%; max-height: 300px;">
+                            </div><!-- End Image -->
 
                             <div class="col-lg-7">
                                 <div>
-                                    <h4>Kimia Dasar</h4>
-                                    <div class="header-card d-flex justify-content-between">
-                                        <p class="mr-auto fs-6"><i class="bi bi-star-fill text-warning me-1"></i>4.9</p>
-                                        <p class="ml-auto fs-6">Jenjang : Umum</p>
+                                    <h4 class="fw-bold text-dark">{{ $course->course->name }}</h4>
+                                    <div class="header-card d-flex justify-content-between my-3">
+                                        <p class="text-muted mb-0 fs-6"><i
+                                                class="bi bi-star-fill text-warning me-1"></i>{{ $course->course->rating }}
+                                        </p>
+                                        <p class="badge bg-primary text-white fs-6 mb-0">
+                                            {{ $course->course_category->name }}
+                                        </p>
                                     </div>
-                                    <p>100 Siswa Terdaftar</p>
-                                    <p> Pengenalan konsep dasar kimia, termasuk materi, energi, dan perubahan kimia."
-                                    </p>
+                                    <p class="text-muted"><i class="bi bi-people-fill"></i> 100 Siswa Terdaftar</p>
+                                    <p class="text-muted">{{ $course->course->description }}</p>
                                 </div>
-                            </div><!-- End Feature Item -->
+                            </div><!-- End Text -->
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-4 d-flex align-items-center order-2" data-aos="fade-up"
-                    data-aos-delay="100">
-                    <div class="card text-bg-light shadow" style="width: 100%;">
-                        <div class="card-body mx-auto d-flex flex-column align-items-center">
-                            <h5 class="card-title">Rp. 100.000</h5>
-                            <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
+                <!-- Right Sidebar: Pricing and Buttons -->
+                <div class="col-lg-3 col-md-4 order-2" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card text-bg-light shadow-lg border-0 rounded" style="border-radius: 15px;">
+                        <div class="card-body text-center py-4">
+                            <h5 class="card-title text-success fw-bold fs-3">Rp.
+                                {{ number_format($course->course->price, 0, ',', '.') }}</h5>
+                            <button id="checkoutBtn" class="btn btn-success btn-lg mt-3 px-4">Belajar Sekarang</button>
                         </div>
-                        <hr class="border border-dark border-1 opacity-20">
-                        <div class="card-body mx-auto d-grid flex-column align-items-center">
-                            <a href="#informasi-kelas" class="btn btn-primary mb-2">Informasi Kelas</a>
-                            <a href="#silabus-kelas" class="btn btn-primary">Lihat Silabus</a>
+                        <hr class="border border-dark border-1 opacity-20 mx-4">
+                        <div class="card-body d-grid gap-2 py-3 px-4">
+                            <a href="#informasi-kelas" class="btn btn-outline-primary btn-lg mb-2">Informasi Kelas</a>
+                            <a href="#silabus-kelas" class="btn btn-outline-primary btn-lg">Lihat Silabus</a>
                         </div>
                     </div>
                 </div>
@@ -48,54 +99,63 @@
         </div>
     </section>
 
-    {{-- Deskrpsi Kelas --}}
+    <!-- Deskripsi Kelas -->
     <section id="informasi-kelas" class="section">
-        <div class="container shadow p-3">
+        <div class="container shadow p-4 rounded bg-white">
             <div class="row">
+                <!-- Left Column: Deskripsi, Tujuan, Pengajar -->
                 <div class="col-lg-7">
-                    <div class="container mb-3">
-                        <h4>Deskripsi</h4>
-                        <p>Pengenalan konsep dasar kimia, termasuk materi, energi, dan perubahan kimia."
-                        </p>
+                    <!-- Deskripsi -->
+                    <div class="mb-5">
+                        <h4 class="fw-bold mb-3">Deskr\ipsi</h4>
+                        <p class="text-muted">{{ $course->course->description }}</p>
                     </div>
-                    <div class="container mb-3">
-                        <h4>Tujuan</h4>
-                        <p>Memahami konsep dasar kimia dan terminologi kimia
-                        </p>
+
+                    <!-- Tujuan -->
+                    <div class="mb-5">
+                        <h4 class="fw-bold mb-3">Tujuan</h4>
+                        <p class="text-muted">{{ $course->course->purpose }}</p>
                     </div>
-                    <div class="container mb-3">
-                        <h4>Pengajar</h4>
-                        <div class="d-flex my-3 align-items-center gap-3">
-                            <img src="assets/img/values-1.png" alt="" width="100rem">
-                            <div class="container">
-                                <h6>Rahayu, S.Si</h6>
-                                <p>Oxford University</p>
-                                <p>Tutor Online</p>
+
+                    <!-- Pengajar -->
+                    <div class="mb-5">
+                        <h4 class="fw-bold mb-3">Pengajar</h4>
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}" alt="Instructor" class="rounded-circle" width="100rem">
+                            <div>
+                                <h6 class="fw-bold">{{ $course->instructor->full_name }}</h6>
+                                <p class="text-muted">{{ $course->instructor->instructor->education }}</p>
+                                <span class="badge bg-primary">Tutor Online</span>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Right Column: Metode Ajar, Fasilitas Pengajar -->
                 <div class="col-lg-5">
-                    <div class="container">
-                        <h4>Metode Ajar</h4>
-                        <p>Online - Self-paced Learning</p>
-                        <ul>
-                            <li>tentukan sendiri berapa lama waktu yang akan digunakan untuk belajar materi kelas ini
-                                selama
-                                masih aktif terdaftar pada kelas</li>
+                    <div>
+                        <!-- Metode Ajar -->
+                        <h4 class="fw-bold mb-3">Metode Ajar</h4>
+                        <p class="text-muted">Online - Self-paced Learning</p>
+                        <ul class="list-unstyled text-muted">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i> Tentukan sendiri waktu belajar
+                                selama masih aktif terdaftar</li>
                         </ul>
-                        <p>Fasilitas Pengajar</p>
-                        <ul>
-                            <li>Video Pembelajaran</li>
-                            <li>Modul Online</li>
-                            <li>Kuis Interaktif</li>
-                            <li>Forum Diskusi</li>
+
+                        <!-- Fasilitas Pengajar -->
+                        <h4 class="fw-bold mt-4 mb-3">Fasilitas Pengajar</h4>
+                        <ul class="list-unstyled text-muted">
+                            <li><i class="bi bi-play-circle-fill text-success me-2"></i> Video Pembelajaran</li>
+                            <li><i class="bi bi-file-earmark-text-fill text-success me-2"></i> Modul Online</li>
+                            <li><i class="bi bi-question-circle-fill text-success me-2"></i> Kuis Interaktif</li>
+                            <li><i class="bi bi-chat-left-dots-fill text-success me-2"></i> Forum Diskusi</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
 
     <!-- Faq Section -->
     <section id="silabus-kelas" class="faq section">
@@ -117,8 +177,10 @@
                             <h3>Apa itu AkuAnalis?</h3>
                             <div class="faq-content">
                                 <p>Selamat datang di AkuAnalis by Resi's Project!
-                                    Kami adalah media belajar yang menyediakan Online Course dengan fokus di bidang Kimia Analisis serta dapat diakses dengan mudah oleh siswa/i.  Yuk segera daftarkan diri kalian dan nikmati fitur yang kami sediakan!
-                                    </p>
+                                    Kami adalah media belajar yang menyediakan Online Course dengan fokus di bidang Kimia
+                                    Analisis serta dapat diakses dengan mudah oleh siswa/i. Yuk segera daftarkan diri kalian
+                                    dan nikmati fitur yang kami sediakan!
+                                </p>
                             </div>
                             <i class="faq-toggle bi bi-chevron-right"></i>
                         </div><!-- End Faq item-->
@@ -126,7 +188,9 @@
                         <div class="faq-item">
                             <h3>Siapa yang yang menjadi pengajar atau tutor di AkuAnalis ini?</h3>
                             <div class="faq-content">
-                                <p>Pengajar yang kami miliki adalah para lulusan Kimia/Analis Kimia yang memiliki pengalaman keterampilan langsung di laboratorium dari berbagai sektor industry sehingga ilmu teori dan praktikum kami nantinya sudah sesuai dengan laboratorium nyata.
+                                <p>Pengajar yang kami miliki adalah para lulusan Kimia/Analis Kimia yang memiliki pengalaman
+                                    keterampilan langsung di laboratorium dari berbagai sektor industry sehingga ilmu teori
+                                    dan praktikum kami nantinya sudah sesuai dengan laboratorium nyata.
                                 </p>
                             </div>
                             <i class="faq-toggle bi bi-chevron-right"></i>
@@ -135,7 +199,8 @@
                         <div class="faq-item">
                             <h3>Di mana saya bisa mengakses kursus-kursus di AkuAnalis?</h3>
                             <div class="faq-content">
-                                <p>Saat ini kalian bisa akses dimana pun dan kapan pun melalui Website resmi kami di akuanalis.com. Yuk segera daftarkan diri kalian dan nikmati fitur yang kami sediakan!
+                                <p>Saat ini kalian bisa akses dimana pun dan kapan pun melalui Website resmi kami di
+                                    akuanalis.com. Yuk segera daftarkan diri kalian dan nikmati fitur yang kami sediakan!
                                 </p>
                             </div>
                             <i class="faq-toggle bi bi-chevron-right"></i>
@@ -197,10 +262,11 @@
                                     class="bi bi-star-fill"></i>
                             </div>
                             <p>
-                                Pembelajarannya menarik ditambah lagi ada tips cara jawab latihan soal dengan cepat, apalagi praktikumnya menggunakan app simuasi yang keadaannya standar.Thanks ya ka.
+                                Pembelajarannya menarik ditambah lagi ada tips cara jawab latihan soal dengan cepat, apalagi
+                                praktikumnya menggunakan app simuasi yang keadaannya standar.Thanks ya ka.
                             </p>
                             <div class="profile mt-auto">
-                                <img src="assets/img/testimonials/testimonials-1.jpg" class="testimonial-img"
+                                <img src="{{ asset('assets/img/testimonials/testimonials-4.jpg') }}" class="testimonial-img"
                                     alt="">
                                 <h3>Dinda</h3>
                                 <h4>Umum</h4>
@@ -216,11 +282,12 @@
                                     class="bi bi-star-fill"></i>
                             </div>
                             <p>
-                                kadimm enak mengajarnya, menjelaskan dengan detail terkait materi yang diajarkan, menerima dan menjawab pertanyaan yang masih kita bingung/kurang paham jugaa
+                                kadimm enak mengajarnya, menjelaskan dengan detail terkait materi yang diajarkan, menerima
+                                dan menjawab pertanyaan yang masih kita bingung/kurang paham jugaa
                             </p>
                             <div class="profile mt-auto">
-                                <img src="assets/img/testimonials/testimonials-2.jpg" class="testimonial-img"
-                                    alt="">
+                                <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}"
+                                    class="testimonial-img" alt="">
                                 <h3>Elvyra</h3>
                                 <h4>Siswi di SMK Negeri 5 Kota Bekasi</h4>
                             </div>
@@ -235,10 +302,11 @@
                                     class="bi bi-star-fill"></i>
                             </div>
                             <p>
-                                Materi yang disajikan sangat mudah dipahami dan langsung dapat diaplikasikan dalam pekerjaan sehari-hari saya sebagai ahli kimia. Terima kasih, Akuanalis.com!"
+                                Materi yang disajikan sangat mudah dipahami dan langsung dapat diaplikasikan dalam pekerjaan
+                                sehari-hari saya sebagai ahli kimia. Terima kasih, Akuanalis.com!"
                             </p>
                             <div class="profile mt-auto">
-                                <img src="assets/img/testimonials/testimonials-3.jpg" class="testimonial-img"
+                                <img src="{{ asset('assets/img/testimonials/testimonials-2.jpg') }}" class="testimonial-img"
                                     alt="">
                                 <h3>Azizah</h3>
                                 <h4>Umum</h4>
@@ -254,10 +322,11 @@
                                     class="bi bi-star-fill"></i>
                             </div>
                             <p>
-                                Materi yang disajikan sangat mudah dipahami dan langsung dapat diaplikasikan dalam pekerjaan sehari-hari saya sebagai ahli kimia. Terima kasih, Akuanalis.com!"
+                                Materi yang disajikan sangat mudah dipahami dan langsung dapat diaplikasikan dalam pekerjaan
+                                sehari-hari saya sebagai ahli kimia. Terima kasih, Akuanalis.com!"
                             </p>
                             <div class="profile mt-auto">
-                                <img src="assets/img/testimonials/testimonials-3.jpg" class="testimonial-img"
+                                <img src="{{ asset('assets/img/testimonials/testimonials-3.jpg') }}" class="testimonial-img"
                                     alt="">
                                 <h3>Azizah</h3>
                                 <h4>Umum</h4>
@@ -273,4 +342,48 @@
 
     </section><!-- /Testimonials Section -->
 
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @if ($isLogin == 'y')
+        <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"></script>
+    @endif
+    <script>
+        $('#checkoutBtn').on('click', function(event) {
+            event.preventDefault();
+
+
+            if ('{{ $isLogin }}' == 'y') {
+
+                $.ajax({
+                    url: '{{ route('user.checkout') }}', // Direct API endpoint
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content')
+                    },
+                    data: JSON.stringify({
+                        courseId: '{{ $course->course->id }}'
+                    }),
+                    success: function(response) {
+
+                        // Swal.fire('Berhasil', response.data.message, 'success');
+                        if (response.data.midtrans_snap_token) {
+                            const midTransSnap = new MidTransSnap(response.data.midtrans_snap_token);
+                            midTransSnap.pay();
+                        }
+
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error); // Log the error for debugging
+                        console.error('Response Text:', xhr.responseText);
+                        Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                    }
+                });
+
+            } else {
+                document.location.href = '/login'
+            }
+        })
+    </script>
 @endsection

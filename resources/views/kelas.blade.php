@@ -1,97 +1,87 @@
 @extends('layout.layout')
 
 @section('content')
+    <style>
+        .card {
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 15px;
+        }
+
+        .card:hover .overlay {
+            opacity: 1;
+        }
+
+        .overlay p {
+            margin: 0;
+        }
+    </style>
     <section class="section">
         <div class="container mt-5 section-title" data-aos="fade-up">
             <p>Kelas Kami<br></p>
         </div>
 
         <div class="container" data-aos="fade-up" data-aos-delay="100">
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card" style="width: 100%;">
-                        <img src="assets/img/values-1.png" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <div class="header-card d-flex justify-content-between">
-                                <p class="mr-auto fs-6"><i class="bi bi-star-fill text-warning me-1"></i>4.9</p>
-                                <p class="ml-auto fs-6">Jenjang : SMA</p>
-                            </div>
+            <div class="row gx-3 gy-4">
+                @foreach ($courses->data as $course)
+                    <div class="col-lg-3 col-md-4 col-6">
+                        <a href="{{route('detail.kelas', ['courseId' => $course->course->id])}}">
+                            <div class="card h-100 shadow border-0 position-relative"
+                                style="border-radius: 15px; overflow: hidden;">
+                                <img src="assets/img/values-1.png" class="card-img-top" alt="..."
+                                    style="height: 150px; object-fit: cover;">
+                                <div class="card-body">
+                                    <div class="header-card d-flex justify-content-between mb-3">
+                                        <p class="text-muted fs-6 mb-0"><i class="bi bi-star-fill text-warning me-1"></i>4.9
+                                        </p>
+                                        <p class="badge bg-primary fs-6 mb-0">{{ $course->course_category->name }}</p>
+                                    </div>
 
-                            <h5 class="card-title">Instrumentasi Kimia</h5>
-                            <h5 class="card-title">Rp 125.000</h5>
-                            <p class="card-text"> Dasar-dasar instrumentasi dalam analisis kimia dan pentingnya penggunaan alat-alat instrumen.
-                            </p>
-                            <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card" style="width: 100%;">
-                        <img src="assets/img/values-1.png" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <div class="header-card d-flex justify-content-between">
-                                <p class="mr-auto fs-6"><i class="bi bi-star-fill text-warning me-1"></i>4.9</p>
-                                <p class="ml-auto fs-6">Jenjang : Umum</p>
-                            </div>
+                                    <h5 class="card-title fw-bold text-dark">{{ $course->course->name }}</h5>
+                                    <h6 class="text-success fw-bold mb-3">Rp
+                                        {{ number_format($course->course->price, 0, ',', '.') }}</h6>
+                                    <p class="card-text text-muted">{{ $course->course->description }}</p>
+                                </div>
 
-                            <h5 class="card-title">Kimia Dasar</h5>
-                            <h5 class="card-title">Rp 105.000</h5>
-                            <p class="card-text">Pengenalan konsep dasar kimia, termasuk materi, energi, dan perubahan kimia
-                            </p>
-                            <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card" style="width: 100%;">
-                        <img src="assets/img/values-1.png" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <div class="header-card d-flex justify-content-between">
-                                <p class="mr-auto fs-6"><i class="bi bi-star-fill text-warning me-1"></i>4.9</p>
-                                <p class="ml-auto fs-6">Jenjang : SMA</p>
+                                <!-- Dark overlay on hover -->
+                                <div class="overlay d-flex align-items-center justify-content-center">
+                                    <div class="text-center">
+                                        <p class="text-white fw-bold fs-5">Lihat Detail</p>
+                                    </div>
+                                </div>
                             </div>
-
-                            <h5 class="card-title">Kimia Analisis Kualitatif</h5>
-                            <h5 class="card-title">Rp 110.000</h5>
-                            <p class="card-text">Dasar-dasar analisis kualitatif dan pentingnya dalam kimia analisis.
-                            </p>
-                            <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
-                        </div>
+                        </a>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card" style="width: 100%;">
-                        <img src="assets/img/values-1.png" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <div class="header-card d-flex justify-content-between">
-                                <p class="mr-auto fs-6"><i class="bi bi-star-fill text-warning me-1"></i>4.9</p>
-                                <p class="ml-auto fs-6">Jenjang : SMA</p>
-                            </div>
+                @endforeach
 
-                            <h5 class="card-title">Kimia Analisis Kuantitatif</h5>
-                            <h5 class="card-title">Rp 95.000</h5>
-                            <p class="card-text">Dasar-dasar analisis kuantitatif dan dalam kimia analisis.</p>
-                            <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6">
-                    <div class="card" style="width: 100%;">
-                        <img src="assets/img/values-1.png" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <div class="header-card d-flex justify-content-between">
-                                <p class="mr-auto fs-6"><i class="bi bi-star-fill text-warning me-1"></i>4.9</p>
-                                <p class="ml-auto fs-6">Jenjang : SMA</p>
-                            </div>
 
-                            <h5 class="card-title">Kimia Fisika</h5>
-                            <h5 class="card-title">Rp 115.000</h5>
-                            <p class="card-text">Menjelaskan dasar-dasar kimia fisika dan pentingnya dalam ilmu kimia.
-                            </p>
-                            <a href="/detail-kelas" class="btn btn-success">Belajar Sekarang</a>
-                        </div>
-                    </div>
-                </div>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li id="btnIncrementPagination" class="page-item"><button class="page-link">Previous</button></li>
+                        @for ($i = 1; $i <= $courses->pagination->total_page; $i++)
+                            <li class="page-item"><button class="page-link">{{ $i }}</button></li>
+                        @endfor
+                        <li id="btnDecrementPagination" class="page-item"><button class="page-link">Next</button></li>
+                    </ul>
+                </nav>
+
+
             </div>
         </div>
-@endsection
+    @endsection
