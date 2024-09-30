@@ -56,7 +56,7 @@
                         <select class="form-control" id="categorySelect" name="level">
                             <option value="" disabled>Select Jenjang</option>
                             @foreach($categories as $category)
-                            <option value="{{$category->id}}" {{$course->course->course_category_id ==$category->id ?'selected' : '' }}  >{{$category->name}}</option>
+                            <option value="{{$category->id}}" >{{$category->name}}</option>
                             @endforeach
                             <!-- Options will be populated here -->
                         </select>
@@ -64,9 +64,14 @@
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="instructorInput" placeholder="Instructor"
-                            name="instructor" value="{{$course->instructor->full_name}}">
-                        <label for="instructorInput">Pengajar</label>
+                        <select class="form-control" id="categorySelect" name="level">
+                            <option value="" disabled>Select Jenjang</option>
+                            @foreach($instructors as $instructor)
+                            <option value="{{$instructor->instructor->id}}">{{$instructor->full_name}}</option>
+                            @endforeach
+                            <!-- Options will be populated here -->
+                        </select>
+                        <label for="jenjangSelect">Pengajar</label>
                     </div>
 
                     <div class="form-floating">
@@ -184,7 +189,7 @@
                                 </div>
                             </div>
 
-                       
+
                     </div>
                     <div class="mt-5">
                         <button onclick="window.location.href='?selectedCourseContentId={{$previousCourseContentId}}'" {{$previousCourseContentId == ''? 'disabled':''}} class="btn btn-secondary"><i class="fas fa-arrow-circle-left mr-2"></i>Sebelumnya</button>
@@ -247,11 +252,11 @@
                                                 <label for="answerQuizInput">Jawaban</label>
                                             </div>
                                         </div>
-                                        
+
 
                                     </div>
 
-                                   
+
 
                                     <div class="row">
                                         <div class="col">
@@ -270,7 +275,7 @@
                                     </div>
 
                                     <div class="option-quiz-add">
-                                           
+
                                            </div>
 
 
@@ -312,7 +317,7 @@
             });
 
         //QUIZ
-        var optionQuiz = []       
+        var optionQuiz = []
 
         var quizees = []
         quizees.push({
@@ -344,7 +349,7 @@
         })
 
         function showQuizzes(){
-            $('.quizzesList').empty(); 
+            $('.quizzesList').empty();
             quizees.forEach((quiz, index) => {
                 // Create a list item for each quiz
                 var quizItem = `<div class='card p-4'>
@@ -365,10 +370,10 @@
             });
         }
 
-   
+
 
         $('#contentType').on('change', function() {
-            changeForm()           
+            changeForm()
         });
 
 
@@ -405,43 +410,43 @@
         //POST CONTENT
         $('#saveContent').on('click', function(event) {
             event.preventDefault(); // Prevent the default form submission
-            
+
             const contentName = $('#contentName').val()
             const contentDesc = $('#contentDesc').val()
             const contentType = $('#contentType').val()
-            
+
             var formData = new FormData();
             formData.append('contentTitle', contentName);
             formData.append('contentDesc', contentDesc);
             formData.append('contentType', contentType);
-            
-            
+
+
             if(contentType == 'video'){
-                const contentVideoFile = $('#contentVideoFile')[0].files[0]; 
-                const contentVideoThumbFile = $('#contentVideoThumbFile')[0].files[0]; 
-                
+                const contentVideoFile = $('#contentVideoFile')[0].files[0];
+                const contentVideoThumbFile = $('#contentVideoThumbFile')[0].files[0];
+
                 const videoArticleContent = $('#contentVideoArticleContent').val()
                 const videoDuration = $('#contentVideoDuration').val()
-                
+
                 formData.append('videoContentFile', contentVideoFile);
-                formData.append('videoContentThumbFile', contentVideoThumbFile);        
-                formData.append('videoArticleContent', videoArticleContent);        
-                formData.append('videoDuration', videoDuration);        
+                formData.append('videoContentThumbFile', contentVideoThumbFile);
+                formData.append('videoArticleContent', videoArticleContent);
+                formData.append('videoDuration', videoDuration);
             }else if(contentType == 'quiz'){
                 const passingGrade = $('#contentPassingGrade').val()
-                
+
                 formData.append('quizzes',  JSON.stringify({
                     'passing_grade': +passingGrade,
                     'quiz_content':quizees
                 }))
             }else if(contentType == 'additional_source'){
-                const additionalSrcFile = $('#contentAddSrcFile')[0].files[0]; 
+                const additionalSrcFile = $('#contentAddSrcFile')[0].files[0];
 
-                formData.append('additionalSrcFile', additionalSrcFile);        
+                formData.append('additionalSrcFile', additionalSrcFile);
             }else{
 
             }
-           
+
 
             $.ajax({
                 url: '{{ route("admin.kelas.content.post", $courseId) }}', // Direct API endpoint
@@ -451,11 +456,11 @@
                         .getAttribute('content')
                 },
                 data: formData,
-                processData: false, 
+                processData: false,
                 contentType: false,
                 success: function(response) {
                     Swal.fire('Berhasil', 'Berhasil membuat konten', 'success');
-                    
+
                     window.location.href='?selectedCourseContentId='+response.data.id
 
                 },
@@ -475,13 +480,13 @@
             if(indexQuiz != null){
                 idQuizzesEdit = indexQuiz
                 console.log(quizees[indexQuiz]);
-                
+
                 $('#questionQuizInput').val(quizees[indexQuiz].question)
                 quizees[indexQuiz].options.forEach((option, index)=>{
-                    optionQuiz.push(option)   
+                    optionQuiz.push(option)
                 })
-             
-              
+
+
             }
             showOptionQuiz()
             if(indexQuiz != null){
@@ -489,7 +494,7 @@
             }
             modal.show();
         }
-        
+
         function deleteQuiz(indexQuiz){
             if(indexQuiz != null){
                 quizees.splice(indexQuiz, 1);
@@ -512,14 +517,14 @@
             }else{
                 optionQuiz.push(val)
             }
-            
+
             $('#optionQuizInput').val('')
             showOptionQuiz()
         }
 
         function showOptionQuiz(){
             // option-quiz-add
-            $('.option-quiz-add').empty(); 
+            $('.option-quiz-add').empty();
             optionQuiz.forEach((option, index)=>{
                 var quizItem = `<div class='card p-4'>
                     <p>${option}</p>` +
@@ -549,10 +554,10 @@
             optionQuiz.forEach((option, index)=>{
                 $('#answerQuizInput').append(
                     $('<option>', {
-                        value: index, 
+                        value: index,
                         text: option
                     })
-                ); 
+                );
             })
         }
 
@@ -563,7 +568,7 @@
                     'answer': +$('#answerQuizInput').val(),
                     'options': Array.from(optionQuiz)
                 }
-                
+
             }else{
                 quizees.push({
                     'question': $('#questionQuizInput').val(),
@@ -576,7 +581,7 @@
         }
 
 
-      
+
 
 
 </script>
@@ -584,22 +589,22 @@
 
 @if ($selectedCourseContentId != '')
     <script>
-            
+
             $('#contentName').val('{{$courseContent->content_title}}')
             $('#contentType').val('{{$courseContent->content_type}}').change()
             $('#contentType').prop('disabled', true);
-            changeForm()   
+            changeForm()
             $('#contentDesc').val('{!!$courseContent->content_description!!}')
 
             const contentType = $('#contentType').val()
 
-           
+
             // else if(contentType == 'quiz'){
             //   $('#contentPassingGrade').val()
             // }
 
 
-        
+
          function deleteContent(){
             $.ajax({
               url: '{{ route("admin.kelas.content.delete", ["courseId" => $courseId, "id" => $selectedCourseContentId]) }}', // Direct API endpoint
@@ -608,7 +613,7 @@
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
                         .getAttribute('content')
                 },
-                processData: false, 
+                processData: false,
                 contentType: false,
                 success: function(response) {
                     Swal.fire('Berhasil', 'Berhasil mengapus konten', 'success');
@@ -626,11 +631,11 @@
             <script>
                 $('#contentVideoArticleContent').val('{{$courseContent->video->article_content}}')
                 $('#contentVideoDuration').val('{{$courseContent->video->video_duration}}')
-                
+
                 </script>
         @elseif($courseContent->content_type == $quizType)
-        
-        <script>    
+
+        <script>
             $('#contentPassingGrade').val('{{$courseContent->quiz->passing_grade}}')
                 quizees.splice(0, quizees.length);
                 var quizzesFromPhp = @json($courseContent->quiz->questions);
@@ -642,7 +647,7 @@
                     })
                 })
                 showQuizzes()
-            
+
             </script>
         @endif
 

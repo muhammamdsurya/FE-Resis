@@ -5,7 +5,7 @@
 
             <a href="/" class="logo d-flex align-items-center ">
                 <!-- Uncomment the line below if you also wish to use an image logo -->
-                <img src="assets/img/logo.png" alt="">
+                <img src="{{asset('assets/img/logo.png')}}" alt="">
             </a>
 
             <div class="search-form ms-2" style="width: 100%">
