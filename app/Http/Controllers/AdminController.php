@@ -326,6 +326,9 @@ class AdminController extends Controller
             }
         }
 
+
+        // dd($courseContent);
+
         return view('admin.detailKelas', [
             "title" => $title,
             "courseId" => $id,
@@ -339,6 +342,7 @@ class AdminController extends Controller
             "course" => json_decode(json_encode($course)), // Encode the categories for JS
             "instructors" => json_decode(json_encode($instructors)), // Encode the categories for JS
             "courseContent" => $courseContent, // Encode the categories for JS
+            "courseContents" => $courseContents, // Encode the categories for JS
             "videoType" => $videoType,
             "addSrcType" => $addSrcType,
             "quizType" => $quizType,

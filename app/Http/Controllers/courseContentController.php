@@ -42,7 +42,6 @@ class courseContentController extends Controller
 
         $apiSession = session('api_session');
         $headers = [
-            // 'Content-Type'=> 'application/x-www-form-urlencoded',
             'Cookie' => 'session=' . $apiSession
         ];
 
@@ -141,6 +140,141 @@ class courseContentController extends Controller
             ], $response->status());
         }
     }
+
+    public function updateCourseContent(Request $request, $courseId, $contentId)  {
+
+        $contentTitle = $request->get('contentTitle');
+        if (!$contentTitle) return response()->json([
+            'success' => false,
+            'message' => 'invalid content title'
+        ], 400);
+
+        $contentDesc = $request->get('contentDesc') ?? '';
+
+        $courseContent = $this->courseContentsById($courseId, $contentId);
+        if(!isset($courseContent)){
+            return response()->json([
+                'success' => false,
+                'message' => 'Course Content tidak ditemukan'
+            ], 400);
+        }
+
+        $apiSession = session('api_session');
+        $headers = [
+            'Cookie' => 'session=' . $apiSession
+        ];
+        
+        $jsonData = [
+            'content_title' => $contentTitle,
+            'content_description' => $contentDesc,
+        ];
+
+        $videoType = 'video';
+        $addSrcType = 'additional_source';
+        $quizType = 'quiz';
+
+
+        $isUpdateContentFile = $request->get('isUpdateContentFile') ?? false;
+
+
+
+        if($courseContent->content_type == $videoType){
+            if($isUpdateContentFile == 'true'){
+                $validator = Validator::make($request->all(), [
+                    'videoContentFile' => 'required|file|mimes:mp4,mov,avi,wmv,flv', 
+                    'videoContentThumbFile' => 'required|file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                    'videoArticleContent' => 'required|string',
+                    'videoDuration' => 'required|integer',
+                ]);
+                
+                if ($validator->fails()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $validator->errors()->first(),
+                    ], 400);
+                }
+        
+    
+                $videoContentFile = $request->file('videoContentFile');
+                $videoContentThumbFile = $request->file('videoContentThumbFile');
+                $videoArticleContent = $request->get('videoArticleContent');
+                $videoDuration = $request->get('videoDuration');
+                
+                $bodyVideoUpdateJson =[
+                    'article_content' => $videoArticleContent,
+                    'video_duration' => intval( $videoDuration),
+                ];
+
+                $response =  Http::withHeaders($headers)->attach('video_content', fopen($videoContentFile->getRealPath(), 'r'), $videoContentFile->getClientOriginalName())->attach('video_thumbnail', fopen($videoContentThumbFile->getRealPath(), 'r'), $videoContentThumbFile->getClientOriginalName())->attach('video_content_form',  json_encode($bodyVideoUpdateJson))->put($this->apiUrl . 'courses/' . $courseId . '/contents/'.$contentId.'/video');
+
+                if (!$response->successful()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $response->body()  ,
+                        'error' => $response->json() 
+                    ], $response->status());
+                }
+            }
+        } else if ($courseContent->content_type == $addSrcType){
+            if($isUpdateContentFile == 'true'){
+                $validator = Validator::make($request->all(), [
+                    'additionalSrcFile' => 'required|file|mimes:pdf', 
+                ]);
+                
+                if ($validator->fails()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $validator->errors()->first(),
+                    ], 400);
+                }
+        
+    
+                $additionalSrcFile = $request->file('additionalSrcFile');
+
+
+                $response =  Http::withHeaders($headers)->attach('additional_source', fopen($additionalSrcFile->getRealPath(), 'r'), $additionalSrcFile->getClientOriginalName())->put($this->apiUrl . 'courses/' . $courseId . '/contents/'.$contentId.'/additional_source');
+
+                if (!$response->successful()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $response->body()  ,
+                        'error' => $response->json() 
+                    ], $response->status());
+                }
+    
+            }
+        } else if ($courseContent->content_type == $quizType){
+            $quizzes = json_decode($request->get('quizzes'), true); 
+            $quizzes = $request->get('passing_grade'); 
+            $jsonData = array_merge($jsonData, [
+                'quiz' => $quizzes,
+            ]);            
+
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'Tipe Konten tidak diketahui'
+            ], 400);
+        }
+
+
+
+        $response = Http::withHeaders($headers)->put($this->apiUrl . 'courses/' . $courseId . '/contents/'.$contentId,$jsonData);
+        
+        if ($response->successful()) {
+            return response()->json([
+                'success' => true,
+                'data' => json_decode(json_encode($response->json()))
+            ], $response->status());
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => $response->body()  ,
+                'error' => $response->json() 
+            ], $response->status());
+        }
+    }
+
     public function courseContents($courseId) {
         $response = Http::withApiSession()->get($this->apiUrl. 'courses/'.$courseId.'/contents');
 

@@ -397,15 +397,7 @@
             }
         }
 
-        function updateCourseContent(){
-            const contentName = $('#contentName').val()
-            const contentDesc = $('#contentDesc').val()
-            const contentType = $('#contentType').val()
-             var formData = new FormData();
-            formData.append('contentTitle', contentName);
-            formData.append('contentDesc', contentDesc);
-            formData.append('contentType', contentType);
-        }
+       
 
         //POST CONTENT
         $('#saveContent').on('click', function(event) {
@@ -624,6 +616,72 @@
                     Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                 }
             });
+        }
+
+
+
+        function updateCourseContent(){
+            const contentName = $('#contentName').val()
+            const contentDesc = $('#contentDesc').val()
+            var isUpdateContentFile =false
+             var formData = new FormData();
+            formData.append('contentTitle', contentName);
+            formData.append('contentDesc', contentDesc);
+
+
+            if(contentType == 'video'){
+                const contentVideoFile = $('#contentVideoFile')[0].files[0];
+                const contentVideoThumbFile = $('#contentVideoThumbFile')[0].files[0];
+
+                if (contentVideoFile || contentVideoThumbFile) {
+                    isUpdateContentFile = true
+                } 
+
+                const videoArticleContent = $('#contentVideoArticleContent').val()
+                const videoDuration = $('#contentVideoDuration').val()
+
+                formData.append('videoContentFile', contentVideoFile);
+                formData.append('videoContentThumbFile', contentVideoThumbFile);
+                formData.append('videoArticleContent', videoArticleContent);
+                formData.append('videoDuration', videoDuration);
+            }else if(contentType == 'additional_source'){
+                const additionalSrcFile = $('#contentAddSrcFile')[0].files[0];
+                if (additionalSrcFile) {
+                    isUpdateContentFile = true
+                } 
+                formData.append('additionalSrcFile', additionalSrcFile);
+            }else if(contentType == 'quiz'){
+                const passingGrade = $('#contentPassingGrade').val()
+
+                formData.append('passing_grade', passingGrade)
+                formData.append('quizzes',  JSON.stringify(
+                    'quiz_content':quizees
+                ))
+            }
+
+
+            formData.append('isUpdateContentFile', isUpdateContentFile);
+
+            $.ajax({
+                url: '{{ route("admin.kelas.content.update",["courseId" => $courseId, "contentId" => $selectedCourseContentId]) }}', // Direct API endpoint
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content')
+                },
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    Swal.fire('Berhasil', 'Berhasil memperbarui konten', 'success')
+                    window.location.reload()
+
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                }
+            });
+
         }
     </script>
 
