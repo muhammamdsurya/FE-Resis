@@ -192,7 +192,7 @@
                             <button id="saveContent" class="btn btn-primary float-right">Simpan</button>
                         @else
                             <button class="btn btn-danger ml-3" onclick="deleteContent()">Hapus</button>
-                            <button id="saveContent" class="btn btn-primary">Simpan</button>
+                            <button  onclick="updateCourseContent()" class="btn btn-primary">Simpan</button>
             
                             <button  onclick="window.location.href='?selectedCourseContentId={{$nextCourseContentId}}'" {{$nextCourseContentId == ''? 'disabled':''}} class="btn btn-primary float-right">Lanjut<i
                                     class="fas fa-arrow-circle-right ml-2"></i></button>
@@ -390,6 +390,16 @@
                 $('#quiz-type').hide()
                 $('#video-type').show()
             }
+        }
+
+        function updateCourseContent(){
+            const contentName = $('#contentName').val()
+            const contentDesc = $('#contentDesc').val()
+            const contentType = $('#contentType').val()
+             var formData = new FormData();
+            formData.append('contentTitle', contentName);
+            formData.append('contentDesc', contentDesc);
+            formData.append('contentType', contentType);
         }
 
         //POST CONTENT
