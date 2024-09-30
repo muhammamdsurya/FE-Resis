@@ -67,27 +67,26 @@
                             </div>
 
                             <!-- Form Row 1: Name and Jenjang -->
-                            <div class="row mb-3">
-                                <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" id="nameInput" placeholder="Nama Kelas"
                                             name="name" value="{{ $course->course->name }}">
                                         <label for="nameInput">Nama Kelas</label>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-3">
                                     <div class="form-floating">
                                         <input type="number" class="form-control" id="priceInput" placeholder="Harga"
                                             name="price" value="{{ $course->course->price }}">
                                         <label for="priceInput">Harga</label>
                                     </div>
                                 </div>
-
                             </div>
 
                             <!-- Form Row 2: Description and Price -->
-                            <div class="row mb-3">
-                                <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
                                     <div class="form-floating">
                                         <select class="form-control" id="categorySelect" name="level">
                                             <option value="" disabled>Select Jenjang</option>
@@ -98,7 +97,7 @@
                                         <label for="categorySelect">Jenjang</label>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-3">
                                     <div class="form-floating">
                                         <select class="form-control" id="instructorSelect" name="instructor">
                                             <option value="" disabled>Select Pengajar</option>
@@ -115,15 +114,15 @@
                             </div>
 
                             <!-- Form Row 3: Instructor and Purpose -->
-                            <div class="row mb-3">
-                                <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
                                     <div class="form-floating">
                                         <textarea class="form-control" placeholder="Deskripsi" id="descriptionTextarea" name="description"
                                             style="height: 100px">{{ $course->course->description }}</textarea>
                                         <label for="descriptionTextarea">Deskripsi</label>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-3">
                                     <div class="form-floating">
                                         <textarea class="form-control" placeholder="Tujuan" id="purposeTextarea" name="purpose" style="height: 100px">{{ $course->course->purpose }}</textarea>
                                         <label for="purposeTextarea">Tujuan</label>
@@ -137,12 +136,11 @@
                                 </div>
                                 <!-- Delete Button on the right -->
                                 <div>
-                                    <button type="button" class="btn btn-danger" id="deleteButton"
+                                    <button type="button" class="btn btn-danger btn-hapus" id="deleteButton"
                                         data-id="{{ $course->course->id }}">Hapus</button>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -156,9 +154,8 @@
                             <!-- Sidebar for larger screens -->
                             <div class="filter-dropdown d-none d-lg-block">
                                 <div class="list-group mt-3">
-                                    @if (isset($courseContent))
-                                        @foreach ($courseContent as $courseContentSidebar)
-                                        @dd($courseContentSidebar)
+                                    @if (isset($courseContents))
+                                        @foreach ($courseContents as $courseContentSidebar)
                                             <a href="?selectedCourseContentId={{ $courseContentSidebar->id }}"
                                                 class="list-group-item list-group-item-action {{ $selectedCourseContentId == $courseContentSidebar->id ? 'list-group-item-primary' : '' }}">
                                                 {{ $courseContentSidebar->content_title }}
@@ -183,8 +180,8 @@
                                         Materi
                                     </button>
                                     <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
-                                        @if (isset($courseContent))
-                                            @foreach ($courseContent as $courseContentSidebar)
+                                        @if (isset($courseContents))
+                                            @foreach ($courseContents as $courseContentSidebar)
                                                 <li>
                                                     <a class="dropdown-item {{ $selectedCourseContentId == $courseContentSidebar->id ? 'active' : '' }}"
                                                         href="?selectedCourseContentId={{ $courseContentSidebar->id }}">
@@ -225,15 +222,15 @@
                         <div class="card-body">
                             <div class="mt-3">
                                 <!-- First Row: Judul Materi and Jenis Konten -->
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
                                         <div class="form-floating">
                                             <input type="text" class="form-control" id="contentName"
                                                 placeholder="Judul Materi" name="name" required>
                                             <label for="contentName">Judul Materi</label>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <div class="form-floating">
                                             <select class="form-control" id="contentType" name="level" required>
                                                 <option value="{{ $videoType }}" selected>Video</option>
@@ -253,8 +250,8 @@
 
                                 <!-- Video Type Content Section -->
                                 <div id="video-type" class="content-type-section">
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
                                             <div class="form-floating">
                                                 <input type="text" class="form-control"
                                                     id="contentVideoArticleContent" placeholder="Judul Konten Video"
@@ -262,7 +259,7 @@
                                                 <label for="contentVideoArticleContent">Judul Konten Video</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 mb-3">
                                             <div class="form-floating">
                                                 <input type="number" class="form-control" id="contentVideoDuration"
                                                     placeholder="Durasi Video" name="video_duration" required>
@@ -282,13 +279,13 @@
                                     @endif
 
                                     <!-- Video and Thumbnail Input -->
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
                                             <label for="contentVideoFile" class="form-label">Konten Video</label>
                                             <input type="file" class="form-control" id="contentVideoFile"
                                                 name="video_file" required>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-6 mb-3">
                                             <label for="contentVideoThumbFile" class="form-label">Thumbnail</label>
                                             <input type="file" class="form-control" id="contentVideoThumbFile"
                                                 name="thumbnail_file" required>
@@ -328,33 +325,26 @@
                                     <div class="quizzesList"></div>
                                 </div>
                             </div>
+                            <div class="mt-5">
+                                <button
+                                    onclick="window.location.href='?selectedCourseContentId={{ $previousCourseContentId }}'"
+                                    {{ $previousCourseContentId == '' ? 'disabled' : '' }} class="btn btn-secondary"><i
+                                        class="fas fa-arrow-circle-left mr-2"></i><span class="d-none d-lg-inline">Sebelumnya</span></button>
+                                @if ($selectedCourseContentId == '')
+                                    <button id="saveContent" class="btn btn-primary float-right">Simpan</button>
+                                @else
+                                    <button class="btn btn-danger ml-3" onclick="deleteContent()">Hapus</button>
+                                    <button onclick="updateCourseContent()" class="btn btn-primary">Simpan</button>
 
+                                    <button
+                                        onclick="window.location.href='?selectedCourseContentId={{ $nextCourseContentId }}'"
+                                        {{ $nextCourseContentId == '' ? 'disabled' : '' }}
+                                        class="btn btn-primary float-right"><span class="d-none d-lg-inline">Lanjut</span><i
+                                            class="fas fa-arrow-circle-right ml-2"></i></button>
+                                @endif
+                            </div>
+                        </div>
 
-                    </div>
-                    <div class="mt-5">
-                        <button onclick="window.location.href='?selectedCourseContentId={{$previousCourseContentId}}'" {{$previousCourseContentId == ''? 'disabled':''}} class="btn btn-secondary"><i class="fas fa-arrow-circle-left mr-2"></i>Sebelumnya</button>
-                        @if ($selectedCourseContentId == '')
-                            <button id="saveContent" class="btn btn-primary float-right">Simpan</button>
-                        @else
-                            <button class="btn btn-danger ml-3" onclick="deleteContent()">Hapus</button>
-                            <button  onclick="updateCourseContent()" class="btn btn-primary">Simpan</button>
-
-                            <button  onclick="window.location.href='?selectedCourseContentId={{$nextCourseContentId}}'" {{$nextCourseContentId == ''? 'disabled':''}} class="btn btn-primary float-right">Lanjut<i
-                                    class="fas fa-arrow-circle-right ml-2"></i></button>
-                        @endif
-                    </div>
-                </div>
-                <!-- Kolom untuk Materi Selanjutnya -->
-                <div class="col-md-3 d-none d-lg-block materi-container px-3">
-                    <div class="list-group mt-3">
-                        @if(isset($courseContents))
-                        @foreach($courseContents as $courseContentSidebar)
-                        <a href="?selectedCourseContentId={{$courseContentSidebar->id}}" class="list-group-item list-group-item-action {{$selectedCourseContentId == $courseContentSidebar->id? 'list-group-item-primary' : ''}}">{{$courseContentSidebar->content_title}}</a>
-                        @endforeach
-                        @endif
-                        <a href="?selectedCourseContentId="
-                                class="list-group-item list-group-item-action {{$selectedCourseContentId == ''? 'list-group-item-primary' : ''}}"><i class="fas fa-plus mr-2"></i>Tambah Materi Baru</a>
-                        <a href="/user/diskusi" class="list-group-item list-group-item-action ">Diskusi</a>
                     </div>
                 </div>
             </div>
@@ -436,19 +426,7 @@
 
     <script>
         $(document).ready(function() {
-            // Ketika gambar di-klik, trigger input file
-            $('.image-container').on('click', function() {
-                $('#imageUpload').click();
-            });
 
-            // Mengubah tampilan gambar setelah memilih file
-            $('#imageUpload').on('change', function(e) {
-                var reader = new FileReader();
-                reader.onload = function(event) {
-                    $('#imagePreview').attr('src', event.target.result);
-                }
-                reader.readAsDataURL(e.target.files[0]);
-            });
         });
         $('#additional-src-type').hide()
         $('#quiz-type').hide()
@@ -758,79 +736,79 @@
                         Swal.fire('Berhasil', 'Berhasil mengapus konten', 'success');
                         window.location.href = '?selectedCourseContentId='
 
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire('Oops!', xhr.responseJSON.message, 'error');
-                }
-            });
-        }
-
-
-
-        function updateCourseContent(){
-            const contentName = $('#contentName').val()
-            const contentDesc = $('#contentDesc').val()
-            var isUpdateContentFile =false
-             var formData = new FormData();
-            formData.append('contentTitle', contentName);
-            formData.append('contentDesc', contentDesc);
-
-
-            if(contentType == 'video'){
-                const contentVideoFile = $('#contentVideoFile')[0].files[0];
-                const contentVideoThumbFile = $('#contentVideoThumbFile')[0].files[0];
-
-                if (contentVideoFile || contentVideoThumbFile) {
-                    isUpdateContentFile = true
-                }
-
-                const videoArticleContent = $('#contentVideoArticleContent').val()
-                const videoDuration = $('#contentVideoDuration').val()
-
-                formData.append('videoContentFile', contentVideoFile);
-                formData.append('videoContentThumbFile', contentVideoThumbFile);
-                formData.append('videoArticleContent', videoArticleContent);
-                formData.append('videoDuration', videoDuration);
-            }else if(contentType == 'additional_source'){
-                const additionalSrcFile = $('#contentAddSrcFile')[0].files[0];
-                if (additionalSrcFile) {
-                    isUpdateContentFile = true
-                }
-                formData.append('additionalSrcFile', additionalSrcFile);
-            }else if(contentType == 'quiz'){
-                const passingGrade = $('#contentPassingGrade').val()
-
-                formData.append('passing_grade', passingGrade)
-                formData.append('quizzes',  JSON.stringify(
-                    'quiz_content':quizees
-                ))
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                    }
+                });
             }
 
 
-            formData.append('isUpdateContentFile', isUpdateContentFile);
 
-            $.ajax({
-                url: '{{ route("admin.kelas.content.update",["courseId" => $courseId, "contentId" => $selectedCourseContentId]) }}', // Direct API endpoint
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content')
-                },
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    Swal.fire('Berhasil', 'Berhasil memperbarui konten', 'success')
-                    window.location.reload()
+            function updateCourseContent() {
+                const contentName = $('#contentName').val()
+                const contentDesc = $('#contentDesc').val()
+                var isUpdateContentFile = false
+                var formData = new FormData();
+                formData.append('contentTitle', contentName);
+                formData.append('contentDesc', contentDesc);
 
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+
+                if (contentType == 'video') {
+                    const contentVideoFile = $('#contentVideoFile')[0].files[0];
+                    const contentVideoThumbFile = $('#contentVideoThumbFile')[0].files[0];
+
+                    if (contentVideoFile || contentVideoThumbFile) {
+                        isUpdateContentFile = true
+                    }
+
+                    const videoArticleContent = $('#contentVideoArticleContent').val()
+                    const videoDuration = $('#contentVideoDuration').val()
+
+                    formData.append('videoContentFile', contentVideoFile);
+                    formData.append('videoContentThumbFile', contentVideoThumbFile);
+                    formData.append('videoArticleContent', videoArticleContent);
+                    formData.append('videoDuration', videoDuration);
+                } else if (contentType == 'additional_source') {
+                    const additionalSrcFile = $('#contentAddSrcFile')[0].files[0];
+                    if (additionalSrcFile) {
+                        isUpdateContentFile = true
+                    }
+                    formData.append('additionalSrcFile', additionalSrcFile);
+                } else if (contentType == 'quiz') {
+                    const passingGrade = $('#contentPassingGrade').val()
+
+                    formData.append('passing_grade', passingGrade)
+                    formData.append('quizzes', JSON.stringify(
+                        'quiz_content': quizees
+                    ))
                 }
-            });
 
-        }
-    </script>
+
+                formData.append('isUpdateContentFile', isUpdateContentFile);
+
+                $.ajax({
+                    url: '{{ route('admin.kelas.content.update', ['courseId' => $courseId, 'contentId' => $selectedCourseContentId]) }}', // Direct API endpoint
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content')
+                    },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        Swal.fire('Berhasil', 'Berhasil memperbarui konten', 'success')
+                        window.location.reload()
+
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                    }
+                });
+
+            }
+        </script>
 
         @if ($courseContent->content_type == $videoType)
             <script>

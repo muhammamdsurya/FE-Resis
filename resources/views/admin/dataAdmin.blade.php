@@ -3,69 +3,63 @@
 
 @section('content')
     <div class="card">
-        <div class="card-header">
-            <button type="submit" class="btn btn-success">Ekspor Data</button>
-          </div>
-        <!-- /.card-header -->
-        @dd($data);
-       <div class="card-body">
-        <table id="employeeTable" class="table table-striped table-bordered" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Position</th>
-                    <th>Office</th>
-                    <th>Age</th>
-                    <th>Start Date</th>
-                    <th>Salary</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Trident</td>
-                    <td>Internet
-                      Explorer 4.0
-                    </td>
-                    <td>Win 95+</td>
-                    <td> 4</td>
-                    <td>X</td>
-                  </tr>
-                  <tr>
-                    <td>Trident</td>
-                    <td>Internet
-                      Explorer 4.0
-                    </td>
-                    <td>Win 95+</td>
-                    <td> 4</td>
-                    <td>X</td>
-                  </tr>
-                  <tr>
-                    <td>Trident</td>
-                    <td>Internet
-                      Explorer 4.0
-                    </td>
-                    <td>Win 95+</td>
-                    <td> 4</td>
-                    <td>X</td>
-                  </tr>
-            </tbody>
-        </table>
-       </div>
-        <!-- /.card-body -->
-      </div>
-
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-          <li class="page-item disabled">
-            <a class="page-link">Previous</a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#">Next</a>
-          </li>
-        </ul>
-      </nav>
-
+        <div class="card-body">
+            <table class="table table-bordered" id="admin-table">
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th>Tipe</th>
+                        <th>Dibuat</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
 @endsection
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#admin-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ url('/admin/data-admin') }}", // Correct route
+            columns: [{
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'email',
+                    name: 'email'
+                },
+                {
+                    data: 'type',
+                    name: 'type'
+                },
+                {
+                    data: 'created_at',
+                    name: 'created_at'
+                }
+            ],
+            order: [
+                [3, 'desc']
+            ], // Order by Created At column (index 3)
+            pageLength: 3,
+            lengthChange: false, // Disable the "Show entries" dropdown
+            responsive: true // Enable responsive feature
+        });
+
+
+        // Function to format number as currency (IDR)
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+
+    });
+</script>

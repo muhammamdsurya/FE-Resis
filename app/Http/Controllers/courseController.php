@@ -154,15 +154,39 @@ class courseController extends Controller
 
         ];
 
-        // Kirimkan request PUT
-        $response = Http::withHeaders($headers)->put($this->apiUrl . 'courses/' . $request->id, $body);
+        $apiUrl = $this->apiUrl . 'courses/' . $id;
 
-        // Tampilkan response body
+        // Kirimkan request PUT
+        $response = Http::withHeaders($headers)->put($apiUrl, $body);
+
         if ($response->successful()) {
-            return redirect()->route('admin.detailKelas')->with([
-                'message' => 'Data berhasil diperbarui.',
-                'details' => null
-            ]);
+            // Check if a new thumbnail was uploaded
+            // Prepare for the image upload (second API request)
+            if ($request->hasFile('image')) {
+                // Use the attach method for a multipart/form-data request
+                $imageResponse = Http::withHeaders(['Cookie' => 'session=' . $apiSession])
+                    ->attach(
+                        'thumbnail_image',
+                        fopen($request->file('image')->getRealPath(), 'r'), // Open the file for reading
+                        $request->file('image')->getClientOriginalName() // Get the original filename
+                    )
+                    ->put($this->apiUrl . "courses/" . $id . "/thumbnail");
+
+                // Check if the image upload was successful
+
+                // Cek respons API
+                if ($imageResponse->successful()) {
+                    // Debugging: Print response body to see if image upload succeeded
+                    return redirect()->route('admin.kelas')->with('message', 'Data dan thumbnail berhasil diperbarui.');
+                } else {
+                    return redirect()->route('admin.kelas')->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
+                }
+            }
+            // If no thumbnail is uploaded, only update the body
+            return redirect()->route('admin.kelas')->with('message', 'Data berhasil diperbarui.');
+        } else {
+            // Handle case where the bundle data update fails
+            return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
         }
     }
     public function bundlePost(Request $request)
@@ -363,6 +387,22 @@ class courseController extends Controller
         return response()->json(['message' => 'Failed to delete course bundle.'], 500);
     }
 
+
+    public function destroyCourse($id)
+    {
+
+        $apiUrl = $this->apiUrl . 'courses/' . $id;
+
+        $response = Http::withApiSession()->delete($apiUrl);
+
+        if ($response->successful()) {
+            // Optionally, add logic to remove the item from your database
+            return response()->json(['message' => 'Course bundle deleted successfully.'], 200);
+        }
+
+        return response()->json(['message' => 'Failed to delete course bundle.'], 500);
+    }
+
     public function destroy($id)
     {
 
@@ -376,7 +416,7 @@ class courseController extends Controller
             return response()->json(['message' => 'Course bundle deleted successfully.'], 200);
         }
 
-        return response()->json(['message' => $id. 'Failed to delete course bundle'], 500);
+        return response()->json(['message' => $id . 'Failed to delete course bundle'], 500);
     }
 
 

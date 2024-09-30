@@ -120,13 +120,12 @@
                         <form id="courseForm" method="POST"
                             action="{{ route('bundleCourse.post', ['id' => $bundle['id']]) }}">
                             @csrf
-                            @dd($courses)
                             <div class="row g-3 align-items-center" id="courseContainer">
                                 <div class="col-md-8 col-8">
                                     <div class="form-floating">
                                         <select class="form-control" id="bundleSelect" name="bundleSelect[]">
                                             @foreach ($courses as $row)
-                                                <option value="{{ $row['course']['id'] }}">{{ $row['course']['name'] }}
+                                                <option value="{{ $row['id'] }}">{{ $row['name'] }}
                                                 </option>
                                             @endforeach
                                         </select>

@@ -87,16 +87,16 @@ class AdminController extends Controller
         $totalCoursesData = $this->fetchApiData($this->apiUrl . 'statistics/courses/count');
         $totalCourses = $totalCoursesData['total_courses'] ?? 0;
 
-        $totalBundlesData = $this->fetchApiData($this->apiUrl . 'statistics/courses/bundle/count');
-        $totalBundles = $totalBundlesData['total_bundles'] ?? 0;
+        $totalBundlesData = $this->fetchApiData($this->apiUrl . 'statistics/courses/bundles/count');
+        $totalBundles = $totalBundlesData['total_course_bundles'] ?? 0;
 
         $totalInstructorsData = $this->fetchApiData($this->apiUrl . 'statistics/instructors/count');
         $totalInstructors = $totalInstructorsData['total_instructors'] ?? 0;
 
-        $totalSalesData = $this->fetchApiData($this->apiUrl . 'statistics/sales/count');
+        $totalSalesData = $this->fetchApiData($this->apiUrl . 'statistics/sales/count?month=1');
         $totalSales = $totalSalesData['total_sales'] ?? 0;
 
-        $SalesData = $this->fetchApiData($this->apiUrl . 'statistics/sales/count');
+        $SalesData = $this->fetchApiData($this->apiUrl . 'statistics/sales?few_months=6');
         $Sales = $SalesData['total_sales'] ?? 0;
 
         return view('admin.dashboard', [
@@ -222,7 +222,6 @@ class AdminController extends Controller
         // Check if the request is AJAX
         if ($request->ajax()) {
             $dataSales = $this->fetchApiData($this->apiUrl . 'statistics/sales/transactions');
-
             // Here, you would typically handle pagination, searching, and ordering if your API supports it.
             $data = $dataSales['data']; // Assuming your API returns the relevant data
             return DataTables::of($data)
@@ -244,19 +243,31 @@ class AdminController extends Controller
     }
 
 
-    public function dataAdmin()
+    public function dataAdmin(Request $request)
     {
 
         $title = 'Data Admin';
 
-        $dataAdmin = $this->fetchApiData($this->apiUrl . 'statistics/admins');
+        if ($request->ajax()) {
+            $dataSales = $this->fetchApiData($this->apiUrl . 'statistics/admins');
+            // Check if the request is AJAX
+            $data = $dataSales['data']; // Assuming your API returns the relevant data
 
+            // Here, you would typically handle pagination, searching, and ordering if your API supports it.
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('created_at', function ($row) {
+                    return \Carbon\Carbon::parse($row['created_at'])->format('d-m-Y H:i');
+                })
+                ->make(true);
+        }
         // Lakukan operasi lain yang diperlukan
         return view('admin.dataAdmin', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
-            "data" => $dataAdmin,
+            "role" => $this->user['role'],
+
         ]);
     }
 
@@ -266,12 +277,20 @@ class AdminController extends Controller
 
         return $response->json();
     }
-    public function dataPengajar()
+    public function dataPengajar(Request $request)
     {
-
         $title = 'Data Pengajar';
 
         // Lakukan operasi lain yang diperlukan
+        // Check if the request is AJAX
+        if ($request->ajax()) {
+            $dataInstructors = $this->fetchApiData($this->apiUrl . 'statistics/instructors');
+            // Here, you would typically handle pagination, searching, and ordering if your API supports it.
+            $data = $dataInstructors['data']; // Assuming your API returns the relevant data
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->make(true);
+        }
 
         return view('admin.dataPengajar', [
             "title" => $title,
@@ -281,10 +300,29 @@ class AdminController extends Controller
         ]);
     }
 
-    public function dataSiswa()
+    public function dataSiswa(Request $request)
     {
 
         $title = 'Data Siswa';
+
+        if ($request->ajax()) {
+            $dataSales = $this->fetchApiData($this->apiUrl . 'statistics/users');
+            // Check if the request is AJAX
+            $data = $dataSales['data']; // Assuming your API returns the relevant data
+
+            // Here, you would typically handle pagination, searching, and ordering if your API supports it.
+            return DataTables::of($data)
+                ->addIndexColumn() // Adds a column for row numbering/indexing
+                ->editColumn('created_at', function ($row) {
+                    // Format the created_at field
+                    return \Carbon\Carbon::parse($row['created_at'])->format('d-m-Y H:i');
+                })
+                ->editColumn('birth', function ($row) {
+                    // Format the birth field
+                    return \Carbon\Carbon::parse($row['birth'])->format('d-m-Y'); // Example format
+                })
+                ->make(true);
+        }
 
         return view('admin.dataSiswa', [
             "title" => $title,
@@ -378,7 +416,7 @@ class AdminController extends Controller
         $title = '';
 
         $bundle = $this->fetchApiData($this->apiUrl . 'courses/bundles/' . $id);
-        $courses = $this->fetchApiData($this->apiUrl . 'courses');
+        $courses = $this->fetchApiData($this->apiUrl . 'statistics/courses');
         // Fetch the course IDs from the API
         $idCourse = $this->fetchApiData($this->apiUrl . 'courses/bundles/' . $id . '/courses');
         // Check if $idCourse is an array and not empty
@@ -411,7 +449,7 @@ class AdminController extends Controller
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
             "bundle" => $bundle, //
-            "courses" => $courses['data'],
+            "courses" => $courses,
             "courseDetails" => $courseDetails
         ]);
     }
