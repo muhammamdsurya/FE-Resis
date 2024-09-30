@@ -329,28 +329,32 @@
                                 </div>
                             </div>
 
-                            <!-- Navigation and Save Buttons -->
-                            <div class="mt-5 d-flex justify-content-between">
-                                <button
-                                    onclick="window.location.href='?selectedCourseContentId={{ $previousCourseContentId }}'"
-                                    {{ $previousCourseContentId == '' ? 'disabled' : '' }} class="btn btn-secondary">
-                                    <i class="fas fa-arrow-circle-left mr-2"></i>Sebelumnya
-                                </button>
-                                <div>
-                                    @if ($selectedCourseContentId == '')
-                                        <button id="saveContent" class="btn btn-primary">Simpan</button>
-                                    @else
-                                        <button class="btn btn-danger ml-3" onclick="deleteContent()">Hapus</button>
-                                        <button id="saveContent" class="btn btn-primary">Simpan</button>
-                                        <button
-                                            onclick="window.location.href='?selectedCourseContentId={{ $nextCourseContentId }}'"
-                                            {{ $nextCourseContentId == '' ? 'disabled' : '' }} class="btn btn-primary">
-                                            Lanjut <i class="fas fa-arrow-circle-right ml-2"></i>
-                                        </button>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
+
+                    </div>
+                    <div class="mt-5">
+                        <button onclick="window.location.href='?selectedCourseContentId={{$previousCourseContentId}}'" {{$previousCourseContentId == ''? 'disabled':''}} class="btn btn-secondary"><i class="fas fa-arrow-circle-left mr-2"></i>Sebelumnya</button>
+                        @if ($selectedCourseContentId == '')
+                            <button id="saveContent" class="btn btn-primary float-right">Simpan</button>
+                        @else
+                            <button class="btn btn-danger ml-3" onclick="deleteContent()">Hapus</button>
+                            <button  onclick="updateCourseContent()" class="btn btn-primary">Simpan</button>
+
+                            <button  onclick="window.location.href='?selectedCourseContentId={{$nextCourseContentId}}'" {{$nextCourseContentId == ''? 'disabled':''}} class="btn btn-primary float-right">Lanjut<i
+                                    class="fas fa-arrow-circle-right ml-2"></i></button>
+                        @endif
+                    </div>
+                </div>
+                <!-- Kolom untuk Materi Selanjutnya -->
+                <div class="col-md-3 d-none d-lg-block materi-container px-3">
+                    <div class="list-group mt-3">
+                        @if(isset($courseContents))
+                        @foreach($courseContents as $courseContentSidebar)
+                        <a href="?selectedCourseContentId={{$courseContentSidebar->id}}" class="list-group-item list-group-item-action {{$selectedCourseContentId == $courseContentSidebar->id? 'list-group-item-primary' : ''}}">{{$courseContentSidebar->content_title}}</a>
+                        @endforeach
+                        @endif
+                        <a href="?selectedCourseContentId="
+                                class="list-group-item list-group-item-action {{$selectedCourseContentId == ''? 'list-group-item-primary' : ''}}"><i class="fas fa-plus mr-2"></i>Tambah Materi Baru</a>
+                        <a href="/user/diskusi" class="list-group-item list-group-item-action ">Diskusi</a>
                     </div>
                 </div>
             </div>
@@ -544,6 +548,8 @@
                 $('#video-type').show()
             }
         }
+
+
 
         //POST CONTENT
         $('#saveContent').on('click', function(event) {
@@ -752,13 +758,79 @@
                         Swal.fire('Berhasil', 'Berhasil mengapus konten', 'success');
                         window.location.href = '?selectedCourseContentId='
 
-                    },
-                    error: function(xhr, status, error) {
-                        Swal.fire('Oops!', xhr.responseJSON.message, 'error');
-                    }
-                });
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                }
+            });
+        }
+
+
+
+        function updateCourseContent(){
+            const contentName = $('#contentName').val()
+            const contentDesc = $('#contentDesc').val()
+            var isUpdateContentFile =false
+             var formData = new FormData();
+            formData.append('contentTitle', contentName);
+            formData.append('contentDesc', contentDesc);
+
+
+            if(contentType == 'video'){
+                const contentVideoFile = $('#contentVideoFile')[0].files[0];
+                const contentVideoThumbFile = $('#contentVideoThumbFile')[0].files[0];
+
+                if (contentVideoFile || contentVideoThumbFile) {
+                    isUpdateContentFile = true
+                }
+
+                const videoArticleContent = $('#contentVideoArticleContent').val()
+                const videoDuration = $('#contentVideoDuration').val()
+
+                formData.append('videoContentFile', contentVideoFile);
+                formData.append('videoContentThumbFile', contentVideoThumbFile);
+                formData.append('videoArticleContent', videoArticleContent);
+                formData.append('videoDuration', videoDuration);
+            }else if(contentType == 'additional_source'){
+                const additionalSrcFile = $('#contentAddSrcFile')[0].files[0];
+                if (additionalSrcFile) {
+                    isUpdateContentFile = true
+                }
+                formData.append('additionalSrcFile', additionalSrcFile);
+            }else if(contentType == 'quiz'){
+                const passingGrade = $('#contentPassingGrade').val()
+
+                formData.append('passing_grade', passingGrade)
+                formData.append('quizzes',  JSON.stringify(
+                    'quiz_content':quizees
+                ))
             }
-        </script>
+
+
+            formData.append('isUpdateContentFile', isUpdateContentFile);
+
+            $.ajax({
+                url: '{{ route("admin.kelas.content.update",["courseId" => $courseId, "contentId" => $selectedCourseContentId]) }}', // Direct API endpoint
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content')
+                },
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    Swal.fire('Berhasil', 'Berhasil memperbarui konten', 'success')
+                    window.location.reload()
+
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                }
+            });
+
+        }
+    </script>
 
         @if ($courseContent->content_type == $videoType)
             <script>
