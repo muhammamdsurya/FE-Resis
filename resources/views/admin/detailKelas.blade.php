@@ -1,27 +1,6 @@
 @extends('layout.adminLayout')
 @section('title', $title)
 
-@section('filter')
-
-    <!-- Filter Dropdown -->
-    <div class="filter-dropdown d-lg-none d-sm-block ms-md-3">
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Materi
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Pendahuluan</a></li>
-                <li><a class="dropdown-item" href="#">Materi 2</a></li>
-                <li><a class="dropdown-item" href="#">Materi 3</a></li>
-                <li><a class="dropdown-item" href="#">Materi 4</a></li>
-                <li><a class="dropdown-item" href="/user/diskusi">Diskusi</a></li>
-            </ul>
-        </div>
-    </div>
-
-@endsection
-
 @section('content')
 
     <style>
@@ -72,7 +51,7 @@
                 <div class="col-lg-8">
                     <div class="card">
                         <div class="card-header">
-                            Data Kelas
+                            <h5 class="card-title">Data Kelas</h5>
                         </div>
                         <div class="card-body">
                             <div class="image-container text-center mb-4 position-relative">
@@ -171,31 +150,57 @@
                 <div class="col-lg-4">
                     <div class="card">
                         <div class="card-header">
-                            Data Materi
+                            <h5 class="card-title">Data Materi</h5>
                         </div>
                         <div class="card-body">
+                            <!-- Sidebar for larger screens -->
                             <div class="filter-dropdown d-none d-lg-block">
-                                <ul class="list-group">
-                                    <li class="list-group-item"><a href="#">Pendahuluan</a></li>
-                                    <li class="list-group-item"><a href="#">Materi 2</a></li>
-                                    <li class="list-group-item"><a href="#">Materi 3</a></li>
-                                    <li class="list-group-item"><a href="#">Materi 4</a></li>
-                                    <li class="list-group-item"><a href="/user/diskusi">Diskusi</a></li>
-                                </ul>
+                                <div class="list-group mt-3">
+                                    @if (isset($courseContent))
+                                        @foreach ($courseContent as $courseContentSidebar)
+                                        @dd($courseContentSidebar)
+                                            <a href="?selectedCourseContentId={{ $courseContentSidebar->id }}"
+                                                class="list-group-item list-group-item-action {{ $selectedCourseContentId == $courseContentSidebar->id ? 'list-group-item-primary' : '' }}">
+                                                {{ $courseContentSidebar->content_title }}
+                                            </a>
+                                        @endforeach
+                                    @endif
+                                    <!-- Link to add new content -->
+                                    <a href="?selectedCourseContentId="
+                                        class="list-group-item list-group-item-action {{ $selectedCourseContentId == '' ? 'list-group-item-primary' : '' }}">
+                                        <i class="fas fa-plus mr-2"></i>Tambah Materi Baru
+                                    </a>
+                                    <!-- Discussion link -->
+                                    <a href="/user/diskusi" class="list-group-item list-group-item-action">Diskusi</a>
+                                </div>
                             </div>
 
                             <!-- Dropdown for smaller screens -->
-                            <div class="filter-dropdown d-lg-none d-sm-block ms-md-3">
+                            <div class="filter-dropdown d-lg-none d-sm-block">
                                 <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                                    <button class="btn btn-secondary dropdown-toggle w-100" type="button"
                                         id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                         Materi
                                     </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="#">Pendahuluan</a></li>
-                                        <li><a class="dropdown-item" href="#">Materi 2</a></li>
-                                        <li><a class="dropdown-item" href="#">Materi 3</a></li>
-                                        <li><a class="dropdown-item" href="#">Materi 4</a></li>
+                                    <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
+                                        @if (isset($courseContent))
+                                            @foreach ($courseContent as $courseContentSidebar)
+                                                <li>
+                                                    <a class="dropdown-item {{ $selectedCourseContentId == $courseContentSidebar->id ? 'active' : '' }}"
+                                                        href="?selectedCourseContentId={{ $courseContentSidebar->id }}">
+                                                        {{ $courseContentSidebar->content_title }}
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        @endif
+                                        <!-- Link to add new content -->
+                                        <li>
+                                            <a class="dropdown-item {{ $selectedCourseContentId == '' ? 'active' : '' }}"
+                                                href="?selectedCourseContentId=">
+                                                <i class="fas fa-plus mr-2"></i>Tambah Materi Baru
+                                            </a>
+                                        </li>
+                                        <!-- Discussion link -->
                                         <li><a class="dropdown-item" href="/user/diskusi">Diskusi</a></li>
                                     </ul>
                                 </div>
@@ -203,149 +208,155 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </form>
 
-
-    <div class="container-fluid">
-
-        <section class="col-12 mt-2 pb-5">
-
+    <div class="container">
+        <section class="col-12 mt-2">
             <div class="row">
-                <!-- Kolom untuk Video dan Penjelasan -->
-                <div class="col-md-9">
-                    <div class="mt-3">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="contentName" placeholder="name@example.com"
-                                name="name">
-                            <label for="contentName">Judul Materi</label>
+                <!-- Column for Video and Description -->
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Materi Kelas</h5>
                         </div>
-
-                        <label>Materi</label>
-                        <div class="form-floating mb-3">
-                            <textarea id="contentDesc" name="description"></textarea>
-                        </div>
-
-                        <div class="form-floating mb-3 mt-3">
-                            <select class="form-control" id="contentType" name="level">
-                                <option value="{{ $videoType }}" selected>video</option>
-                                <option value="{{ $addSrcType }}">additional_source</option>
-                                <option value="{{ $quizType }}">quiz</option>
-                            </select>
-                            <label for="contentType">Jenis Konten</label>
-                        </div>
-
-                        <div id="video-type">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="contentVideoArticleContent"
-                                    placeholder="name@example.com" name="name">
-                                <label for="contentVideoArticleContent">Judul Konten</label>
-                            </div>
-
-                            @if ($selectedCourseContentId != '')
-                                @if ($courseContent->content_type == $videoType)
-                                    <!-- <div class="ratio ratio-16x9 mb-3">
-                                                                        <iframe src=""
-                                                                            frameborder="0"
-                                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                                            allowfullscreen ></iframe>
-                                                                    </div> -->
-                                    <div class="ratio ratio-16x9 mb-3">
-                                        <video controls poster="{{ $courseContent->video->thumbnail_image }}">
-                                            <source src="{{ $courseContent->video->video_file }}" type="video/mp4">
-                                            Your browser does not support the video tag.
-                                        </video>
+                        <div class="card-body">
+                            <div class="mt-3">
+                                <!-- First Row: Judul Materi and Jenis Konten -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="contentName"
+                                                placeholder="Judul Materi" name="name" required>
+                                            <label for="contentName">Judul Materi</label>
+                                        </div>
                                     </div>
-                                @endif
-                            @endif
-
-                            <div class="form-floating mb-3">
-                                <input type="file" class="form-control" id="contentVideoFile"
-                                    placeholder="name@example.com" name="name">
-                                <label for="contentVideoFile">Konten Video</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="file" class="form-control" id="contentVideoThumbFile"
-                                    placeholder="name@example.com" name="name">
-                                <label for="contentVideoThumbFile">Thumbnail</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="number" class="form-control" id="contentVideoDuration"
-                                    placeholder="name@example.com" name="name">
-                                <label for="contentVideoDuration">Durasi Video</label>
-                            </div>
-                        </div>
-
-                        <div id="additional-src-type">
-                            @if ($selectedCourseContentId != '')
-                                @if ($courseContent->content_type == $addSrcType)
-                                    <div class="ratio ratio-16x9 mb-3">
-                                        <iframe src="{{ $courseContent->src->file }}" frameborder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowfullscreen></iframe>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <select class="form-control" id="contentType" name="level" required>
+                                                <option value="{{ $videoType }}" selected>Video</option>
+                                                <option value="{{ $addSrcType }}">Sumber Tambahan</option>
+                                                <option value="{{ $quizType }}">Quiz</option>
+                                            </select>
+                                            <label for="contentType">Jenis Konten</label>
+                                        </div>
                                     </div>
-                                @endif
-                            @endif
-                            <div class="form-floating mb-3">
-                                <input type="file" class="form-control" id="contentAddSrcFile" name="name">
-                                <label for="contentAddSrcFile">Source Tambahan</label>
+                                </div>
+
+                                <!-- Deskripsi Materi -->
+                                <div class="mb-3">
+                                    <label for="contentDesc">Deskripsi Materi</label>
+                                    <textarea id="contentDesc" class="form-control" name="description" placeholder="Deskripsi" required></textarea>
+                                </div>
+
+                                <!-- Video Type Content Section -->
+                                <div id="video-type" class="content-type-section">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control"
+                                                    id="contentVideoArticleContent" placeholder="Judul Konten Video"
+                                                    name="video_content_name" required>
+                                                <label for="contentVideoArticleContent">Judul Konten Video</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <input type="number" class="form-control" id="contentVideoDuration"
+                                                    placeholder="Durasi Video" name="video_duration" required>
+                                                <label for="contentVideoDuration">Durasi Video (detik)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Display Existing Video Content -->
+                                    @if ($selectedCourseContentId != '' && $courseContent->content_type == $videoType)
+                                        <div class="ratio ratio-16x9 mb-3">
+                                            <video controls poster="{{ $courseContent->video->thumbnail_image }}">
+                                                <source src="{{ $courseContent->video->video_file }}" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                    @endif
+
+                                    <!-- Video and Thumbnail Input -->
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="contentVideoFile" class="form-label">Konten Video</label>
+                                            <input type="file" class="form-control" id="contentVideoFile"
+                                                name="video_file" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="contentVideoThumbFile" class="form-label">Thumbnail</label>
+                                            <input type="file" class="form-control" id="contentVideoThumbFile"
+                                                name="thumbnail_file" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Additional Source Type Content Section -->
+                                <div id="additional-src-type" class="content-type-section">
+                                    @if ($selectedCourseContentId != '' && $courseContent->content_type == $addSrcType)
+                                        <div class="ratio ratio-16x9 mb-3">
+                                            <iframe src="{{ $courseContent->src->file }}" frameborder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowfullscreen></iframe>
+                                        </div>
+                                    @endif
+
+                                    <div class="form-floating mb-3">
+                                        <input type="file" class="form-control" id="contentAddSrcFile"
+                                            name="additional_source" required>
+                                        <label for="contentAddSrcFile">Sumber Tambahan</label>
+                                    </div>
+                                </div>
+
+                                <!-- Quiz Type Content Section -->
+                                <div id="quiz-type" class="content-type-section">
+                                    <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="contentPassingGrade"
+                                            placeholder="Nilai Kelulusan" name="passing_grade" required>
+                                        <label for="contentPassingGrade">Nilai Kelulusan</label>
+                                    </div>
+
+                                    <button type="button" class="btn btn-primary d-flex align-items-center mb-2"
+                                        onclick="showQuizModal(null)">
+                                        <i class="fas fa-plus mr-1"></i>Tambah Quiz
+                                    </button>
+                                    <div class="quizzesList"></div>
+                                </div>
+                            </div>
+
+                            <!-- Navigation and Save Buttons -->
+                            <div class="mt-5 d-flex justify-content-between">
+                                <button
+                                    onclick="window.location.href='?selectedCourseContentId={{ $previousCourseContentId }}'"
+                                    {{ $previousCourseContentId == '' ? 'disabled' : '' }} class="btn btn-secondary">
+                                    <i class="fas fa-arrow-circle-left mr-2"></i>Sebelumnya
+                                </button>
+                                <div>
+                                    @if ($selectedCourseContentId == '')
+                                        <button id="saveContent" class="btn btn-primary">Simpan</button>
+                                    @else
+                                        <button class="btn btn-danger ml-3" onclick="deleteContent()">Hapus</button>
+                                        <button id="saveContent" class="btn btn-primary">Simpan</button>
+                                        <button
+                                            onclick="window.location.href='?selectedCourseContentId={{ $nextCourseContentId }}'"
+                                            {{ $nextCourseContentId == '' ? 'disabled' : '' }} class="btn btn-primary">
+                                            Lanjut <i class="fas fa-arrow-circle-right ml-2"></i>
+                                        </button>
+                                    @endif
+                                </div>
                             </div>
                         </div>
-
-                        <div id="quiz-type">
-                            <div class="form-floating mb-3">
-                                <input type="number" class="form-control" id="contentPassingGrade"
-                                    placeholder="name@example.com" name="name">
-                                <label for="contentPassingGrade">Nilai Kelulusan</label>
-                            </div>
-
-                            <button type="button" class="btn btn-primary d-flex align-items-center mb-2"
-                                onclick="showQuizModal(null)">
-                                <i class="fas fa-plus mr-1"></i>Tambah Quiz
-                            </button>
-                            <div class="quizzesList">
-
-                            </div>
-                        </div>
-
-
-                    </div>
-                    <div class="mt-5">
-                        <button onclick="window.location.href='?selectedCourseContentId={{ $previousCourseContentId }}'"
-                            {{ $previousCourseContentId == '' ? 'disabled' : '' }} class="btn btn-secondary"><i
-                                class="fas fa-arrow-circle-left mr-2"></i>Sebelumnya</button>
-                        @if ($selectedCourseContentId == '')
-                            <button id="saveContent" class="btn btn-primary float-right">Simpan</button>
-                        @else
-                            <button class="btn btn-danger ml-3" onclick="deleteContent()">Hapus</button>
-                            <button id="saveContent" class="btn btn-primary">Simpan</button>
-
-                            <button onclick="window.location.href='?selectedCourseContentId={{ $nextCourseContentId }}'"
-                                {{ $nextCourseContentId == '' ? 'disabled' : '' }}
-                                class="btn btn-primary float-right">Lanjut<i
-                                    class="fas fa-arrow-circle-right ml-2"></i></button>
-                        @endif
-                    </div>
-                </div>
-                <!-- Kolom untuk Materi Selanjutnya -->
-                <div class="col-md-3 d-none d-lg-block materi-container px-3">
-                    <div class="list-group mt-3">
-                        @if (isset($courseContents))
-                            @foreach ($courseContents as $courseContentSidebar)
-                                <a href="?selectedCourseContentId={{ $courseContentSidebar->id }}"
-                                    class="list-group-item list-group-item-action {{ $selectedCourseContentId == $courseContentSidebar->id ? 'list-group-item-primary' : '' }}">{{ $courseContentSidebar->content_title }}</a>
-                            @endforeach
-                        @endif
-                        <a href="?selectedCourseContentId="
-                            class="list-group-item list-group-item-action {{ $selectedCourseContentId == '' ? 'list-group-item-primary' : '' }}"><i
-                                class="fas fa-plus mr-2"></i>Tambah Materi Baru</a>
-                        <a href="/user/diskusi" class="list-group-item list-group-item-action ">Diskusi</a>
                     </div>
                 </div>
             </div>
         </section>
     </div>
+
 
     <!-- Modal Kelas -->
     <div class="modal fade" id="modal-quiz" tabindex="-1" aria-labelledby="modal-defaultLabel" aria-hidden="true">

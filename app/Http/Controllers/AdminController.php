@@ -228,7 +228,7 @@ class AdminController extends Controller
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->editColumn('created_at', function ($row) {
-                    return \Carbon\Carbon::parse($row['created_at'])->format('Y-m-d H:i:s');
+                    return \Carbon\Carbon::parse($row['created_at'])->format('d-m-Y H:i');
                 })
                 ->make(true);
         }
