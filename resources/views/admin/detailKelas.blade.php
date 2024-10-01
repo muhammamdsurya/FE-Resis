@@ -24,7 +24,7 @@
 
 @section('content')
 
-    <form id="courseForm" method="POST" action="{{ route('kelas.post') }}">
+    <form id="courseForm" method="POST" action="{{ route('kelas.edit', ['CourseId' => $course->course->id]) }}">
         @csrf
 
         <div class="container">
@@ -198,7 +198,7 @@
                         @else
                             <button class="btn btn-danger ml-3" onclick="deleteContent()">Hapus</button>
                             <button  onclick="updateCourseContent()" class="btn btn-primary">Simpan</button>
-            
+
                             <button  onclick="window.location.href='?selectedCourseContentId={{$nextCourseContentId}}'" {{$nextCourseContentId == ''? 'disabled':''}} class="btn btn-primary float-right">Lanjut<i
                                     class="fas fa-arrow-circle-right ml-2"></i></button>
                         @endif
@@ -397,7 +397,7 @@
             }
         }
 
-       
+
 
         //POST CONTENT
         $('#saveContent').on('click', function(event) {
@@ -635,7 +635,7 @@
 
                 if (contentVideoFile || contentVideoThumbFile) {
                     isUpdateContentFile = true
-                } 
+                }
 
                 const videoArticleContent = $('#contentVideoArticleContent').val()
                 const videoDuration = $('#contentVideoDuration').val()
@@ -648,7 +648,7 @@
                 const additionalSrcFile = $('#contentAddSrcFile')[0].files[0];
                 if (additionalSrcFile) {
                     isUpdateContentFile = true
-                } 
+                }
                 formData.append('additionalSrcFile', additionalSrcFile);
             }else if(contentType == 'quiz'){
                 const passingGrade = $('#contentPassingGrade').val()

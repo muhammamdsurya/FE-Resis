@@ -159,6 +159,8 @@ class courseController extends Controller
         // Kirimkan request PUT
         $response = Http::withHeaders($headers)->put($apiUrl, $body);
 
+        dd($response);
+
         if ($response->successful()) {
             // Check if a new thumbnail was uploaded
             // Prepare for the image upload (second API request)
