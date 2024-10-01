@@ -125,7 +125,7 @@
                                     <div class="form-floating">
                                         <select class="form-control" id="bundleSelect" name="bundleSelect[]">
                                             @foreach ($courses as $row)
-                                                <option value="{{ $row['course']['id'] }}">{{ $row['course']['name'] }}
+                                                <option value="{{ $row['id'] }}">{{ $row['name'] }}
                                                 </option>
                                             @endforeach
                                         </select>

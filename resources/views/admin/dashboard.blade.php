@@ -16,7 +16,7 @@
                     <div class="icon">
                         <i class="fas fa-book-reader"></i>
                     </div>
-                    <a href="#" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('admin.kelas')}}" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
@@ -30,7 +30,7 @@
                     <div class="icon">
                         <i class="fas fa-book-reader"></i>
                     </div>
-                    <a href="#" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{route('admin.bundling')}}" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -45,7 +45,7 @@
                     <div class="icon">
                         <i class="fas fa-users-cog"></i>
                     </div>
-                    <a href="#" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{route('data.admin')}}" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -60,7 +60,7 @@
                     <div class="icon">
                         <i class="fas fa-user-graduate"></i>
                     </div>
-                    <a href="#" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{route('data-siswa')}}" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -78,7 +78,7 @@
                     <div class="icon">
                         <i class="fas fa-book-reader"></i>
                     </div>
-                    <a href="#" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{route('data.pengajar')}}" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
         </div>
