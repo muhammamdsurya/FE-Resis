@@ -142,7 +142,7 @@ Route::prefix('')->group(function () {
 });
 
 
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::post('/activate', [AuthController::class, 'activation'])->name('activate.post');
 Route::get('/activate', [AuthController::class, 'activate'])->name('activate');
