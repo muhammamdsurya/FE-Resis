@@ -109,6 +109,7 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
 Route::prefix('instructor')->middleware(['whoami:instructor'])->group(function () {
     Route::get('/dashboard', [InstructorController::class, 'dashboard'])->name('instructor.dashboard');
     Route::get('/kelas', [InstructorController::class, 'kelas'])->name('instructor.kelas');
+    Route::get('/detail-kelas/{id}', [InstructorController::class, 'detailKelas'])->name('instructor.detail-kelas');
     Route::get('/profile', [InstructorController::class, 'profile'])->name('profile');
     Route::get('/diskusi', [InstructorController::class, 'diskusi'])->name('diskusi');
 });
