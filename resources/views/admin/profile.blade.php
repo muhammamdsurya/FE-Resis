@@ -2,11 +2,20 @@
 @section('title', $title)
 
 @section('content')
+
+<style>
+
+</style>
     <div class="container">
         <div class="row">
             <div class="col-lg-6">
                 <div class="card">
                     <div class="card-body">
+
+                        <div class="text-center mb-3">
+                            <span class="badge bg-primary fs-5">Tipe : {{ $role }}</span>
+                        </div>
+
                         <div class="mb-3">
                             <label for="fullName" class="form-label">Nama Lengkap</label>
                             <input type="text" class="form-control" id="fullName" value="{{ $full_name }}" disabled>
@@ -27,13 +36,9 @@
                             <input type="text" class="form-control" id="updatedAt" value="{{ $updated_at }}" disabled>
                         </div>
 
-                        <div class="text-center mt-3">
-                            <h5 class="bold">Role: {{ $role }}</h5>
-                        </div>
-
                         <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-success px-4 mb-3">Edit</button>
-                            <button type="submit" class="btn btn-danger px-4 mb-3 btn-logout">Logout</button>
+                            <button type="submit" class="btn btn-warning mb-3">Reset Pasword</button>
+                            <button type="submit" class="btn btn-danger mb-3 btn-logout">Logout</button>
                         </div>
                     </div>
                 </div>

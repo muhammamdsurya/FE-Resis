@@ -50,7 +50,7 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/detail-kelas/{id}', [AdminController::class, 'detailKelas'])->name('detail-kelas');
     Route::post('/kelas', [CourseController::class, 'kelas'])->name('kelas.post');
     Route::post('/kelas/{CourseId}', [courseController::class, 'editKelas'])->name('kelas.edit');
-    Route::delete('/kelas/delete/{id}', [courseController::class, 'destroyCourse'])->name('course.destroy');
+    Route::delete('/kelas/delete/{CourseId}', [courseController::class, 'destroyCourse'])->name('course.destroy');
 
 
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
@@ -58,7 +58,7 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/sales', [AdminController::class, 'sales'])->name('sales');
     Route::get('/data-admin', [AdminController::class, 'dataAdmin'])->name('data.admin');
     Route::get('/data-pengajar', [AdminController::class, 'dataPengajar'])->name('data.pengajar');
-    Route::get('/data-siswa', [AdminController::class, 'dataSiswa'])->name('data-siswa');
+    Route::get('/data-siswa', [AdminController::class, 'dataSiswa'])->name('data.siswa');
     Route::get('/instructor', [AdminController::class, 'getInstructor'])->name('get.instructors');
 
 
@@ -72,7 +72,6 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 
     // categories
     Route::post('/kelas/categories/post', [CourseController::class, 'jenjang'])->name('categories.post');
-    Route::get('/kelas/categories/get', [AdminController::class, 'getCategories'])->name('get.category');
     Route::delete('/kelas/{id}/destroy', [courseController::class, 'destroy'])->name('categories.destroy');
     Route::put('/kelas/{id}/edit', [courseController::class, 'editCategory'])->name('categories.edit');
 
@@ -80,6 +79,14 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::post('/data/kelas/{id}/content/create', [courseContentController::class, 'createCourseContent'])->name('admin.kelas.content.post');
     Route::post('/data/kelas/{courseId}/content/update/{contentId}', [courseContentController::class, 'updateCourseContent'])->name('admin.kelas.content.update');
     Route::delete('/data/kelas/{courseId}/content/{id}/delete', [courseContentController::class, 'deleteContent'])->name('admin.kelas.content.delete');
+
+    // download
+    Route::get('/admin/data-admin/download', [AdminController::class, 'downloadAdmin'])->name('admin.dataAdmin.download');
+    Route::get('/admin/data-user/download', [AdminController::class, 'downloadUser'])->name('admin.dataUser.download');
+    Route::get('/admin/data-instructor/download', [AdminController::class, 'downloadInstructor'])->name('admin.dataInstructor.download');
+    Route::get('/admin/data-sales/download', [AdminController::class, 'downloadSales'])->name('admin.dataSales.download');
+    Route::get('/admin/data-course/download', [AdminController::class, 'downloadCourse'])->name('admin.dataCourse.download');
+    Route::get('/admin/data-bundling/download', [AdminController::class, 'downloadCourseBundling'])->name('admin.dataBundling.download');
 });
 
 

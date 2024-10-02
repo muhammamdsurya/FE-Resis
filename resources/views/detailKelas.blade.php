@@ -107,7 +107,7 @@
                 <div class="col-lg-7">
                     <!-- Deskripsi -->
                     <div class="mb-5">
-                        <h4 class="fw-bold mb-3">Deskr\ipsi</h4>
+                        <h4 class="fw-bold mb-3">Deskripsi</h4>
                         <p class="text-muted">{{ $course->course->description }}</p>
                     </div>
 

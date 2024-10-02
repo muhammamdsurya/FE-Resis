@@ -60,7 +60,7 @@
                     <div class="icon">
                         <i class="fas fa-user-graduate"></i>
                     </div>
-                    <a href="{{route('data-siswa')}}" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{route('data.siswa')}}" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->

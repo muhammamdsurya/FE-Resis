@@ -4,52 +4,68 @@
 @section('content')
     <div class="card">
         <div class="card-body">
-            <table class="table table-bordered" id="instructor-table">
-                <thead>
-                    <tr>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Edukasi</th>
-                        <th>Pengalaman</th>
-                    </tr>
-                </thead>
-            </table>
+            <a href="{{ route('admin.dataInstructor.download') }}" class="btn btn-primary mb-3">
+                <i class="fas fa-download d-inline me-1 "></i> <!-- Ikon untuk mobile -->
+                <span class="d-lg-inline">Download CSV</span> <!-- Teks untuk desktop -->
+            </a>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped table-bordered">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Education</th>
+                            <th>Experience</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data admin akan ditampilkan disini -->
+                        @foreach ($dataInstructor as $instructor)
+                            <tr>
+                                <td>{{ $instructor->name }}</td>
+                                <td>{{ $instructor->email }}</td>
+                                <td>{{ $instructor->education }}</td>
+                                <td>{{ $instructor->experience }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
+        <!-- Tampilkan pagination hanya jika pagination tersedia -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <!-- Previous Button -->
+                @if ($pagination['page'] > 1)
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="{{ route('data.pengajar', ['page' => $pagination['page'] - 1]) }}">Previous</a>
+                    </li>
+                @else
+                    <li class="page-item disabled">
+                        <a class="page-link">Previous</a>
+                    </li>
+                @endif
+
+                <!-- Page Numbers -->
+                @for ($i = 1; $i <= $pagination['total_page']; $i++)
+                    <li class="page-item {{ $pagination['page'] == $i ? 'active' : '' }}">
+                        <a class="page-link" href="{{ route('data.pengajar', ['page' => $i]) }}">{{ $i }}</a>
+                    </li>
+                @endfor
+
+                <!-- Next Button -->
+                @if ($pagination['page'] < $pagination['total_page'])
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="{{ route('data.pengajar', ['page' => $pagination['page'] + 1]) }}">Next</a>
+                    </li>
+                @else
+                    <li class="page-item disabled">
+                        <a class="page-link">Next</a>
+                    </li>
+                @endif
+            </ul>
+        </nav>
     </div>
 @endsection
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#instructor-table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ url('/admin/data-pengajar') }}", // Correct route
-            columns: [{
-                    data: 'name',
-                    name: 'name'
-                },
-                {
-                    data: 'email',
-                    name: 'email'
-                },
-                {
-                    data: 'education',
-                    name: 'education'
-                },
-                {
-                    data: 'experience',
-                    name: 'experience'
-                }
-            ],
-            order: [
-                [3, 'desc']
-            ], // Order by Created At column (index 3)
-            pageLength: 3,
-            lengthChange: false, // Disable the "Show entries" dropdown
-            responsive: true // Enable responsive feature
-        });
-
-    });
-</script>

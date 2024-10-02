@@ -8,6 +8,7 @@ use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Response;
 
 class AdminController extends Controller
 {
@@ -46,8 +47,8 @@ class AdminController extends Controller
         $updatedWIB = $updated->setTimezone('Asia/Jakarta');
 
         // Format tanggal sesuai kebutuhan
-        $created_at = $createdWIB->format('d-m-Y H:i:s');
-        $updated_at = $updatedWIB->format('d-m-Y H:i:s');
+        $created_at = $createdWIB->format('d-m-Y, H:i');
+        $updated_at = $updatedWIB->format('d-m-Y, H:i');
 
         return [
             'id' => $this->user['id'],
@@ -112,27 +113,6 @@ class AdminController extends Controller
             "total_sales" => $totalSales,
             "sales" => $Sales,
         ]);
-    }
-
-
-    public function getCategories(Request $request)
-    {
-        if ($request->ajax()) {
-            // Fetch categories data from API
-            $categories = $this->fetchApiData($this->apiUrl . 'courses/categories');
-
-            // Return data for DataTables
-            return DataTables::of($categories)
-                ->addIndexColumn()
-                ->addColumn('actions', function ($row) {
-                    return '
-                        <a href="javascript:void(0)" class="btn btn-sm btn-primary edit-btn" data-id="' . $row['id'] . '">Edit</a>
-                        <a href="javascript:void(0)" class="btn btn-sm btn-danger delete-btn" data-id="' . $row['id'] . '">Delete</a>
-                    ';
-                })
-                ->rawColumns(['actions']) // Render the actions column as raw HTML
-                ->make(true);
-        }
     }
 
 
@@ -215,29 +195,19 @@ class AdminController extends Controller
         ]);
     }
 
-    public function sales(Request $request)
+    public function sales()
     {
+
         $title = 'Data Penjualan';
+        $dataSales = $this->fetchApiData($this->apiUrl . 'statistics/sales/transactions');
 
-        // Check if the request is AJAX
-        if ($request->ajax()) {
-            $dataSales = $this->fetchApiData($this->apiUrl . 'statistics/sales/transactions');
-            // Here, you would typically handle pagination, searching, and ordering if your API supports it.
-            $data = $dataSales['data']; // Assuming your API returns the relevant data
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->editColumn('created_at', function ($row) {
-                    return \Carbon\Carbon::parse($row['created_at'])->format('d-m-Y H:i');
-                })
-                ->make(true);
-        }
-
-        // For non-AJAX requests, load the view normally
         return view('admin.sales', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
+            "dataSales" => json_decode(json_encode($dataSales['data'])),
+            "pagination" => $dataSales['pagination'], // Assuming your API returns pagination information in the response
             // You can remove "dataSales" and "pagination" if you don't need to pass it to the view
         ]);
     }
@@ -248,25 +218,19 @@ class AdminController extends Controller
 
         $title = 'Data Admin';
 
-        if ($request->ajax()) {
-            $dataSales = $this->fetchApiData($this->apiUrl . 'statistics/admins');
-            // Check if the request is AJAX
-            $data = $dataSales['data']; // Assuming your API returns the relevant data
+        $dataAdmin = $this->fetchApiData($this->apiUrl . 'statistics/admins');
+        $detailData = $this->getDetailData();
 
-            // Here, you would typically handle pagination, searching, and ordering if your API supports it.
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->editColumn('created_at', function ($row) {
-                    return \Carbon\Carbon::parse($row['created_at'])->format('d-m-Y H:i');
-                })
-                ->make(true);
-        }
+
         // Lakukan operasi lain yang diperlukan
         return view('admin.dataAdmin', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
+            "type" => $detailData['type'],
+            "dataAdmin" => json_decode(json_encode($dataAdmin['data'])),
+            "pagination" => $dataAdmin['pagination'], // Assuming your API returns pagination information in the response
 
         ]);
     }
@@ -281,22 +245,17 @@ class AdminController extends Controller
     {
         $title = 'Data Pengajar';
 
-        // Lakukan operasi lain yang diperlukan
-        // Check if the request is AJAX
-        if ($request->ajax()) {
-            $dataInstructors = $this->fetchApiData($this->apiUrl . 'statistics/instructors');
-            // Here, you would typically handle pagination, searching, and ordering if your API supports it.
-            $data = $dataInstructors['data']; // Assuming your API returns the relevant data
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->make(true);
-        }
+        $dataInstructor = $this->fetchApiData($this->apiUrl . 'statistics/instructors');
+
 
         return view('admin.dataPengajar', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
+            "dataInstructor" => json_decode(json_encode($dataInstructor['data'])),
+            "pagination" => $dataInstructor['pagination'], // Assuming your API returns pagination information in the response
+
         ]);
     }
 
@@ -304,31 +263,16 @@ class AdminController extends Controller
     {
 
         $title = 'Data Siswa';
-
-        if ($request->ajax()) {
-            $dataSales = $this->fetchApiData($this->apiUrl . 'statistics/users');
-            // Check if the request is AJAX
-            $data = $dataSales['data']; // Assuming your API returns the relevant data
-
-            // Here, you would typically handle pagination, searching, and ordering if your API supports it.
-            return DataTables::of($data)
-                ->addIndexColumn() // Adds a column for row numbering/indexing
-                ->editColumn('created_at', function ($row) {
-                    // Format the created_at field
-                    return \Carbon\Carbon::parse($row['created_at'])->format('d-m-Y H:i');
-                })
-                ->editColumn('birth', function ($row) {
-                    // Format the birth field
-                    return \Carbon\Carbon::parse($row['birth'])->format('d-m-Y'); // Example format
-                })
-                ->make(true);
-        }
+        $dataSiswa = $this->fetchApiData($this->apiUrl . 'statistics/users');
 
         return view('admin.dataSiswa', [
             "title" => $title,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
+            "dataSiswa" => json_decode(json_encode($dataSiswa['data'])),
+            "pagination" => $dataSiswa['pagination'], // Assuming your API returns pagination information in the response
+
         ]);
     }
 
@@ -471,5 +415,190 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
         ]);
+    }
+    public function downloadAdmin(Request $request)
+    {
+        // Mendapatkan data admin dari API
+        $dataAdmin = $this->fetchApiData($this->apiUrl . 'statistics/admins');
+
+        $data = json_decode(json_encode($dataAdmin));
+
+        // Mengatur output CSV
+        $output = fopen('php://output', 'w');
+
+        // Menulis header CSV
+        fputcsv($output, ['Name', 'Email', 'Type', 'Created At']); // Sesuaikan header
+
+        // Menulis setiap baris data
+        foreach ($data->data as $admin) {
+            fputcsv($output, [
+                $admin->name,
+                $admin->email,
+                $admin->type,
+                Carbon::parse($admin->created_at)->format('d-m-Y'), // Mengubah format tanggal
+            ]);
+        }
+
+        // Menentukan header untuk download
+        header('Content-Type: text/csv; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="data_admin_' . date('d-m-Y') . '.csv"');
+
+        // Menutup output
+        fclose($output);
+        exit; // Menghentikan script agar tidak ada output lain yang tercetak
+    }
+
+    public function downloadUser(Request $request)
+    {
+        // Mendapatkan data admin dari API
+        $dataUser = $this->fetchApiData($this->apiUrl . 'statistics/users');
+
+        $data = json_decode(json_encode($dataUser));
+
+        // Mengatur output CSV
+        $output = fopen('php://output', 'w');
+
+        // Menulis header CSV
+        fputcsv($output, ['Name', 'Email', 'Study Level', 'Institution', 'Birth Date', 'Created At']); // Sesuaikan header
+
+        // Menulis setiap baris data
+        foreach ($data->data as $admin) {
+            fputcsv($output, [
+                $admin->name,
+                $admin->email,
+                $admin->study_level,
+                $admin->institution,
+                Carbon::parse($admin->birth)->format('d-m-Y'), // Mengubah format tanggal
+                Carbon::parse($admin->created_at)->format('d-m-Y'), // Mengubah format tanggal
+            ]);
+        }
+
+        // Menentukan header untuk download
+        header('Content-Type: text/csv; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="data_siswa_' . date('d-m-Y') . '.csv"');
+
+        // Menutup output
+        fclose($output);
+        exit; // Menghentikan script agar tidak ada output lain yang tercetak
+    }
+
+    function downloadInstructor(Request $request)
+    {
+        // Mendapatkan data admin dari API
+        $dataUser = $this->fetchApiData($this->apiUrl . 'statistics/instructors');
+
+        $data = json_decode(json_encode($dataUser));
+
+        // Mengatur output CSV
+        $output = fopen('php://output', 'w');
+
+        // Menulis header CSV
+        fputcsv($output, ['Name', 'Email', 'Education', 'Experience']); // Sesuaikan header
+
+        // Menulis setiap baris data
+        foreach ($data->data as $admin) {
+            fputcsv($output, [
+                $admin->name,
+                $admin->email,
+                $admin->education,
+                $admin->experience,
+            ]);
+        }
+
+        // Menentukan header untuk download
+        header('Content-Type: text/csv; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="data_instruktur_' . date('d-m-Y') . '.csv"');
+
+        // Menutup output
+        fclose($output);
+        exit; // Menghentikan script agar tidak ada output lain yang tercetak
+    }
+
+    function downloadSales(Request $request)
+    {
+        // Mendapatkan data admin dari API
+        $dataSales = $this->fetchApiData($this->apiUrl . 'statistics/sales');
+
+        $data = json_decode(json_encode($dataSales));
+
+        // Mengatur output CSV
+        $output = fopen('php://output', 'w');
+
+        // Menulis header CSV
+        fputcsv($output, ['Name', 'Email', 'Transaction Type', 'Product Name', 'Course Price', 'Transaction Fee', 'Tax', 'Total Amount', 'Payment Status', 'Payment Type', 'Created At']);
+
+        // Menulis setiap baris data
+        foreach ($data->data as $sale) {
+            fputcsv($output, [
+                $sale->name,
+                $sale->email,
+                $sale->transaction_type,
+                $sale->product_name,
+                number_format($sale->course_price, 0, ',', '.'), // Format harga kursus
+                number_format($sale->transaction_fee, 0, ',', '.'), // Format biaya transaksi
+                number_format($sale->tax, 0, ',', '.'), // Format pajak
+                number_format($sale->total_amount, 0, ',', '.'), // Format total amount
+                $sale->payment_status,
+                $sale->payment_type,
+                Carbon::parse($sale->created_at)->format('d-m-Y H:i'), // Mengubah format tanggal
+            ]);
+        }
+
+        // Menentukan header untuk download
+        header('Content-Type: text/csv; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="data_sales_' . date('d-m-Y') . '.csv"');
+
+        // Menutup output
+        fclose($output);
+        exit; // Menghentikan script agar tidak ada output lain yang tercetak
+    }
+
+
+    public function downloadCourse(Request $request)
+    {
+        // Mendapatkan data course dari API
+        $response = Http::withApiSession()->get($this->apiUrl . 'statistics/courses/csv');
+
+        // Memeriksa jika permintaan berhasil
+        if ($response->successful()) {
+            // Mengambil konten CSV dari respons
+            $csvContent = $response->body();
+
+            // Menentukan header untuk download
+            $headers = [
+                'Content-Type' => 'text/csv; charset=UTF-8',
+                'Content-Disposition' => 'attachment; filename="data_kelas_' . date('d-m-Y') . '.csv"',
+            ];
+
+            // Mengembalikan respons CSV
+            return Response::make($csvContent, 200, $headers);
+        }
+
+        // Mengembalikan respons error jika tidak berhasil
+        return redirect()->back()->with('error', 'Failed to download CSV');
+    }
+
+    public function downloadCourseBundle(Request $request)
+    {
+        // Mendapatkan data course dari API
+        $response = Http::withApiSession()->get($this->apiUrl . 'statistics/courses/bundles/csv');
+
+        // Memeriksa jika permintaan berhasil
+        if ($response->successful()) {
+            // Mengambil konten CSV dari respons
+            $csvContent = $response->body();
+
+            // Menentukan header untuk download
+            $headers = [
+                'Content-Type' => 'text/csv; charset=UTF-8',
+                'Content-Disposition' => 'attachment; filename="data_bundling_' . date('d-m-Y') . '.csv"',
+            ];
+
+            // Mengembalikan respons CSV
+            return Response::make($csvContent, 200, $headers);
+        }
+
+        // Mengembalikan respons error jika tidak berhasil
+        return redirect()->back()->with('error', 'Failed to download CSV');
     }
 }

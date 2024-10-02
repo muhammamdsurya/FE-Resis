@@ -44,7 +44,7 @@
                 <h4>Partner Kami</h4>
                 <div class="partner"> <!-- Mengatur teks dan gambar berada di tengah -->
                     <!-- Gambar -->
-                    <img src="assets/img/logo1.png" alt="" width="30%">
+                    <img src="{{asset('assets/img/logo1.png')}}" alt="" width="30%">
                 </div>
                 <a href="/terms" class="small mb-1">Syarat & Ketentuan</a><br>
                 <a href="/privacy-policy" class="small mb-1">Kebijakan Privasi</a>

@@ -159,8 +159,6 @@ class courseController extends Controller
         // Kirimkan request PUT
         $response = Http::withHeaders($headers)->put($apiUrl, $body);
 
-        dd($response);
-
         if ($response->successful()) {
             // Check if a new thumbnail was uploaded
             // Prepare for the image upload (second API request)
@@ -179,13 +177,13 @@ class courseController extends Controller
                 // Cek respons API
                 if ($imageResponse->successful()) {
                     // Debugging: Print response body to see if image upload succeeded
-                    return redirect()->route('admin.kelas')->with('message', 'Data dan thumbnail berhasil diperbarui.');
+                    return back()->with('message', 'Data dan thumbnail berhasil diperbarui.');
                 } else {
-                    return redirect()->route('admin.kelas')->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
+                    return back()->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
                 }
             }
             // If no thumbnail is uploaded, only update the body
-            return redirect()->route('admin.kelas')->with('message', 'Data berhasil diperbarui.');
+            return back()->with('message', 'Data berhasil diperbarui.');
         } else {
             // Handle case where the bundle data update fails
             return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
@@ -300,13 +298,13 @@ class courseController extends Controller
                 // Cek respons API
                 if ($imageResponse->successful()) {
                     // Debugging: Print response body to see if image upload succeeded
-                    return redirect()->route('admin.bundling')->with('message', 'Data dan thumbnail berhasil diperbarui.');
+                    return back()->with('message', 'Data dan thumbnail berhasil diperbarui.');
                 } else {
-                    return redirect()->route('admin.bundling')->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
+                    return back()->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
                 }
             }
             // If no thumbnail is uploaded, only update the body
-            return redirect()->route('admin.bundling')->with('message', 'Data berhasil diperbarui.');
+            return back()->with('message', 'Data berhasil diperbarui.');
         } else {
             // Handle case where the bundle data update fails
             return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
