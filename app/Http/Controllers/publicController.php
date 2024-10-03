@@ -20,7 +20,7 @@ class publicController extends Controller
 
     public function kelas(Request $request)
     {
-        $title = 'Data Kelas';
+        $title = 'Kelas';
         $page = $request->input('page', 1); // Default to page 1 if not set
 
         // Fetch paginated courses
@@ -39,8 +39,10 @@ class publicController extends Controller
     public function detailKelas($courseId)
     {
 
-        $title = 'Data Kelas';
+        $title = 'Kelas';
         $course = $this->courseCtrl->getCourseById($courseId);
+        $content = $this->courseCtrl->getCourseContentById($courseId);
+
         $isLogin = 'n';
         if ($this->user != null) {
             $isLogin = 'y';
@@ -53,6 +55,54 @@ class publicController extends Controller
         return view('detailKelas', [
             "title" => $title,
             'course' => $course,
+            'content' => $content,
+            'isLogin' => $isLogin
+        ]);
+    }
+
+    public function bundling(Request $request)
+    {
+        $title = 'Paket Bundling';
+        $page = $request->input('page', 1); // Default to page 1 if not set
+
+        // Fetch paginated courses
+        $bundling = $this->courseCtrl->getAllBundling($page);
+
+        // Debugging the result to ensure the correct page is returned
+        // dd($bundling);
+
+        return view('bundling', [
+            'title' => $title,
+            'bundling' => $bundling,  // Pass course data
+            'pagination' => $bundling->pagination,  // Pass pagination info
+        ]);
+    }
+
+    public function detailBundling($courseId)
+    {
+
+        $title = 'Paket Bundling';
+        $bundling = $this->courseCtrl->getBundlingById($courseId);
+        $contentsId = $this->courseCtrl->getBundlingContentById($courseId);
+
+        $contents = [];
+        foreach ($contentsId as $row) {
+            $contents[] = $this->courseCtrl->getCourseById($row);
+        }
+
+        $isLogin = 'n';
+        if ($this->user != null) {
+            $isLogin = 'y';
+            // dd($course);
+        } else {
+            $isLogin = 'n';
+        }
+
+
+        return view('detailBundling', [
+            "title" => $title,
+            'bundling' => $bundling,
+            'contents' => $contents, // Pastikan ini adalah array
             'isLogin' => $isLogin
         ]);
     }

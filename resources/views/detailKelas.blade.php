@@ -121,7 +121,8 @@
                     <div class="mb-5">
                         <h4 class="fw-bold mb-3">Pengajar</h4>
                         <div class="d-flex align-items-center gap-3">
-                            <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}" alt="Instructor" class="rounded-circle" width="100rem">
+                            <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}" alt="Instructor"
+                                class="rounded-circle" width="100rem">
                             <div>
                                 <h6 class="fw-bold">{{ $course->instructor->full_name }}</h6>
                                 <p class="text-muted">{{ $course->instructor->instructor->education }}</p>
@@ -172,39 +173,21 @@
                 <div class="col-lg-8 mx-auto" data-aos="fade-up" data-aos-delay="100">
 
                     <div class="faq-container">
+                        @if ($content)
+                            @foreach ($content as $row)
+                                <div class="faq-item">
+                                    <h3>{{ $row->content_title }}</h3>
 
-                        <div class="faq-item faq-active">
-                            <h3>Apa itu AkuAnalis?</h3>
-                            <div class="faq-content">
-                                <p>Selamat datang di AkuAnalis by Resi's Project!
-                                    Kami adalah media belajar yang menyediakan Online Course dengan fokus di bidang Kimia
-                                    Analisis serta dapat diakses dengan mudah oleh siswa/i. Yuk segera daftarkan diri kalian
-                                    dan nikmati fitur yang kami sediakan!
-                                </p>
-                            </div>
-                            <i class="faq-toggle bi bi-chevron-right"></i>
-                        </div><!-- End Faq item-->
+                                    <div class="faq-content">
+                                        <p>{{ $row->content_description }}</p>
 
-                        <div class="faq-item">
-                            <h3>Siapa yang yang menjadi pengajar atau tutor di AkuAnalis ini?</h3>
-                            <div class="faq-content">
-                                <p>Pengajar yang kami miliki adalah para lulusan Kimia/Analis Kimia yang memiliki pengalaman
-                                    keterampilan langsung di laboratorium dari berbagai sektor industry sehingga ilmu teori
-                                    dan praktikum kami nantinya sudah sesuai dengan laboratorium nyata.
-                                </p>
-                            </div>
-                            <i class="faq-toggle bi bi-chevron-right"></i>
-                        </div><!-- End Faq item-->
-
-                        <div class="faq-item">
-                            <h3>Di mana saya bisa mengakses kursus-kursus di AkuAnalis?</h3>
-                            <div class="faq-content">
-                                <p>Saat ini kalian bisa akses dimana pun dan kapan pun melalui Website resmi kami di
-                                    akuanalis.com. Yuk segera daftarkan diri kalian dan nikmati fitur yang kami sediakan!
-                                </p>
-                            </div>
-                            <i class="faq-toggle bi bi-chevron-right"></i>
-                        </div><!-- End Faq item-->
+                                    </div>
+                                    <i class="faq-toggle bi bi-chevron-right"></i>
+                                </div><!-- End Faq item-->
+                            @endforeach
+                            @else
+                            <p>Belum Ada Konten </p>
+                        @endif
 
                     </div>
 
@@ -266,8 +249,8 @@
                                 praktikumnya menggunakan app simuasi yang keadaannya standar.Thanks ya ka.
                             </p>
                             <div class="profile mt-auto">
-                                <img src="{{ asset('assets/img/testimonials/testimonials-4.jpg') }}" class="testimonial-img"
-                                    alt="">
+                                <img src="{{ asset('assets/img/testimonials/testimonials-4.jpg') }}"
+                                    class="testimonial-img" alt="">
                                 <h3>Dinda</h3>
                                 <h4>Umum</h4>
                             </div>
@@ -306,8 +289,8 @@
                                 sehari-hari saya sebagai ahli kimia. Terima kasih, Akuanalis.com!"
                             </p>
                             <div class="profile mt-auto">
-                                <img src="{{ asset('assets/img/testimonials/testimonials-2.jpg') }}" class="testimonial-img"
-                                    alt="">
+                                <img src="{{ asset('assets/img/testimonials/testimonials-2.jpg') }}"
+                                    class="testimonial-img" alt="">
                                 <h3>Azizah</h3>
                                 <h4>Umum</h4>
                             </div>
@@ -326,8 +309,8 @@
                                 sehari-hari saya sebagai ahli kimia. Terima kasih, Akuanalis.com!"
                             </p>
                             <div class="profile mt-auto">
-                                <img src="{{ asset('assets/img/testimonials/testimonials-3.jpg') }}" class="testimonial-img"
-                                    alt="">
+                                <img src="{{ asset('assets/img/testimonials/testimonials-3.jpg') }}"
+                                    class="testimonial-img" alt="">
                                 <h3>Azizah</h3>
                                 <h4>Umum</h4>
                             </div>

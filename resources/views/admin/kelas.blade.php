@@ -111,7 +111,6 @@
                                         <p class="fs-6 mb-0">
                                             <i class="fas fa-star text-warning me-1"></i>{{ $item['rating'] }}
                                         </p>
-                                        <p class="fs-6 mb-0 text-muted">{{ $item['course_category_id'] }}</p>
                                     </div>
                                     <h5 class="card-title mt-2">{{ $item['name'] }}</h5>
                                 </div>

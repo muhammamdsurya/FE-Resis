@@ -34,29 +34,27 @@
     </style>
     <section class="section">
         <div class="container mt-5 section-title" data-aos="fade-up">
-            <p>Kelas Kami<br></p>
+            <p>Paket Bundling<br></p>
         </div>
 
         <div class="container" data-aos="fade-up" data-aos-delay="100">
             <div class="row gx-2 gy-4">
-                @foreach ($courses->data as $course)
+                @foreach ($bundling->data as $bundling)
                     <div class="col-lg-3 col-md-4 col-6">
-                        <a href="{{ route('detail.kelas', ['courseId' => $course->course->id]) }}">
+                        <a href="{{ route('detail.bundling', ['courseBundleId' => $bundling->id]) }}">
                             <div class="card h-100 shadow border-0 position-relative"
                                 style="border-radius: 15px; overflow: hidden;">
-                                <img src="assets/img/values-1.png" class="card-img-top" alt="..."
+                                <img src="{{ $bundling->thumbnail_image }}" class="card-img-top" alt="..."
                                     style="height: 150px; object-fit: cover;">
                                 <div class="card-body">
                                     <div class="header-card d-flex justify-content-between mb-3">
-                                        <p class="text-muted fs-6 mb-0"><i class="bi bi-star-fill text-warning me-1"></i>4.9
-                                        </p>
-                                        <p class="badge bg-primary fs-6 mb-0">{{ $course->course_category->name }}</p>
+                                        <h6 class="text-success fw-bold mb-3">Rp
+                                            {{ number_format($bundling->price, 0, ',', '.') }}</h6>
                                     </div>
 
-                                    <h5 class="card-title fw-bold text-dark">{{ $course->course->name }}</h5>
-                                    <h6 class="text-success fw-bold mb-3">Rp
-                                        {{ number_format($course->course->price, 0, ',', '.') }}</h6>
-                                    <p class="card-text text-muted">{{ Str::limit($course->course->description, 10) }}</p>
+                                    <h5 class="card-title fw-bold text-dark">{{ $bundling->name }}</h5>
+
+                                    <p class="card-text text-muted">{{ Str::limit($bundling->description, 10) }}</p>
                                 </div>
 
                                 <!-- Dark overlay on hover -->
@@ -76,7 +74,7 @@
                         @if ($pagination->page > 1)
                             <li class="page-item">
                                 <a class="page-link"
-                                    href="{{ route('kelas', ['page' => $pagination->page - 1]) }}">Previous</a>
+                                    href="{{ route('bundling', ['page' => $pagination->page - 1]) }}">Previous</a>
                             </li>
                         @else
                             <li class="page-item disabled">
@@ -87,14 +85,14 @@
                         <!-- Page Numbers -->
                         @for ($i = 1; $i <= $pagination->total_page; $i++)
                             <li class="page-item {{ $pagination->page === $i ? 'active' : '' }}">
-                                <a class="page-link" href="{{ route('kelas', ['page' => $i]) }}">{{ $i }}</a>
+                                <a class="page-link" href="{{ route('bundling', ['page' => $i]) }}">{{ $i }}</a>
                             </li>
                         @endfor
 
                         <!-- Next Button -->
                         @if ($pagination->page < $pagination->total_page)
                             <li class="page-item">
-                                <a class="page-link" href="{{ route('kelas', ['page' => $pagination->page + 1]) }}">Next</a>
+                                <a class="page-link" href="{{ route('bundling', ['page' => $pagination->page + 1]) }}">Next</a>
                             </li>
                         @else
                             <li class="page-item disabled">

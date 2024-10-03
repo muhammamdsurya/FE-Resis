@@ -471,9 +471,38 @@ class courseController extends Controller
         return json_decode($response->getBody()->getContents());
     }
 
-    function getCourseById($courseId)
+    public function getAllBundling($page)
+    {
+        // Pass the page parameter in the API request
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/bundles', [
+            'page' => $page
+        ]);
+
+        return json_decode($response->getBody()->getContents());
+    }
+
+    public function getCourseById($courseId)
     {
         $response = Http::withApiSession()->get($this->apiUrl . 'courses/' . $courseId);
+
+        return json_decode($response->getBody()->getContents());
+    }
+
+    public function getCourseContentById($courseId) {
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/' . $courseId . '/contents');
+
+        return json_decode($response->getBody()->getContents());
+    }
+
+
+    public function getBundlingById($courseBundleId)
+    {
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/bundles/' . $courseBundleId);
+
+        return json_decode($response->getBody()->getContents());
+    }
+    public function getBundlingContentById($courseBundleId) {
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/bundles/' . $courseBundleId . '/courses');
 
         return json_decode($response->getBody()->getContents());
     }
