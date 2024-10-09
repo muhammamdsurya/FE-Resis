@@ -57,6 +57,7 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
     Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
     Route::get('/detail-kelas/{id}', [AdminController::class, 'detailKelas'])->name('detail-kelas');
+    Route::get('/diskusi-kelas/{courseId}', [AdminController::class, 'diskusi'])->name('admin.diskusi');
     Route::post('/kelas', [CourseController::class, 'kelas'])->name('kelas.post');
     Route::post('/kelas/{CourseId}', [courseController::class, 'editKelas'])->name('kelas.edit');
     Route::delete('/kelas/delete/{CourseId}', [courseController::class, 'destroyCourse'])->name('course.destroy');
@@ -96,6 +97,10 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/admin/data-sales/download', [AdminController::class, 'downloadSales'])->name('admin.dataSales.download');
     Route::get('/admin/data-course/download', [AdminController::class, 'downloadCourse'])->name('admin.dataCourse.download');
     Route::get('/admin/data-bundling/download', [AdminController::class, 'downloadCourseBundling'])->name('admin.dataBundling.download');
+
+
+    // CourseForum 
+    Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('admin.diskusi.post.reply');
 });
 
 
@@ -116,7 +121,7 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::post('/update-data', [UserDataController::class, 'updateData'])->name('update.data');
 
     Route::post('/diskusi-kelas/{courseId}', [courseForumController::class, 'createCourseForum'])->name('diskusi.post');
-    Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('diskusi.post.reply');
+
     Route::post('/quiz/answer/{contentId}', [userCourseController::class, 'answerQuiz'])->name('quiz.answer');
 
     Route::post('/checkout', [transactionController::class, 'checkout'])->name('user.checkout');

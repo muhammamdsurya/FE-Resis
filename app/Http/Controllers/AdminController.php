@@ -14,6 +14,7 @@ class AdminController extends Controller
 {
     private $user;
     private $apiUrl;
+    private $courseForumCtrl;
     private $courseContentCtrl;
 
 
@@ -22,6 +23,7 @@ class AdminController extends Controller
         $this->user = session('user');
         $this->apiUrl = env('API_URL');
         $this->courseContentCtrl = new courseContentController();
+        $this->courseForumCtrl = new courseForumController();
     }
 
     private function getDetailData()
@@ -415,20 +417,23 @@ class AdminController extends Controller
     }
 
 
-    public function diskusi($id)
+    public function diskusi($courseId)
     {
         $title = 'Diskusi';
 
-        // $apiSession = session('api_session');
-        // dd($apiSession);
-
-
+        
+        $courseForums = $this->courseForumCtrl->courseForums($courseId);
+        foreach ($courseForums->data as $courseForum){
+            $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
+        };
+        // dd($courseForums);
         // Lakukan operasi lain yang diperlukan
 
-        return view('user.diskusi', [
-            "courseId" => $id,
+        return view('admin.diskusi', [
             "title" => $title,
             "id" => $this->user['id'],
+            "courseId" => $courseId,
+            "courseForums" => $courseForums,
             "full_name" => $this->user['full_name'],
         ]);
     }

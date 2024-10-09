@@ -244,12 +244,22 @@ class courseContentController extends Controller
     
             }
         } else if ($courseContent->content_type == $quizType){
-            $quizzes = json_decode($request->get('quizzes'), true); 
-            $quizzes = $request->get('passing_grade'); 
-            $jsonData = array_merge($jsonData, [
-                'quiz' => $quizzes,
-            ]);            
-
+            $quizzes = $request->get('quizzes');     
+            $quizzes = json_decode($request->get('quizzes'), true);
+            $passGrade = $quizzes['passing_grade'];
+            $quizContent = $quizzes['quizz_content'];
+            $jsonQuiz = [
+                'passing_grade'=>$passGrade,
+                'quizz_content' => $quizContent
+            ];
+            $response = Http::withHeaders($headers)->put($this->apiUrl . 'courses/' . $courseId . '/contents/'.$contentId.'/quiz',$jsonQuiz);
+            if (!$response->successful()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $response->body()  ,
+                    'error' => $response->json() 
+                ], $response->status());
+            }
         }else{
             return response()->json([
                 'success' => false,
