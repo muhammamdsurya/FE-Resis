@@ -79,6 +79,7 @@ class courseForumController extends Controller
                             'message' => 'Invalid forum'
                      ], 400);
               }
+            
 
 
               $apiSession = session('api_session');
@@ -87,6 +88,8 @@ class courseForumController extends Controller
                      'Content-Type' => 'application/json',
                      'Cookie' => 'session=' . $apiSession
                  ];
+
+             
 
               $body= [
                      'reply'=>$reply
@@ -109,8 +112,36 @@ class courseForumController extends Controller
                      ], $response->status());
                  }
        }
+       public function imageReplyForum(Request $request, $courseId, $forumId)
+       {
+              $replyImg = $request->file('replyImg');
+
+
+              $apiSession = session('api_session');
+
+              $headers = [
+                     'Content-Type' => 'application/json',
+                     'Cookie' => 'session=' . $apiSession
+                 ];
+
+                 $response =  Http::withHeaders($headers)->attach('forum_question_image', fopen($replyImg->getRealPath(), 'r'), $replyImg->getClientOriginalName())->post($this->apiUrl . 'courses/' . $courseId . '/forums/'.$forumId.'/image');
+
+                 if (!$response->successful()) {
+                     return response()->json([
+                         'success' => false,
+                         'message' => $response->body()  ,
+                         'error' => $response->json() 
+                     ], $response->status());
+                 }
+       }
        public function courseForums($courseId) {
               $response = Http::withApiSession()->get($this->apiUrl. 'courses/'.$courseId.'/forums');
+
+
+              return  json_decode(json_encode($response->json()));
+       }
+       public function courseForumsReply($courseId, $forumId) {
+              $response = Http::withApiSession()->get($this->apiUrl. 'courses/'.$courseId.'/forums/'.$forumId.'/replies');
 
 
               return  json_decode(json_encode($response->json()));

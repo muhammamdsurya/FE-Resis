@@ -120,7 +120,6 @@ $(document).ready(function() {
             ['style', ['bold', 'italic', 'underline']], // Text styles
             ['color', ['color']], // Text color
             ['para', ['ul', 'ol']], // Lists
-            ['insert', ['link', 'picture']], // Insert link and image
             ['misc', ['undo', 'redo']] // Miscellaneous
         ],
         height: 300, // Set editor height
@@ -132,7 +131,6 @@ $(document).ready(function() {
             ['style', ['bold', 'italic', 'underline']], // Text styles
             ['color', ['color']], // Text color
             ['para', ['ul', 'ol']], // Lists
-            ['insert', ['link', 'picture']], // Insert link and image
             ['misc', ['undo', 'redo']] // Miscellaneous
         ],
         height: 300, // Set editor height

@@ -223,7 +223,7 @@
                                     <div class="col-md-6">
                                         <div class="form-floating">
                                             <input type="text" class="form-control" id="contentName"
-                                                placeholder="Judul Materi" name="name" required>
+                                                placeholder="Judul Materi" name="name" required >
                                             <label for="contentName">Judul Materi</label>
                                         </div>
                                     </div>
@@ -240,11 +240,11 @@
                                 </div>
 
                                 <div id="video-type">
-                                    <div class="form-floating mb-3">
+                                    <!-- <div class="form-floating mb-3">
                                         <input type="text" class="form-control" id="contentVideoArticleContent"
                                             placeholder="name@example.com" name="name">
                                         <label for="contentVideoArticleContent">Judul Konten</label>
-                                    </div>
+                                    </div> -->
 
                                     <!-- Video Type Content Section -->
                                     <div id="video-type" class="content-type-section">
@@ -291,6 +291,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    </div>
 
                                     <div id="additional-src-type">
                                         @if ($selectedCourseContentId != '')
@@ -326,7 +327,7 @@
                                     </div>
 
 
-                                </div>
+                              
                                 <div class="mt-5">
                                     <button
                                         onclick="window.location.href='?selectedCourseContentId={{ $previousCourseContentId }}'"
@@ -540,7 +541,6 @@
                     ['style', ['bold', 'italic', 'underline']], // Text styles
                     ['color', ['color']], // Text color
                     ['para', ['ul', 'ol']], // Lists
-                    ['insert', ['link', 'picture']], // Insert link and image
                     ['misc', ['undo', 'redo']] // Miscellaneous
                 ],
                 height: 300, // Set editor height
@@ -552,33 +552,7 @@
         var optionQuiz = []
 
         var quizees = []
-        quizees.push({
-            'question': 'Halo',
-            'answer': 1,
-            'options': [
-                'Jakarta',
-                'Bandung',
-                'Surabaya'
-            ]
-        })
-        quizees.push({
-            'question': 'Whos best??',
-            'answer': 2,
-            'options': [
-                'Bukalapak',
-                'Tokopedia',
-                'Shopee'
-            ]
-        })
-        quizees.push({
-            'question': 'which best??',
-            'answer': 0,
-            'options': [
-                'Go',
-                'Php',
-                'Python'
-            ]
-        })
+       
 
         function showQuizzes() {
             $('.quizzesList').empty();
@@ -807,7 +781,7 @@
     </script>
 
 
-    @if ($selectedCourseContentId != '')
+@if($selectedCourseContentId != '')
         <script>
             $('#contentName').val('{{ $courseContent->content_title }}')
             $('#contentType').val('{{ $courseContent->content_type }}').change()
@@ -880,10 +854,10 @@
                 } else if (contentType == 'quiz') {
                     const passingGrade = $('#contentPassingGrade').val()
 
-                    formData.append('passing_grade', passingGrade)
-                    formData.append('quizzes', JSON.stringify(
-                        'quiz_content': quizees
-                    ))
+                    formData.append('quizzes', JSON.stringify({
+                                    passing_grade: +passingGrade,
+                                    quizz_content: quizees
+                                }))
                 }
 
 
