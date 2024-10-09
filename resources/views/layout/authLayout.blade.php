@@ -37,24 +37,10 @@
     <!-- Vendor JS Files -->
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-    <!-- Main JS File -->
-    <script src="{{ asset('assets/js/main.js') }}"></script>
-
 </body>
 
 <script>
-    // Check if the alert exists and set a timeout to hide it
-    document.addEventListener('DOMContentLoaded', function() {
-        var alertMessage = document.getElementById('alert-message');
-        if (alertMessage) {
-            setTimeout(function() {
-                alertMessage.style.opacity = '0';
-                setTimeout(function() {
-                    alertMessage.style.display = 'none';
-                }, 500); // Delay for fade-out effect
-            }, 2000); // Time to wait before starting fade-out
-        }
-    });
+
 </script>
 
 </html>

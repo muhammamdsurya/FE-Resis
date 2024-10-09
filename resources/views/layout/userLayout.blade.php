@@ -63,7 +63,7 @@
     <script src="{{asset('assets/js/midtrans_snap.js')}}"></script>
 
     <!-- AdminLTE App -->
-    <script src="{{ asset('assets/dist/js/adminlte.js') }}"></script>
+    <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
 
 </body>
 

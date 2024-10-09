@@ -75,9 +75,10 @@ class AdminController extends Controller
     }
 
 
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         $title = 'Dashboard';
+        $fewMonths = $request->input('few_months');
 
         $totalUsersData = $this->fetchApiData($this->apiUrl . 'statistics/users/count');
         $totalUsers = $totalUsersData['total_users'] ?? 0;
@@ -94,12 +95,6 @@ class AdminController extends Controller
         $totalInstructorsData = $this->fetchApiData($this->apiUrl . 'statistics/instructors/count');
         $totalInstructors = $totalInstructorsData['total_instructors'] ?? 0;
 
-        $totalSalesData = $this->fetchApiData($this->apiUrl . 'statistics/sales/count?month=1');
-        $totalSales = $totalSalesData['total_sales'] ?? 0;
-
-        $SalesData = $this->fetchApiData($this->apiUrl . 'statistics/sales?few_months=6');
-        $Sales = $SalesData['total_sales'] ?? 0;
-
         return view('admin.dashboard', [
             "title" => $title,
             "id" => $this->user['id'],
@@ -110,8 +105,6 @@ class AdminController extends Controller
             "total_courses" => $totalCourses,
             "total_bundles" => $totalBundles,
             "total_instructors" => $totalInstructors,
-            "total_sales" => $totalSales,
-            "sales" => $Sales,
         ]);
     }
 
@@ -211,6 +204,29 @@ class AdminController extends Controller
             // You can remove "dataSales" and "pagination" if you don't need to pass it to the view
         ]);
     }
+
+    public function getSalesData(Request $request)
+    {
+        $fewMonths = $request->input('few_months', 6); // Default to 6 if not provided
+        $SalesData = $this->fetchApiData($this->apiUrl . 'statistics/sales?few_months=' . $fewMonths);
+
+        return response()->json([
+            'total_sales' => $SalesData, // or any other data you want to return
+        ]);
+    }
+
+
+    public function getSalesMonth(Request $request)
+    {
+
+        $month = $request->input('month');
+        $monthData = $this->fetchApiData($this->apiUrl . 'statistics/sales/count?month=' . $month);
+        return response()->json([
+
+            'months' => $monthData
+        ]);
+    }
+
 
 
     public function dataAdmin(Request $request)

@@ -74,7 +74,8 @@
                                 </div>
 
                                 <h5 class="card-title my-2">Praktikum Laboratorium Dasar</h5>
-                                <a href="#" class="fs-6 text-decoration-none">Lanjutkan <i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="#" class="fs-6 text-decoration-none">Lanjutkan <i
+                                        class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -88,7 +89,8 @@
                                 </div>
 
                                 <h5 class="card-title my-2">Praktikum Laboratorium Dasar</h5>
-                                <a href="#" class="fs-6 text-decoration-none">Lanjutkan <i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="#" class="fs-6 text-decoration-none">Lanjutkan <i
+                                        class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -102,7 +104,8 @@
                                 </div>
 
                                 <h5 class="card-title my-2">Praktikum Laboratorium Dasar</h5>
-                                <a href="#" class="fs-6 text-decoration-none">Lanjutkan <i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="#" class="fs-6 text-decoration-none">Lanjutkan <i
+                                        class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -112,4 +115,26 @@
         </div>
         <!-- /.row (main row) -->
     </div><!-- /.container-fluid -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('message'))
+                Swal.fire({
+                    title: 'Success!',
+                    text: '{{ session('message') }}',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    title: 'Error!',
+                    text: '{{ session('error') }}',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+        });
+    </script>
 @endsection

@@ -33,12 +33,15 @@ class AppServiceProvider extends ServiceProvider
             ]);
         });
 
-        //  // Define a macro for adding 'Client-User-IP' header to requests
-        // Http::macro('withClientUserIP', function () {
-        //     // Obtain the real IP address of the client making the request
+         // Define a macro for adding 'Client-User-IP' header to requests
+        Http::macro('withClientUserIP', function () {
+            // Obtain the real IP address of the client making the request
+            $clientIp = request()->ip(); // Get the real client IP from the incoming request
 
-        //     return Http::withHeaders([
-        //     ]);
-        // });
+            return Http::withHeaders([
+                'Client-User-IP' => $clientIp,
+
+            ]);
+        });
     }
 }

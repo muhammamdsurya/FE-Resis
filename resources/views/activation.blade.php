@@ -65,58 +65,47 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        const API_URL = '{{ env('API_URL') }}'; // Mengambil URL dari variabel lingkungan
 
-        document.addEventListener('DOMContentLoaded', function() {
+        $(document).ready(function() {
             const urlParams = new URLSearchParams(window.location.search);
             const token = urlParams.get('token');
             const email = urlParams.get('email');
 
-            const activationBox = document.getElementById('activation-box');
-            const messageHeader = document.getElementById('message-header');
-            const message = document.getElementById('message');
-            const icon = activationBox.querySelector('i');
-
+            const activationBox = $('#activation-box');
+            const messageHeader = $('#message-header');
+            const message = $('#message');
+            const icon = activationBox.find('i');
 
             if (token && email) {
-                fetch(`${API_URL}auth/activation/${token}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                                'content')
-                        },
-                        body: JSON.stringify({
-                            email: email
-                        })
-                    })
-                    .then(response => {
-
-                        if (response.status === 200) {
-                            return response.json(); // Jika status 200, ambil respons sebagai JSON
-                        } else {
-                            return response.text().then(text => {
-                                throw new Error(text); // Jika status selain 200, lemparkan error
-                            });
-                        }
-                    })
-                    .then(data => {
-                            messageHeader.innerText = 'Aktivasi Berhasil';
-                            message.innerText = 'Akun Anda berhasil diaktifkan. Silakan login.';
-                            activationBox.classList.add('success');
-                            activationBox.classList.remove('error');
-                            setTimeout(() => {
-                                window.location.href = '/login';
+                $.ajax({
+                    url: `/activate/${token}`, // Laravel route untuk aktivasi
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                            'content') // CSRF token dari Laravel
+                    },
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        email: email
+                    }), // Kirim email sebagai data JSON
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            messageHeader.text('Aktivasi Berhasil');
+                            message.text('Akun Anda berhasil diaktifkan. Silakan login.');
+                            activationBox.addClass('success').removeClass('error');
+                            setTimeout(function() {
+                                window.location.href = '/login'; // Redirect ke halaman login
                             }, 2000);
-
-                    })
-                    .catch(error => {
-                        messageHeader.innerText = 'Aktivasi Gagal';
-                        message.innerText = 'Token mungkin tidak valid atau sudah kadaluarsa.';
-                        activationBox.classList.add('error');
-                        icon.classList.add('fa-times-circle'); // Change to failure icon
-                        activationBox.classList.remove('success');
-                    });
+                        }
+                    },
+                    error: function(xhr) {
+                        messageHeader.text('Aktivasi Gagal');
+                        message.text('Token mungkin tidak valid atau sudah kadaluarsa.');
+                        activationBox.addClass('error').removeClass('success');
+                        icon.addClass('fa-times-circle'); // Tampilkan ikon kegagalan
+                        console.log(xhr.responseText);
+                    }
+                });
             }
         });
     </script>

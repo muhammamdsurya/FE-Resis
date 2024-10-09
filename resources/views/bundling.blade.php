@@ -54,7 +54,7 @@
 
                                     <h5 class="card-title fw-bold text-dark">{{ $bundling->name }}</h5>
 
-                                    <p class="card-text text-muted">{{ Str::limit($bundling->description, 10) }}</p>
+                                    <p class="card-text text-muted">{{ Str::limit($bundling->description, 50) }}</p>
                                 </div>
 
                                 <!-- Dark overlay on hover -->

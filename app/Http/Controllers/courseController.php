@@ -471,6 +471,16 @@ class courseController extends Controller
         return json_decode($response->getBody()->getContents());
     }
 
+    public function getSearchCourse($query)
+    {
+        // Pass the page parameter in the API request
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/search?q=', [
+            'q' => $query
+        ]);
+
+        return json_decode($response->getBody()->getContents());
+    }
+
     public function getAllBundling($page)
     {
         // Pass the page parameter in the API request

@@ -16,26 +16,37 @@
             </div>
         </div>
         <div class="row g-2">
-
-            @foreach($userCourses->data as $userCourse)
-            <div class="col-lg-3 col-md-4 col-6">
-                <div class="card" style="width: 100%;">
-                    <img src="{{asset ('assets/img/values-1.png') }}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar bg-success" style="width: 25%">25%</div>
-                          </div>
-
-                        <div class="d-flex flex-column">
-                            <h5 class="card-title my-2">{{$userCourse->course->name}}</h5>
-                            <a href="/user/detail-kelas/{{$userCourse->course->id}}" class="fs-6 text-decoration-none">Lanjutkan <i class="fas fa-arrow-circle-right"></i></a>
+            @if ($userCourses->data && count($userCourses->data) > 0)
+                @foreach ($userCourses->data as $userCourse)
+                    <div class="col-lg-3 col-md-4 col-6">
+                        <div class="card" style="width: 100%;">
+                            <img src="{{ asset('assets/img/values-1.png') }}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="25"
+                                    aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar bg-success" style="width: 25%">25%</div>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <h5 class="card-title my-2">{{ $userCourse->course->name }}</h5>
+                                    <a href="/user/detail-kelas/{{ $userCourse->course->id }}"
+                                        class="fs-6 text-decoration-none">
+                                        Lanjutkan <i class="fas fa-arrow-circle-right"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                @endforeach
+            @else
+                <div class="col-12 text-center">
+                    <h5>Kamu belum membeli kelas</h5>
+                    <a href="{{ route('kelas') }}" class="btn btn-primary mt-3">
+                        Beli Kelas
+                    </a>
                 </div>
-            </div> 
-            @endforeach
-
+            @endif
         </div>
+
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 <li class="page-item disabled">

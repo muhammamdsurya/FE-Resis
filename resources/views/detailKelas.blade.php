@@ -45,6 +45,18 @@
         #checkoutBtn:hover {
             background-color: #28a745;
         }
+
+        .section-title h2 {
+            font-size: 1rem;
+            color: #343a40;
+            /* Darker color for title */
+        }
+
+        .section-title p {
+            font-size: 1rem;
+            color: #6c757d;
+            /* Muted color for subtitle */
+        }
     </style>
     <section id="detail-kelas" class="hero section py-5" style="background-color: #f9f9f9;">
         <div class="container my-5">
@@ -57,8 +69,9 @@
                         <div class="row align-items-center gy-5">
 
                             <div class="col-lg-5">
-                                <img src="{{ asset('assets/img/values-1.png') }}" alt="" class="img-fluid rounded"
-                                    style="object-fit: cover; height: 100%; max-height: 300px;">
+                                <img src="{{ $course->course->thumbnail_image }} " alt="{{ $course->course->name }}"
+                                    class="img-fluid rounded" class="card-img-top rounded"
+                                    style="height: 300px; object-fit: cover;">
                             </div><!-- End Image -->
 
                             <div class="col-lg-7">
@@ -72,7 +85,6 @@
                                             {{ $course->course_category->name }}
                                         </p>
                                     </div>
-                                    <p class="text-muted"><i class="bi bi-people-fill"></i> 100 Siswa Terdaftar</p>
                                     <p class="text-muted">{{ $course->course->description }}</p>
                                 </div>
                             </div><!-- End Text -->
@@ -162,9 +174,11 @@
     <section id="silabus-kelas" class="faq section">
 
         <!-- Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-            <p>Silabus</p>
-        </div><!-- End Section Title -->
+        <div class="container section-title text-center" data-aos="fade-up">
+            <h2 class="fw-bold">Silabus</h2>
+            <p class="text-muted">Materi yang akan kamu pelajari</p>
+        </div>
+        <!-- End Section Title -->
 
         <div class="container">
 
@@ -185,7 +199,7 @@
                                     <i class="faq-toggle bi bi-chevron-right"></i>
                                 </div><!-- End Faq item-->
                             @endforeach
-                            @else
+                        @else
                             <p>Belum Ada Konten </p>
                         @endif
 
@@ -204,8 +218,10 @@
 
         <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
-            <p>Testimoni Kelas</p>
-        </div><!-- End Section Title -->
+            <h2 class="fw-bold">Testimoni</h2>
+            <p class="text-muted">Pengalaman dari mereka tentang kelas ini</p>
+        </div>
+        <!-- End Section Title -->
 
         <div class="container" data-aos="fade-up" data-aos-delay="100">
 

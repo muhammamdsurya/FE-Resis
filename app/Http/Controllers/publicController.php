@@ -22,9 +22,18 @@ class publicController extends Controller
     {
         $title = 'Kelas';
         $page = $request->input('page', 1); // Default to page 1 if not set
+          // Ambil nilai input 'q' dari form
+          $query = $request->input('q');
+
+          if ($query) {
+              // Fetch courses dengan parameter query
+              $courses = $this->courseCtrl->getSearchCourse(urlencode($query));
+          } else {
+              // Fetch courses tanpa pencarian
+              $courses = $this->courseCtrl->getAllCourse($page);
+            }
 
         // Fetch paginated courses
-        $courses = $this->courseCtrl->getAllCourse($page);
 
         // Debugging the result to ensure the correct page is returned
         // dd($courses);
@@ -32,7 +41,7 @@ class publicController extends Controller
         return view('kelas', [
             'title' => $title,
             'courses' => $courses,  // Pass course data
-            'pagination' => $courses->pagination,  // Pass pagination info
+            'pagination' => $courses->pagination ?? null,  // Pass pagination info
         ]);
     }
 

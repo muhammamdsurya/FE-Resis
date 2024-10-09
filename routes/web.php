@@ -40,12 +40,18 @@ Route::get('/privacy-policy', function () {
     return view('policy');
 })->name('policy');
 
+Route::get('/register', function(){
+    return view('register');
+})->name('show'); // Menampilkan form registrasi
+
 
 
 // Grup rute untuk rute-rute yang terkait dengan admin
 
 Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/dashboard/sales', [AdminController::class, 'getSalesData'])->name('admin.sales');
+    Route::get('/dashboard/sales/month', [AdminController::class, 'getSalesMonth'])->name('admin.salesMonth');
 
     //course
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
@@ -99,7 +105,7 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
 
     Route::get('/', [UserController::class, 'completeData'])->name('user.data');
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
-    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::get('/kelas', [UserController::class, 'kelas'])->name('user.kelas');
     Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
     Route::get('/materi', [UserController::class, 'materi'])->name('materi');
@@ -107,6 +113,7 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::get('/detail-kelas/{courseId}', [UserController::class, 'detailKelas'])->name('user.detail');
 
     Route::post('/complete-data', [UserDataController::class, 'completePost'])->name('complete.post');
+    Route::post('/update-data', [UserDataController::class, 'updateData'])->name('update.data');
 
     Route::post('/diskusi-kelas/{courseId}', [courseForumController::class, 'createCourseForum'])->name('diskusi.post');
     Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('diskusi.post.reply');
@@ -146,15 +153,16 @@ Route::prefix('instructor')->middleware('redirect.if.authenticated:instructor')-
     Route::post('/login', [AuthController::class, 'loginInstructor']); // Proses login admin
 });
 
-Route::prefix('')->group(function () {
-    Route::get('/register', [RegisController::class, 'show'])->name('show'); // Menampilkan form registrasi
-    Route::post('/register', [RegisController::class, 'store'])->name('register'); // Proses registrasi user
-});
+
+Route::post('/register', [AuthController::class, 'register'])->name('register'); // Proses registrasi user
 
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::post('/activate', [AuthController::class, 'activation'])->name('activate.post');
+Route::post('/activate/{token}', [AuthController::class, 'activation'])->name('activate.post');
 Route::get('/activate', [AuthController::class, 'activate'])->name('activate');
 
-Route::get('/reset-password', [AuthController::class, 'resetPassword'])->name('reset.password');
+Route::post('/reset-password/post', [AuthController::class, 'resetPassword'])->name('reset.password');
+Route::put('/reset-password/{token}', [AuthController::class, 'putPassword'])->name('put.password');
+Route::get('/reset-password', [AuthController::class, 'getReset'])->name('get.reset');
+Route::get('/reset-password/public', [AuthController::class, 'getResetPublic'])->name('reset.password.public');

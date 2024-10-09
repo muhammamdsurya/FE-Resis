@@ -1,52 +1,59 @@
 @extends('layout.userLayout')
-@section('title', $title)
 
 @section('content')
     <div class="container">
 
-        <div class="row ">
-            <div class="col-lg-5 col-md-6 mx-auto">
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Nama Lengkap</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                        value="{{ $full_name }}" disabled>
+        <div class="row">
+            <div class="col-lg-8 col-md-10">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h4>Profile</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="fullName" class="form-label">Nama Lengkap</label>
+                                <input type="text" class="form-control" id="fullName" value="{{ $full_name }}"
+                                    disabled>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" value="{{ $email }}"
+                                    disabled>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="birth" class="form-label">Tanggal Lahir</label>
+                                <input type="text" class="form-control" id="birth" value="{{ $birth }}"
+                                    disabled>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="studyLevel" class="form-label">Pendidikan</label>
+                                <input type="text" class="form-control" id="studyLevel" value="{{ $study_level }}"
+                                    readonly>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="institution" class="form-label">Sekolah</label>
+                                <input type="text" class="form-control" id="institution" value="{{ $institution }}"
+                                    disabled>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal">Edit</button>
+                            <button type="button" class="btn btn-danger btn-logout">Logout</button>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Email </label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                        value="{{ $email }}" disabled>
-                </div>
-
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Tanggal lahir </label>
-                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                        value="{{ $birth }}" disabled>
-                </div>
-
-
-            </div>
-            <div class="col-lg-5 col-md-6 mx-auto">
-
-
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label"> Jenjang </label>
-                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                        value="{{ $study_level }}" disabled>
-                </div>
-
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label"> Sekolah </label>
-                    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-                        value="{{ $institution }}" disabled>
-                </div>
-
-            </div>
-
-            <div class="col-lg-5 ml-5">
-                <button type="button" class="btn btn-success px-3 mb-5 mt-3" data-bs-toggle="modal"
-                    data-bs-target="#exampleModal">Edit</button>
-                <button type="submit" class="btn btn-danger px-3 mb-5 mt-3 btn-logout">Logout</a>
             </div>
         </div>
     </div>
@@ -56,64 +63,131 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Profile</h1>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-
-                    <form action="">
-                        <div class="row ">
-                            <div class="col-lg-5 col-md-6 mx-auto">
-                                <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Nama Lengkap</label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1"
-                                        aria-describedby="emailHelp" value="{{ $full_name }}">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Email </label>
-                                    <input type="email" class="form-control" id="exampleInputEmail1"
-                                        aria-describedby="emailHelp" value="{{ $email }}" disabled>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label"> Tanggal lahir </label>
-                                    <input type="text" class="form-control" id="exampleInputEmail1"
-                                        aria-describedby="emailHelp" value="{{ $birth }}">
-                                </div>
-
+                    <form action="{{ route('update.data') }}" method="POST">
+                        @csrf
+                        <div class="row">
+                            <div class="col-lg-6 col-md-12 mb-3">
+                                <label for="fullName" class="form-label">Nama Lengkap</label>
+                                <input type="text" class="form-control" id="fullName" name="full_name"
+                                    value="{{ $full_name }}" readonly>
                             </div>
-                            <div class="col-lg-5 col-md-6 mx-auto">
-
-                                <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Jenjang</label>
-                                    <input type="text" class="form-control" id="exampleInputEmail1"
-                                        aria-describedby="emailHelp" value="{{ $study_level }}">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="exampleInputEmail1" class="form-label">Sekolah</label>
-                                    <input type="text" class="form-control" id="exampleInputEmail1"
-                                        aria-describedby="emailHelp" value="{{ $institution }}">
-                                </div>
-
-
+                            <div class="col-lg-6 col-md-12 mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="emailModal" name="emailModal"
+                                    value="{{ $email }}" readonly>
+                            </div>
+                            <div class="col-lg-6 col-md-12 mb-3">
+                                <label for="birth" class="form-label">Tanggal Lahir</label>
+                                <input type="date" class="form-control" id="birth" name="birth"
+                                    value="{{ $birth_edit }}">
+                            </div>
+                            <div class="col-lg-6 col-md-12 mb-3">
+                                <label for="studyLevel" class="form-label">Pendidikan</label>
+                                <select class="form-select" id="studyLevel" name="study_level">
+                                    <option value="sd" {{ $study_level == 'SD' ? 'selected' : '' }}>SD</option>
+                                    <option value="smp" {{ $study_level == 'SMP' ? 'selected' : '' }}>SMP</option>
+                                    <option value="sma" {{ $study_level == 'SMA' ? 'selected' : '' }}>SMA</option>
+                                    <option value="universitas" {{ $study_level == 'UNIVERSITAS' ? 'selected' : '' }}>
+                                        Universitas</option>
+                                    <option value="umum" {{ $study_level == 'UMUM' ? 'selected' : '' }}>Umum</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-12 mb-3">
+                                <label for="institution" class="form-label">Sekolah</label>
+                                <input type="text" class="form-control" id="institution" name="institution"
+                                    value="{{ $institution }}">
+                            </div>
+                            <div class="col-lg-12 mb-3">
+                                <button type="button" class="btn btn-sm btn-danger reset-password"
+                                    id="resetPassword">Reset Password</button>
                             </div>
 
-                            <a href="/reset-password" class="small ml-4">Reset Password</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
                     </form>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button type="button" class="btn btn-primary">Simpan</button>
-            </div>
         </div>
     </div>
-    </div>
+
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            @if (session('message'))
+                Swal.fire({
+                    title: 'Success!',
+                    text: '{{ session('message') }}',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    title: 'Error!',
+                    text: '{{ session('error') }}',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            document.querySelector('.reset-password').addEventListener('click', function(e) {
+                e.preventDefault(); // Mencegah pengiriman formulir default
+
+                // Ambil email dari input
+                const email = document.querySelector('#emailModal').value;
+                console.log(email);
+
+                // Lakukan validasi
+                if (!email) {
+                    alert('Email harus diisi!');
+                    return;
+                }
+
+                // Kirim permintaan AJAX
+                fetch("{{ route('reset.password') }}", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Menambahkan token CSRF
+                        },
+                        body: JSON.stringify({
+                            email: email
+                        }) // Kirim email sebagai JSON
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Permintaan gagal!');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Tampilkan pesan sukses
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Yess',
+                            text: data.message
+                        });
+                    })
+                    .catch(error => {
+                        // Tangani error
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Ooops!',
+                            text: error.message
+                        });
+                    });
+            });
+
+
             document.querySelector('.btn-logout').addEventListener('click', function(e) {
                 e.preventDefault(); // Mencegah pengiriman formulir default
 
@@ -172,5 +246,4 @@
             });
         });
     </script>
-
 @endsection

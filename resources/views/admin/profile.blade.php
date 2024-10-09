@@ -3,9 +3,9 @@
 
 @section('content')
 
-<style>
+    <style>
 
-</style>
+    </style>
     <div class="container">
         <div class="row">
             <div class="col-lg-6">
@@ -37,7 +37,7 @@
                         </div>
 
                         <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-warning mb-3">Reset Pasword</button>
+                            <button type="submit" class="btn btn-warning mb-3 reset-password">Reset Pasword</button>
                             <button type="submit" class="btn btn-danger mb-3 btn-logout">Logout</button>
                         </div>
                     </div>
@@ -49,6 +49,45 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.reset-password').addEventListener('click', function(e) {
+                e.preventDefault(); // Mencegah pengiriman formulir default
+
+                // Ambil email dari input
+                const email = document.querySelector('#email').value;
+
+                // Lakukan validasi
+                if (!email) {
+                    alert('Email harus diisi!');
+                    return;
+                }
+
+                // Kirim permintaan AJAX
+                fetch("{{ route('reset.password') }}", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Menambahkan token CSRF
+                        },
+                        body: JSON.stringify({
+                            email: email
+                        }) // Kirim email sebagai JSON
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Permintaan gagal!');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Tampilkan pesan sukses
+                        alert(data.message); // Ubah ini untuk menggunakan SweetAlert atau cara lain
+                    })
+                    .catch(error => {
+                        // Tangani error
+                        alert(error.message); // Ubah ini untuk menggunakan SweetAlert atau cara lain
+                    });
+            });
+
             document.querySelector('.btn-logout').addEventListener('click', function(e) {
                 e.preventDefault(); // Mencegah pengiriman formulir default
 

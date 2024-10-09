@@ -23,20 +23,20 @@
             <div class="col-lg-2 col-md-3 footer-links">
                 <h4>Profile</h4>
                 <ul>
-                    <li><i class="bi bi-chevron-right"></i> <a href="/beranda#about">Tentang kami</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="/beranda#alt-features">Keunggulan</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="/beranda#visi">Visi Misi</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="/beranda#testimonials">Testimoni</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="/beranda#faq">F A Q</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/#about">Tentang kami</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/#alt-features">Keunggulan</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/#visi">Visi Misi</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/#testimonials">Testimoni</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/#faq">F A Q</a></li>
                 </ul>
             </div>
 
             <div class="col-lg-2 col-md-3 footer-links">
                 <h4>Navigasi</h4>
                 <ul>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#home">Beranda</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Kelas Kami</a></li>
-                    <li><i class="bi bi-chevron-right"></i> <a href="#">Kontak</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/">Beranda</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/kelas">Kelas Kami</a></li>
+                    <li><i class="bi bi-chevron-right"></i> <a href="/kontak">Kontak</a></li>
                 </ul>
             </div>
 
