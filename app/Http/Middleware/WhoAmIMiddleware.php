@@ -30,10 +30,11 @@ class WhoAmIMiddleware
             // Log the session cookie that will be sent
             Log::info('Session Cookie:', ['session_cookie' => $apiSession]);
 
-            // Make the WhoAmI API request
             $response = Http::withHeaders([
                 'Cookie' => 'session=' . $apiSession,
             ])->get(config('services.backend_api.url') . 'auth/whoami');
+
+            // Make the WhoAmI API request
 
             // Log the response headers for debugging
             Log::info('Response Headers:', ['headers' => $response->headers()]);
@@ -71,7 +72,7 @@ class WhoAmIMiddleware
                         $route = 'show.login.admin';
                         break;
                     case 'instructor':
-                        $route = 'show.login.instructor';
+                        $route = 'login.instructor';
                         break;
                     default:
                         $route = 'login';

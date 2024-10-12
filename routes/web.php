@@ -108,7 +108,7 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     // admin data
     Route::delete('data-admin/{id}', [AdminController::class, 'deleteAdmin'])->name('admin.dataAdmin.delete');
     Route::delete('data-pengajar/{id}/delete', [AdminController::class, 'deletePengajar'])->name('admin.dataPengajar.delete');
-    Route::delete('data-pengajar/{id}/edit', [AdminController::class, 'editPengajar'])->name('admin.dataPengajar.edit');
+    Route::post('data-pengajar/{id}/edit', [AdminController::class, 'editPengajar'])->name('admin.dataPengajar.edit');
     Route::post('data-admin/admin/post', [AuthController::class, 'regisAdmin'])->name('admin.dataAdmin.regis');
     Route::post('data-admin/instructor/post', [AuthController::class, 'regisInstructor'])->name('admin.dataInstructor.regis');
 

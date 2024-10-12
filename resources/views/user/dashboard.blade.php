@@ -96,51 +96,60 @@
                     </h3>
                 </div><!-- /.card-header -->
                 <div class="container-fluid mt-3">
-                    <div id="coursesContainer" class="row g-2 mb-5">
+                    <div id="coursesContainer" class="row mb-5">
                         @if ($userCourses->data && count($userCourses->data) > 0)
-                            @if (count($userCourses->data) > 0 || count($userCourses->data) <= 4)
-                                @foreach ($userCourses->data as $userCourse)
-                                    <div class="col-lg-3 col-md-4 col-6">
-                                        <a href="/user/detail-kelas/{{ $userCourse->course->id }}"
-                                            class="fs-6 text-decoration-none">
-                                            <div class="card h-100 shadow border-0 position-relative"
-                                                style="border-radius: 15px; overflow: hidden;">
-                                                <img src="{{ $userCourse->course->thumbnail_image }}" class="card-img-top"
-                                                    alt="..." style="height: 150px; object-fit: cover;">
-                                                <div class="card-body">
-                                                    <div class="header-card d-flex justify-content-between mb-3">
-                                                        <p class="text-muted fs-6 mb-0"><i
-                                                                class="fas fa-star text-warning me-1"></i>4.9
-                                                        </p>
-                                                        <p class="badge bg-primary fs-6 mb-0">
-                                                            {{ $userCourse->course_category->name }}
+                            <div class="row g-3">
+                                @foreach ($userCourses->data as $index => $userCourse)
+                                    @if ($index < 4)
+                                        {{-- Tampilkan hanya 4 kursus pertama --}}
+                                        <div class="col-lg-3 col-md-4 col-6">
+                                            <a href="/user/detail-kelas/{{ $userCourse->course->id }}"
+                                                class="fs-6 text-decoration-none">
+                                                <div class="card h-100 shadow border-0 position-relative"
+                                                    style="border-radius: 15px; overflow: hidden;">
+                                                    <img src="{{ $userCourse->course->thumbnail_image }}"
+                                                        class="card-img-top" alt="..."
+                                                        style="height: 150px; object-fit: cover;">
+                                                    <div class="card-body">
+                                                        <div class="header-card d-flex justify-content-between mb-3">
+                                                            <p class="text-muted fs-6 mb-0"><i
+                                                                    class="fas fa-star text-warning me-1"></i>4.9
+                                                            </p>
+                                                            <p class="badge bg-primary fs-6 mb-0">
+                                                                {{ $userCourse->course_category->name }}
+                                                            </p>
+                                                        </div>
+                                                        <h5 class="card-title fw-bold text-dark">
+                                                            {{ $userCourse->course->name }}
+                                                        </h5>
+                                                        <p class="card-text text-muted">
+                                                            {{ Str::limit($userCourse->course->description, 50) }}
                                                         </p>
                                                     </div>
-                                                    <h5 class="card-title fw-bold text-dark">{{ $userCourse->course->name }}
-                                                    </h5>
-                                                    <p class="card-text text-muted">
-                                                        {{ Str::limit($userCourse->course->description, 50) }}
-                                                    </p>
-                                                </div>
 
-                                                <!-- Dark overlay on hover -->
-                                                <div class="overlay d-flex align-items-center justify-content-center">
-                                                    <div class="text-center">
-                                                        <p class="text-white fw-bold fs-5">Lanjutkan</p>
+                                                    <!-- Dark overlay on hover -->
+                                                    <div class="overlay d-flex align-items-center justify-content-center">
+                                                        <div class="text-center">
+                                                            <p class="text-white fw-bold fs-5">Lanjutkan</p>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </a>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+
+                            {{-- Tampilkan tombol "Lihat kelas lainnya" jika lebih dari 4 --}}
+                            @if (count($userCourses->data) > 4)
+                                <div class="row">
+                                    <div class="col-12 text-center">
+                                        <a href="{{ route('user.kelas') }}" class="btn btn-primary mt-3">
+                                            Lihat kelas lainnya
                                         </a>
                                     </div>
-                                @endforeach
-                            @endif
-                            <div class="row">
-                                <div class="col-12 text-center">
-                                    <a href="{{ route('user.kelas') }}" class="btn btn-primary mt-3">
-                                        Lihat kelas lainnya
-                                    </a>
                                 </div>
-                            </div>
+                            @endif
                         @else
                             <div class="col-12 text-center">
                                 <h5>Kamu belum membeli kelas</h5>
@@ -149,6 +158,7 @@
                                 </a>
                             </div>
                         @endif
+
                     </div>
                 </div>
             </section>

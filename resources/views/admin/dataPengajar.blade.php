@@ -2,6 +2,52 @@
 @section('title', $title)
 
 @section('content')
+    <style>
+        .image-container,
+        .image-container-add
+        {
+            position: relative;
+            display: inline-block;
+
+        }
+
+        .image-container img,
+        .image-container-add img
+        {
+            width: 100%;
+            height: 50% !important;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5) !important;
+            /* Warna hitam transparan */
+            color: white !important;
+            opacity: 0;
+            /* Awalnya disembunyikan */
+            transition: opacity 0.3s ease;
+            /* Animasi saat hover */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border-radius: 10px;
+        }
+
+        .image-container:hover .overlay,
+        .image-container-add:hover .overlay {
+            opacity: 1;
+            cursor: pointer;
+            /* Muncul saat di-hover */
+        }
+    </style>
+
     <div class="card">
         <div class="card-body">
             @if ($type === 'super')
@@ -22,8 +68,17 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="registrationForm" method="POST" action="{{ route('admin.dataInstructor.regis') }}">
+                            <form id="registrationForm" method="POST" action="{{ route('admin.dataInstructor.regis') }}" enctype="multipart/form-data">
                                 @csrf
+                                <!-- Image Section -->
+                                <div class="image-container-add text-center mb-4 cursor-pointer">
+                                    <img src="{{asset('assets/img/testimonials/profile.jpg')}}" alt="upload gambar"
+                                        class="img-fluid rounded shadow image-preview cursor-pointer" id="imagePreview">
+                                    <div class="overlay">Ganti Gambar</div>
+                                </div>
+                                <input type="file" id="imageUpload" name="image" style="display: none; cursor-pointer"
+                                    accept="image/*">
+
                                 <!-- Name input -->
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="full_name" placeholder="Nama lengkap"
@@ -163,11 +218,20 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        {{-- {{ route('admin.dataPengajar.edit') }} --}}
-                        <form action="" method="POST">
+                        <form action="{{ route('admin.dataPengajar.edit', ['id' => $instructor->id]) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" class="form-control" id="id" name="id"
-                                        value="{{ $instructor->id }}">
+                                value="{{ $instructor->id }}">
+                            <!-- Image Section -->
+                            <div class="image-container text-center mb-4" data-id="{{ $instructor->id }}">
+                                <img src="{{ $instructor->photo_profile }}" alt="{{ $instructor->name }}"
+                                    class="img-fluid rounded shadow image-preview"
+                                    id="imagePreview{{ $instructor->id }}">
+                                <div class="overlay">Ganti Gambar</div>
+                            </div>
+                            <input type="file" id="imageUpload{{ $instructor->id }}" name="image"
+                                style="display: none;" accept="image/*">
                             <div class="row">
                                 <div class="col-lg-6 col-md-12 mb-3">
                                     <label for="fullName" class="form-label">Full name</label>
@@ -221,7 +285,50 @@
                     confirmButtonText: 'OK'
                 });
             @endif
+
         });
+
+        $(document).ready(function() {
+            // Ketika image-container diklik, trigger input file yang sesuai
+            $('.image-container').on('click', function() {
+                var instructorId = $(this).data('id'); // Ambil ID dari data-id elemen yang diklik
+                console.log(instructorId); // Cek ID yang diambil
+                $('#imageUpload' + instructorId).click(); // Trigger input file sesuai dengan ID instruktur
+                console.log()
+            });
+
+            // Mengubah tampilan gambar setelah memilih file
+            $('input[type="file"]').on('change', function(e) {
+                var instructorId = $(this).attr('id').replace('imageUpload',
+                    ''); // Ambil ID instruktur dari ID input file
+                console.log(instructorId); // Cek ID instruktur yang digunakan
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    $('#imagePreview' + instructorId).attr('src', event.target
+                        .result); // Update preview gambar sesuai ID instruktur
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            });
+
+            // Ketika gambar di-klik, trigger input file
+            $('.image-container-add').on('click', function() {
+                $('#imageUpload').click(); // Trigger input file ketika gambar di-klik
+            });
+
+            // Mengubah tampilan gambar setelah memilih file
+            $('#imageUpload').on('change', function(e) {
+                var reader = new FileReader(); // Membuat instance FileReader
+                reader.onload = function(event) {
+                    $('#imagePreview').attr('src', event.target
+                        .result); // Mengubah src gambar pratinjau
+                }
+                reader.readAsDataURL(e.target.files[0]); // Membaca file yang dipilih
+            });
+        });
+
+
+
+
         $(document).on('click', '.delete-btn', function() {
             const token = $("meta[name='csrf-token']").attr("content");
             var instructorId = $(this).data('id');

@@ -140,7 +140,7 @@
                     <div class="mb-5">
                         <h4 class="fw-bold mb-3">Pengajar</h4>
                         <div class="d-flex align-items-center gap-3">
-                            <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}" alt="Instructor"
+                            <img src="{{ $course->instructor->photo_profile }}" alt="Instructor"
                                 class="rounded-circle" width="100rem">
                             <div>
                                 <h6 class="fw-bold">{{ $course->instructor->full_name }}</h6>
@@ -200,7 +200,7 @@
                                     <h3>{{ $row->content_title }}</h3>
 
                                     <div class="faq-content">
-                                        <p>{{ $row->content_description }}</p>
+                                        <p>{{!! $row->content_description !!}}</p>
 
                                     </div>
                                     <i class="faq-toggle bi bi-chevron-right"></i>
@@ -376,14 +376,14 @@
                             courseId: '{{ $course->course->id }}'
                         }),
                         success: function(response) {
-    
+
                             // Swal.fire('Berhasil', response.data.message, 'success');
                             gOverlay.hide()
                             if (response.data.midtrans_snap_token) {
                                 const midTransSnap = new MidTransSnap(response.data.midtrans_snap_token);
                                 midTransSnap.pay();
                             }
-    
+
                         },
                         error: function(xhr, status, error) {
                             gOverlay.hide()

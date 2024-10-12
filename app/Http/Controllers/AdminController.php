@@ -391,12 +391,13 @@ class AdminController extends Controller
 
         // Definisikan body sebagai array associative
         $body = [
-            'id' => $request->id,
+            'person_id' => $request->id,
             'education' => $request->education,
             'experience' => $request->experience,
         ];
 
-        $apiUrl = $this->apiUrl . 'instructors/auth/data' . $id;
+
+        $apiUrl = $this->apiUrl . 'instructors/auth/data';
 
         // Kirimkan request PUT
         $response = Http::withHeaders($headers)->put($apiUrl, $body);
@@ -408,12 +409,11 @@ class AdminController extends Controller
                 // Use the attach method for a multipart/form-data request
                 $imageResponse = Http::withHeaders(['Cookie' => 'session=' . $apiSession])
                     ->attach(
-                        'thumbnail_image',
+                        'photo_profile',
                         fopen($request->file('image')->getRealPath(), 'r'), // Open the file for reading
                         $request->file('image')->getClientOriginalName() // Get the original filename
                     )
-                    ->put($this->apiUrl . "courses/" . $id . "/thumbnail");
-
+                    ->put($this->apiUrl . "instructors/" . $id . "/photo_profile");
                 // Check if the image upload was successful
 
                 // Cek respons API

@@ -165,7 +165,7 @@ class InstructorController extends Controller
                     $courseContent->quiz = $courseContentQuiz;
 
 
-                 
+
                 }
             }
             }

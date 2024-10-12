@@ -52,6 +52,15 @@
                     confirmButtonText: 'OK'
                 });
             @endif
+
+            @if (session('success'))
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            @endif
         });
     </script>
 @endsection
