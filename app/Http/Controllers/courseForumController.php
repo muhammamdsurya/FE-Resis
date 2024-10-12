@@ -63,6 +63,69 @@ class courseForumController extends Controller
                      ], $response->status());
                  }
        }
+       public function deleteCourseForum(Request $request, $courseId)
+       {
+
+              $apiSession = session('api_session');
+
+              $headers = [
+                     'Content-Type' => 'application/json',
+                     'Cookie' => 'session=' . $apiSession
+                 ];
+
+         
+
+              $forumId = $request->get('forumId');
+
+              // Kirimkan request POST
+              $response = Http::withHeaders($headers)->delete($this->apiUrl. 'courses/'.$courseId.'/forums/'.$forumId);
+              
+              if ($response->successful()) {
+                     return response()->json([
+                         'success' => true,
+                         'message' => 'Berhasil menghapus diskusi',
+                         'data' => $response->json() // Include the response data
+                     ], 200);
+                 } else {
+                     return response()->json([
+                         'success' => false,
+                         'message' => $response->body() ,
+                         'error' => $response // Include error details if available
+                     ], $response->status());
+                 }
+       }
+       public function deleteReplyCourseForum(Request $request, $courseId)
+       {
+
+              $apiSession = session('api_session');
+
+              $headers = [
+                     'Content-Type' => 'application/json',
+                     'Cookie' => 'session=' . $apiSession
+                 ];
+
+         
+
+              $forumId = $request->get('forumId');
+              $replyId = $request->get('replyId');
+
+              // Kirimkan request POST
+              $response = Http::withHeaders($headers)->delete($this->apiUrl. 'courses/'.$courseId.'/forums/'.$forumId.'/replies/'.$replyId);
+              
+              if ($response->successful()) {
+                     return response()->json([
+                         'success' => true,
+                         'message' => 'Berhasil menghapus  balasan diskusi',
+                         'data' => $response->json() // Include the response data
+                     ], 200);
+                 } else {
+                     return response()->json([
+                         'success' => false,
+                         'message' => $response->body() ,
+                         'error' => $response // Include error details if available
+                     ], $response->status());
+                 }
+       }
        public function replyCourseForum(Request $request, $courseId)
        {
               $reply = $request->get('reply');
@@ -112,25 +175,60 @@ class courseForumController extends Controller
                      ], $response->status());
                  }
        }
-       public function imageReplyForum(Request $request, $courseId, $forumId)
+       public function imageReplyForum(Request $request, $courseId)
        {
               $replyImg = $request->file('replyImg');
+              $forumId = $request->get('forumId');
+              $replyId = $request->get('replyId');
 
 
               $apiSession = session('api_session');
 
               $headers = [
-                     'Content-Type' => 'application/json',
+                     'Cookie' => 'session=' . $apiSession
+                 ];
+
+                 $response =  Http::withHeaders($headers)->attach('forum_question_reply_image', fopen($replyImg->getRealPath(), 'r'), $replyImg->getClientOriginalName())->post($this->apiUrl . 'courses/' . $courseId . '/forums/'.$forumId.'/replies/'.$replyId.'/image');
+
+                 if ($response->successful()) {
+                     return response()->json([
+                         'success' => true,
+                         'message' => 'Berhasil membalas diskusi',
+                         'data' => $response->json() // Include the response data
+                     ], 200);
+                 } else {
+                     return response()->json([
+                         'success' => false,
+                         'message' => $response->body() ,
+                         'error' => $response->json() // Include error details if available
+                     ], $response->status());
+                 }
+       }
+       public function imageForum(Request $request, $courseId)
+       {
+              $forumId = $request->get('forumId');
+              $replyImg = $request->file('img');
+
+
+              $apiSession = session('api_session');
+
+              $headers = [
                      'Cookie' => 'session=' . $apiSession
                  ];
 
                  $response =  Http::withHeaders($headers)->attach('forum_question_image', fopen($replyImg->getRealPath(), 'r'), $replyImg->getClientOriginalName())->post($this->apiUrl . 'courses/' . $courseId . '/forums/'.$forumId.'/image');
 
-                 if (!$response->successful()) {
+                 if ($response->successful()) {
+                     return response()->json([
+                         'success' => true,
+                         'message' => 'Berhasil memposting diskusi',
+                         'data' => $response->json() // Include the response data
+                     ], 200);
+                 } else {
                      return response()->json([
                          'success' => false,
-                         'message' => $response->body()  ,
-                         'error' => $response->json() 
+                         'message' => $response->body() ,
+                         'error' => $response->json() // Include error details if available
                      ], $response->status());
                  }
        }

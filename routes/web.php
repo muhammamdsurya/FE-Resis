@@ -113,6 +113,9 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 
     // CourseForum
     Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('admin.diskusi.post.reply');
+    Route::post('/diskusi-kelas/{courseId}/reply/image', [courseForumController::class, 'imageReplyForum'])->name('admin.diskusi.post.reply.img');
+    Route::post('/diskusi-kelas/{courseId}/delete', [courseForumController::class, 'deleteCourseForum'])->name('admin.diskusi.delete');
+    Route::post('/diskusi-kelas/{courseId}/reply/delete', [courseForumController::class, 'deleteReplyCourseForum'])->name('admin.diskusi.reply.delete');
 });
 
 
@@ -134,6 +137,10 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::post('/update-data', [UserDataController::class, 'updateData'])->name('update.data');
 
     Route::post('/diskusi-kelas/{courseId}', [courseForumController::class, 'createCourseForum'])->name('diskusi.post');
+    Route::post('/diskusi-kelas/{courseId}/delete', [courseForumController::class, 'deleteCourseForum'])->name('diskusi.delete');
+    Route::post('/diskusi-kelas/{courseId}/image', [courseForumController::class, 'imageForum'])->name('diskusi.post.img');
+    Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('diskusi.post.reply');
+    Route::post('/diskusi-kelas/{courseId}/reply/image', [courseForumController::class, 'imageReplyForum'])->name('diskusi.post.reply.img');
 
     Route::post('/quiz/answer/{contentId}', [userCourseController::class, 'answerQuiz'])->name('quiz.answer');
 
@@ -146,7 +153,14 @@ Route::prefix('instructor')->middleware(['whoami:instructor'])->group(function (
     Route::get('/kelas', [InstructorController::class, 'kelas'])->name('instructor.kelas');
     Route::get('/detail-kelas/{id}', [InstructorController::class, 'detailKelas'])->name('instructor.detail-kelas');
     Route::get('/profile', [InstructorController::class, 'profile'])->name('profile');
-    Route::get('/diskusi', [InstructorController::class, 'diskusi'])->name('diskusi');
+
+
+     // CourseForum 
+     Route::get('/diskusi-kelas/{courseId}', [InstructorController::class, 'diskusi'])->name('instructor.diskusi');
+
+     Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('instructor.diskusi.post.reply');
+     Route::post('/diskusi-kelas/{courseId}/reply/image', [courseForumController::class, 'imageReplyForum'])->name('instructor.diskusi.post.reply.img');
+     Route::post('/diskusi-kelas/{courseId}/reply/delete', [courseForumController::class, 'deleteReplyCourseForum'])->name('instructor.diskusi.reply.delete');
 });
 
 // Rute untuk login pengguna biasa

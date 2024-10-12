@@ -180,13 +180,23 @@ class UserController extends Controller
     {
         $title = 'Diskusi';
 
+        $userCourse = $this->userCourseCtrl->getCoursesUserByCourseId($courseId);
+
 
         $courseForums = $this->courseForumCtrl->courseForums($courseId);
+        foreach ($courseForums->data as $courseForum) {
+            $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
+
+            $courseForum->reply_count = count($courseForum->course_forum_reply);
+        }
+
+        // dd($courseForums);
         // Lakukan operasi lain yang diperlukan
 
         return view('user.diskusi', [
             "title" => $title,
             "id" => $this->user['id'],
+            "userCourse" => $userCourse,
             "courseId" => $courseId,
             "courseForums" => $courseForums,
             "full_name" => $this->user['full_name'],
@@ -305,7 +315,6 @@ class UserController extends Controller
             }
         }
 
-        // dd($courseContent);
 
 
 

@@ -23,7 +23,11 @@ class userCourseController extends Controller
 
         return  json_decode(json_encode($response->json()));
     }
+    function getCourseUserByID($courseId)  {
+        $response = Http::withApiSession()->get($this->apiUrl. 'user/'.$this->user['id'].'/courses/student/'.$courseId);
 
+        return  json_decode(json_encode($response->json()));
+    }
     function getCoursesUserByCourseId($courseId)  {
         $response = Http::withApiSession()->get($this->apiUrl. 'user/'.$this->user['id'].'/courses/student/'.$courseId);
 

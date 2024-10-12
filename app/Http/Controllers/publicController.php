@@ -10,11 +10,13 @@ class publicController extends Controller
     private $courseCtrl;
     private $user;
 
+    private $userCourseCtrl;
 
     public function __construct()
     {
         $this->courseCtrl = new courseController();
         $this->user = session('user');
+        $this->userCourseCtrl = new userCourseController();
     }
 
 
@@ -49,13 +51,19 @@ class publicController extends Controller
     {
 
         $title = 'Kelas';
-        $course = $this->courseCtrl->getCourseById($courseId);
+        $course = $this->courseCtrl->getCourseById($courseId);  
         $content = $this->courseCtrl->getCourseContentById($courseId);
 
         $isLogin = 'n';
+        $alreadyCourse = 'n';
         if ($this->user != null) {
             $isLogin = 'y';
-            // dd($course);
+            $userCourses = $this->userCourseCtrl->getCoursesUserByCourseId($courseId);
+
+            // dd($userCourses);
+            if($userCourses){
+                $alreadyCourse = 'y';
+            }
         } else {
             $isLogin = 'n';
         }
@@ -66,7 +74,8 @@ class publicController extends Controller
             'course' => $course,
             'role' => $this->user['role'],
             'content' => $content,
-            'isLogin' => $isLogin
+            'isLogin' => $isLogin,
+            'alreadyCourse' => $alreadyCourse
         ]);
     }
 
