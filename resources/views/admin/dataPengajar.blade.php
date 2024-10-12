@@ -97,11 +97,13 @@
                                     @if ($type === 'super')
                                         <div class="d-flex justify-content-center">
                                             <!-- Delete Button -->
-                                            <button class="btn btn-danger btn-sm me-2">
+                                            <button class="btn btn-danger btn-sm me-2 delete-btn"
+                                                data-id="{{ $instructor->id }}">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                             <!-- Edit Button -->
-                                            <button class="btn btn-success btn-sm">
+                                            <button class="btn btn-success btn-sm edit-btn" data-id="{{ $instructor->id }}"
+                                                data-bs-toggle="modal" data-bs-target="#modal-{{ $instructor->id }}">
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                         </div>
@@ -149,6 +151,55 @@
             </ul>
         </nav>
     </div>
+
+    @foreach ($dataInstructor as $instructor)
+        <!-- Modal with unique ID for each instructor -->
+        <div class="modal fade" id="modal-{{ $instructor->id }}" tabindex="-1"
+            aria-labelledby="modalLabel{{ $instructor->id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel{{ $instructor->id }}">Edit Instruktur</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{-- {{ route('admin.dataPengajar.edit') }} --}}
+                        <form action="" method="POST">
+                            @csrf
+                            <input type="hidden" class="form-control" id="id" name="id"
+                                        value="{{ $instructor->id }}">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12 mb-3">
+                                    <label for="fullName" class="form-label">Full name</label>
+                                    <input type="text" class="form-control" id="fullName" name="full_name"
+                                        value="{{ $instructor->name }}" readonly>
+                                </div>
+                                <div class="col-lg-6 col-md-12 mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        value="{{ $instructor->email }}" readonly>
+                                </div>
+                                <div class="col-lg-6 col-md-12 mb-3">
+                                    <label for="education" class="form-label">Education</label>
+                                    <input type="text" class="form-control" id="education" name="education"
+                                        value="{{ $instructor->education }}">
+                                </div>
+                                <div class="col-lg-6 col-md-12 mb-3">
+                                    <label for="experience" class="form-label">Experience</label>
+                                    <input type="text" class="form-control" id="experience" name="experience"
+                                        value="{{ $instructor->experience }}">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -219,6 +270,14 @@
                 }
             });
         });
+
+        $(document).on('click', '.edit-btn', function() {
+            var instructorId = $(this).data('id');
+
+            // Additional logic if needed
+            console.log("Editing instructor with ID:", instructorId);
+        });
+
         // Function to validate password strength
         function validatePassword(password) {
             const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}:";'?/.,]).{8,}$/;

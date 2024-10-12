@@ -45,16 +45,11 @@
 
     // Menutup menu jika klik di luar
     document.addEventListener("click", (event) => {
-        console.log("klik bos");
 
         const isClickInsideNav = navMenu.contains(event.target);
         const isClickToggleBtn = mobileNavToggleBtn.contains(event.target);
 
-        console.log("isClickInsideNav:", isClickInsideNav);
-        console.log("isClickToggleBtn:", isClickToggleBtn);
-
         if (!isClickInsideNav && !isClickToggleBtn) {
-            console.log("Closing menu");
             document.body.classList.remove("mobile-nav-active");
             mobileNavToggleBtn.classList.remove("bi-x");
             mobileNavToggleBtn.classList.add("bi-list");

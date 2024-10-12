@@ -107,7 +107,8 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 
     // admin data
     Route::delete('data-admin/{id}', [AdminController::class, 'deleteAdmin'])->name('admin.dataAdmin.delete');
-    Route::delete('data-pengajar/{id}', [AdminController::class, 'deletePengajar'])->name('admin.dataPengajar.delete');
+    Route::delete('data-pengajar/{id}/delete', [AdminController::class, 'deletePengajar'])->name('admin.dataPengajar.delete');
+    Route::delete('data-pengajar/{id}/edit', [AdminController::class, 'editPengajar'])->name('admin.dataPengajar.edit');
     Route::post('data-admin/admin/post', [AuthController::class, 'regisAdmin'])->name('admin.dataAdmin.regis');
     Route::post('data-admin/instructor/post', [AuthController::class, 'regisInstructor'])->name('admin.dataInstructor.regis');
 
@@ -155,7 +156,7 @@ Route::prefix('instructor')->middleware(['whoami:instructor'])->group(function (
     Route::get('/profile', [InstructorController::class, 'profile'])->name('profile');
 
 
-     // CourseForum 
+     // CourseForum
      Route::get('/diskusi-kelas/{courseId}', [InstructorController::class, 'diskusi'])->name('instructor.diskusi');
 
      Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('instructor.diskusi.post.reply');
