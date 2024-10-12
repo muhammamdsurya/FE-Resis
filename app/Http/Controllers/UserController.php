@@ -295,6 +295,7 @@ class UserController extends Controller
                     $courseContentQuiz = $this->userCourseCtrl->userCourseContentQuiz($userCourse->id, $selectedCourseContentId);
                     $courseContent->quiz = $courseContentQuiz;
 
+                   if($courseContent->quiz->questions){
                     foreach ($courseContent->quiz->questions as $index => $question) {
                         $question->index = $index;
                         foreach ($question->Options as $indexOption => $option) {
@@ -312,6 +313,7 @@ class UserController extends Controller
                     shuffle($courseContent->quiz->questions);
 
                     $courseContent->quiz->questionTotal =  count($courseContent->quiz->questions);
+                   }
                 }
             }
         }

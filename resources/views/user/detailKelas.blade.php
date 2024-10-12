@@ -84,7 +84,8 @@
                                             allowfullscreen></iframe>
                                     </div>
                                 @elseif($courseContent->content_type == $quizType)
-                                    @foreach ($courseContent->quiz->questions as $quiz)
+                                 @if(isset($courseContent->quiz->questions))
+                                 @foreach ($courseContent->quiz->questions as $quiz)
                                         <div class="card p-4 mb-3 shadow-sm border-0 rounded-lg">
                                             <!-- Added shadow, no border, and rounded corners -->
                                             <p class="font-weight-bold h5 mb-3">{{ $quiz->question }}</p>
@@ -110,6 +111,7 @@
                                     <div class="d-flex justify-content-end mt-3"> <!-- Right-aligns the button -->
                                         <button id="submitBtnQuiz" class="btn btn-success">Kirim Jawaban</button>
                                     </div>
+                                 @endif
                                 @endif
                             </div>
                             <div class="mt-5">
@@ -257,6 +259,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @if (isset($courseContent))
         @if ($courseContent->content_type == $quizType)
+        @if(isset($courseContent->quiz->questions))
+
             <script>
                 var questionOptionsSelected = []
 
@@ -344,6 +348,7 @@
                     });
                 })
             </script>
+        @endif
         @endif
     @endif
 
