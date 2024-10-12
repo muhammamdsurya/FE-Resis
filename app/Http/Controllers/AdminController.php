@@ -363,7 +363,7 @@ class AdminController extends Controller
         return response()->json(['message' => $response->body()], 500);
     }
 
-    public function deletePengaar($id)
+    public function deletePengajar($id)
     {
 
         $apiUrl = $this->apiUrl . 'instructors/' . $id;
@@ -376,6 +376,60 @@ class AdminController extends Controller
         }
 
         return response()->json(['message' => $response->body()], 500);
+    }
+
+    public function editPengajar(Request $request, $id)
+    {
+
+        $apiSession = session('api_session');
+
+        // Definisikan headers
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Cookie' => 'session=' . $apiSession
+        ];
+
+        // Definisikan body sebagai array associative
+        $body = [
+            'id' => $request->id,
+            'education' => $request->education,
+            'experience' => $request->experience,
+        ];
+
+        $apiUrl = $this->apiUrl . 'instructors/auth/data' . $id;
+
+        // Kirimkan request PUT
+        $response = Http::withHeaders($headers)->put($apiUrl, $body);
+
+        if ($response->successful()) {
+            // Check if a new thumbnail was uploaded
+            // Prepare for the image upload (second API request)
+            if ($request->hasFile('image')) {
+                // Use the attach method for a multipart/form-data request
+                $imageResponse = Http::withHeaders(['Cookie' => 'session=' . $apiSession])
+                    ->attach(
+                        'thumbnail_image',
+                        fopen($request->file('image')->getRealPath(), 'r'), // Open the file for reading
+                        $request->file('image')->getClientOriginalName() // Get the original filename
+                    )
+                    ->put($this->apiUrl . "courses/" . $id . "/thumbnail");
+
+                // Check if the image upload was successful
+
+                // Cek respons API
+                if ($imageResponse->successful()) {
+                    // Debugging: Print response body to see if image upload succeeded
+                    return back()->with('message', 'Data dan thumbnail berhasil diperbarui.');
+                } else {
+                    return back()->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
+                }
+            }
+            // If no thumbnail is uploaded, only update the body
+            return back()->with('message', 'Data berhasil diperbarui.');
+        } else {
+            // Handle case where the bundle data update fails
+            return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
+        }
     }
 
 
