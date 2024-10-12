@@ -51,6 +51,10 @@
         .rating input:checked + label ~ label {
             color: #f39c12; /* Warna kuning */
         }
+
+        #showStar{
+            color: #f39c12;
+        }
     </style>
 
 
@@ -163,6 +167,7 @@
                             <a href="/user/diskusi-kelas/{{ $course->course->id }}"
                                 class="list-group-item list-group-item-action">Diskusi</a>
                         </div>
+                        @if(!isset($userRate))
                         <div class="form-floating mt-2 mb-1">
                                         <input type="text" class="form-control" id="descRate" placeholder="Review">
                                         <label for="descRate">Review</label>
@@ -179,6 +184,15 @@
                             <input type="radio" id="star1" name="rating" value="1">
                             <label for="star1" title="1 stars"><i class="fas fa-star"></i></label>
                         </div>
+                        @else
+                                 <div class="form-floating mt-2 mb-1">
+                                        <input type="text" class="form-control" value="{{$userRate->description}}" placeholder="Review" disabled>
+                                        <label for="descRate">Review</label>
+                                    </div>
+                                    <p style=" font-size: 1.5rem;">
+                                        <i class="fas fa-star" id="showStar"></i> {{$userRate->rating}}
+                                    </p>
+                        @endif
                         
 
 
@@ -190,6 +204,7 @@
         </section>
     </div>
 
+    @if(!isset($userRate))
     <script>
         const ratingInputs = document.querySelectorAll('input[name="rating"]');
 
@@ -218,19 +233,21 @@
                         contentType: false,
                         success: function(response) {
 
-                            window.location.reload();
-                       
-                            Swal.fire({
-                                    icon: 'success',
-                                    title: response.data.title,
-                                    text: response.data.content
-                                })
                             
+                            Swal.fire({
+                                icon: 'success',
+                                title: response.data.title,
+                                text: response.data.content
+                            })
+                            
+                            window.location.reload();
                         },
                         error: function(xhr, status, error) {
 
                             console.error('Error:', error); // Log the error for debugging
                             console.error('Response Text:', xhr.responseText);
+                            console.error('Response Text:', xhr.responseJSON.message);
+                            console.error('Response Text:', xhr.responseJSON.error);
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                         }
                     });
@@ -238,6 +255,7 @@
             });
         });
     </script>
+    @endif
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

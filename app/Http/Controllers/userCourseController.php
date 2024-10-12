@@ -60,6 +60,12 @@ class userCourseController extends Controller
 
         return  $response->status();
     }
+    function getRate($studentId)  {
+        $response = Http::withApiSession()->get($this->apiUrl. 'user/'.$this->user['id'].'/courses/'.$studentId.'/rating');
+
+        return  json_decode(json_encode($response->json()));
+    }
+
 
 
     public function rate( Request $request) {
@@ -73,29 +79,29 @@ class userCourseController extends Controller
         $description =$request->get('description') ?? '';
         $studentId =$request->get('studentId');
 
-        // $response = Http::withApiSession()->post($this->apiUrl. 'user/'.$this->user['id'].'/courses/'.$studentId.'/rating', [
-        //   'rating' =>   $rating,
-        //   'description'=>$description
-        // ]);
+        $response = Http::withApiSession()->post($this->apiUrl. 'user/'.$this->user['id'].'/courses/'.$studentId.'/rating', [
+          'rating' =>   intval($rating),
+          'description'=>$description
+        ]);
 
 
 
-        // if ($response->successful()) {
-        //     return response()->json([
-        //         'success' => true,
-        //         'data' => [
-        //             'title' =>'Berhasil',
-        //             'content' => 'Berhasil memberi rating'
-        //         ],
-        //         'dataServer' => json_decode(json_encode($response->json()))
-        //     ], $response->status());
-        // } else {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => $response->body()  ,
-        //         'error' => $response->json()
-        //     ], $response->status());
-        // }
+        if ($response->successful()) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'title' =>'Berhasil',
+                    'content' => 'Berhasil memberi rating'
+                ],
+                'dataServer' => json_decode(json_encode($response->json()))
+            ], $response->status());
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => $response->body()  ,
+                'error' => $response->json()
+            ], $response->status());
+        }
     }
     public function answerQuiz($contentId, Request $request) {
         $answer =$request->get('answers');

@@ -211,6 +211,7 @@ class UserController extends Controller
         }
         $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
         $userCourse = $this->userCourseCtrl->getCoursesUserByCourseId($courseId);
+        $userRate = $this->userCourseCtrl->getRate($userCourse->id);
         $courseContents = $this->userCourseCtrl->getCoursesUserContents($userCourse->id);
         if (isset($courseContents)) {
             // MENDAPATKAN DETAILNYA
@@ -315,12 +316,16 @@ class UserController extends Controller
             }
         }
 
+        
+
+        // dd($userRate);
 
 
 
         return view('user.detailKelas', [
             "title" => $title,
             "courseId" => $courseId,
+            "userRate" => $userRate,
             "selectedCourseContentId" => $selectedCourseContentId,
             "previousCourseContentId" => $previousCourseContentId,
             "nextCourseContentId" => $nextCourseContentId,
