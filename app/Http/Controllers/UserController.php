@@ -318,8 +318,6 @@ class UserController extends Controller
 
         
 
-        dd($courseContent);
-
 
 
         return view('user.detailKelas', [

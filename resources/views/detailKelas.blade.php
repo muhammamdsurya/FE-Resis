@@ -363,6 +363,7 @@
                 if('{{$alreadyCourse}}' == 'y'){
                     window.location.href='/user/detail-kelas/{{ $course->course->id }}'
                 }else{
+                    createOverlay("Proses Membeli Kelas...");
                     $.ajax({
                         url: '{{ route('user.checkout') }}', // Direct API endpoint
                         method: 'POST',
@@ -377,6 +378,7 @@
                         success: function(response) {
     
                             // Swal.fire('Berhasil', response.data.message, 'success');
+                            gOverlay.hide()
                             if (response.data.midtrans_snap_token) {
                                 const midTransSnap = new MidTransSnap(response.data.midtrans_snap_token);
                                 midTransSnap.pay();
@@ -384,6 +386,7 @@
     
                         },
                         error: function(xhr, status, error) {
+                            gOverlay.hide()
                             console.error('Error:', error); // Log the error for debugging
                             console.error('Response Text:', xhr.responseText);
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');
