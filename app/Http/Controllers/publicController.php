@@ -24,16 +24,16 @@ class publicController extends Controller
     {
         $title = 'Kelas';
         $page = $request->input('page', 1); // Default to page 1 if not set
-          // Ambil nilai input 'q' dari form
-          $query = $request->input('q');
+        // Ambil nilai input 'q' dari form
+        $query = $request->input('q');
 
-          if ($query) {
-              // Fetch courses dengan parameter query
-              $courses = $this->courseCtrl->getSearchCourse(urlencode($query));
-          } else {
-              // Fetch courses tanpa pencarian
-              $courses = $this->courseCtrl->getAllCourse($page);
-            }
+        if ($query) {
+            // Fetch courses dengan parameter query
+            $courses = $this->courseCtrl->getSearchCourse(urlencode($query));
+        } else {
+            // Fetch courses tanpa pencarian
+            $courses = $this->courseCtrl->getAllCourse($page);
+        }
 
         // Fetch paginated courses
 
@@ -51,7 +51,7 @@ class publicController extends Controller
     {
 
         $title = 'Kelas';
-        $course = $this->courseCtrl->getCourseById($courseId);  
+        $course = $this->courseCtrl->getCourseById($courseId);
         $content = $this->courseCtrl->getCourseContentById($courseId);
 
         $isLogin = 'n';
@@ -61,7 +61,7 @@ class publicController extends Controller
             $userCourses = $this->userCourseCtrl->getCoursesUserByCourseId($courseId);
 
             // dd($userCourses);
-            if($userCourses){
+            if ($userCourses) {
                 $alreadyCourse = 'y';
             }
         } else {
@@ -103,11 +103,14 @@ class publicController extends Controller
         $title = 'Paket Bundling';
         $bundling = $this->courseCtrl->getBundlingById($courseId);
         $contentsId = $this->courseCtrl->getBundlingContentById($courseId);
-
         $contents = [];
-        foreach ($contentsId as $row) {
-            $contents[] = $this->courseCtrl->getCourseById($row);
+
+        if ($contentsId) {
+            foreach ($contentsId as $row) {
+                $contents[] = $this->courseCtrl->getCourseById($row);
+            }
         }
+
 
         $isLogin = 'n';
         if ($this->user != null) {

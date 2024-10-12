@@ -115,13 +115,15 @@
                                 {{ number_format($bundling->price, 0, ',', '.') }}
                             </h5>
                             @if ($role == 'admin')
-                            <a href="{{ route('detail-bundling', ['id' => $bundling->id]) }}"  class="btn btn-success btn-lg mt-3 px-4">Edit kelas</a>
-                            @elseif ( $role == 'instructor')
-                            <a href="{{ route('instructor.detail-kelas', ['id' => $course->course->id]) }}"  class="btn btn-success btn-lg mt-3 px-4">Lihat kelas</a>
+                                <a href="{{ route('detail-bundling', ['id' => $bundling->id]) }}"
+                                    class="btn btn-success btn-lg mt-3 px-4">Edit kelas</a>
+                            @elseif ($role == 'instructor')
+                                <a href="{{ route('instructor.detail-kelas', ['id' => $course->course->id]) }}"
+                                    class="btn btn-success btn-lg mt-3 px-4">Lihat kelas</a>
                             @else
-                            <button id="checkoutBtn" class="btn btn-success btn-lg mt-3 px-4">
-                                Belajar Sekarang
-                            </button>
+                                <button id="checkoutBtn" class="btn btn-success btn-lg mt-3 px-4">
+                                    Belajar Sekarang
+                                </button>
                             @endif
 
                         </div>
@@ -168,7 +170,8 @@
                                                 style="object-fit: cover; margin-top: 15px;">
                                             <div class="card-body text-center">
                                                 <h6 class="fw-bold">{{ $instructorName }}</h6> <!-- Use the variable -->
-                                                <p class="text-muted mb-1">{{ $content->instructor->instructor->education }}
+                                                <p class="text-muted mb-1">
+                                                    {{ $content->instructor->instructor->education }}
                                                 </p>
                                                 <span
                                                     class="badge bg-primary">{{ $content->instructor->instructor->experience }}</span>
@@ -237,48 +240,52 @@
 
         <div class="container">
             <div class="row gx-2 gy-4">
-                @foreach ($contents as $content)
-                    <div class="col-lg-3 col-md-4 col-6 mb-4" data-aos="fade-up" data-aos-delay="100">
-                        <a href="{{ route('detail.kelas', ['courseId' => $content->course->id]) }}"
-                            class="text-decoration-none">
-                            <div class="card h-100 shadow border-0 position-relative"
-                                style="border-radius: 15px; overflow: hidden">
-                                <img src="{{ $content->course->thumbnail_image ?? 'assets/img/values-1.png' }}"
-                                    class="card-img-top" alt="{{ $content->course->name }}"
-                                    style="height: 100px; object-fit: cover; border-radius: 15px 15px 0 0;" />
-                                <div class="card-body">
-                                    <div class="header-card d-flex justify-content-between mb-2">
-                                        <p class="text-muted fs-6 mb-0">
-                                            <i class="bi bi-star-fill text-warning me-1"></i> 4.9
-                                        </p>
-                                        <p class="badge bg-primary fs-6 mb-0">
+                @if ($contents)
+                    @foreach ($contents as $content)
+                        <div class="col-lg-3 col-md-4 col-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                            <a href="{{ route('detail.kelas', ['courseId' => $content->course->id]) }}"
+                                class="text-decoration-none">
+                                <div class="card h-100 shadow border-0 position-relative"
+                                    style="border-radius: 15px; overflow: hidden">
+                                    <img src="{{ $content->course->thumbnail_image ?? 'assets/img/values-1.png' }}"
+                                        class="card-img-top" alt="{{ $content->course->name }}"
+                                        style="height: 100px; object-fit: cover; border-radius: 15px 15px 0 0;" />
+                                    <div class="card-body">
+                                        <div class="header-card d-flex justify-content-between mb-2">
+                                            <p class="text-muted fs-6 mb-0">
+                                                <i class="bi bi-star-fill text-warning me-1"></i> 4.9
+                                            </p>
+                                            <p class="badge bg-primary fs-6 mb-0">
+                                                {{ $content->course->name }}
+                                            </p>
+                                        </div>
+
+                                        <h5 class="card-title fw-bold text-dark">
                                             {{ $content->course->name }}
+                                        </h5>
+                                        <h6 class="text-success fw-bold mb-3">
+                                            Rp {{ number_format($content->course->price, 0, ',', '.') }}
+                                        </h6>
+                                        <p class="card-text text-muted mb-0">
+                                            {{ Str::limit($content->course->description, 10) }} {{-- Limit description to avoid overflow --}}
                                         </p>
                                     </div>
 
-                                    <h5 class="card-title fw-bold text-dark">
-                                        {{ $content->course->name }}
-                                    </h5>
-                                    <h6 class="text-success fw-bold mb-3">
-                                        Rp {{ number_format($content->course->price, 0, ',', '.') }}
-                                    </h6>
-                                    <p class="card-text text-muted mb-0">
-                                        {{ Str::limit($content->course->description, 10) }} {{-- Limit description to avoid overflow --}}
-                                    </p>
-                                </div>
-
-                                <!-- Dark overlay on hover -->
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="text-center">
-                                        <p class="text-white fw-bold fs-5">
-                                            Lihat Detail
-                                        </p>
+                                    <!-- Dark overlay on hover -->
+                                    <div class="overlay d-flex align-items-center justify-content-center">
+                                        <div class="text-center">
+                                            <p class="text-white fw-bold fs-5">
+                                                Lihat Detail
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
+                            </a>
+                        </div>
+                    @endforeach
+                @else
+                    <p>Belum ada kelas</p>
+                @endif
             </div>
         </div>
     </section>

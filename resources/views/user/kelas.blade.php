@@ -47,7 +47,7 @@
                                         alt="..." style="height: 150px; object-fit: cover;">
                                     <div class="card-body">
                                         <div class="header-card d-flex justify-content-between mb-3">
-                                            <p class="text-muted fs-6 mb-0"><i class="fas fa-star text-warning me-1"></i>4.9
+                                            <p class="text-muted fs-6 mb-0"><i class="fas fa-star text-warning me-1"></i>{{$userCourse->course->rating}}
                                             </p>
                                             <p class="badge bg-primary fs-6 mb-0">{{ $userCourse->course_category->name }}
                                             </p>
