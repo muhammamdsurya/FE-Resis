@@ -4,6 +4,72 @@
 @section('content')
     <div class="card">
         <div class="card-body">
+            @if ($type === 'super')
+                <!-- Tombol untuk menampilkan modal -->
+                <a href="#" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#registrationModal">
+                    <i class="fas fa-plus d-inline me-1"></i> <!-- Ikon untuk mobile -->
+                    <span class="d-lg-inline">Tambah Instruktur</span> <!-- Teks untuk desktop -->
+                </a>
+            @endif
+
+            <!-- Modal untuk Registrasi -->
+            <div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="registrationModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="registrationModalLabel">Tambah Instruktur</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="registrationForm" method="POST" action="{{ route('admin.dataInstructor.regis') }}">
+                                @csrf
+                                <!-- Name input -->
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="full_name" placeholder="Nama lengkap"
+                                        name="full_name" required>
+                                    <label for="name">Nama Lengkap</label>
+                                    <p class="small" id="nameError" style="color: red; display: none;">Masukan nama
+                                        lengkap</p>
+                                </div>
+
+                                <!-- Email input -->
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control" id="email" placeholder="email"
+                                        name="email" required>
+                                    <label for="email">Email</label>
+                                    <p class="small" id="emailError" style="color: red; display: none;">Gunakan alamat
+                                        email aktif anda</p>
+                                </div>
+
+                                <!-- Password input -->
+                                <div class="form-floating">
+                                    <input type="password" class="form-control" id="password" placeholder="Password"
+                                        name="password" required>
+                                    <label for="password">Password</label>
+                                    <p class="small">Gunakan minimal 8 karakter dengan kombinasi huruf, angka &
+                                        karakter</p>
+                                    <p id="passwordError" class="small text-danger" style="display: none;">Password
+                                        harus mengandung minimal 8 karakter, 1 huruf besar, 1 angka & 1 Karakter</p>
+                                </div>
+
+                                <div class="form-floating">
+                                    <input type="password" class="form-control" id="password_confirm"
+                                        placeholder="Konfirmasi Password" name="password_confirm" required>
+                                    <label for="confirmPassword">Konfirmasi Password</label>
+                                    <p id="passwordMismatch" class="small text-danger" style="display: none;">Password
+                                        tidak cocok</p>
+                                </div>
+
+                                <div class="text-center text-lg-start mt-4 pt-2">
+                                    <button type="submit" class="btn btn-primary w-100"
+                                        id="submitRegistration">Registrasi</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <a href="{{ route('admin.dataInstructor.download') }}" class="btn btn-primary mb-3">
                 <i class="fas fa-download d-inline me-1 "></i> <!-- Ikon untuk mobile -->
                 <span class="d-lg-inline">Download CSV</span> <!-- Teks untuk desktop -->
@@ -16,6 +82,7 @@
                             <th>Email</th>
                             <th>Education</th>
                             <th>Experience</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -26,6 +93,20 @@
                                 <td>{{ $instructor->email }}</td>
                                 <td>{{ $instructor->education }}</td>
                                 <td>{{ $instructor->experience }}</td>
+                                <td class="d-flex justify-content-center">
+                                    @if ($type === 'super')
+                                        <div class="d-flex justify-content-center">
+                                            <!-- Delete Button -->
+                                            <button class="btn btn-danger btn-sm me-2">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            <!-- Edit Button -->
+                                            <button class="btn btn-success btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -68,4 +149,123 @@
             </ul>
         </nav>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            @if (session('message'))
+                Swal.fire({
+                    title: 'Success!',
+                    text: '{{ session('message') }}',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    title: 'Error!',
+                    text: '{{ session('error') }}',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+        });
+        $(document).on('click', '.delete-btn', function() {
+            const token = $("meta[name='csrf-token']").attr("content");
+            var instructorId = $(this).data('id');
+
+            Swal.fire({
+                title: 'Konfirmasi Hapus',
+                text: "Apakah Anda yakin ingin menghapus instruktur ini?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Ganti URL berikut dengan URL yang sesuai untuk menghapus admin
+                    $.ajax({
+                        url: '/admin/data-pengajar/' +
+                            instructorId, // Misal menggunakan route yang sesuai
+                        type: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': token
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            // Tindakan setelah penghapusan berhasil
+                            Swal.fire(
+                                'Terhapus!',
+                                'Instruktur telah dihapus.',
+                                'success'
+                            );
+                            // Reload halaman atau update tabel jika diperlukan
+                            location.reload();
+                        },
+                        error: function(xhr, status, error) {
+                            console.log(xhr
+                                .responseText); // Menampilkan detail kesalahan di konsol
+                            Swal.fire(
+                                'Gagal!',
+                                'Terjadi kesalahan saat menghapus admin. ' + (xhr
+                                    .responseJSON?.message || ''),
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+        // Function to validate password strength
+        function validatePassword(password) {
+            const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}:";'?/.,]).{8,}$/;
+            return passwordPattern.test(password);
+        }
+
+        // Password and confirmation fields
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('password_confirm');
+        const passwordError = document.getElementById('passwordError');
+        const passwordMismatch = document.getElementById('passwordMismatch');
+
+        // Add event listener for password input
+        passwordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+
+            // Validate password format
+            if (validatePassword(password)) {
+                passwordError.style.display = 'none';
+            } else {
+                passwordError.style.display = 'block';
+            }
+        });
+
+        // Add event listener for password confirmation
+        confirmPasswordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            // Check if passwords match
+            if (password === confirmPassword) {
+                passwordMismatch.style.display = 'none';
+            } else {
+                passwordMismatch.style.display = 'block';
+            }
+        });
+
+        // Form submission validation
+        const registrationForm = document.getElementById('registrationForm');
+        registrationForm.addEventListener('submit', function(event) {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            // Prevent form submission if the password is invalid or passwords don't match
+            if (!validatePassword(password) || password !== confirmPassword) {
+                event.preventDefault();
+            }
+        });
+    </script>
 @endsection

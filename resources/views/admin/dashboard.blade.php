@@ -177,7 +177,7 @@
                         </select>
                     </div>
                     <div class="chart" style="position: relative; height: 300px;">
-                        <canvas id="monthChart" width="400" height="200"></canvas>
+                        <canvas id="monthChart" width="400" height="400"></canvas>
                     </div>
                 </div><!-- /.card-body -->
             </div>
@@ -197,6 +197,7 @@
 
 
     <script>
+
         let fewmonthChart;
         const fewmonthChartCanvas = document.getElementById('fewmonthChart');
 
@@ -213,7 +214,7 @@
         $(document).ready(function() {
             // Automatically load the chart with 6 months data on page load
             fetchSalesData(6); // Assuming '6' means the first 6 months
-            fetchMonthData(6); // Assuming '6' means the first 6 months
+            fetchMonthData(10); // Assuming '6' means the first 6 months
         });
 
 
@@ -227,23 +228,34 @@
                         month: month
                     },
                     success: function(response) {
+                        console.log('Canvas:', monthChartCanvas);
+                        updateMonthChart(response.months, month);
                         // Check if total_sales exists and is not undefined
                         if (response.months.total_sales !== undefined) {
                             $('#totalSales').html(response.months.total_sales);
-                            $('#totalIncome').html(response.months.total_income);
+                            // Mengambil total_income dari response
+                            var totalIncome = response.months.total_income;
+
+
+                            // Mengformat totalIncome ke format Rupiah tanpa desimal
+                            var formattedIncome = new Intl.NumberFormat('id-ID', {
+                                style: 'currency',
+                                currency: 'IDR',
+                                minimumFractionDigits: 0, // Tidak ada angka desimal
+                                maximumFractionDigits: 0 // Tidak ada angka desimal
+                            }).format(totalIncome);
+                            // Menampilkan formattedIncome di elemen dengan id totalIncome
+                            $('#totalIncome').html(formattedIncome);
                         } else {
                             $('#totalSales').html('0');
                             $('#totalIncome').html('Rp 0');
                         }
-                        updateMonthChart(response, month);
 
                     },
                     error: function(xhr, status, error) {
                         console.error('Error fetching sales data:', error);
                     }
                 });
-            } else {
-
             }
         }
 
@@ -257,19 +269,10 @@
                         few_months: fewMonths
                     },
                     success: function(response) {
-                        console.log('few month :');
-                        console.log(response);
                         updateChart(response
-                            .total_sales, fewMonths); // Pass the total_sales array to the updateChart function
+                            .total_sales, fewMonths);
 
-                        // Update the salesData div with the returned data
-                        //         $('#salesData').html(`
-                    //     <h3>Total Penjualan untuk Rentang Bulan Terpilih: ${data.Sales}</h3>
-                    //     <h3>Total Penjualan (Bulan Spesifik, Januari): ${data.totalSales}</h3>
-                    //     <h3>Rentang Bulan Terpilih: ${fewMonths}</h3>
-                    // `);
-                        // You can also update your chart here if necessary
-                        // updateChart(data.salesData); // Pass the sales data to the updateChart function
+
                     },
                     error: function(xhr, status, error) {
                         console.error('Error fetching sales data:', error);
@@ -282,10 +285,10 @@
         }
 
         function updateMonthChart(salesData, month) {
+            const totalSales = [salesData.total_sales]; // Ubah menjadi array
+            const totalIncome = [salesData.total_income]; // Ubah menjadi array
 
-            // Extract months and total_sales from the response
-            const totalSales = salesData.total_sales; // Get the corresponding sales for each month
-            const totalIncome = salesData.total_income; // Get the corresponding sales for each month
+            console.log(totalSales, totalIncome);
 
             // Destroy the existing chart if it exists
             if (monthChart) {
@@ -342,6 +345,8 @@
             const months = salesData.map(item => item.month); // Get the 6 months
             const totalSales = salesData.map(item => item.total_sales); // Get the corresponding sales for each month
             const totalIncome = salesData.map(item => item.total_income); // Get the corresponding sales for each month
+
+            console.log(totalSales, totalIncome);
 
             // Destroy the existing chart if it exists
             if (fewmonthChart) {

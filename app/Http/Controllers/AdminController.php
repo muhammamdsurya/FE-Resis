@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
+use DateTimeZone;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -32,7 +34,6 @@ class AdminController extends Controller
         $api = $this->apiUrl . 'admin/auth/data/' . $id;
 
         $response = Http::withApiSession()->get($api);
-
 
         return $response->json();
     }
@@ -76,6 +77,101 @@ class AdminController extends Controller
         }
     }
 
+    // route admin.data
+    public function completeData()
+    {
+        // Ambil person_id dari sesi
+        $personId = session('person_id');
+
+        return view('admin.completeData', [
+            "title" => 'Isi Data',
+            "id" => $personId, // Kirim person_id dari sesi
+            "full_name" => $this->user['full_name'],
+        ]);
+    }
+
+    public function completePost(Request $request)
+    {
+
+        try {
+            // Construct the API URL for updating the category
+            $apiUrl = $this->apiUrl . 'admin/auth/data';
+
+            // Make the PUT request to the external API
+            $response = Http::withApiSession()->post($apiUrl, [
+                // Assuming you need to send data with the request, include it here
+                'person_id' => $request->id,
+                'type' => $request->type,
+            ]);
+
+
+            if ($response->successful()) {
+                // Jika permintaan berhasil, arahkan ke view dengan pesan sukses
+                return redirect()->route('data.admin')->with([
+                    'message' => 'Data berhasil ditambahkan.',
+                    'details' => null
+                ]);
+            } else {
+                // Tangani respons gagal dari API dan arahkan ke view dengan pesan error dan rincian
+                return redirect()->route('admin.data')->with([
+                    'error' => "gagal bro" . $response->body(),
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Handle any exceptions
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function completeDataPengajar()
+    {
+        // Ambil person_id dari sesi
+        $personId = session('person_id');
+
+        return view('admin.completeDataPengajar', [
+            "title" => 'Isi Data',
+            "id" => $personId, // Kirim person_id dari sesi
+            "full_name" => $this->user['full_name'],
+        ]);
+    }
+
+    public function completePostPengajar(Request $request)
+    {
+
+        try {
+            // Construct the API URL for updating the category
+            $apiUrl = $this->apiUrl . 'instructors/auth/data';
+
+            // Make the PUT request to the external API
+            $response = Http::withApiSession()->post($apiUrl, [
+                // Assuming you need to send data with the request, include it here
+                'person_id' => $request->id,
+                'education' => $request->education,
+                'experience' => $request->experience,
+            ]);
+
+
+            if ($response->successful()) {
+                // Jika permintaan berhasil, arahkan ke view dengan pesan sukses
+                return redirect()->route('data.pengajar')->with([
+                    'message' => 'Data berhasil ditambahkan.',
+                    'details' => null
+                ]);
+            } else {
+                // Tangani respons gagal dari API dan arahkan ke view dengan pesan error dan rincian
+                return redirect()->route('instructor.data')->with([
+                    'error' => "gagal bro" . $response->body(),
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Handle any exceptions
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 
     public function dashboard(Request $request)
     {
@@ -233,12 +329,10 @@ class AdminController extends Controller
 
     public function dataAdmin(Request $request)
     {
-
         $title = 'Data Admin';
 
         $dataAdmin = $this->fetchApiData($this->apiUrl . 'statistics/admins');
         $detailData = $this->getDetailData();
-
 
         // Lakukan operasi lain yang diperlukan
         return view('admin.dataAdmin', [
@@ -253,6 +347,38 @@ class AdminController extends Controller
         ]);
     }
 
+
+    public function deleteAdmin($id)
+    {
+
+        $apiUrl = $this->apiUrl . 'admin/' . $id;
+
+        $response = Http::withApiSession()->delete($apiUrl);
+
+        if ($response->successful()) {
+            // Optionally, add logic to remove the item from your database
+            return response()->json(['message' => 'Admin Berhasil Dihapus.'], 200);
+        }
+
+        return response()->json(['message' => $response->body()], 500);
+    }
+
+    public function deletePengaar($id)
+    {
+
+        $apiUrl = $this->apiUrl . 'instructors/' . $id;
+
+        $response = Http::withApiSession()->delete($apiUrl);
+
+        if ($response->successful()) {
+            // Optionally, add logic to remove the item from your database
+            return response()->json(['message' => 'Instruktur Berhasil Dihapus.'], 200);
+        }
+
+        return response()->json(['message' => $response->body()], 500);
+    }
+
+
     public function getInstructor()
     {
         $response = Http::withApiSession()->get($this->apiUrl . 'courses/instructors');
@@ -263,6 +389,7 @@ class AdminController extends Controller
     {
         $title = 'Data Pengajar';
 
+        $detailData = $this->getDetailData();
         $dataInstructor = $this->fetchApiData($this->apiUrl . 'statistics/instructors');
 
 
@@ -271,6 +398,7 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
+            "type" => $detailData['type'],
             "dataInstructor" => json_decode(json_encode($dataInstructor['data'])),
             "pagination" => $dataInstructor['pagination'], // Assuming your API returns pagination information in the response
 
@@ -421,9 +549,9 @@ class AdminController extends Controller
     {
         $title = 'Diskusi';
 
-        
+
         $courseForums = $this->courseForumCtrl->courseForums($courseId);
-        foreach ($courseForums->data as $courseForum){
+        foreach ($courseForums->data as $courseForum) {
             $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
         };
         // dd($courseForums);

@@ -104,7 +104,7 @@
                     <div class="col-lg-3 col-md-4 col-6">
                         <a href="{{ route('detail-kelas', ['id' => $item['id']]) }}" class="text-decoration-none">
                             <div class="card shadow-sm border-light rounded">
-                                <img src="{{ asset('assets/img/values-1.png') }}" class="card-img-top"
+                                <img src="{{ $item['thumbnail_image'] }}" class="card-img-top"
                                     alt="{{ $item['name'] }}" style="height: 200px; object-fit: cover;">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -488,8 +488,8 @@
 
             $('#categoriesBody').on('click', '.delete-btn', function(e) {
                 e.preventDefault();
-                const categoryId = $(this).data('id');
                 const token = $("meta[name='csrf-token']").attr("content");
+                const categoryId = $(this).data('id');
 
                 Swal.fire({
                     text: "Apa kamu yakin menghapus ini?",

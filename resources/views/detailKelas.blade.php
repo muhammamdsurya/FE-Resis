@@ -98,7 +98,14 @@
                         <div class="card-body text-center py-4">
                             <h5 class="card-title text-success fw-bold fs-3">Rp.
                                 {{ number_format($course->course->price, 0, ',', '.') }}</h5>
-                            <button id="checkoutBtn" class="btn btn-success btn-lg mt-3 px-4">Belajar Sekarang</button>
+                                @if ($role == 'admin')
+                                <a href="{{ route('detail-kelas', ['id' => $course->course->id]) }}"  class="btn btn-success btn-lg mt-3 px-4">Edit kelas</a>
+                                @elseif ( $role == 'instructor')
+                                <a href="{{ route('instructor.detail-kelas', ['id' => $course->course->id]) }}"  class="btn btn-success btn-lg mt-3 px-4">Lihat kelas</a>
+                                @else
+                                <button id="checkoutBtn" class="btn btn-success btn-lg mt-3 px-4">Belajar Sekarang</button>
+
+                                @endif
                         </div>
                         <hr class="border border-dark border-1 opacity-20 mx-4">
                         <div class="card-body d-grid gap-2 py-3 px-4">

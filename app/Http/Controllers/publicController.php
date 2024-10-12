@@ -64,6 +64,7 @@ class publicController extends Controller
         return view('detailKelas', [
             "title" => $title,
             'course' => $course,
+            'role' => $this->user['role'],
             'content' => $content,
             'isLogin' => $isLogin
         ]);
@@ -111,6 +112,7 @@ class publicController extends Controller
         return view('detailBundling', [
             "title" => $title,
             'bundling' => $bundling,
+            'role' => $this->user['role'],
             'contents' => $contents, // Pastikan ini adalah array
             'isLogin' => $isLogin
         ]);

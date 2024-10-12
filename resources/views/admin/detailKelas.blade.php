@@ -223,7 +223,7 @@
                                     <div class="col-md-6">
                                         <div class="form-floating">
                                             <input type="text" class="form-control" id="contentName"
-                                                placeholder="Judul Materi" name="name" required >
+                                                placeholder="Judul Materi" name="name" required>
                                             <label for="contentName">Judul Materi</label>
                                         </div>
                                     </div>
@@ -241,10 +241,10 @@
 
                                 <div id="video-type">
                                     <!-- <div class="form-floating mb-3">
-                                        <input type="text" class="form-control" id="contentVideoArticleContent"
-                                            placeholder="name@example.com" name="name">
-                                        <label for="contentVideoArticleContent">Judul Konten</label>
-                                    </div> -->
+                                                        <input type="text" class="form-control" id="contentVideoArticleContent"
+                                                            placeholder="name@example.com" name="name">
+                                                        <label for="contentVideoArticleContent">Judul Konten</label>
+                                                    </div> -->
 
                                     <!-- Video Type Content Section -->
                                     <div id="video-type" class="content-type-section">
@@ -269,7 +269,8 @@
                                         <!-- Display Existing Video Content -->
                                         @if ($selectedCourseContentId != '' && $courseContent->content_type == $videoType)
                                             <div class="ratio ratio-16x9 mb-3">
-                                                <video controls poster="{{ $courseContent->video->thumbnail_image }}">
+                                                <video controls poster="{{ $courseContent->video->thumbnail_image }}"
+                                                    controls controlsList="nodownload" oncontextmenu="return false;">
                                                     <source src="{{ $courseContent->video->video_file }}"
                                                         type="video/mp4">
                                                     Your browser does not support the video tag.
@@ -291,43 +292,43 @@
                                             </div>
                                         </div>
                                     </div>
-                                    </div>
+                                </div>
 
-                                    <div id="additional-src-type">
-                                        @if ($selectedCourseContentId != '')
-                                            @if ($courseContent->content_type == $addSrcType)
-                                                <div class="ratio ratio-16x9 mb-3">
-                                                    <iframe src="{{ $courseContent->src->file }}" frameborder="0"
-                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                        allowfullscreen></iframe>
-                                                </div>
-                                            @endif
+                                <div id="additional-src-type">
+                                    @if ($selectedCourseContentId != '')
+                                        @if ($courseContent->content_type == $addSrcType)
+                                            <div class="ratio ratio-16x9 mb-3">
+                                                <iframe src="{{ $courseContent->src->file }}" frameborder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowfullscreen></iframe>
+                                            </div>
                                         @endif
-                                        <div class="form-floating mb-3">
-                                            <input type="file" class="form-control" id="contentAddSrcFile"
-                                                name="name">
-                                            <label for="contentAddSrcFile">Source Tambahan</label>
-                                        </div>
+                                    @endif
+                                    <div class="form-floating mb-3">
+                                        <input type="file" class="form-control" id="contentAddSrcFile"
+                                            name="name">
+                                        <label for="contentAddSrcFile">Source Tambahan</label>
+                                    </div>
+                                </div>
+
+                                <div id="quiz-type">
+                                    <div class="form-floating mb-3">
+                                        <input type="number" class="form-control" id="contentPassingGrade"
+                                            placeholder="name@example.com" name="name">
+                                        <label for="contentPassingGrade">Nilai Kelulusan</label>
                                     </div>
 
-                                    <div id="quiz-type">
-                                        <div class="form-floating mb-3">
-                                            <input type="number" class="form-control" id="contentPassingGrade"
-                                                placeholder="name@example.com" name="name">
-                                            <label for="contentPassingGrade">Nilai Kelulusan</label>
-                                        </div>
+                                    <button type="button" class="btn btn-primary d-flex align-items-center mb-2"
+                                        onclick="showQuizModal(null)">
+                                        <i class="fas fa-plus mr-1"></i>Tambah Quiz
+                                    </button>
+                                    <div class="quizzesList">
 
-                                        <button type="button" class="btn btn-primary d-flex align-items-center mb-2"
-                                            onclick="showQuizModal(null)">
-                                            <i class="fas fa-plus mr-1"></i>Tambah Quiz
-                                        </button>
-                                        <div class="quizzesList">
-
-                                        </div>
                                     </div>
+                                </div>
 
 
-                              
+
                                 <div class="mt-5">
                                     <button
                                         onclick="window.location.href='?selectedCourseContentId={{ $previousCourseContentId }}'"
@@ -359,67 +360,70 @@
     <!-- Modal Kelas -->
     <div class="modal fade" id="modal-quiz" tabindex="-1" aria-labelledby="modal-defaultLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="modal-defaultLabel">Tambah Pertanyaan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-4">
                     <form method="POST" action="{{ route('kelas.post') }}">
                         @csrf
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="questionQuizInput"
-                                        placeholder="Class Name" name="name">
-                                    <label for="questionQuizInput">Pertanyaan</label>
-                                </div>
-                            </div>
-
-
-                            <div class="col">
-                                <div class="form-floating mb-3">
-                                    <select class="form-control" id="answerQuizInput">
-                                    </select>
-                                    <label for="answerQuizInput">Jawaban</label>
-                                </div>
-                            </div>
-
-
+                        <!-- Pertanyaan Input -->
+                        <div class="form-floating mb-4">
+                            <input type="text" class="form-control" id="questionQuizInput" placeholder="Pertanyaan"
+                                name="name" required>
+                            <label for="questionQuizInput">Pertanyaan</label>
                         </div>
 
+                        <!-- Jawaban Select -->
+                        <div class="form-floating mb-4">
+                            <select class="form-control" id="answerQuizInput" required>
+                                <option value="">Pilih Jawaban</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                            <label for="answerQuizInput">Jawaban</label>
+                        </div>
 
-
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-floating mb-3">
+                        <!-- Option Input and Button -->
+                        <div class="row mb-3">
+                            <div class="col-8">
+                                <div class="form-floating mb-0">
                                     <input type="text" class="form-control" id="optionQuizInput"
-                                        placeholder="Class Name" name="name">
+                                        placeholder="Tambah Opsi" name="option">
                                     <label for="optionQuizInput">Opsi</label>
                                 </div>
                             </div>
-
-                            <div class="col">
-                                <button type="button" class="btn btn-primary d-flex align-items-center"
-                                    onclick="addOptionQuiz(null)">
-                                    <i class="fas fa-plus mr-1"></i>Tambah Opsi
+                            <div class="col-4 d-flex align-items-center">
+                                <button type="button"
+                                    class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+                                    onclick="addOptionQuiz()">
+                                    <i class="fas fa-plus me-2"></i> Tambah Opsi
                                 </button>
                             </div>
                         </div>
 
-                        <div class="option-quiz-add">
-
+                        <!-- Option Quiz Add Section -->
+                        <div class="option-quiz-add mb-3 p-3 border rounded" style="min-height: 100px;">
+                            <!-- Dynamically added options will appear here -->
                         </div>
 
-
-                        <button onclick="submitOptionQuiz()" type="button" class="btn btn-primary">Submit</button>
+                        <!-- Submit Button -->
+                        <div class="text-end">
+                            <button type="button" onclick="submitOptionQuiz()"
+                                class="btn btn-success d-flex align-items-center justify-content-center">
+                                <i class="fas fa-check me-2"></i> Submit
+                            </button>
+                        </div>
                     </form>
-
-
                 </div>
             </div>
         </div>
     </div>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
@@ -436,7 +440,7 @@
                 minimumFractionDigits: 0
             }).format(value);
             e.target.value = value.replace('Rp', '')
-        .trim(); // Menghilangkan 'Rp' dan hanya menampilkan angka dengan titik
+                .trim(); // Menghilangkan 'Rp' dan hanya menampilkan angka dengan titik
         });
 
         // Pastikan format angka asli diambil saat form dikirim
@@ -552,7 +556,7 @@
         var optionQuiz = []
 
         var quizees = []
-       
+
 
         function showQuizzes() {
             $('.quizzesList').empty();
@@ -565,10 +569,16 @@
                     }).join('') +
                     `
                      <div class="row">
-                                        <div class="col">
-                                                <button class="btn btn-danger ml-3" onclick="deleteQuiz(${index})">Hapus</button>
-                                                <button onclick="showQuizModal(${index})" class="btn btn-primary">Edit</button>
-                                        </div>
+                                         <div class="d-flex justify-content-end">
+                <button class="btn btn-danger btn-sm me-2" onclick="deleteQuiz(${index})">
+                    <i class="fas fa-trash d-md-inline"></i> <!-- Show icon only on medium and larger screens -->
+                    <span class="d-none d-md-inline">Hapus</span> <!-- Show text only on medium and larger screens -->
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="showQuizModal(${index})">
+                    <i class="fas fa-edit d-md-inline"></i> <!-- Show icon only on medium and larger screens -->
+                    <span class="d-none d-md-inline">Edit</span> <!-- Show text only on medium and larger screens -->
+                </button>
+            </div>
                                     </div>
                 </div>`;
 
@@ -701,43 +711,75 @@
             }
         }
 
-        function addOptionQuiz(index) {
-            if (index != null) {
-                $('#optionQuizInput').val(optionQuiz[index])
+        function addOptionQuiz(index = null) {
+            // Get the value from the input field
+            const val = $('#optionQuizInput').val().trim(); // Trim whitespace to avoid empty values
+
+            // Validate the input: if it's empty, stop the function
+            if (val === '') {
+                Swal.fire({
+                    title: 'Ooops!',
+                    text: 'Opsi tidak boleh kosong!',
+                    icon: 'warning',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                return;
             }
 
-            val = $('#optionQuizInput').val()
-            if (val == '') {
-                return
-            }
-
+            // Check if we are editing an option (index is not null)
             if (index != null) {
-                optionQuiz[index] = val
+                // Update the existing option
+                optionQuiz[index] = val;
             } else {
-                optionQuiz.push(val)
+                // Check for duplicates before adding a new option
+                if (optionQuiz.includes(val)) {
+                    Swal.fire({
+                        title: 'Duplikat!',
+                        text: 'Opsi ini sudah ada dalam daftar.',
+                        icon: 'warning',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    return;
+                }
+                // Add new option to the array
+                optionQuiz.push(val);
             }
 
-            $('#optionQuizInput').val('')
-            showOptionQuiz()
+            // Clear the input field for future inputs
+            $('#optionQuizInput').val('');
+
+            // Update the display of options
+            showOptionQuiz();
         }
 
-        function showOptionQuiz() {
-            // option-quiz-add
-            $('.option-quiz-add').empty();
-            optionQuiz.forEach((option, index) => {
-                var quizItem = `<div class='card p-4'>
-                    <p>${option}</p>` +
-                    `
-                     <div class="row">
-                                        <div class="col">
-                                                <button class="btn btn-danger ml-3" onclick="deleteOptionQuiz(${index})">Hapus</button>
-                                        </div>
-                                    </div>
-                </div>`;
 
+        function showOptionQuiz() {
+            // Clear the existing options
+            $('.option-quiz-add').empty();
+
+            // Iterate through each option and create a card for it
+            optionQuiz.forEach((option, index) => {
+                const quizItem = `
+            <div class='card mb-3 shadow-sm'>
+                <div class='card-body'>
+                    <div class='d-flex justify-content-between align-items-center'>
+                        <p class='mb-0'>${option}</p>
+                        <button class="btn btn-danger btn-sm" onclick="deleteOptionQuiz(${index})">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+                // Append the new card to the container
                 $('.option-quiz-add').append(quizItem);
-            })
-            mergeAnswerAndOption()
+            });
+
+            // Call a function to merge answers and options if needed
+            mergeAnswerAndOption();
         }
 
 
@@ -781,7 +823,7 @@
     </script>
 
 
-@if($selectedCourseContentId != '')
+    @if ($selectedCourseContentId != '')
         <script>
             $('#contentName').val('{{ $courseContent->content_title }}')
             $('#contentType').val('{{ $courseContent->content_type }}').change()
@@ -855,9 +897,9 @@
                     const passingGrade = $('#contentPassingGrade').val()
 
                     formData.append('quizzes', JSON.stringify({
-                                    passing_grade: +passingGrade,
-                                    quizz_content: quizees
-                                }))
+                        passing_grade: +passingGrade,
+                        quizz_content: quizees
+                    }))
                 }
 
 

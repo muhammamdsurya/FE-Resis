@@ -2,6 +2,7 @@
 
 
 @section('content')
+
     <div class="container">
         <div class="row ">
             <div class="col-lg-6 col-md-8">
@@ -63,11 +64,11 @@
                 });
             @endif
 
-            @if (session('error'))
+            @if (session('warning'))
                 Swal.fire({
-                    title: 'Error!',
-                    text: '{{ session('error') }}',
-                    icon: 'error',
+                    title: 'Ooops!',
+                    text: '{{ session('warning') }}',
+                    icon: 'warning',
                     confirmButtonText: 'OK'
                 });
             @endif

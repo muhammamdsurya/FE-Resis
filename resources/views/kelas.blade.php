@@ -18,7 +18,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.5) !important;
             opacity: 0;
             transition: opacity 0.3s ease;
             border-radius: 15px;

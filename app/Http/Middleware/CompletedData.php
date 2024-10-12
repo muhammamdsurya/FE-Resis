@@ -29,7 +29,7 @@ class CompletedData
             if ($request->routeIs('user.data') || $request->routeIs('complete.post')) {
                 return $next($request);
             }
-            return redirect()->route('user.data')->with('error', 'Isi data terlebih dahulu.');
+            return redirect()->route('user.data')->with('warning', 'Isi data terlebih dahulu.');
         }
 
         if ($response->ok()) {
@@ -44,7 +44,7 @@ class CompletedData
                     return $next($request);
                 }
 
-                return redirect()->route('user.data')->with('error', 'Please complete your data first.');
+                return redirect()->route('user.data')->with('warning', 'Lengkapi semua data');
             }
         } else {
             // Tangani jika API gagal

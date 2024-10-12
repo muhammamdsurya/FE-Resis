@@ -73,6 +73,7 @@ class InstructorController extends Controller
             "title" => $title,
             "full_name" => $profileData['full_name'],
             "email" => $profileData['email'],
+            "role" => $profileData['role'],
             "photo_profile" => $profileData['photo_profile'],
             "created_at" => $profileData['created_at'],
             "activated_at" => $profileData['activated_at'],
@@ -102,6 +103,7 @@ class InstructorController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "courses" => $courses,
+            "role" => $this->user['role'],
             "pagination" => $courses['pagination'] ?? null,
             ]);
     }
@@ -138,7 +140,7 @@ class InstructorController extends Controller
 
 
                 // NEXT PREVIOUS
-            
+
                   // Initialize next and previous IDs
             if ($selectedIndex !== -1) { // Ensure we found the selected index
                 if ($selectedIndex > 0) {

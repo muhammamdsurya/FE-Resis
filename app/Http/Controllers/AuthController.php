@@ -49,7 +49,6 @@ class AuthController extends Controller
 
             // get the cookies from the response
             $cookies = $response->cookies();
-            Log::info('Login API Response Cookies: ', ['cookies' => $cookies]);
             // get the session cookie
             $sessionCookie = null;
             foreach ($cookies as $cookie) {
@@ -65,7 +64,7 @@ class AuthController extends Controller
                 $sessionValue = explode('=', $parts[0])[1];
 
                 // set the session session to laravel session
-                session(['api_session' => $sessionValue . "="]);
+                session(['api_session' => $sessionValue]);
             }
 
             // Validate the response structure
@@ -86,7 +85,7 @@ class AuthController extends Controller
             return redirect()->route('user.dashboard');
         } else {
             // Jika gagal, kembalikan ke halaman login dengan pesan error
-            return redirect()->route('login')->with('error', 'Login gagal. Coba lagi.');
+            return redirect()->route('login')->with('error', 'Username atau Password salah');
         }
     }
 
@@ -95,6 +94,29 @@ class AuthController extends Controller
         return view('admin.login');
     }
 
+    public function regisAdmin(Request $request)
+    {
+
+        // Hit API users/auth/register
+        $response = Http::withApiSession()->post($this->apiUrl . 'admin/auth/register', [
+            'email' => $request->email,
+            'password' => $request->password,
+            'password_confirm' => $request->password_confirm,
+            'full_name' => $request->full_name,
+        ]);
+
+        // Cek jika API mengembalikan sukses
+        if ($response->successful()) {
+            $personId = $response->json('id');
+            // Simpan person_id ke sesi
+            session(['person_id' => $personId]);
+
+            // Redirect ke halaman yang diinginkan
+            return redirect()->route('admin.data');
+        } else {
+            return redirect()->route('data.admin')->with('error', $response->body());
+        }
+    }
 
     public function loginAdmin(Request $request)
     {
@@ -155,7 +177,7 @@ class AuthController extends Controller
             return redirect()->route('admin.dashboard');
         } else {
             // Jika gagal, kembalikan ke halaman login dengan pesan error
-            return redirect()->route('login.Admin')->with('error', 'Login gagal. Coba lagi.');
+            return redirect()->route('login.admin')->with('error', 'Username atau Password salah');
         }
     }
 
@@ -164,6 +186,30 @@ class AuthController extends Controller
         return view('instructor.login');
     }
 
+    public function regisInstructor(Request $request)
+    {
+
+        // Hit API users/auth/register
+        $response = Http::withApiSession()->post($this->apiUrl . 'instructors/auth/register', [
+            'email' => $request->email,
+            'password' => $request->password,
+            'password_confirm' => $request->password_confirm,
+            'full_name' => $request->full_name,
+        ]);
+
+        // Cek jika API mengembalikan sukses
+        if ($response->successful()) {
+
+            $personId = $response->json('id');
+            // Simpan person_id ke sesi
+            session(['person_id' => $personId]);
+
+            // Redirect ke halaman yang diinginkan
+            return redirect()->route('instructor.data');
+        } else {
+            return redirect()->route('instructor.data')->with('error', $response->body());
+        }
+    }
     public function loginInstructor(Request $request)
     {
         // Validasi request
@@ -222,7 +268,7 @@ class AuthController extends Controller
             return redirect()->route('instructor.dashboard');
         } else {
             // Jika gagal, kembalikan ke halaman login dengan pesan error
-            return redirect()->route('login.instructor')->with('error', 'Login gagal. Coba lagi.');
+            return redirect()->route('login.instructor')->with('error', 'Username atau Password salah');
         }
     }
 
@@ -339,7 +385,8 @@ class AuthController extends Controller
     {
         return view('activation');
     }
-    public function getResetPublic() {
+    public function getResetPublic()
+    {
         return view('resetForm');
     }
     public function activation(Request $request, $token)
@@ -371,10 +418,10 @@ class AuthController extends Controller
 
         // Cek jika token dan email ada dalam query string
         if ($response->successful()) {
-            return response()->json(['message' => 'Email reset password telah dikirim!']);
+            return response()->json(['status' => 'success' ,'message' => 'Cek email untuk reset password. Link untuk reset password hanya aktif dalam 5 menit']);
         } else {
             return response()->json([
-                'status_code' => $response->status(),
+                'status' => 'error',
                 'message' => $response->body(),
             ], $response->status());
         }
@@ -382,7 +429,7 @@ class AuthController extends Controller
 
     public function putPassword(Request $request, $token)
     {
-        $url = $this->apiUrl . 'auth/password/' . $token ;
+        $url = $this->apiUrl . 'auth/password/' . $token;
 
         // $responseVerify = Http::get($verify, $request->email);
         // if($responseVerify->status() == 400){
@@ -393,22 +440,21 @@ class AuthController extends Controller
 
         $headers = [
             'Content-Type' => 'application/json',
-          ];
-          $body = [
+        ];
+        $body = [
             "email" => $request->email,
             "new_password" => $request->new_password,
             "new_password_confirm" => $request->new_password_confirm
-          ];
+        ];
 
         $response = Http::withHeaders($headers)->put($url, $body);
         // Cek jika token dan email ada dalam query string
         if ($response->successful()) {
-            return response()->json(['message' => 'Password berhasil diubah!']);
+            return response()->json(['status' => 'success' , 'message' => 'Password berhasil diubah!']);
         } else {
             return response()->json([
-                'status_code' => $response->status(),
+                'status' => 'error',
                 'message' => $response->body(),
-                'body_req'  => $body
             ], $response->status());
         }
     }

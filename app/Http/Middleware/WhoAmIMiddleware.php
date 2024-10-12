@@ -23,9 +23,8 @@ class WhoAmIMiddleware
 
         try {
             $apiSession = session('api_session');
-
             if (!$apiSession) {
-                throw new \Exception('Session token is missing.');
+                throw new \Exception('Silahkan login kembali');
             }
 
             // Log the session cookie that will be sent
@@ -38,7 +37,6 @@ class WhoAmIMiddleware
 
             // Log the response headers for debugging
             Log::info('Response Headers:', ['headers' => $response->headers()]);
-
 
             if ($response->successful()) {
                 $userData = $response->json();
@@ -70,10 +68,10 @@ class WhoAmIMiddleware
                 // Determine the redirect route based on the user's role
                 switch ($role) {
                     case 'admin':
-                        $route = 'loginAdmin';
+                        $route = 'show.login.admin';
                         break;
                     case 'instructor':
-                        $route = 'loginInstructor';
+                        $route = 'show.login.instructor';
                         break;
                     default:
                         $route = 'login';
@@ -84,7 +82,7 @@ class WhoAmIMiddleware
         } catch (\Exception $e) {
             // Clear the session and redirect to login
             session()->forget('api_session');
-            return redirect()->route('login')->with('error', 'Oops!.');
+            return redirect()->route('login')->with('error', $e->getMessage());
         }
     }
 }

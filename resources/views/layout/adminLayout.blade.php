@@ -8,9 +8,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin Dashboard</title>
 
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Theme style -->
@@ -26,7 +23,7 @@
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
 
-        <x-navAdmin></x-navAdmin>
+        <x-navUser></x-navUser>
 
 
         <!-- Content Wrapper. Contains page content -->

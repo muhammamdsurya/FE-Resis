@@ -1,34 +1,34 @@
-class MidTransSnap{
-
+class MidTransSnap {
     constructor(snapToken) {
         this.snapToken = snapToken;
     }
 
-     pay(){
+    pay() {
         snap.pay(this.snapToken, {
-            onSuccess: function(result){
+            onSuccess: function (result) {
+                Swal.fire("Success!", "Pembayaran Berhasil!", "success").then(
+                    () => {
+                        // Redirect to the desired route after the success message
+                        window.location.href = "/user/kelas";
+                    }
+                );
+            },
+            onPending: function (result) {
                 Swal.fire(
-                            'Sucess!',
-                            'Pembayaran Berhasil !.',
-                            'success'
-                        );
+                    "Pending",
+                    "Pembayaran kamu dalam status pending",
+                    "question"
+                ).then(() => {
+                    // Redirect to the desired route after the success message
+                    window.location.href = "/user/transaksi";
+                });
             },
-            onPending: function(result){
-                Swal.fire({
-                    title: "Pending?",
-                    text: "Pembayaran kamu dalam status pending",
-                    icon: "question"
-                    });
+            onError: function (result) {
+                Swal.fire("Oops!", "Pembayaran Gagal!", "error").then(() => {
+                    // Redirect to the desired route after the success message
+                    window.location.href = "/user/transaksi";
+                });
             },
-            onError: function(result){
-                Swal.fire(
-                            'Oops...',
-                            'Pembayaran Gagal !.',
-                            'error'
-                        );
-            },
-            // onClose: function(){}
-            })
+        });
     }
-   
 }

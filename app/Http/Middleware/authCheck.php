@@ -17,7 +17,7 @@ class authCheck
     {
         $role = $request->session()->get('role');
             if ($role === 'admin') {
-                return redirect()->route('dashboardAdmin');
+                return redirect()->route('admin.dashboard');
             } else if ($role === 'user') {
                 return redirect()->route('user.dashboard');
             }

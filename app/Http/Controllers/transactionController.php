@@ -32,7 +32,7 @@ class transactionController extends Controller
                  ];
 
                  $body =[
-                    'course_id' => $courseId
+                    'course_bundle_id' => $courseId
                  ];
 
                  $response = Http::withHeaders($headers)->post($this->apiUrl. 'courses/transactions/token', $body);

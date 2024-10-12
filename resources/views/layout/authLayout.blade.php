@@ -28,6 +28,10 @@
 
     <!-- Main CSS File -->
     <link href="{{ asset('assets/css/main.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
 
 </head>
 
@@ -38,9 +42,5 @@
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
 </body>
-
-<script>
-
-</script>
 
 </html>

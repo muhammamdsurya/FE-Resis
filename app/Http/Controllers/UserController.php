@@ -82,9 +82,13 @@ class UserController extends Controller
     {
         $title = 'Dashboard';
 
+        $userCourses = $this->userCourseCtrl->getCoursesUser();
+
+
         return view('user.dashboard', [
             "title" => $title,
             "id" => $this->user['id'],
+            'userCourses' => $userCourses,
             "full_name" => $this->user['full_name'],
         ]);
     }
@@ -121,8 +125,7 @@ class UserController extends Controller
 
     public function kelas()
     {
-        $title = 'Data Kelas';
-
+        $title = 'Kelasku';
         $userCourses = $this->userCourseCtrl->getCoursesUser();
 
         // dd($userCourses);
@@ -191,7 +194,6 @@ class UserController extends Controller
     }
     public function detailKelas(Request $request, $courseId)
     {
-        $title = 'Detail Kelas';
 
         $course = $this->fetchApiData($this->apiUrl . 'courses/' . $courseId);
         if (isset($course)) {
@@ -222,9 +224,6 @@ class UserController extends Controller
         $videoType = 'video';
         $addSrcType = 'additional_source';
         $quizType = 'quiz';
-
-
-
 
 
 

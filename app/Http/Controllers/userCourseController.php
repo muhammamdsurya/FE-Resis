@@ -23,6 +23,7 @@ class userCourseController extends Controller
 
         return  json_decode(json_encode($response->json()));
     }
+
     function getCoursesUserByCourseId($courseId)  {
         $response = Http::withApiSession()->get($this->apiUrl. 'user/'.$this->user['id'].'/courses/student/'.$courseId);
 
@@ -65,7 +66,7 @@ class userCourseController extends Controller
           'answers' =>   json_decode($answer)
         ]);
 
-           
+
 
         if ($response->successful()) {
             return response()->json([
@@ -80,11 +81,11 @@ class userCourseController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $response->body()  ,
-                'error' => $response->json() 
+                'error' => $response->json()
             ], $response->status());
         }
     }
 
 
-    
+
 }

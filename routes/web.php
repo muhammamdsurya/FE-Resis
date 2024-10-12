@@ -40,7 +40,7 @@ Route::get('/privacy-policy', function () {
     return view('policy');
 })->name('policy');
 
-Route::get('/register', function(){
+Route::get('/register', function () {
     return view('register');
 })->name('show'); // Menampilkan form registrasi
 
@@ -49,6 +49,13 @@ Route::get('/register', function(){
 // Grup rute untuk rute-rute yang terkait dengan admin
 
 Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
+    // data register
+    Route::get('/', [AdminController::class, 'completeData'])->name('admin.data');
+    Route::post('/complete-data', [AdminController::class, 'completePost'])->name('complete.post.admin');
+    Route::get('/regis/data-pengajar', [AdminController::class, 'completeDataPengajar'])->name('instructor.data');
+    Route::post('/complete-data/pengajar', [AdminController::class, 'completePostPengajar'])->name('complete.post.pengajar');
+
+
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/dashboard/sales', [AdminController::class, 'getSalesData'])->name('admin.sales');
     Route::get('/dashboard/sales/month', [AdminController::class, 'getSalesMonth'])->name('admin.salesMonth');
@@ -91,15 +98,20 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::delete('/data/kelas/{courseId}/content/{id}/delete', [courseContentController::class, 'deleteContent'])->name('admin.kelas.content.delete');
 
     // download
-    Route::get('/admin/data-admin/download', [AdminController::class, 'downloadAdmin'])->name('admin.dataAdmin.download');
-    Route::get('/admin/data-user/download', [AdminController::class, 'downloadUser'])->name('admin.dataUser.download');
-    Route::get('/admin/data-instructor/download', [AdminController::class, 'downloadInstructor'])->name('admin.dataInstructor.download');
-    Route::get('/admin/data-sales/download', [AdminController::class, 'downloadSales'])->name('admin.dataSales.download');
-    Route::get('/admin/data-course/download', [AdminController::class, 'downloadCourse'])->name('admin.dataCourse.download');
-    Route::get('/admin/data-bundling/download', [AdminController::class, 'downloadCourseBundling'])->name('admin.dataBundling.download');
+    Route::get('data-admin/download', [AdminController::class, 'downloadAdmin'])->name('admin.dataAdmin.download');
+    Route::get('data-user/download', [AdminController::class, 'downloadUser'])->name('admin.dataUser.download');
+    Route::get('data-instructor/download', [AdminController::class, 'downloadInstructor'])->name('admin.dataInstructor.download');
+    Route::get('data-sales/download', [AdminController::class, 'downloadSales'])->name('admin.dataSales.download');
+    Route::get('data-course/download', [AdminController::class, 'downloadCourse'])->name('admin.dataCourse.download');
+    Route::get('data-bundling/download', [AdminController::class, 'downloadCourseBundling'])->name('admin.dataBundling.download');
 
+    // admin data
+    Route::delete('data-admin/{id}', [AdminController::class, 'deleteAdmin'])->name('admin.dataAdmin.delete');
+    Route::delete('data-pengajar/{id}', [AdminController::class, 'deletePengajar'])->name('admin.dataPengajar.delete');
+    Route::post('data-admin/admin/post', [AuthController::class, 'regisAdmin'])->name('admin.dataAdmin.regis');
+    Route::post('data-admin/instructor/post', [AuthController::class, 'regisInstructor'])->name('admin.dataInstructor.regis');
 
-    // CourseForum 
+    // CourseForum
     Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('admin.diskusi.post.reply');
 });
 
@@ -118,6 +130,7 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::get('/detail-kelas/{courseId}', [UserController::class, 'detailKelas'])->name('user.detail');
 
     Route::post('/complete-data', [UserDataController::class, 'completePost'])->name('complete.post');
+
     Route::post('/update-data', [UserDataController::class, 'updateData'])->name('update.data');
 
     Route::post('/diskusi-kelas/{courseId}', [courseForumController::class, 'createCourseForum'])->name('diskusi.post');
@@ -148,8 +161,8 @@ Route::prefix('')->middleware('redirect.if.authenticated:user')->group(function 
 
 // Rute untuk login admin
 Route::prefix('admin')->middleware('redirect.if.authenticated:admin')->group(function () {
-    Route::get('/login', [AuthController::class, 'showAdmin'])->name('login.Admin'); // Menampilkan form login admin
-    Route::post('/login', [AuthController::class, 'loginAdmin']); // Proses login admin
+    Route::get('/login', [AuthController::class, 'showAdmin'])->name('show.login.admin'); // Menampilkan form login admin
+    Route::post('/login', [AuthController::class, 'loginAdmin'])->name('login.admin'); // Proses login admin
 });
 
 // Rute untuk login instrutor

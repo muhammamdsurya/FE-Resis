@@ -9,8 +9,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}" class="img-circle elevation-2"
-                    alt="User Image">
+                <i class="fas fa-user-circle text-white elevation-2" alt="User Icon" style="font-size: 30px;"></i>
             </div>
             <div class="info">
                 <a href="/instructor/profile" style="text-decoration: none;" class="d-block">{{ $name }}</a>
@@ -24,7 +23,8 @@
                 <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                 <li class="nav-item">
-                    <a href="/instructor/dashboard" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <a href="/instructor/dashboard"
+                        class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Beranda
