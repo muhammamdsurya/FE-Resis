@@ -318,7 +318,7 @@ class UserController extends Controller
 
         
 
-        // dd($userRate);
+        dd($courseContent);
 
 
 
