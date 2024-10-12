@@ -76,11 +76,16 @@
                             <img src="{{ asset ('assets/img/testimonials/testimonials-1.jpg')}}" width=50 height=50 class="rounded-circle mr-3" alt="User">
                             <div>
                                 <h6>{{$reply->name}}</h6>
+                                @if(isset($reply->course_forum_question_reply->reply_image))
+                                <img src="{{$reply->course_forum_question_reply->reply_image}}" alt="">
+                                @endif
                                 <p>{!! $reply->course_forum_question_reply->reply !!}</p>
 
+                                @if($reply->course_forum_question_reply->person_id == $id)
                                 <div>
                                    <button type="button" onclick="deleteForumReply('{{$courseForum->course_forum_question->id}}', '{{$reply->course_forum_question_reply->id}}')" class="btn btn-danger mt-2">Hapus <i class="fas fa-trash"></i></button>
                                    </div>
+                                @endif
                             </div>
                            
                         </div>
@@ -226,6 +231,7 @@ function deleteForumReply(forumId, replyId){
                         contentType: false,
                         success: function(response) {
                             Swal.fire('Berhasil', 'Berhasil menghapus balasan diskusi', 'success');
+                            window.location.reload()
                         },
                         error: function(xhr, status, error) {
                             console.log( xhr.responseJSON.message);
