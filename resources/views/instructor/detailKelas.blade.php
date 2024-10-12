@@ -31,9 +31,19 @@
                                             allowfullscreen ></iframe>
                                     </div>
                     @elseif($courseContent->content_type == $quizType)
-                            @foreach($courseContent->quiz->questions as $quiz)
-                                <div class="card p-4 mb-2">
+                            @foreach($courseContent->quiz->questions ?? [] as $quiz)
+                            <div class="card p-4 mb-2">
                                     <p>{{$quiz->question}}</p>
+                                    <form>
+                                        @foreach($quiz->options as $indexOption   =>  $option)
+                                            <div>
+                                                <label>
+                                                    <input type="radio" disabled  {{$quiz->answer == $indexOption ? 'checked' : ''}}>
+                                                    {{$option}}
+                                                </label>
+                                            </div>
+                                        @endforeach
+                                        </form>
                                 </div>
                             @endforeach                   
                    @endif
@@ -56,7 +66,7 @@
                 <button onclick='window.location.href="?selectedCourseContentId={{$courseContentSidebar->id}}" ' class="list-group-item list-group-item-action {{$selectedCourseContentId == $courseContentSidebar->id? 'list-group-item-primary' : ''}}" >{{$courseContentSidebar->content_title}}</button>
                 @endforeach
                 @endif
-                <a href="/user/diskusi-kelas/{{$course->course->id}}" class="list-group-item list-group-item-action ">Diskusi</a>
+                <a href="/instructor/diskusi-kelas/{{$course->course->id}}" class="list-group-item list-group-item-action ">Diskusi</a>
             </div>
         </div>
     </div>

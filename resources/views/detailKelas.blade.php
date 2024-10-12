@@ -337,32 +337,37 @@
 
             if ('{{ $isLogin }}' == 'y') {
 
-                $.ajax({
-                    url: '{{ route('user.checkout') }}', // Direct API endpoint
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                            .getAttribute('content')
-                    },
-                    data: JSON.stringify({
-                        courseId: '{{ $course->course->id }}'
-                    }),
-                    success: function(response) {
-
-                        // Swal.fire('Berhasil', response.data.message, 'success');
-                        if (response.data.midtrans_snap_token) {
-                            const midTransSnap = new MidTransSnap(response.data.midtrans_snap_token);
-                            midTransSnap.pay();
+                if('{{$alreadyCourse}}' == 'y'){
+                    window.location.href='/user/detail-kelas/{{ $course->course->id }}'
+                }else{
+                    $.ajax({
+                        url: '{{ route('user.checkout') }}', // Direct API endpoint
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content')
+                        },
+                        data: JSON.stringify({
+                            courseId: '{{ $course->course->id }}'
+                        }),
+                        success: function(response) {
+    
+                            // Swal.fire('Berhasil', response.data.message, 'success');
+                            if (response.data.midtrans_snap_token) {
+                                const midTransSnap = new MidTransSnap(response.data.midtrans_snap_token);
+                                midTransSnap.pay();
+                            }
+    
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error); // Log the error for debugging
+                            console.error('Response Text:', xhr.responseText);
+                            Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                         }
+                    });
+                }
 
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error); // Log the error for debugging
-                        console.error('Response Text:', xhr.responseText);
-                        Swal.fire('Oops!', xhr.responseJSON.message, 'error');
-                    }
-                });
 
             } else {
                 document.location.href = '/login'

@@ -409,6 +409,8 @@ class AdminController extends Controller
         $courseForums = $this->courseForumCtrl->courseForums($courseId);
         foreach ($courseForums->data as $courseForum){
             $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
+
+            $courseForum->reply_count = count($courseForum->course_forum_reply);
         };
         // dd($courseForums);
         // Lakukan operasi lain yang diperlukan

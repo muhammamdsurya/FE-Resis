@@ -165,7 +165,7 @@
                                     <i class="fas fa-plus mr-2"></i>Tambah Materi Baru
                                 </a>
                                 <!-- Discussion link -->
-                                <a href="/user/diskusi" class="list-group-item list-group-item-action">Diskusi</a>
+                                <a href="/admin/diskusi-kelas/{{$course->course->id}}" class="list-group-item list-group-item-action">Diskusi</a>
                             </div>
                         </div>
 
@@ -195,7 +195,7 @@
                                         </a>
                                     </li>
                                     <!-- Discussion link -->
-                                    <li><a class="dropdown-item" href="/user/diskusi">Diskusi</a></li>
+                                    <li><a class="dropdown-item" href="/admin/diskusi-kelas/{{$course->course->id}}">Diskusi</a></li>
                                 </ul>
                             </div>
                         </div>
