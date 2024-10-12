@@ -2,11 +2,20 @@
 @section('title', $title)
 
 @section('content')
+
+    <style>
+
+    </style>
     <div class="container">
         <div class="row">
             <div class="col-lg-6">
                 <div class="card">
                     <div class="card-body">
+
+                        <div class="text-center mb-3">
+                            <span class="badge bg-primary fs-5">Tipe : {{ $role }}</span>
+                        </div>
+
                         <div class="mb-3">
                             <label for="fullName" class="form-label">Nama Lengkap</label>
                             <input type="text" class="form-control" id="fullName" value="{{ $full_name }}" disabled>
@@ -27,13 +36,9 @@
                             <input type="text" class="form-control" id="updatedAt" value="{{ $updated_at }}" disabled>
                         </div>
 
-                        <div class="text-center mt-3">
-                            <h5 class="bold">Role: {{ $role }}</h5>
-                        </div>
-
                         <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-success px-4 mb-3">Edit</button>
-                            <button type="submit" class="btn btn-danger px-4 mb-3 btn-logout">Logout</button>
+                            <button type="submit" class="btn btn-warning mb-3 reset-password">Reset Pasword</button>
+                            <button type="submit" class="btn btn-danger mb-3 btn-logout">Logout</button>
                         </div>
                     </div>
                 </div>
@@ -44,6 +49,45 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.reset-password').addEventListener('click', function(e) {
+                e.preventDefault(); // Mencegah pengiriman formulir default
+
+                // Ambil email dari input
+                const email = document.querySelector('#email').value;
+
+                // Lakukan validasi
+                if (!email) {
+                    alert('Email harus diisi!');
+                    return;
+                }
+
+                // Kirim permintaan AJAX
+                fetch("{{ route('reset.password') }}", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}' // Menambahkan token CSRF
+                        },
+                        body: JSON.stringify({
+                            email: email
+                        }) // Kirim email sebagai JSON
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Permintaan gagal!');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Tampilkan pesan sukses
+                        alert(data.message); // Ubah ini untuk menggunakan SweetAlert atau cara lain
+                    })
+                    .catch(error => {
+                        // Tangani error
+                        alert(error.message); // Ubah ini untuk menggunakan SweetAlert atau cara lain
+                    });
+            });
+
             document.querySelector('.btn-logout').addEventListener('click', function(e) {
                 e.preventDefault(); // Mencegah pengiriman formulir default
 

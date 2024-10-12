@@ -42,7 +42,7 @@
 
                             <div class="d-flex justify-content-between align-items-center mt-3">
 
-                                <a href="{{ route('reset.password') }}" class="text-body link-primary">Lupa Password?</a>
+                                <a href="{{ route('reset.password.public') }}" class="text-body link-primary">Lupa Password?</a>
                             </div>
 
                             <div class="text-center text-lg-start mt-4 pt-2">

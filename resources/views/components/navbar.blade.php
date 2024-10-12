@@ -9,8 +9,9 @@
             </a>
 
             <div class="search-form ms-2" style="width: 100%">
-                <form class="d-flex" role="search">
-                    <input id="searchInput" class="form-control me-1" type="search" placeholder="Mau Belajar Apa Hari Ini ?" aria-label="Search">
+                <form class="d-flex" role="search" method="GET" action="{{ route('kelas') }}">
+                    <input id="searchInput" class="form-control" type="search" placeholder="Cari Kelas..."
+                        name="q" aria-label="Search" value="{{ request('q') }}">
                 </form>
             </div>
 
@@ -21,6 +22,7 @@
                         <a href="/" class="{{ request()->routeIs('beranda') ? 'active' : '' }}">Beranda</a>
                     </li>
                     <li><a href="/kelas" class="{{ request()->routeIs('kelas') ? 'active' : '' }}">Kelas</a></li>
+                    <li><a href="/bundling" class="{{ request()->routeIs('bundling') ? 'active' : '' }}">Bundling</a></li>
                     <li><a href="/kontak" class="{{ request()->routeIs('kontak') ? 'active' : '' }}">Kontak kami</a></li>
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>

@@ -50,18 +50,7 @@
                     </form>
                 </div>
             </div>
-            <div class="col-5 d-flex justify-content-end gap-1 pl-2">
-                <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal"
-                    data-bs-target="#modal-kelas">
-                    <i class="fas fa-plus mr-1"></i>Kelas
-                </button>
-                <button type="button" class="btn btn-success d-flex align-items-center" data-bs-toggle="modal"
-                    data-bs-target="#modal-default">
-                    <i class="fas fa-plus mr-1"></i>Jenjang
-                </button>
-            </div>
         </div>
-
 
         <div id="coursesContainer" class="row g-2">
             @if ($pagination ?? false) {{-- Jika ada pagination --}}

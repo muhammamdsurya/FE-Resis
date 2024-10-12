@@ -77,10 +77,11 @@
                                 <!-- Bundle Price -->
                                 <div class="col-md-12">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control" id="priceInput" placeholder="Harga"
-                                            name="price" value="{{ $bundle['price'] }}">
+                                        <input type="text" class="form-control" id="priceInput" placeholder="Harga"
+                                            name="price" value="{{ number_format($bundle['price'], 0, ',', '.') }}">
                                         <label for="priceInput">Harga</label>
                                     </div>
+
                                 </div>
 
                                 <!-- Bundle Description -->
@@ -183,7 +184,48 @@
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
+        document.getElementById('priceInput').addEventListener('input', function(e) {
+            var value = e.target.value;
+            value = value.replace(/\D/g, ''); // Menghapus karakter selain angka
+            value = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(value);
+            e.target.value = value.replace('Rp', '')
+        .trim(); // Menghilangkan 'Rp' dan hanya menampilkan angka dengan titik
+        });
+
+        // Pastikan format angka asli diambil saat form dikirim
+        document.querySelector('form').addEventListener('submit', function() {
+            var priceInput = document.getElementById('priceInput');
+            priceInput.value = priceInput.value.replace(/\./g, ''); // Menghapus titik sebelum dikirimkan ke server
+        });
+    </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('message'))
+                Swal.fire({
+                    title: 'Success!',
+                    text: '{{ session('message') }}',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    title: 'Error!',
+                    text: '{{ session('error') }}',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            @endif
+        });
         $(document).ready(function() {
             // Ketika gambar di-klik, trigger input file
             $('.image-container').on('click', function() {

@@ -1,8 +1,7 @@
-
 <aside class= "main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link" style="text-decoration: none;">
-        <span class="brand-text font-weight-light">User Dashboard</span>
+        <span class="brand-text font-weight-light">Dashboard</span>
     </a>
 
     <!-- Sidebar -->
@@ -10,12 +9,10 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img src="{{ asset ('assets/img/testimonials/testimonials-1.jpg')}}" class="img-circle elevation-2"
-                    alt="User Image">
+                <i class="fas fa-user-circle text-white elevation-2" alt="User Icon" style="font-size: 30px;"></i>
             </div>
             <div class="info">
-                <a href="/user/profile"
-                style="text-decoration: none;" class="d-block">{{ $name }}</a>
+                <a href="/user/profile" style="text-decoration: none;" class="d-block">{{ $name }}</a>
             </div>
 
         </div>

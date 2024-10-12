@@ -12,6 +12,7 @@ class InstructorController extends Controller
 
     private $user;
     private $apiUrl;
+    private $courseForumCtrl;
     private $courseContentCtrl;
 
 
@@ -20,6 +21,7 @@ class InstructorController extends Controller
         $this->user = session('user');
         $this->apiUrl = env('API_URL');
         $this->courseContentCtrl = new courseContentController();
+        $this->courseForumCtrl = new courseForumController();
     }
 
 
@@ -73,6 +75,7 @@ class InstructorController extends Controller
             "title" => $title,
             "full_name" => $profileData['full_name'],
             "email" => $profileData['email'],
+            "role" => $profileData['role'],
             "photo_profile" => $profileData['photo_profile'],
             "created_at" => $profileData['created_at'],
             "activated_at" => $profileData['activated_at'],
@@ -102,6 +105,7 @@ class InstructorController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "courses" => $courses,
+            "role" => $this->user['role'],
             "pagination" => $courses['pagination'] ?? null,
             ]);
     }
@@ -138,7 +142,7 @@ class InstructorController extends Controller
 
 
                 // NEXT PREVIOUS
-            
+
                   // Initialize next and previous IDs
             if ($selectedIndex !== -1) { // Ensure we found the selected index
                 if ($selectedIndex > 0) {
@@ -159,10 +163,15 @@ class InstructorController extends Controller
                 } elseif ($courseContent->content_type == $quizType) {
                     $courseContentQuiz = $this->courseContentCtrl->courseContentQuiz($id, $selectedCourseContentId);
                     $courseContent->quiz = $courseContentQuiz;
+
+
+                 
                 }
             }
             }
         }
+
+        // dd($courseContent);answer
 
         return view('instructor.detailKelas', [
             "title" => $title,
@@ -182,14 +191,23 @@ class InstructorController extends Controller
         ]);
     }
 
-    public function diskusi (){
+    public function diskusi ($courseId){
         $title = 'Diskusi ';
+
+        $courseForums = $this->courseForumCtrl->courseForums($courseId);
+        foreach ($courseForums->data as $courseForum){
+            $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
+
+            $courseForum->reply_count = count($courseForum->course_forum_reply);
+        };
 
         // Lakukan operasi lain yang diperlukan
 
         return view('instructor.diskusi', [
             "title" => $title,
             "id" => $this->user['id'],
+            "courseId" => $courseId,
+            "courseForums" => $courseForums,
             "full_name" => $this->user['full_name'],
             ]);
     }

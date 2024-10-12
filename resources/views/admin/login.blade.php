@@ -11,7 +11,7 @@
                     </div>
 
                     <div class="col-md-5 col-lg-5 ">
-                        <form method="POST" action="{{ route('login.Admin') }}">
+                        <form method="POST" action="{{ route('login.admin') }}">
                             @csrf
                             <h3 class="text-center mb-3">Admin Login</h3>
                             <!-- Display error message -->

@@ -177,13 +177,13 @@ class courseController extends Controller
                 // Cek respons API
                 if ($imageResponse->successful()) {
                     // Debugging: Print response body to see if image upload succeeded
-                    return redirect()->route('admin.kelas')->with('message', 'Data dan thumbnail berhasil diperbarui.');
+                    return back()->with('message', 'Data dan thumbnail berhasil diperbarui.');
                 } else {
-                    return redirect()->route('admin.kelas')->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
+                    return back()->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
                 }
             }
             // If no thumbnail is uploaded, only update the body
-            return redirect()->route('admin.kelas')->with('message', 'Data berhasil diperbarui.');
+            return back()->with('message', 'Data berhasil diperbarui.');
         } else {
             // Handle case where the bundle data update fails
             return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
@@ -298,13 +298,13 @@ class courseController extends Controller
                 // Cek respons API
                 if ($imageResponse->successful()) {
                     // Debugging: Print response body to see if image upload succeeded
-                    return redirect()->route('admin.bundling')->with('message', 'Data dan thumbnail berhasil diperbarui.');
+                    return back()->with('message', 'Data dan thumbnail berhasil diperbarui.');
                 } else {
-                    return redirect()->route('admin.bundling')->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
+                    return back()->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
                 }
             }
             // If no thumbnail is uploaded, only update the body
-            return redirect()->route('admin.bundling')->with('message', 'Data berhasil diperbarui.');
+            return back()->with('message', 'Data berhasil diperbarui.');
         } else {
             // Handle case where the bundle data update fails
             return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
@@ -471,9 +471,48 @@ class courseController extends Controller
         return json_decode($response->getBody()->getContents());
     }
 
-    function getCourseById($courseId)
+    public function getSearchCourse($query)
+    {
+        // Pass the page parameter in the API request
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/search?q=', [
+            'q' => $query
+        ]);
+
+        return json_decode($response->getBody()->getContents());
+    }
+
+    public function getAllBundling($page)
+    {
+        // Pass the page parameter in the API request
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/bundles', [
+            'page' => $page
+        ]);
+
+        return json_decode($response->getBody()->getContents());
+    }
+
+    public function getCourseById($courseId)
     {
         $response = Http::withApiSession()->get($this->apiUrl . 'courses/' . $courseId);
+
+        return json_decode($response->getBody()->getContents());
+    }
+
+    public function getCourseContentById($courseId) {
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/' . $courseId . '/contents');
+
+        return json_decode($response->getBody()->getContents());
+    }
+
+
+    public function getBundlingById($courseBundleId)
+    {
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/bundles/' . $courseBundleId);
+
+        return json_decode($response->getBody()->getContents());
+    }
+    public function getBundlingContentById($courseBundleId) {
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/bundles/' . $courseBundleId . '/courses');
 
         return json_decode($response->getBody()->getContents());
     }

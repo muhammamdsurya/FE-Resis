@@ -24,6 +24,9 @@ Route::get('/', function () {
 Route::get('/kelas', [publicController::class, 'kelas'])->name('kelas');
 Route::get('/detail-kelas/{courseId}', [publicController::class, 'detailKelas'])->name('detail.kelas');
 
+Route::get('/bundling', [publicController::class, 'bundling'])->name('bundling');
+Route::get('/detail-bundling/{courseBundleId}', [publicController::class, 'detailBundling'])->name('detail.bundling');
+
 
 Route::get('/kontak', function () {
     return view('kontak');
@@ -37,20 +40,34 @@ Route::get('/privacy-policy', function () {
     return view('policy');
 })->name('policy');
 
+Route::get('/register', function () {
+    return view('register');
+})->name('show'); // Menampilkan form registrasi
+
 
 
 // Grup rute untuk rute-rute yang terkait dengan admin
 
 Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
+    // data register
+    Route::get('/', [AdminController::class, 'completeData'])->name('admin.data');
+    Route::post('/complete-data', [AdminController::class, 'completePost'])->name('complete.post.admin');
+    Route::get('/regis/data-pengajar', [AdminController::class, 'completeDataPengajar'])->name('instructor.data');
+    Route::post('/complete-data/pengajar', [AdminController::class, 'completePostPengajar'])->name('complete.post.pengajar');
+
+
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/dashboard/sales', [AdminController::class, 'getSalesData'])->name('admin.sales');
+    Route::get('/dashboard/sales/month', [AdminController::class, 'getSalesMonth'])->name('admin.salesMonth');
 
     //course
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
     Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
     Route::get('/detail-kelas/{id}', [AdminController::class, 'detailKelas'])->name('detail-kelas');
+    Route::get('/diskusi-kelas/{courseId}', [AdminController::class, 'diskusi'])->name('admin.diskusi');
     Route::post('/kelas', [CourseController::class, 'kelas'])->name('kelas.post');
     Route::post('/kelas/{CourseId}', [courseController::class, 'editKelas'])->name('kelas.edit');
-    Route::delete('/kelas/delete/{id}', [courseController::class, 'destroyCourse'])->name('course.destroy');
+    Route::delete('/kelas/delete/{CourseId}', [courseController::class, 'destroyCourse'])->name('course.destroy');
 
 
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
@@ -58,7 +75,7 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/sales', [AdminController::class, 'sales'])->name('sales');
     Route::get('/data-admin', [AdminController::class, 'dataAdmin'])->name('data.admin');
     Route::get('/data-pengajar', [AdminController::class, 'dataPengajar'])->name('data.pengajar');
-    Route::get('/data-siswa', [AdminController::class, 'dataSiswa'])->name('data-siswa');
+    Route::get('/data-siswa', [AdminController::class, 'dataSiswa'])->name('data.siswa');
     Route::get('/instructor', [AdminController::class, 'getInstructor'])->name('get.instructors');
 
 
@@ -72,7 +89,6 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 
     // categories
     Route::post('/kelas/categories/post', [CourseController::class, 'jenjang'])->name('categories.post');
-    Route::get('/kelas/categories/get', [AdminController::class, 'getCategories'])->name('get.category');
     Route::delete('/kelas/{id}/destroy', [courseController::class, 'destroy'])->name('categories.destroy');
     Route::put('/kelas/{id}/edit', [courseController::class, 'editCategory'])->name('categories.edit');
 
@@ -80,6 +96,27 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::post('/data/kelas/{id}/content/create', [courseContentController::class, 'createCourseContent'])->name('admin.kelas.content.post');
     Route::post('/data/kelas/{courseId}/content/update/{contentId}', [courseContentController::class, 'updateCourseContent'])->name('admin.kelas.content.update');
     Route::delete('/data/kelas/{courseId}/content/{id}/delete', [courseContentController::class, 'deleteContent'])->name('admin.kelas.content.delete');
+
+    // download
+    Route::get('data-admin/download', [AdminController::class, 'downloadAdmin'])->name('admin.dataAdmin.download');
+    Route::get('data-user/download', [AdminController::class, 'downloadUser'])->name('admin.dataUser.download');
+    Route::get('data-instructor/download', [AdminController::class, 'downloadInstructor'])->name('admin.dataInstructor.download');
+    Route::get('data-sales/download', [AdminController::class, 'downloadSales'])->name('admin.dataSales.download');
+    Route::get('data-course/download', [AdminController::class, 'downloadCourse'])->name('admin.dataCourse.download');
+    Route::get('data-bundling/download', [AdminController::class, 'downloadCourseBundling'])->name('admin.dataBundling.download');
+
+    // admin data
+    Route::delete('data-admin/{id}', [AdminController::class, 'deleteAdmin'])->name('admin.dataAdmin.delete');
+    Route::delete('data-pengajar/{id}/delete', [AdminController::class, 'deletePengajar'])->name('admin.dataPengajar.delete');
+    Route::delete('data-pengajar/{id}/edit', [AdminController::class, 'editPengajar'])->name('admin.dataPengajar.edit');
+    Route::post('data-admin/admin/post', [AuthController::class, 'regisAdmin'])->name('admin.dataAdmin.regis');
+    Route::post('data-admin/instructor/post', [AuthController::class, 'regisInstructor'])->name('admin.dataInstructor.regis');
+
+    // CourseForum
+    Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('admin.diskusi.post.reply');
+    Route::post('/diskusi-kelas/{courseId}/reply/image', [courseForumController::class, 'imageReplyForum'])->name('admin.diskusi.post.reply.img');
+    Route::post('/diskusi-kelas/{courseId}/delete', [courseForumController::class, 'deleteCourseForum'])->name('admin.diskusi.delete');
+    Route::post('/diskusi-kelas/{courseId}/reply/delete', [courseForumController::class, 'deleteReplyCourseForum'])->name('admin.diskusi.reply.delete');
 });
 
 
@@ -89,7 +126,7 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
 
     Route::get('/', [UserController::class, 'completeData'])->name('user.data');
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
-    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::get('/kelas', [UserController::class, 'kelas'])->name('user.kelas');
     Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
     Route::get('/materi', [UserController::class, 'materi'])->name('materi');
@@ -98,8 +135,14 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
 
     Route::post('/complete-data', [UserDataController::class, 'completePost'])->name('complete.post');
 
+    Route::post('/update-data', [UserDataController::class, 'updateData'])->name('update.data');
+
     Route::post('/diskusi-kelas/{courseId}', [courseForumController::class, 'createCourseForum'])->name('diskusi.post');
+    Route::post('/diskusi-kelas/{courseId}/delete', [courseForumController::class, 'deleteCourseForum'])->name('diskusi.delete');
+    Route::post('/diskusi-kelas/{courseId}/image', [courseForumController::class, 'imageForum'])->name('diskusi.post.img');
     Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('diskusi.post.reply');
+    Route::post('/diskusi-kelas/{courseId}/reply/image', [courseForumController::class, 'imageReplyForum'])->name('diskusi.post.reply.img');
+
     Route::post('/quiz/answer/{contentId}', [userCourseController::class, 'answerQuiz'])->name('quiz.answer');
 
     Route::post('/checkout', [transactionController::class, 'checkout'])->name('user.checkout');
@@ -111,7 +154,14 @@ Route::prefix('instructor')->middleware(['whoami:instructor'])->group(function (
     Route::get('/kelas', [InstructorController::class, 'kelas'])->name('instructor.kelas');
     Route::get('/detail-kelas/{id}', [InstructorController::class, 'detailKelas'])->name('instructor.detail-kelas');
     Route::get('/profile', [InstructorController::class, 'profile'])->name('profile');
-    Route::get('/diskusi', [InstructorController::class, 'diskusi'])->name('diskusi');
+
+
+     // CourseForum
+     Route::get('/diskusi-kelas/{courseId}', [InstructorController::class, 'diskusi'])->name('instructor.diskusi');
+
+     Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('instructor.diskusi.post.reply');
+     Route::post('/diskusi-kelas/{courseId}/reply/image', [courseForumController::class, 'imageReplyForum'])->name('instructor.diskusi.post.reply.img');
+     Route::post('/diskusi-kelas/{courseId}/reply/delete', [courseForumController::class, 'deleteReplyCourseForum'])->name('instructor.diskusi.reply.delete');
 });
 
 // Rute untuk login pengguna biasa
@@ -126,8 +176,8 @@ Route::prefix('')->middleware('redirect.if.authenticated:user')->group(function 
 
 // Rute untuk login admin
 Route::prefix('admin')->middleware('redirect.if.authenticated:admin')->group(function () {
-    Route::get('/login', [AuthController::class, 'showAdmin'])->name('login.Admin'); // Menampilkan form login admin
-    Route::post('/login', [AuthController::class, 'loginAdmin']); // Proses login admin
+    Route::get('/login', [AuthController::class, 'showAdmin'])->name('show.login.admin'); // Menampilkan form login admin
+    Route::post('/login', [AuthController::class, 'loginAdmin'])->name('login.admin'); // Proses login admin
 });
 
 // Rute untuk login instrutor
@@ -136,15 +186,16 @@ Route::prefix('instructor')->middleware('redirect.if.authenticated:instructor')-
     Route::post('/login', [AuthController::class, 'loginInstructor']); // Proses login admin
 });
 
-Route::prefix('')->group(function () {
-    Route::get('/register', [RegisController::class, 'show'])->name('show'); // Menampilkan form registrasi
-    Route::post('/register', [RegisController::class, 'store'])->name('register'); // Proses registrasi user
-});
+
+Route::post('/register', [AuthController::class, 'register'])->name('register'); // Proses registrasi user
 
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::post('/activate', [AuthController::class, 'activation'])->name('activate.post');
+Route::post('/activate/{token}', [AuthController::class, 'activation'])->name('activate.post');
 Route::get('/activate', [AuthController::class, 'activate'])->name('activate');
 
-Route::get('/reset-password', [AuthController::class, 'resetPassword'])->name('reset.password');
+Route::post('/reset-password/post', [AuthController::class, 'resetPassword'])->name('reset.password');
+Route::put('/reset-password/{token}', [AuthController::class, 'putPassword'])->name('put.password');
+Route::get('/reset-password', [AuthController::class, 'getReset'])->name('get.reset');
+Route::get('/reset-password/public', [AuthController::class, 'getResetPublic'])->name('reset.password.public');

@@ -10,21 +10,32 @@ class publicController extends Controller
     private $courseCtrl;
     private $user;
 
+    private $userCourseCtrl;
 
     public function __construct()
     {
         $this->courseCtrl = new courseController();
         $this->user = session('user');
+        $this->userCourseCtrl = new userCourseController();
     }
 
 
     public function kelas(Request $request)
     {
-        $title = 'Data Kelas';
+        $title = 'Kelas';
         $page = $request->input('page', 1); // Default to page 1 if not set
+          // Ambil nilai input 'q' dari form
+          $query = $request->input('q');
+
+          if ($query) {
+              // Fetch courses dengan parameter query
+              $courses = $this->courseCtrl->getSearchCourse(urlencode($query));
+          } else {
+              // Fetch courses tanpa pencarian
+              $courses = $this->courseCtrl->getAllCourse($page);
+            }
 
         // Fetch paginated courses
-        $courses = $this->courseCtrl->getAllCourse($page);
 
         // Debugging the result to ensure the correct page is returned
         // dd($courses);
@@ -32,15 +43,72 @@ class publicController extends Controller
         return view('kelas', [
             'title' => $title,
             'courses' => $courses,  // Pass course data
-            'pagination' => $courses->pagination,  // Pass pagination info
+            'pagination' => $courses->pagination ?? null,  // Pass pagination info
         ]);
     }
 
     public function detailKelas($courseId)
     {
 
-        $title = 'Data Kelas';
-        $course = $this->courseCtrl->getCourseById($courseId);
+        $title = 'Kelas';
+        $course = $this->courseCtrl->getCourseById($courseId);  
+        $content = $this->courseCtrl->getCourseContentById($courseId);
+
+        $isLogin = 'n';
+        $alreadyCourse = 'n';
+        if ($this->user != null) {
+            $isLogin = 'y';
+            $userCourses = $this->userCourseCtrl->getCoursesUserByCourseId($courseId);
+
+            // dd($userCourses);
+            if($userCourses){
+                $alreadyCourse = 'y';
+            }
+        } else {
+            $isLogin = 'n';
+        }
+
+
+        return view('detailKelas', [
+            "title" => $title,
+            'course' => $course,
+            'role' => $this->user['role'],
+            'content' => $content,
+            'isLogin' => $isLogin,
+            'alreadyCourse' => $alreadyCourse
+        ]);
+    }
+
+    public function bundling(Request $request)
+    {
+        $title = 'Paket Bundling';
+        $page = $request->input('page', 1); // Default to page 1 if not set
+
+        // Fetch paginated courses
+        $bundling = $this->courseCtrl->getAllBundling($page);
+
+        // Debugging the result to ensure the correct page is returned
+        // dd($bundling);
+
+        return view('bundling', [
+            'title' => $title,
+            'bundling' => $bundling,  // Pass course data
+            'pagination' => $bundling->pagination,  // Pass pagination info
+        ]);
+    }
+
+    public function detailBundling($courseId)
+    {
+
+        $title = 'Paket Bundling';
+        $bundling = $this->courseCtrl->getBundlingById($courseId);
+        $contentsId = $this->courseCtrl->getBundlingContentById($courseId);
+
+        $contents = [];
+        foreach ($contentsId as $row) {
+            $contents[] = $this->courseCtrl->getCourseById($row);
+        }
+
         $isLogin = 'n';
         if ($this->user != null) {
             $isLogin = 'y';
@@ -50,9 +118,11 @@ class publicController extends Controller
         }
 
 
-        return view('detailKelas', [
+        return view('detailBundling', [
             "title" => $title,
-            'course' => $course,
+            'bundling' => $bundling,
+            'role' => $this->user['role'],
+            'contents' => $contents, // Pastikan ini adalah array
             'isLogin' => $isLogin
         ]);
     }

@@ -1,6 +1,14 @@
 @extends('layout.adminLayout')
 @section('title', $title)
 
+
+@section('buttons')
+    <a href="{{ route('admin.dataBundling.download') }}" class="btn btn-primary mb-0 d-flex align-items-center">
+        <i class="fas fa-download d-inline me-1 "></i> <!-- Ikon untuk mobile -->
+        <span class="d-none d-lg-inline">Download CSV</span> <!-- Teks untuk desktop -->
+    </a>
+@endsection
+
 @section('content')
     <style>
         .bundle-card {
@@ -37,14 +45,16 @@
                     <form class="d-flex" role="search" method="GET" action="{{ route('admin.bundling') }}">
                         <input id="searchInput" class="form-control" type="search" placeholder="Cari Bundling..."
                             name="q" aria-label="Search" value="{{ request('q') }}">
-                        <button type="submit" class="btn btn-primary ml-2">Search</button>
+                        <button type="submit" class="btn btn-primary ml-2 d-flex align-items-center">
+                            <i class="fas fa-search"></i> <!-- Ikon pencarian -->
+                        </button>
                     </form>
                 </div>
             </div>
             <div class="col-5 d-flex justify-content-end">
-                <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal"
+                <button type="button" class="btn btn-success d-flex align-items-center" data-bs-toggle="modal"
                     data-bs-target="#modal-bundling">
-                    <i class="fas fa-plus mr-1"></i>Tambah
+                    <i class="fas fa-plus d-inline me-1"></i><span class="d-none d-lg-inline">Tambah</span>
                 </button>
             </div>
         </div>
@@ -54,8 +64,7 @@
                 @foreach ($bundles['data'] as $item)
                     {{-- Akses data dari bundles['data'] --}}
                     <div class="col-lg-3 col-md-4 col-6">
-                        <a href="{{ route('detail-bundling', ['id' => $item['id']]) }}"
-                            class="text-decoration-none">
+                        <a href="{{ route('detail-bundling', ['id' => $item['id']]) }}" class="text-decoration-none">
                             <div class="card bundle-card shadow-sm" style="width: 100%;">
                                 <img src="{{ $item['thumbnail_image'] }}" class="card-img-top" alt="...">
                                 <div class="card-body">
@@ -78,7 +87,8 @@
                                 <img src="{{ $item['thumbnail_image'] }}" class="card-img-top" alt="...">
                                 <div class="card-body">
                                     <div class="header-card d-flex justify-content-between">
-                                        <p class="ml-auto fs-6 price">Rp{{ number_format($item['price'], 0, ',', '.') }}</p>
+                                        <p class="ml-auto fs-6 price">Rp{{ number_format($item['price'], 0, ',', '.') }}
+                                        </p>
                                     </div>
                                     <h5 class="card-title">{{ $item['name'] }}</h5>
                                     <p class="card-text">{{ $item['description'] }}</p>
@@ -90,46 +100,46 @@
             @endif
         </div>
 
-            @if ($pagination ?? false)
-                <!-- Tampilkan pagination hanya jika pagination tersedia -->
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                        <!-- Previous Button -->
-                        @if ($pagination['page'] > 1)
-                            <li class="page-item">
-                                <a class="page-link"
-                                    href="{{ route('admin.bundling', ['page' => $pagination['page'] - 1]) }}">Previous</a>
-                            </li>
-                        @else
-                            <li class="page-item disabled">
-                                <a class="page-link">Previous</a>
-                            </li>
-                        @endif
+        @if ($pagination ?? false)
+            <!-- Tampilkan pagination hanya jika pagination tersedia -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <!-- Previous Button -->
+                    @if ($pagination['page'] > 1)
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{{ route('admin.bundling', ['page' => $pagination['page'] - 1]) }}">Previous</a>
+                        </li>
+                    @else
+                        <li class="page-item disabled">
+                            <a class="page-link">Previous</a>
+                        </li>
+                    @endif
 
-                        <!-- Page Numbers -->
-                        @for ($i = 1; $i <= $pagination['total_page']; $i++)
-                            <li class="page-item {{ $pagination['page'] == $i ? 'active' : '' }}">
-                                <a class="page-link"
-                                    href="{{ route('admin.bundling', ['page' => $i]) }}">{{ $i }}</a>
-                            </li>
-                        @endfor
+                    <!-- Page Numbers -->
+                    @for ($i = 1; $i <= $pagination['total_page']; $i++)
+                        <li class="page-item {{ $pagination['page'] == $i ? 'active' : '' }}">
+                            <a class="page-link"
+                                href="{{ route('admin.bundling', ['page' => $i]) }}">{{ $i }}</a>
+                        </li>
+                    @endfor
 
-                        <!-- Next Button -->
-                        @if ($pagination['page'] < $pagination['total_page'])
-                            <li class="page-item">
-                                <a class="page-link"
-                                    href="{{ route('admin.bundling', ['page' => $pagination['page'] + 1]) }}">Next</a>
-                            </li>
-                        @else
-                            <li class="page-item disabled">
-                                <a class="page-link">Next</a>
-                            </li>
-                        @endif
-                    </ul>
-                </nav>
-            @endif
+                    <!-- Next Button -->
+                    @if ($pagination['page'] < $pagination['total_page'])
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{{ route('admin.bundling', ['page' => $pagination['page'] + 1]) }}">Next</a>
+                        </li>
+                    @else
+                        <li class="page-item disabled">
+                            <a class="page-link">Next</a>
+                        </li>
+                    @endif
+                </ul>
+            </nav>
+        @endif
 
-        </div>
+    </div>
     </div>
 
     <!-- Modal -->
@@ -162,8 +172,8 @@
 
                         <div class="mb-3">
                             <div class="form-floating">
-                                <textarea class="form-control" id="bundleDescription" placeholder="Deskripsi" name="description" style="height: 100px"
-                                    required></textarea>
+                                <textarea class="form-control" id="bundleDescription" placeholder="Deskripsi" name="description"
+                                    style="height: 100px" required></textarea>
                                 <label for="bundleDescription">Deskripsi</label>
                             </div>
                         </div>

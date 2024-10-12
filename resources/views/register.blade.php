@@ -77,6 +77,18 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        // Check if the alert exists and set a timeout to hide it
+        document.addEventListener('DOMContentLoaded', function() {
+            var alertMessage = document.getElementById('alert-message');
+            if (alertMessage) {
+                setTimeout(function() {
+                    alertMessage.style.opacity = '0';
+                    setTimeout(function() {
+                        alertMessage.style.display = 'none';
+                    }, 500); // Delay for fade-out effect
+                }, 2000); // Time to wait before starting fade-out
+            }
+        });
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
@@ -167,35 +179,41 @@
                     email: emailInput.val().trim(),
                     password: passwordInput.val().trim(),
                     password_confirm: confirmPasswordInput.val().trim(),
-                    full_name: nameInput.val().trim()
+                    full_name: nameInput.val().trim(),
                 };
-
-                var myEnvVariable = "{{ env('API_URL') }}";
 
                 $.ajax({
                     method: 'POST',
-                    url: myEnvVariable + "users/auth/register",
-                    data: JSON.stringify(data),
+                    url: '{{ route('register') }}', // URL ke Laravel controller
+                    data: JSON.stringify(data), // Mengirim data sebagai JSON
+                    contentType: 'application/json', // Set content type ke JSON
+                    processData: false, // Tidak memproses data menjadi query string
                     success: function(response) {
-                        console.log(response);
-                        Swal.fire(
-                            'Berhasil!',
-                            'Silahkan aktivasi akunmu di email!',
-                            'success'
-                        ).then(() => {
-                            window.location.href =
-                            '/login'; // Redirect ke halaman login
-                        });
-                        // window.location.href = '/login';
+                        if (response.status === 'success') {
+                            Swal.fire(
+                                'Berhasil!',
+                                response.message,
+                                'success'
+                            ).then(() => {
+                                window.location.href =
+                                    '/login'; // Redirect ke halaman login
+                            });
+                        } else {
+                            Swal.fire(
+                                'Ooops!',
+                                response.message,
+                                'error'
+                            );
+                        }
                     },
                     error: function(xhr, status, error) {
                         Swal.fire(
                             'Ooops!',
-                            'Email sudah terdaftar!',
+                            'Terjadi kesalahan, coba lagi!',
                             'error'
-                        )
+                        );
+                        console.log("Response Body: " + xhr.responseText);
                     }
-
                 });
             });
         });

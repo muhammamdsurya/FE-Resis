@@ -1,6 +1,14 @@
 @extends('layout.adminLayout')
 @section('title', $title)
 
+
+@section('buttons')
+    <a href="{{ route('admin.dataCourse.download') }}" class="btn btn-primary mb-0 d-flex align-items-center">
+        <i class="fas fa-download d-inline me-1 "></i> <!-- Ikon untuk mobile -->
+        <span class="d-none d-lg-inline">Download CSV</span> <!-- Teks untuk desktop -->
+    </a>
+@endsection
+
 @section('content')
 
     <style>
@@ -45,20 +53,26 @@
                     <form class="d-flex" role="search" method="GET" action="{{ route('admin.kelas') }}">
                         <input id="searchInput" class="form-control" type="search" placeholder="Cari Kelas..."
                             name="q" aria-label="Search" value="{{ request('q') }}">
-                        <button type="submit" class="btn btn-primary ml-2">Search</button>
+                        <button type="submit" class="btn btn-primary ml-2 d-flex align-items-center">
+                            <i class="fas fa-search"></i> <!-- Ikon pencarian -->
+                        </button>
                     </form>
                 </div>
             </div>
-            <div class="col-5 d-flex justify-content-end gap-1 pl-2">
-                <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal"
+            <div class="col-5 d-flex justify-content-end align-items-center gap-1">
+                <button type="button" class="btn btn-info d-flex align-items-center" data-bs-toggle="modal"
                     data-bs-target="#modal-kelas">
-                    <i class="fas fa-plus mr-1"></i>Kelas
+                    <i class="fas fa-book d-inline me-1"></i> <!-- Ikon Kelas untuk mobile -->
+                    <span class="d-none d-lg-inline">Kelas</span> <!-- Teks Kelas untuk desktop -->
                 </button>
                 <button type="button" class="btn btn-success d-flex align-items-center" data-bs-toggle="modal"
                     data-bs-target="#modal-default">
-                    <i class="fas fa-plus mr-1"></i>Jenjang
+                    <i class="fas fa-graduation-cap d-inline me-1"></i> <!-- Ikon Jenjang untuk mobile -->
+                    <span class="d-none d-lg-inline">Jenjang</span> <!-- Teks Jenjang untuk desktop -->
                 </button>
             </div>
+
+
         </div>
 
 
@@ -90,14 +104,13 @@
                     <div class="col-lg-3 col-md-4 col-6">
                         <a href="{{ route('detail-kelas', ['id' => $item['id']]) }}" class="text-decoration-none">
                             <div class="card shadow-sm border-light rounded">
-                                <img src="{{ asset('assets/img/values-1.png') }}" class="card-img-top"
+                                <img src="{{ $item['thumbnail_image'] }}" class="card-img-top"
                                     alt="{{ $item['name'] }}" style="height: 200px; object-fit: cover;">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <p class="fs-6 mb-0">
                                             <i class="fas fa-star text-warning me-1"></i>{{ $item['rating'] }}
                                         </p>
-                                        <p class="fs-6 mb-0 text-muted">{{ $item['course_category_id'] }}</p>
                                     </div>
                                     <h5 class="card-title mt-2">{{ $item['name'] }}</h5>
                                 </div>
@@ -179,8 +192,8 @@
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <!-- DataTable will handle appending rows dynamically -->
+                                <tbody id="categoriesBody">
+                                    <!-- Data will be populated here by AJAX -->
                                 </tbody>
                             </table>
                         </div>
@@ -212,7 +225,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control" id="priceInput" placeholder="Harga"
+                                        <input type="text" class="form-control" id="priceInput" placeholder="Harga"
                                             name="price" required>
                                         <label for="priceInput">Harga</label>
                                     </div>
@@ -299,6 +312,26 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+        document.getElementById('priceInput').addEventListener('input', function(e) {
+            var value = e.target.value;
+            value = value.replace(/\D/g, ''); // Menghapus karakter selain angka
+            value = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(value);
+            e.target.value = value.replace('Rp', '')
+                .trim(); // Menghilangkan 'Rp' dan hanya menampilkan angka dengan titik
+        });
+
+        // Pastikan format angka asli diambil saat form dikirim
+        document.querySelector('form').addEventListener('submit', function() {
+            var priceInput = document.getElementById('priceInput');
+            priceInput.value = priceInput.value.replace(/\./g, ''); // Menghapus titik sebelum dikirimkan ke server
+        });
+    </script>
+
+    <script>
         $(document).ready(function() {
             let categoriesData = {!! $categories !!};
             console.log(categoriesData);
@@ -341,188 +374,157 @@
                 }
             });
 
-            let table = $('#categoriesTable').DataTable({
-                processing: true, // Show processing indicator
-                serverSide: true, // Enable server-side processing
-                ajax: "{{ route('get.category') }}", // The route that returns the AJAX data
-                pageLength: 5, // Set the number of records per page
-                ordering: true, // Enable ordering
-                searching: false, // Disable searching for now
-                lengthChange: false, // Disable the page length dropdown
-                info: false, // Hide the "Showing X of Y entries" text
-                paging: true, // Enable pagination
-                columns: [{
-                        data: null, // For auto-incrementing numbers
-                        render: function(data, type, row, meta) {
-                            return meta.row + 1; // Display row number
-                        }
-                    },
-                    {
-                        data: 'name' // Assuming 'name' is the category name field from the API
-                    },
-                    {
-                        data: 'actions', // Custom actions column with Edit and Delete buttons
-                        orderable: false, // Disable ordering for this column
-                        searchable: false // Disable searching for this column
-                    }
-                ],
-                dom: 'tip', // Hide unwanted elements (e.g., search input, length dropdown)
-                autoWidth: false, // Disable auto width adjustment
-            });
+            // Fungsi untuk memuat kategori ke dalam tabel
+            const loadCategories = () => {
+                $('#categoriesBody').empty(); // Clear the current table body
 
+                // Populate the table with existing data
+                categoriesData.forEach((category, index) => {
+                    $('#categoriesBody').append(`
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${category.name}</td>
+                    <td>
+                        <button class="btn btn-warning edit-btn btn-sm data-id="${category.id}">
+                            <i class="fas fa-edit"></i> <!-- Ikon Edit -->
+                            <span class="d-none d-sm-inline ml-1">Edit</span> <!-- Teks untuk desktop -->
+                        </button>
+                        <button class="btn btn-danger delete-btn btn-sm data-id="${category.id}">
+                            <i class="fas fa-trash"></i> <!-- Ikon Hapus -->
+                            <span class="d-none d-sm-inline ml-1">Hapus</span> <!-- Teks untuk desktop -->
+                        </button>
+                    </td>
+                </tr>
+            `);
+                });
+            };
+
+            // Load categories on page load
+            loadCategories();
             // Handle the Edit button click
-            $('#categoriesTable').on('click', '.edit-btn', function(e) {
-                e.preventDefault(); // Prevent default link behavior
+            $('#categoriesBody').on('click', '.edit-btn', function() {
+                const categoryId = $(this).data('id');
+                const row = $(this).closest('tr');
 
-                // Get the row that contains the clicked button
-                let row = $(this).closest('tr');
-                let rowData = table.row(row).data(); // Get the data for that row
+                // Get the current category name from the row
+                const categoryName = row.find('td:nth-child(2)').text();
 
-                // Populate the modal form with the current name and category ID
-                $('#categoryName').val(rowData.name);
-                $('#categoryId').val($(this).data('id'));
+                // Populate the modal form
+                $('#categoryName').val(categoryName);
+                $('#categoryId').val(categoryId);
 
                 // Show the modal
                 $('#editCategoryModal').modal('show');
             });
 
-
-
             $('#saveCategoryBtn').on('click', function() {
-                // Get the new category name and ID
-                let newName = $('#categoryName').val();
-                let post_id = $('#categoryId').val();
-                let token = $("meta[name='csrf-token']").attr("content");
+                const newName = $('#categoryName').val();
+                const categoryId = $('#categoryId').val();
+                const token = $("meta[name='csrf-token']").attr("content");
 
-                // Make an AJAX request to update the item
+                // Make an AJAX request to update the category
                 $.ajax({
-                    url: `/admin/kelas/${post_id}/edit`,
+                    url: `/admin/kelas/${categoryId}/edit`,
                     type: 'PUT',
-                    cache: false,
+                    headers: {
+                        'X-CSRF-TOKEN': token
+                    },
                     data: {
-                        "_token": token,
                         "name": newName
                     },
                     success: function(response) {
                         console.log(response);
-
                         $('#editCategoryModal').modal('hide'); // Hide the modal
-
-                        Swal.fire(
-                            'Yess!',
-                            'Kategori berhasil diupdate.',
-                            'success'
-                        );
-
-                        // Reload the DataTable to reflect changes
-                        $('#categoriesTable').DataTable().ajax.reload();
+                        Swal.fire('Berhasil!', 'Kategori berhasil diupdate.',
+                            'success');
+                        loadCategories(); // Reload categories
                     },
                     error: function(xhr, status, error) {
-                        Swal.fire(
-                            'Error!',
-                            'There was an error updating the category.',
-                            'error'
-                        );
+                        console.error('Error updating category:', xhr.responseText);
+                        Swal.fire('Error!',
+                            'Terjadi kesalahan saat memperbarui kategori.',
+                            'error');
                     }
                 });
             });
 
-
             $('#tambahJenjang').on('click', function(event) {
-                event.preventDefault(); // Prevent the default form submission
+                event.preventDefault();
 
                 const levelInput = $('#levelInput');
-
-                // Trim and validate the input
                 const level = levelInput.val().trim();
+
                 if (level === '') {
-                    Swal.fire('Oops!', 'Masukan jenjang terlebih dahulu!.', 'error');
+                    Swal.fire('Oops!', 'Masukkan jenjang terlebih dahulu!', 'error');
                     return;
                 }
 
                 const data = {
-                    name: level,
+                    name: level
                 };
 
-                // Make the AJAX request directly to the API endpoint
+                // Make the AJAX request to add a new category
                 $.ajax({
-
-                    url: '{{ route('categories.post') }}', // Direct API endpoint
+                    url: '{{ route('categories.post') }}',
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                            .getAttribute('content')
+                        'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr("content")
                     },
                     data: JSON.stringify(data),
                     success: function(response) {
-                        console.log("data:", response); // Log the response for debugging
-                        Swal.fire('Berhasil', 'jenjang berhasil ditambahkan!.', 'success');
-                        $('#categoriesTable').DataTable().ajax.reload();
-
+                        console.log("data:", response);
+                        Swal.fire('Berhasil', 'Jenjang berhasil ditambahkan!',
+                            'success');
+                        loadCategories(); // Reload categories
                     },
                     error: function(xhr, status, error) {
-                        console.error('Error:', error); // Log the error for debugging
-                        console.error('Response Text:', xhr.responseText);
-                        Swal.fire('Oops!', 'jenjang masih kosong!.', 'error');
+                        console.error('Error adding category:', error);
+                        Swal.fire('Oops!',
+                            'Terjadi kesalahan saat menambahkan jenjang!',
+                            'error');
                     }
                 });
-
             });
 
+            $('#categoriesBody').on('click', '.delete-btn', function(e) {
+                e.preventDefault();
+                const token = $("meta[name='csrf-token']").attr("content");
+                const categoryId = $(this).data('id');
 
-            $('#categoriesTable').on('click', '.delete-btn', function(e) {
-                e.preventDefault(); // Prevent the default anchor behavior
-
-                let post_id = $(this).data('id');
-                let token = $("meta[name='csrf-token']").attr("content");
-
-                if ($(this).hasClass('delete-btn')) {
-                    // Handle delete button
-                    Swal.fire({
-                        text: "Apa kamu yakin menghapus ini?",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Ya!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Make an AJAX request to delete the item
-                            $.ajax({
-                                url: `/admin/kelas/${post_id}/destroy`,
-                                type: 'DELETE',
-                                cache: false,
-                                data: {
-                                    "_token": token,
-                                    "id": post_id
-                                },
-                                success: function(response) {
-                                    console.log(response);
-                                    Swal.fire(
-                                        'Dihapus!',
-                                        'Kategori berhasil di hapus.',
-                                        'success'
-                                    );
-
-                                    // Reload the DataTable
-                                    $('#categoriesTable').DataTable().ajax.reload();
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error('Error details:', xhr.responseText, status, error);
-
-                                    Swal.fire(
-                                        'Error!',
-                                        'There was an error deleting the category.',
-                                        'error'
-                                    );
-                                }
-                            });
-                        }
-                    });
-                }
+                Swal.fire({
+                    text: "Apa kamu yakin menghapus ini?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Make an AJAX request to delete the category
+                        $.ajax({
+                            url: `/admin/kelas/${categoryId}/destroy`,
+                            type: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': token
+                            },
+                            success: function(response) {
+                                console.log(response);
+                                Swal.fire('Dihapus!',
+                                    'Kategori berhasil dihapus.',
+                                    'success');
+                                loadCategories(); // Reload categories
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error deleting category:',
+                                    xhr.responseText);
+                                Swal.fire('Error!',
+                                    'Terjadi kesalahan saat menghapus kategori.',
+                                    'error');
+                            }
+                        });
+                    }
+                });
             });
-
         });
     </script>
 

@@ -8,7 +8,7 @@
         }
 
         .card:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px);
             cursor: pointer;
         }
 
@@ -18,7 +18,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.5) !important;
             opacity: 0;
             transition: opacity 0.3s ease;
             border-radius: 15px;
@@ -38,71 +38,111 @@
         </div>
 
         <div class="container" data-aos="fade-up" data-aos-delay="100">
-            <div class="row gx-3 gy-4">
-                @foreach ($courses->data as $course)
-                    <div class="col-lg-3 col-md-4 col-6">
-                        <a href="{{ route('detail.kelas', ['courseId' => $course->course->id]) }}">
-                            <div class="card h-100 shadow border-0 position-relative"
-                                style="border-radius: 15px; overflow: hidden;">
-                                <img src="assets/img/values-1.png" class="card-img-top" alt="..."
-                                    style="height: 150px; object-fit: cover;">
-                                <div class="card-body">
-                                    <div class="header-card d-flex justify-content-between mb-3">
-                                        <p class="text-muted fs-6 mb-0"><i class="bi bi-star-fill text-warning me-1"></i>4.9
+            <div class="row gx-2 gy-4">
+                @if ($pagination ?? false)
+                    @foreach ($courses->data as $course)
+                        <div class="col-lg-3 col-md-4 col-6">
+                            <a href="{{ route('detail.kelas', ['courseId' => $course->course->id]) }}">
+                                <div class="card h-100 shadow border-0 position-relative"
+                                    style="border-radius: 15px; overflow: hidden;">
+                                    <img src="{{ $course->course->thumbnail_image }}" class="card-img-top" alt="..."
+                                        style="height: 150px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <div class="header-card d-flex justify-content-between mb-3">
+                                            <p class="text-muted fs-6 mb-0"><i
+                                                    class="bi bi-star-fill text-warning me-1"></i>4.9
+                                            </p>
+                                            <p class="badge bg-primary fs-6 mb-0">{{ $course->course_category->name }}</p>
+                                        </div>
+
+                                        <h5 class="card-title fw-bold text-dark">{{ $course->course->name }}</h5>
+                                        <h6 class="text-success fw-bold mb-3">Rp
+                                            {{ number_format($course->course->price, 0, ',', '.') }}</h6>
+                                        <p class="card-text text-muted">{{ Str::limit($course->course->description, 50) }}
                                         </p>
-                                        <p class="badge bg-primary fs-6 mb-0">{{ $course->course_category->name }}</p>
                                     </div>
 
-                                    <h5 class="card-title fw-bold text-dark">{{ $course->course->name }}</h5>
-                                    <h6 class="text-success fw-bold mb-3">Rp
-                                        {{ number_format($course->course->price, 0, ',', '.') }}</h6>
-                                    <p class="card-text text-muted">{{ $course->course->description }}</p>
-                                </div>
-
-                                <!-- Dark overlay on hover -->
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="text-center">
-                                        <p class="text-white fw-bold fs-5">Lihat Detail</p>
+                                    <!-- Dark overlay on hover -->
+                                    <div class="overlay d-flex align-items-center justify-content-center">
+                                        <div class="text-center">
+                                            <p class="text-white fw-bold fs-5">Lihat Detail</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
+                            </a>
+                        </div>
+                    @endforeach
+                @else
+                    @foreach ($courses as $course)
+                        <div class="col-lg-3 col-md-4 col-6">
+                            <a href="{{ route('detail.kelas', ['courseId' => $course->id]) }}">
+                                <div class="card h-100 shadow border-0 position-relative"
+                                    style="border-radius: 15px; overflow: hidden;">
+                                    <img src="{{ $course->thumbnail_image }}" class="card-img-top" alt="..."
+                                        style="height: 150px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <div class="header-card d-flex justify-content-between mb-3">
+                                            <p class="text-muted fs-6 mb-0"><i
+                                                    class="bi bi-star-fill text-warning me-1"></i>4.9
+                                            </p>
+                                        </div>
 
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                        <!-- Previous Button -->
-                        @if ($pagination->page > 1)
-                            <li class="page-item">
-                                <a class="page-link"
-                                    href="{{ route('kelas', ['page' => $pagination->page - 1]) }}">Previous</a>
-                            </li>
-                        @else
-                            <li class="page-item disabled">
-                                <a class="page-link">Previous</a>
-                            </li>
-                        @endif
+                                        <h5 class="card-title fw-bold text-dark">{{ $course->name }}</h5>
+                                        <h6 class="text-success fw-bold mb-3">Rp
+                                            {{ number_format($course->price, 0, ',', '.') }}</h6>
+                                        <p class="card-text text-muted">{{ Str::limit($course->description, 50) }}
+                                        </p>
+                                    </div>
 
-                        <!-- Page Numbers -->
-                        @for ($i = 1; $i <= $pagination->total_page; $i++)
-                            <li class="page-item {{ $pagination->page === $i ? 'active' : '' }}">
-                                <a class="page-link" href="{{ route('kelas', ['page' => $i]) }}">{{ $i }}</a>
-                            </li>
-                        @endfor
+                                    <!-- Dark overlay on hover -->
+                                    <div class="overlay d-flex align-items-center justify-content-center">
+                                        <div class="text-center">
+                                            <p class="text-white fw-bold fs-5">Lihat Detail</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    @endforeach
+                @endif
 
-                        <!-- Next Button -->
-                        @if ($pagination->page < $pagination->total_page)
-                            <li class="page-item">
-                                <a class="page-link" href="{{ route('kelas', ['page' => $pagination->page + 1]) }}">Next</a>
-                            </li>
-                        @else
-                            <li class="page-item disabled">
-                                <a class="page-link">Next</a>
-                            </li>
-                        @endif
-                    </ul>
-                </nav>
+                @if ($pagination ?? false)
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <!-- Previous Button -->
+                            @if ($pagination->page > 1)
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="{{ route('kelas', ['page' => $pagination->page - 1]) }}">Previous</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <a class="page-link">Previous</a>
+                                </li>
+                            @endif
+
+                            <!-- Page Numbers -->
+                            @for ($i = 1; $i <= $pagination->total_page; $i++)
+                                <li class="page-item {{ $pagination->page === $i ? 'active' : '' }}">
+                                    <a class="page-link"
+                                        href="{{ route('kelas', ['page' => $i]) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            <!-- Next Button -->
+                            @if ($pagination->page < $pagination->total_page)
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="{{ route('kelas', ['page' => $pagination->page + 1]) }}">Next</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <a class="page-link">Next</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </nav>
+                @endif
 
 
             </div>

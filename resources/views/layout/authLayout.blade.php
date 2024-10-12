@@ -28,6 +28,10 @@
 
     <!-- Main CSS File -->
     <link href="{{ asset('assets/css/main.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
 
 </head>
 
@@ -37,24 +41,6 @@
     <!-- Vendor JS Files -->
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-    <!-- Main JS File -->
-    <script src="{{ asset('assets/js/main.js') }}"></script>
-
 </body>
-
-<script>
-    // Check if the alert exists and set a timeout to hide it
-    document.addEventListener('DOMContentLoaded', function() {
-        var alertMessage = document.getElementById('alert-message');
-        if (alertMessage) {
-            setTimeout(function() {
-                alertMessage.style.opacity = '0';
-                setTimeout(function() {
-                    alertMessage.style.display = 'none';
-                }, 500); // Delay for fade-out effect
-            }, 2000); // Time to wait before starting fade-out
-        }
-    });
-</script>
 
 </html>
