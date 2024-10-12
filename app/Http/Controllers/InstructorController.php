@@ -201,6 +201,8 @@ class InstructorController extends Controller
             $courseForum->reply_count = count($courseForum->course_forum_reply);
         };
 
+
+        // dd($courseForum);    
         // Lakukan operasi lain yang diperlukan
 
         return view('instructor.diskusi', [

@@ -25,7 +25,34 @@
             transition: all 0.3s ease;
             /* Smooth transition */
         }
+
+        .rating {
+            display: flex;
+            justify-content: flex-end;
+            transform: scaleX(-1);
+        }
+        .rating input {
+            display: none; /* Sembunyikan input radio */
+        }
+        .rating label {
+            cursor: pointer;
+            font-size: 2rem; /* Ukuran ikon bintang */
+            color: #ccc; /* Warna bintang tidak terpilih */
+        }
+        .rating input:checked ~ label {
+            color: #f39c12; /* Warna bintang terpilih */
+        }
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #f39c12; /* Warna bintang saat hover */
+        }
+        /* Menyediakan warna kuning untuk bintang yang terpilih */
+        .rating input:checked + label,
+        .rating input:checked + label ~ label {
+            color: #f39c12; /* Warna kuning */
+        }
     </style>
+
 
     <div class="container-fluid">
 
@@ -136,6 +163,23 @@
                             <a href="/user/diskusi-kelas/{{ $course->course->id }}"
                                 class="list-group-item list-group-item-action">Diskusi</a>
                         </div>
+                        <div class="form-floating mt-2 mb-1">
+                                        <input type="text" class="form-control" id="descRate" placeholder="Review">
+                                        <label for="descRate">Review</label>
+                                    </div>
+                        <div class="rating">
+                            <input type="radio" id="star5" name="rating" value="5">
+                            <label for="star5" title="5 star"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star4" name="rating" value="4">
+                            <label for="star4" title="4 stars"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star3" name="rating" value="3">
+                            <label for="star3" title="3 stars"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star2" name="rating" value="2">
+                            <label for="star2" title="2 stars"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star1" name="rating" value="1">
+                            <label for="star1" title="1 stars"><i class="fas fa-star"></i></label>
+                        </div>
+                        
 
 
                     </div>
@@ -145,6 +189,55 @@
 
         </section>
     </div>
+
+    <script>
+        const ratingInputs = document.querySelectorAll('input[name="rating"]');
+
+        ratingInputs.forEach((input) => {
+            input.addEventListener('change', function() {
+                const selectedValue = this.value;
+
+
+                var descRate  = $('#descRate').val()
+
+                var formData = new FormData();
+                    formData.append('rating', selectedValue);
+                    formData.append('description', descRate);
+                    formData.append('studentId', '{{ $userCourse->id }}');
+
+
+                    $.ajax({
+                        url: '{{ route('kelas.rate') }}', // Direct API endpoint
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content')
+                        },
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+
+                            window.location.reload();
+                       
+                            Swal.fire({
+                                    icon: 'success',
+                                    title: response.data.title,
+                                    text: response.data.content
+                                })
+                            
+                        },
+                        error: function(xhr, status, error) {
+
+                            console.error('Error:', error); // Log the error for debugging
+                            console.error('Response Text:', xhr.responseText);
+                            Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                        }
+                    });
+               
+            });
+        });
+    </script>
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -191,10 +284,6 @@
                     var formData = new FormData();
                     formData.append('answers', JSON.stringify(answers));
                     formData.append('studentId', '{{ $userCourse->id }}');
-                    console.log(JSON.stringify({
-                        answers
-                    }));
-
 
 
                     $.ajax({

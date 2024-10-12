@@ -478,7 +478,7 @@ class AdminController extends Controller
         }
 
 
-        // dd($courseContent);
+        // dd($this->user);
 
         return view('admin.detailKelas', [
             "title" => $title,
