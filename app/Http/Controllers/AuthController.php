@@ -186,28 +186,111 @@ class AuthController extends Controller
         return view('instructor.login');
     }
 
-    public function regisInstructor(Request $request)
+    public function editPengajar(Request $request, $id)
     {
 
-        // Hit API users/auth/register
-        $response = Http::withApiSession()->post($this->apiUrl . 'instructors/auth/register', [
+        $apiSession = session('api_session');
+
+        // Definisikan headers
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Cookie' => 'session=' . $apiSession
+        ];
+
+        // Definisikan body sebagai array associative
+        $body = [
+            'person_id' => $request->id,
+            'education' => $request->education,
+            'experience' => $request->experience,
+        ];
+
+
+        $apiUrl = $this->apiUrl . 'instructors/auth/data';
+
+        // Kirimkan request PUT
+        $response = Http::withHeaders($headers)->put($apiUrl, $body);
+
+        if ($response->successful()) {
+            // Check if a new thumbnail was uploaded
+            // Prepare for the image upload (second API request)
+            if ($request->hasFile('image')) {
+                // Use the attach method for a multipart/form-data request
+                $imageResponse = Http::withHeaders(['Cookie' => 'session=' . $apiSession])
+                    ->attach(
+                        'photo_profile',
+                        fopen($request->file('image')->getRealPath(), 'r'), // Open the file for reading
+                        $request->file('image')->getClientOriginalName() // Get the original filename
+                    )
+                    ->put($this->apiUrl . "instructors/" . $id . "/photo_profile");
+                // Check if the image upload was successful
+
+                // Cek respons API
+                if ($imageResponse->successful()) {
+                    // Debugging: Print response body to see if image upload succeeded
+                    return back()->with('message', 'Data dan thumbnail berhasil diperbarui.');
+                } else {
+                    return back()->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
+                }
+            }
+            // If no thumbnail is uploaded, only update the body
+            return back()->with('message', 'Data berhasil diperbarui.');
+        } else {
+            // Handle case where the bundle data update fails
+            return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
+        }
+    }
+    public function regisInstructor(Request $request)
+    {
+        $apiSession = session('api_session');
+
+        // Definisikan headers
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Cookie' => 'session=' . $apiSession
+        ];
+
+        $body = [
             'email' => $request->email,
             'password' => $request->password,
             'password_confirm' => $request->password_confirm,
-            'full_name' => $request->full_name,
-        ]);
+            'full_name' => $request->full_name
+        ];
+
+
+        // Hit API users/auth/register
+        $api = $this->apiUrl . 'instructors/auth/register';
+        $response = Http::withHeaders($headers)->post($api, $body);
+
+        // Use the attach method for a multipart/form-data request
 
         // Cek jika API mengembalikan sukses
         if ($response->successful()) {
-
             $personId = $response->json('id');
             // Simpan person_id ke sesi
             session(['person_id' => $personId]);
+            if ($request->hasFile('image')) {
+                // Use the attach method for a multipart/form-data request
+                $imageResponse = Http::withHeaders(['Cookie' => 'session=' . $apiSession])
+                    ->attach(
+                        'photo_profile',
+                        fopen($request->file('image')->getRealPath(), 'r'), // Open the file for reading
+                        $request->file('image')->getClientOriginalName() // Get the original filename
+                    )
+                    ->put($this->apiUrl . "instructors/" . $personId . "/photo_profile");
 
-            // Redirect ke halaman yang diinginkan
-            return redirect()->route('instructor.data');
+                // Cek respons API
+                if ($imageResponse->successful()) {
+                    // Debugging: Print response body to see if image upload succeeded
+                    return redirect()->route('instructor.data')->with('success', 'Data dan photo berhasil ditambahkan.');
+                } else {
+                    return back()->withErrors(['error' => 'Data berhasil ditambah, tetapi gagal mengunggah photo.']);
+                }
+            } else {
+                return back()->with('error', $request->body());
+            }
         } else {
-            return redirect()->route('instructor.data')->with('error', $response->body());
+            // Handle case where the bundle data update fails
+            return back()->with('error', $request->body());
         }
     }
     public function loginInstructor(Request $request)
@@ -224,7 +307,6 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password,
         ]);
-
         if ($response->successful()) {
             // Jika berhasil, lakukan sesuatu (misalnya menyimpan token ke session)
             $userData = $response->json(); // Ambil seluruh data dari respons JSON
@@ -247,7 +329,7 @@ class AuthController extends Controller
                 $sessionValue = explode('=', $parts[0])[1];
 
                 // set the session session to laravel session
-                session(['api_session' => $sessionValue]);
+                session(['api_session' => $sessionValue . '=']);
             }
 
             // Validate the response structure
@@ -418,7 +500,7 @@ class AuthController extends Controller
 
         // Cek jika token dan email ada dalam query string
         if ($response->successful()) {
-            return response()->json(['status' => 'success' ,'message' => 'Cek email untuk reset password. Link untuk reset password hanya aktif dalam 5 menit']);
+            return response()->json(['status' => 'success', 'message' => 'Cek email untuk reset password. Link untuk reset password hanya aktif dalam 5 menit']);
         } else {
             return response()->json([
                 'status' => 'error',
@@ -450,7 +532,7 @@ class AuthController extends Controller
         $response = Http::withHeaders($headers)->put($url, $body);
         // Cek jika token dan email ada dalam query string
         if ($response->successful()) {
-            return response()->json(['status' => 'success' , 'message' => 'Password berhasil diubah!']);
+            return response()->json(['status' => 'success', 'message' => 'Password berhasil diubah!']);
         } else {
             return response()->json([
                 'status' => 'error',

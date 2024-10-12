@@ -440,7 +440,7 @@
                             .getAttribute('content')
                     },
                     data: JSON.stringify({
-                        courseId: '{{ $bundling->id }}'
+                        bundleId: '{{ $bundling->id }}'
                     }),
                     success: function(response) {
 
