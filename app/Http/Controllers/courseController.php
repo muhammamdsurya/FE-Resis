@@ -409,7 +409,6 @@ class courseController extends Controller
         $apiUrl = $this->apiUrl . 'courses/categories/' . $id;
 
         $response = Http::withApiSession()->delete($apiUrl);
-        print_r($response->body());
 
         if ($response->successful()) {
             // Optionally, add logic to remove the item from your database

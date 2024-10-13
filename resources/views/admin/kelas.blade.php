@@ -104,8 +104,8 @@
                     <div class="col-lg-3 col-md-4 col-6">
                         <a href="{{ route('detail-kelas', ['id' => $item['id']]) }}" class="text-decoration-none">
                             <div class="card shadow-sm border-light rounded">
-                                <img src="{{ $item['thumbnail_image'] }}" class="card-img-top"
-                                    alt="{{ $item['name'] }}" style="height: 200px; object-fit: cover;">
+                                <img src="{{ $item['thumbnail_image'] }}" class="card-img-top" alt="{{ $item['name'] }}"
+                                    style="height: 200px; object-fit: cover;">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <p class="fs-6 mb-0">
@@ -159,9 +159,6 @@
                 </ul>
             </nav>
         @endif
-
-
-
 
         <!-- Modal Jenjang -->
         <div class="modal fade" id="modal-default" tabindex="-1" aria-labelledby="modal-defaultLabel" aria-hidden="true">
@@ -334,7 +331,6 @@
     <script>
         $(document).ready(function() {
             let categoriesData = {!! $categories !!};
-            console.log(categoriesData);
             let instructorsData = {!! $instructors !!};
 
             // Get the select element
@@ -385,11 +381,11 @@
                     <td>${index + 1}</td>
                     <td>${category.name}</td>
                     <td>
-                        <button class="btn btn-warning edit-btn btn-sm data-id="${category.id}">
+                        <button class="btn btn-warning edit-btn btn-sm" data-id="${category.id}">
                             <i class="fas fa-edit"></i> <!-- Ikon Edit -->
                             <span class="d-none d-sm-inline ml-1">Edit</span> <!-- Teks untuk desktop -->
                         </button>
-                        <button class="btn btn-danger delete-btn btn-sm data-id="${category.id}">
+                        <button class="btn btn-danger delete-btn btn-sm" data-id="${category.id}">
                             <i class="fas fa-trash"></i> <!-- Ikon Hapus -->
                             <span class="d-none d-sm-inline ml-1">Hapus</span> <!-- Teks untuk desktop -->
                         </button>
@@ -433,11 +429,11 @@
                         "name": newName
                     },
                     success: function(response) {
-                        console.log(response);
                         $('#editCategoryModal').modal('hide'); // Hide the modal
                         Swal.fire('Berhasil!', 'Kategori berhasil diupdate.',
                             'success');
-                        loadCategories(); // Reload categories
+                        location.reload();
+
                     },
                     error: function(xhr, status, error) {
                         console.error('Error updating category:', xhr.responseText);
@@ -472,10 +468,10 @@
                     },
                     data: JSON.stringify(data),
                     success: function(response) {
-                        console.log("data:", response);
                         Swal.fire('Berhasil', 'Jenjang berhasil ditambahkan!',
                             'success');
-                        loadCategories(); // Reload categories
+                        location.reload();
+
                     },
                     error: function(xhr, status, error) {
                         console.error('Error adding category:', error);
@@ -490,6 +486,7 @@
                 e.preventDefault();
                 const token = $("meta[name='csrf-token']").attr("content");
                 const categoryId = $(this).data('id');
+                console.log(categoryId);
 
                 Swal.fire({
                     text: "Apa kamu yakin menghapus ini?",
@@ -508,11 +505,11 @@
                                 'X-CSRF-TOKEN': token
                             },
                             success: function(response) {
-                                console.log(response);
                                 Swal.fire('Dihapus!',
                                     'Kategori berhasil dihapus.',
                                     'success');
-                                loadCategories(); // Reload categories
+                                location.reload();
+
                             },
                             error: function(xhr, status, error) {
                                 console.error('Error deleting category:',
