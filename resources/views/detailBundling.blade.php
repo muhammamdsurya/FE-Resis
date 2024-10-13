@@ -115,13 +115,15 @@
                                 {{ number_format($bundling->price, 0, ',', '.') }}
                             </h5>
                             @if ($role == 'admin')
-                            <a href="{{ route('detail-bundling', ['id' => $bundling->id]) }}"  class="btn btn-success btn-lg mt-3 px-4">Edit kelas</a>
-                            @elseif ( $role == 'instructor')
-                            <a href="{{ route('instructor.detail-kelas', ['id' => $course->course->id]) }}"  class="btn btn-success btn-lg mt-3 px-4">Lihat kelas</a>
+                                <a href="{{ route('detail-bundling', ['id' => $bundling->id]) }}"
+                                    class="btn btn-success btn-lg mt-3 px-4">Edit kelas</a>
+                            @elseif ($role == 'instructor')
+                                <a href="{{ route('instructor.detail-kelas', ['id' => $course->course->id]) }}"
+                                    class="btn btn-success btn-lg mt-3 px-4">Lihat kelas</a>
                             @else
-                            <button id="checkoutBtn" class="btn btn-success btn-lg mt-3 px-4">
-                                Belajar Sekarang
-                            </button>
+                                <button id="checkoutBtn" class="btn btn-success btn-lg mt-3 px-4">
+                                    Belajar Sekarang
+                                </button>
                             @endif
 
                         </div>
@@ -168,7 +170,8 @@
                                                 style="object-fit: cover; margin-top: 15px;">
                                             <div class="card-body text-center">
                                                 <h6 class="fw-bold">{{ $instructorName }}</h6> <!-- Use the variable -->
-                                                <p class="text-muted mb-1">{{ $content->instructor->instructor->education }}
+                                                <p class="text-muted mb-1">
+                                                    {{ $content->instructor->instructor->education }}
                                                 </p>
                                                 <span
                                                     class="badge bg-primary">{{ $content->instructor->instructor->experience }}</span>
@@ -237,48 +240,49 @@
 
         <div class="container">
             <div class="row gx-2 gy-4">
-                @foreach ($contents as $content)
-                    <div class="col-lg-3 col-md-4 col-6 mb-4" data-aos="fade-up" data-aos-delay="100">
-                        <a href="{{ route('detail.kelas', ['courseId' => $content->course->id]) }}"
-                            class="text-decoration-none">
-                            <div class="card h-100 shadow border-0 position-relative"
-                                style="border-radius: 15px; overflow: hidden">
-                                <img src="{{ $content->course->thumbnail_image ?? 'assets/img/values-1.png' }}"
-                                    class="card-img-top" alt="{{ $content->course->name }}"
-                                    style="height: 100px; object-fit: cover; border-radius: 15px 15px 0 0;" />
-                                <div class="card-body">
-                                    <div class="header-card d-flex justify-content-between mb-2">
-                                        <p class="text-muted fs-6 mb-0">
-                                            <i class="bi bi-star-fill text-warning me-1"></i> 4.9
-                                        </p>
-                                        <p class="badge bg-primary fs-6 mb-0">
+                @if ($contents)
+                    @foreach ($contents as $content)
+                        <div class="col-lg-3 col-md-4 col-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                            <a href="{{ route('detail.kelas', ['courseId' => $content->course->id]) }}"
+                                class="text-decoration-none">
+                                <div class="card h-100 shadow border-0 position-relative"
+                                    style="border-radius: 15px; overflow: hidden">
+                                    <img src="{{ $content->course->thumbnail_image ?? 'assets/img/values-1.png' }}"
+                                        class="card-img-top" alt="{{ $content->course->name }}"
+                                        style="height: 100px; object-fit: cover; border-radius: 15px 15px 0 0;" />
+                                    <div class="card-body">
+                                        <div class="header-card d-flex justify-content-between mb-2">
+                                            <p class="badge bg-primary fs-6 mb-0">
+                                                {{ $content->course->name }}
+                                            </p>
+                                        </div>
+
+                                        <h5 class="card-title fw-bold text-dark">
                                             {{ $content->course->name }}
+                                        </h5>
+                                        <h6 class="text-success fw-bold mb-3">
+                                            Rp {{ number_format($content->course->price, 0, ',', '.') }}
+                                        </h6>
+                                        <p class="card-text text-muted mb-0">
+                                            {{ Str::limit($content->course->description, 10) }} {{-- Limit description to avoid overflow --}}
                                         </p>
                                     </div>
 
-                                    <h5 class="card-title fw-bold text-dark">
-                                        {{ $content->course->name }}
-                                    </h5>
-                                    <h6 class="text-success fw-bold mb-3">
-                                        Rp {{ number_format($content->course->price, 0, ',', '.') }}
-                                    </h6>
-                                    <p class="card-text text-muted mb-0">
-                                        {{ Str::limit($content->course->description, 10) }} {{-- Limit description to avoid overflow --}}
-                                    </p>
-                                </div>
-
-                                <!-- Dark overlay on hover -->
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="text-center">
-                                        <p class="text-white fw-bold fs-5">
-                                            Lihat Detail
-                                        </p>
+                                    <!-- Dark overlay on hover -->
+                                    <div class="overlay d-flex align-items-center justify-content-center">
+                                        <div class="text-center">
+                                            <p class="text-white fw-bold fs-5">
+                                                Lihat Detail
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
+                            </a>
+                        </div>
+                    @endforeach
+                @else
+                    <p>Belum ada kelas</p>
+                @endif
             </div>
         </div>
     </section>
@@ -293,129 +297,69 @@
             <p class="text-muted">Pengalaman dari mereka tentang kelas ini</p>
         </div>
         <!-- End Section Title -->
+        <div class="container">
+            @foreach ($ratings as $rating)
+                @if (!empty($rating->data))
+                    <!-- This checks if 'data' is not empty or null -->
+                    @foreach ($rating->data as $row)
+                        <div class="rating-box">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5>{{ $row->student_name }}</h5>
+                                    <p class="mb-0">{{ $row->description }} stars</p>
+                                </div>
 
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
-            <div class="swiper init-swiper">
-                <script type="application/json" class="swiper-config">
-                {
-                    "loop": true,
-                    "speed": 600,
-                    "autoplay": {
-                        "delay": 5000
-                    },
-                    "slidesPerView": "auto",
-                    "pagination": {
-                        "el": ".swiper-pagination",
-                        "type": "bullets",
-                        "clickable": true
-                    },
-                    "breakpoints": {
-                        "320": {
-                            "slidesPerView": 1,
-                            "spaceBetween": 40
-                        },
-                        "1200": {
-                            "slidesPerView": 3,
-                            "spaceBetween": 1
-                        }
-                    }
-                }
-            </script>
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div class="testimonial-item">
-                            <div class="stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i>
-                            </div>
-                            <p>
-                                Pembelajarannya menarik ditambah lagi ada tips cara
-                                jawab latihan soal dengan cepat, apalagi
-                                praktikumnya menggunakan app simuasi yang keadaannya
-                                standar.Thanks ya ka.
-                            </p>
-                            <div class="profile mt-auto">
-                                <img src="{{ asset('assets/img/testimonials/testimonials-4.jpg') }}"
-                                    class="testimonial-img" alt="" />
-                                <h3>Dinda</h3>
-                                <h4>Umum</h4>
+                                <div class="rating-stars fs-3">
+                                    @for ($i = 1; $i <= $row->rating; $i++)
+                                        <i class="bi bi-star-fill text-warning me-1"></i>
+                                    @endfor
+                                </div>
+
                             </div>
                         </div>
-                    </div>
-                    <!-- End testimonial item -->
+                    @endforeach
 
-                    <div class="swiper-slide">
-                        <div class="testimonial-item">
-                            <div class="stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i>
-                            </div>
-                            <p>
-                                kadimm enak mengajarnya, menjelaskan dengan detail
-                                terkait materi yang diajarkan, menerima dan menjawab
-                                pertanyaan yang masih kita bingung/kurang paham
-                                jugaa
-                            </p>
-                            <div class="profile mt-auto">
-                                <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}"
-                                    class="testimonial-img" alt="" />
-                                <h3>Elvyra</h3>
-                                <h4>Siswi di SMK Negeri 5 Kota Bekasi</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End testimonial item -->
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <!-- Previous Button -->
+                            @if ($rating->pagination->page > 1)
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="{{ route('detail.bundling', ['page' => $rating->pagination->page - 1]) }}">Previous</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <a class="page-link">Previous</a>
+                                </li>
+                            @endif
 
-                    <div class="swiper-slide">
-                        <div class="testimonial-item">
-                            <div class="stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i>
-                            </div>
-                            <p>
-                                Materi yang disajikan sangat mudah dipahami dan
-                                langsung dapat diaplikasikan dalam pekerjaan
-                                sehari-hari saya sebagai ahli kimia. Terima kasih,
-                                Akuanalis.com!"
-                            </p>
-                            <div class="profile mt-auto">
-                                <img src="{{ asset('assets/img/testimonials/testimonials-2.jpg') }}"
-                                    class="testimonial-img" alt="" />
-                                <h3>Azizah</h3>
-                                <h4>Umum</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End testimonial item -->
+                            <!-- Page Numbers -->
+                            @for ($i = 1; $i <= $rating->pagination->total_page; $i++)
+                                <li class="page-item {{ $rating->pagination->page === $i ? 'active' : '' }}">
+                                    <a class="page-link"
+                                        href="{{ route('detail.bundling', ['courseBundleId' => $bundling->id, 'page' => $i]) }}">{{ $i }}</a>
+                                </li>
+                            @endfor
 
-                    <div class="swiper-slide">
-                        <div class="testimonial-item">
-                            <div class="stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i>
-                            </div>
-                            <p>
-                                Materi yang disajikan sangat mudah dipahami dan
-                                langsung dapat diaplikasikan dalam pekerjaan
-                                sehari-hari saya sebagai ahli kimia. Terima kasih,
-                                Akuanalis.com!"
-                            </p>
-                            <div class="profile mt-auto">
-                                <img src="{{ asset('assets/img/testimonials/testimonials-3.jpg') }}"
-                                    class="testimonial-img" alt="" />
-                                <h3>Azizah</h3>
-                                <h4>Umum</h4>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End testimonial item -->
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
+                            <!-- Next Button -->
+                            @if ($rating->pagination->page < $rating->pagination->total_page)
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="{{ route('detail.bundling', ['courseBundleId' => $bundling->id, 'page' => $ratings->pagination->page + 1]) }}">Next</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <a class="page-link">Next</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </nav>
+                @else
+                    <p>Belum ada rating</p>
+                @endif
+            @endforeach
+
+
         </div>
     </section>
     <!-- /Testimonials Section -->
@@ -430,7 +374,7 @@
 
 
             if ('{{ $isLogin }}' == 'y') {
-
+                createOverlay("Proses Membeli Kelas...");
                 $.ajax({
                     url: '{{ route('user.checkout') }}', // Direct API endpoint
                     method: 'POST',
@@ -440,10 +384,10 @@
                             .getAttribute('content')
                     },
                     data: JSON.stringify({
-                        courseId: '{{ $bundling->id }}'
+                        bundleId: '{{ $bundling->id }}'
                     }),
                     success: function(response) {
-
+                        gOverlay.hide()
                         // Swal.fire('Berhasil', response.data.message, 'success');
                         if (response.data.midtrans_snap_token) {
                             const midTransSnap = new MidTransSnap(response.data.midtrans_snap_token);
@@ -452,8 +396,7 @@
 
                     },
                     error: function(xhr, status, error) {
-                        console.error('Error:', error); // Log the error for debugging
-                        console.error('Response Text:', xhr.responseText);
+                        gOverlay.hide()
                         Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                     }
                 });

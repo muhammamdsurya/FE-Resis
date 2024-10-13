@@ -232,8 +232,8 @@ class courseForumController extends Controller
                      ], $response->status());
                  }
        }
-       public function courseForums($courseId) {
-              $response = Http::withApiSession()->get($this->apiUrl. 'courses/'.$courseId.'/forums');
+       public function courseForums($courseId, $page) {
+              $response = Http::withApiSession()->get($this->apiUrl. 'courses/'.$courseId.'/forums?page='.$page);
 
 
               return  json_decode(json_encode($response->json()));

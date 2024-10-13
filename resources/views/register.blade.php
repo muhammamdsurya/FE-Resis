@@ -182,6 +182,7 @@
                     full_name: nameInput.val().trim(),
                 };
 
+                createOverlay("Proses...");
                 $.ajax({
                     method: 'POST',
                     url: '{{ route('register') }}', // URL ke Laravel controller
@@ -190,6 +191,7 @@
                     processData: false, // Tidak memproses data menjadi query string
                     success: function(response) {
                         if (response.status === 'success') {
+                            gOverlay.hide()
                             Swal.fire(
                                 'Berhasil!',
                                 response.message,
@@ -199,6 +201,7 @@
                                     '/login'; // Redirect ke halaman login
                             });
                         } else {
+                            gOverlay.hide()
                             Swal.fire(
                                 'Ooops!',
                                 response.message,

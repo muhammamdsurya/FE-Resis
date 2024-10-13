@@ -108,7 +108,7 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     // admin data
     Route::delete('data-admin/{id}', [AdminController::class, 'deleteAdmin'])->name('admin.dataAdmin.delete');
     Route::delete('data-pengajar/{id}/delete', [AdminController::class, 'deletePengajar'])->name('admin.dataPengajar.delete');
-    Route::delete('data-pengajar/{id}/edit', [AdminController::class, 'editPengajar'])->name('admin.dataPengajar.edit');
+    Route::post('data-pengajar/{id}/edit', [AdminController::class, 'editPengajar'])->name('admin.dataPengajar.edit');
     Route::post('data-admin/admin/post', [AuthController::class, 'regisAdmin'])->name('admin.dataAdmin.regis');
     Route::post('data-admin/instructor/post', [AuthController::class, 'regisInstructor'])->name('admin.dataInstructor.regis');
 
@@ -142,8 +142,10 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::post('/diskusi-kelas/{courseId}/image', [courseForumController::class, 'imageForum'])->name('diskusi.post.img');
     Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('diskusi.post.reply');
     Route::post('/diskusi-kelas/{courseId}/reply/image', [courseForumController::class, 'imageReplyForum'])->name('diskusi.post.reply.img');
+    Route::post('/diskusi-kelas/{courseId}/reply/delete', [courseForumController::class, 'deleteReplyCourseForum'])->name('diskusi.reply.delete');
 
     Route::post('/quiz/answer/{contentId}', [userCourseController::class, 'answerQuiz'])->name('quiz.answer');
+    Route::post('/kelas/rate', [userCourseController::class, 'rate'])->name('kelas.rate');
 
     Route::post('/checkout', [transactionController::class, 'checkout'])->name('user.checkout');
 });

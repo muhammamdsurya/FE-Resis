@@ -391,12 +391,13 @@ class AdminController extends Controller
 
         // Definisikan body sebagai array associative
         $body = [
-            'id' => $request->id,
+            'person_id' => $request->id,
             'education' => $request->education,
             'experience' => $request->experience,
         ];
 
-        $apiUrl = $this->apiUrl . 'instructors/auth/data' . $id;
+
+        $apiUrl = $this->apiUrl . 'instructors/auth/data';
 
         // Kirimkan request PUT
         $response = Http::withHeaders($headers)->put($apiUrl, $body);
@@ -408,12 +409,11 @@ class AdminController extends Controller
                 // Use the attach method for a multipart/form-data request
                 $imageResponse = Http::withHeaders(['Cookie' => 'session=' . $apiSession])
                     ->attach(
-                        'thumbnail_image',
+                        'photo_profile',
                         fopen($request->file('image')->getRealPath(), 'r'), // Open the file for reading
                         $request->file('image')->getClientOriginalName() // Get the original filename
                     )
-                    ->put($this->apiUrl . "courses/" . $id . "/thumbnail");
-
+                    ->put($this->apiUrl . "instructors/" . $id . "/photo_profile");
                 // Check if the image upload was successful
 
                 // Cek respons API
@@ -532,7 +532,7 @@ class AdminController extends Controller
         }
 
 
-        // dd($courseContent);
+        // dd($this->user);
 
         return view('admin.detailKelas', [
             "title" => $title,
@@ -599,17 +599,22 @@ class AdminController extends Controller
     }
 
 
-    public function diskusi($courseId)
+    public function diskusi(Request $request,$courseId)
     {
         $title = 'Diskusi';
 
 
-        $courseForums = $this->courseForumCtrl->courseForums($courseId);
+        $page = $request->get('page') ?? 0;
+
+        
+        $courseForums = $this->courseForumCtrl->courseForums($courseId, $page);
+        if(isset($courseForums->data)){
         foreach ($courseForums->data as $courseForum) {
             $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
 
             $courseForum->reply_count = count($courseForum->course_forum_reply);
         };
+    }
         // dd($courseForums);
         // Lakukan operasi lain yang diperlukan
 

@@ -15,58 +15,70 @@ class transactionController extends Controller
         $this->apiUrl = env('API_URL');
     }
 
-    function checkout(Request $request) {
+    function checkout(Request $request)
+    {
         $courseId = $request->get('courseId');
-              if (!$courseId) {
-                     return response()->json([
-                            'success' => false,
-                            'message' => 'Invalid Course'
-                     ], 400);
-              }
+        $bundleId = $request->get('bundleId');
 
-              $apiSession = session('api_session');
+        if (!$courseId && !$bundleId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid Course'
+            ], 400);
+        }
 
-              $headers = [
-                     'Content-Type' => 'application/json',
-                     'Cookie' => 'session=' . $apiSession
-                 ];
+        $apiSession = session('api_session');
 
-                 $body =[
-                    'course_bundle_id' => $courseId
-                 ];
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Cookie' => 'session=' . $apiSession
+        ];
 
-                 $response = Http::withHeaders($headers)->post($this->apiUrl. 'courses/transactions/token', $body);
+        if ($courseId) {
+            $body = [
+                'course_id' => $courseId
+            ];
+        } else {
+            $body = [
+                'course_bundle_id' => $bundleId
+            ];
+        }
 
-                 if ($response->successful()) {
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Berhasil membuat  invoice pembayaran',
-                        'data' => json_decode($response->getBody()->getContents())
-                    ], 200);
-                } else {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Gagal membeli kelas' ,
-                        'error' => $response->body() // Include error details if available
-                    ], $response->status());
-                }
+        $response = Http::withHeaders($headers)->post($this->apiUrl . 'courses/transactions/token', $body);
+
+        if ($response->successful()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil membuat  invoice pembayaran',
+                'data' => json_decode($response->getBody()->getContents())
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal membeli kelas',
+                'error' => $response->body() // Include error details if available
+            ], $response->status());
+        }
     }
 
-    function getTransactions($page, $status)  {
-        $response = Http::withApiSession()->get($this->apiUrl. 'courses/transactions?status='.$status.'&page='.$page);
+    function getTransactions($page, $status)
+    {
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/transactions?status=' . $status . '&page=' . $page);
 
         return  json_decode($response->getBody()->getContents());
     }
-    function getTransactionsActive()  {
-        $response = Http::withApiSession()->get($this->apiUrl. 'courses/transactions/active');
+    function getTransactionsActive()
+    {
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/transactions/active');
 
         return  json_decode($response->getBody()->getContents());
     }
 
 
-    function helo() {
+    function helo()
+    {
         // $response = Http::withApiSession()->get(env('API_URL'). 'user/'.$this->user['id'].'/courses');
-        $response = Http::withApiSession()->get(env('API_URL'). 'courses/9fc1f3e6-be61-424e-9c09-414f9a39b4da/forums');
+        $response = Http::withApiSession()->get(env('API_URL') . 'courses/9fc1f3e6-be61-424e-9c09-414f9a39b4da/forums');
         dd($response->body());
     }
 }

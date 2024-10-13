@@ -1,105 +1,112 @@
 @extends('layout.userLayout')
 @section('title', $title)
-
-@section('filter')
-<!-- Filter Dropdown -->
-<div class="filter-dropdown d-md-inline-block ms-md-3">
-    <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-            Filter
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <li><a class="dropdown-item" href="#">Semua</a></li>
-            <li><a class="dropdown-item" href="#">Terbaru</a></li>
-            <li><a class="dropdown-item" href="#">Diskusi Saya</a></li>
-        </ul>
-    </div>
-</div>
-@endsection
-
 @section('content')
 
-<style>
-    .post,
-    .comment {
-        background-color: #ffffff;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 15px;
-        margin-bottom: 15px;
-    }
+    <style>
+        .post,
+        .comment {
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
 
-    .comment {
-        margin-left: 20px;
-        background-color: #ffffff;
-    }
+        .comment {
+            margin-left: 20px;
+            background-color: #ffffff;
+        }
 
-    .filter-btn {
-        margin-bottom: 15px;
-    }
+        .filter-btn {
+            margin-bottom: 15px;
+        }
 
-    .comment-form,
-    .post-form {
-        margin-bottom: 15px;
-    }
-</style>
-<div class="container-fluid">
-    <div class="row">
-        <!-- Kolom Diskusi -->
-        <div class="col-12 col-md-9">
-            <div class="post-form">
-                <div class="d-flex">
-                    <img src="{{ asset ('assets/img/testimonials/testimonials-1.jpg')}}" width=50 height=50 class="rounded-circle mr-3" alt="User">
-                    <div class="w-100">
-                        <form action="">
-                            <input type="text" class="form-control mb-2" placeholder="Judul postingan baru..." id="questionTitle" required>
-                            <textarea rows="3" placeholder="Tulis postingan baru..." id="questionContent"></textarea>
-                        </form>
-                        <input type="file" class="form-control mb-3 mt-3" id="questionImageFile"
-                        name="video_file" required>
-                        <button id="btnForumSend" class="btn btn-primary mt-2">Kirim Postingan</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Daftar Postingan -->
-             @if(isset($courseForums->data))
-             @foreach($courseForums->data as $courseForum)
-            <div id="posts">
-                <div class="post" onclick="showReply('{{$courseForum->course_forum_question->id}}')">
+        .comment-form,
+        .post-form {
+            margin-bottom: 15px;
+        }
+    </style>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Kolom Diskusi -->
+            <div class="col-12">
+                <div class="post-form">
                     <div class="d-flex">
-                        <img src="{{ asset ('assets/img/testimonials/testimonials-1.jpg')}}" width=50 height=50 class="rounded-circle mr-3" alt="User">
-                        <div>
-                            <h5 class="mb-2">{{$courseForum->student_name}}</h5>
-                            @if(isset($courseForum->course_forum_question->question_image))
-                            <img src="{{$courseForum->course_forum_question->question_image}}" alt="">
-                            @endif
-                            <h6 class="mb-1">{{$courseForum->course_forum_question->question_rtitle}}</h6>
-                            <p>{!!$courseForum->course_forum_question->question_content!!}</p>
-                            <small>{{$courseForum->reply_count}} Komentar</small>
-                            @if($courseForum->course_forum_question->course_student_id == $userCourse->id)
-                                   <div>
-                                   <button type="button" onclick="deleteForum('{{$courseForum->course_forum_question->id}}')" class="btn btn-danger mt-2">Hapus <i class="fas fa-trash"></i></button>
-                                   </div>
-                            @endif
+                        <img src="{{ asset('assets/img/testimonials/profile.jpg') }}" width=50 height=50
+                            class="rounded-circle mr-3" alt="User">
+                        <div class="w-100">
+                            <form action="">
+                                <input type="text" class="form-control mb-2" placeholder="Judul postingan baru..."
+                                    id="questionTitle" required>
+                                <textarea rows="3" placeholder="Tulis postingan baru..." id="questionContent"></textarea>
+                            </form>
+                            <input type="file" class="form-control mb-3 mt-3" id="questionImageFile" name="video_file"
+                                required>
+                            <button id="btnForumSend" class="btn btn-primary mt-2">Kirim Postingan</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Komentar (diungkapkan saat postingan diklik) -->
-                <div id="comments-{{$courseForum->course_forum_question->id}}" style="display:none;">
-                    @foreach($courseForum->course_forum_reply as $reply)
-                    <div class="comment ml-5">
-                        <div class="d-flex">
-                            <img src="{{ asset ('assets/img/testimonials/testimonials-1.jpg')}}" width=50 height=50 class="rounded-circle mr-3" alt="User">
-                            <div>
-                                <h6>{{$reply->name}}</h6>
-                                <p>{!! $reply->course_forum_question_reply->reply !!}</p>
+                <!-- Daftar Postingan -->
+                @if (isset($courseForums->data))
+                    @foreach ($courseForums->data as $courseForum)
+                        <div id="posts">
+                            <div class="post" onclick="showReply('{{ $courseForum->course_forum_question->id }}')">
+                                <div class="post">
+                                    <div class="d-flex align-items-start justify-content-between">
+                                        <div class="d-flex align-items-start">
+                                            <img src="{{ asset('assets/img/testimonials/profile.jpg') }}" width=50 height=50
+                                                class="rounded-circle me-3" alt="User">
+                                            <div>
+                                                <h5 class="mb-1">{{ $courseForum->student_name }}</h5>
+                                                @if (isset($courseForum->course_forum_question->question_image))
+                                                    <img src="{{ $courseForum->course_forum_question->question_image }}"
+                                                        alt="" class="img-fluid rounded mb-2">
+                                                @endif
+                                                <h6 class="mb-1">
+                                                    {{ $courseForum->course_forum_question->question_rtitle }}</h6>
+                                                <p class="">{!! $courseForum->course_forum_question->question_content !!}</p>
+                                                <small class="text-muted cursor-pointer">Lihat {{ $courseForum->reply_count }} Komentar</small>
+                                            </div>
+                                        </div>
+                                        @if ($courseForum->course_forum_question->course_student_id == $userCourse->id)
+                                            <button type="button"
+                                                onclick="deleteForum('{{ $courseForum->course_forum_question->id }}')"
+                                                class="btn btn-danger mt-2">Hapus <i class="fas fa-trash"></i></button>
+                                        @endif
+                                    </div>
+                                </div>
+
                             </div>
-                        </div>
-                    </div>
-                    @endforeach
-                    <!-- Tambahkan lebih banyak komentar di sini -->
+
+                            <!-- Komentar (diungkapkan saat postingan diklik) -->
+                            <div id="comments-{{ $courseForum->course_forum_question->id }}" style="display:none;">
+                                @foreach ($courseForum->course_forum_reply as $reply)
+                                    <div class="comment ml-5">
+                                        <div class="d-flex align-items-start justify-content-between mb-3">
+                                            <div class="d-flex align-items-start w-100">
+                                                <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}"
+                                                    width=50 height=50 class="rounded-circle me-3" alt="User">
+                                                <div class="w-100">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <h6 class="mb-0">{{ $reply->name }}</h6>
+                                                        @if ($reply->course_forum_question_reply->person_id == $id)
+                                                            <button type="button"
+                                                                onclick="deleteForumReply('{{ $courseForum->course_forum_question->id }}', '{{ $reply->course_forum_question_reply->id }}')"
+                                                                class="btn btn-danger btn-sm ms-auto">Hapus <i
+                                                                    class="fas fa-trash"></i></button>
+                                                        @endif
+                                                    </div>
+                                                    @if (isset($reply->course_forum_question_reply->reply_image))
+                                                        <img src="{{ $reply->course_forum_question_reply->reply_image }}"
+                                                            alt="" class="img-fluid mt-2">
+                                                    @endif
+                                                    <p class="mt-2">{!! $reply->course_forum_question_reply->reply !!}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                                <!-- Tambahkan lebih banyak komentar di sini -->
 
                     <!-- Formulir Komentar -->
                     <div class="comment-form">
@@ -117,55 +124,90 @@
             </div>
             @endforeach
             @endif
+            <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <!-- Previous Button -->
+                            @if ($courseForums->pagination->page > 1)
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="/user/diskusi-kelas/{{$courseId}}?page={{$courseForums->pagination->page - 1}}">Previous</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <a class="page-link">Previous</a>
+                                </li>
+                            @endif
+
+                            <!-- Page Numbers -->
+                            @for ($i = 1; $i <= $courseForums->pagination->total_page; $i++)
+                                <li class="page-item {{ $courseForums->pagination->page === $i ? 'active' : '' }}">
+                                    <a class="page-link" href="/user/diskusi-kelas/{{$courseId}}?page={{$i}}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            <!-- Next Button -->
+                            @if ($courseForums->pagination->page < $courseForums->pagination->total_page)
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="/user/diskusi-kelas/{{$courseId}}?page={{$courseForums->pagination->page + 1}}">Next</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <a class="page-link">Next</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </nav>
         </div>
 
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- SummerNote -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
 
-<script>
-$(document).ready(function() {
-    $('#questionContent').summernote({
-        toolbar: [
-            // [groupName, [list of button]]
-            ['style', ['bold', 'italic', 'underline']], // Text styles
-            ['color', ['color']], // Text color
-            ['para', ['ul', 'ol']], // Lists
-            ['misc', ['undo', 'redo']] // Miscellaneous
-        ],
-        height: 300, // Set editor height
-        placeholder: 'Type your text here...' // Placeholder text
-    });
-    $('.replyForum').summernote({
-        toolbar: [
-            // [groupName, [list of button]]
-            ['style', ['bold', 'italic', 'underline']], // Text styles
-            ['color', ['color']], // Text color
-            ['para', ['ul', 'ol']], // Lists
-            ['misc', ['undo', 'redo']] // Miscellaneous
-        ],
-        height: 300, // Set editor height
-        placeholder: 'Type your text here...' // Placeholder text
-    });
-});
+    <script>
+        $(document).ready(function() {
+            $('#questionContent').summernote({
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline']], // Text styles
+                    ['color', ['color']], // Text color
+                    ['para', ['ul', 'ol']], // Lists
+                    ['misc', ['undo', 'redo']] // Miscellaneous
+                ],
+                height: 300, // Set editor height
+                placeholder: 'Type your text here...' // Placeholder text
+            });
+            $('.replyForum').summernote({
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline']], // Text styles
+                    ['color', ['color']], // Text color
+                    ['para', ['ul', 'ol']], // Lists
+                    ['misc', ['undo', 'redo']] // Miscellaneous
+                ],
+                height: 300, // Set editor height
+                placeholder: 'Type your text here...' // Placeholder text
+            });
+        });
 
 
-function send(id){
-    const reply = $('#reply-'+id).val()
-    
+        function send(id) {
+            const reply = $('#reply-' + id).val()
 
-    
+
+
     var formData = new FormData();
     formData.append('reply', reply);
     formData.append('forumId', id);
-   
 
+    createOverlay("Proses...");
         $.ajax({
 
-                url: '{{ route("diskusi.post.reply", $courseId) }}', // Direct API endpoint
+                url: '{{ route('diskusi.post.reply', $courseId) }}', // Direct API endpoint
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
@@ -174,16 +216,16 @@ function send(id){
                 data: formData,
                 processData: false,
                 contentType: false,
-                success:  async function(response) {
-                    const replyImg = $('#replyImageFile-'+id)[0].files[0];
-                    
+                success: async function(response) {
+                    const replyImg = $('#replyImageFile-' + id)[0].files[0];
+
                     if (replyImg) {
                         var formData = new FormData();
                         formData.append('forumId', id);
                         formData.append('replyImg', replyImg);
                         formData.append('replyId', response.data.course_forum_question_reply.id);
                         await $.ajax({
-                            url: '{{ route("diskusi.post.reply.img", $courseId) }}', // Direct API endpoint
+                            url: '{{ route('diskusi.post.reply.img', $courseId) }}', // Direct API endpoint
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
@@ -192,19 +234,18 @@ function send(id){
                             data: formData,
                             processData: false,
                             contentType: false,
-                            success: function(response) {
-                            },
+                            success: function(response) {},
                             error: function(xhr, status, error) {
-                                console.log( xhr.responseJSON.message);
-                                console.log( xhr.responseJSON.error);
-                                
+                                console.log(error);
+                                console.log(xhr.responseJSON.message);
+                                console.log(xhr.responseJSON.error);
+
                                 Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                             }
                         });
                     }
-                
-                    console.log(response);
-                    
+
+                    gOverlay.hide()
                     window.location.reload()
                     Swal.fire('Berhasil', 'Berhasil membalas diskusi', 'success');
 
@@ -212,14 +253,15 @@ function send(id){
                 error: function(xhr, status, error) {
                     Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                 }
-                });
+            });
 
-}
+        }
 
 
-function deleteForum(forumId){
+        function deleteForum(forumId) {
             var formData = new FormData();
             formData.append('forumId', forumId);
+            createOverlay("Proses...");
             $.ajax({
                         url: '{{ route("diskusi.delete", $courseId) }}', // Direct API endpoint
                         method: 'POST',
@@ -231,40 +273,42 @@ function deleteForum(forumId){
                         processData: false,
                         contentType: false,
                         success: function(response) {
+                            gOverlay.hide()
                             Swal.fire('Berhasil', 'Berhasil menghapus diskusi', 'success');
                         },
                         error: function(xhr, status, error) {
+                        gOverlay.hide()
                             console.log( xhr.responseJSON.message);
                             console.log( xhr.responseJSON.error);
                             console.log(xhr);
                             console.log( `ERROR : ${error}`);
-                            
+
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                         }
                     });
 }
 
-function showReply(id){
-    const comments = document.getElementById('comments-'+id);
-    comments.style.display = comments.style.display === 'none' ? 'block' : 'none';
+        function showReply(id) {
+            const comments = document.getElementById('comments-' + id);
+            comments.style.display = comments.style.display === 'none' ? 'block' : 'none';
 
-}
-
-
-    $('#btnForumSend').on('click', function(event) {
-        event.preventDefault(); // Prevent the default form submission
-
-        const questionTitle = $('#questionTitle').val()
-        const questionContent = $('#questionContent').val()
-
-
-        var data ={
-            questionTitle: questionTitle,
-            questionContent: questionContent,
         }
 
 
+        $('#btnForumSend').on('click', function(event) {
+            event.preventDefault(); // Prevent the default form submission
 
+            const questionTitle = $('#questionTitle').val()
+            const questionContent = $('#questionContent').val()
+
+
+            var data = {
+                questionTitle: questionTitle,
+                questionContent: questionContent,
+            }
+
+
+        createOverlay("Proses...");
         $.ajax({
 
             url: '{{ route("diskusi.post", $courseId) }}', // Direct API endpoint
@@ -296,22 +340,54 @@ function showReply(id){
                         error: function(xhr, status, error) {
                             console.log( xhr.responseJSON.message);
                             console.log( xhr.responseJSON.error);
-                            
+
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                         }
                     });
                 }
-            
-                
+
+                gOverlay.hide()
                 window.location.reload()
                 Swal.fire('Berhasil', 'Berhasil membuat diskusi', 'success');
 
-            },
-            error: function(xhr, status, error) {
-                Swal.fire('Oops!', xhr.responseJSON.message, 'error');
-            }
-        });
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                }
+            });
 
-    })
+        })
+
+        function deleteForumReply(forumId, replyId) {
+            var formData = new FormData();
+            formData.append('forumId', forumId);
+            formData.append('replyId', replyId);
+            createOverlay("Proses...");
+            $.ajax({
+                        url: '{{ route("diskusi.reply.delete", $courseId) }}', // Direct API endpoint
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content')
+                        },
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            gOverlay.hide()
+                            Swal.fire('Berhasil', 'Berhasil menghapus balasan diskusi', 'success');
+                            window.location.reload()
+                        },
+                        error: function(xhr, status, error) {
+                            gOverlay.hide()
+                            console.log( xhr.responseJSON.message);
+                            console.log( xhr.responseJSON.error);
+                            console.log(xhr);
+                            console.log( `ERROR : ${error}`);
+
+                            Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                        }
+                    });
+}
 </script>
 @endsection

@@ -24,16 +24,19 @@ class publicController extends Controller
     {
         $title = 'Kelas';
         $page = $request->input('page', 1); // Default to page 1 if not set
-          // Ambil nilai input 'q' dari form
-          $query = $request->input('q');
+        // Ambil nilai input 'q' dari form
+        $query = $request->input('q');
+        $free = $request->input('free');
 
-          if ($query) {
-              // Fetch courses dengan parameter query
-              $courses = $this->courseCtrl->getSearchCourse(urlencode($query));
-          } else {
-              // Fetch courses tanpa pencarian
-              $courses = $this->courseCtrl->getAllCourse($page);
-            }
+        if ($query) {
+            // Fetch courses dengan parameter query
+            $courses = $this->courseCtrl->getSearchCourse(urlencode($query));
+        } else if ($free) {
+            $courses = $this->courseCtrl->getFreeCourse($page);
+        } else {
+            // Fetch courses tanpa pencarian
+            $courses = $this->courseCtrl->getAllCourse($page);
+        }
 
         // Fetch paginated courses
 
@@ -51,20 +54,23 @@ class publicController extends Controller
     {
 
         $title = 'Kelas';
-        $course = $this->courseCtrl->getCourseById($courseId);  
+        $course = $this->courseCtrl->getCourseById($courseId);
+        $ratings = $this->courseCtrl->getCourseRating($courseId);
         $content = $this->courseCtrl->getCourseContentById($courseId);
 
         $isLogin = 'n';
         $alreadyCourse = 'n';
         if ($this->user != null) {
+            $role = $this->user['role'];
             $isLogin = 'y';
             $userCourses = $this->userCourseCtrl->getCoursesUserByCourseId($courseId);
 
             // dd($userCourses);
-            if($userCourses){
+            if ($userCourses) {
                 $alreadyCourse = 'y';
             }
         } else {
+            $role = '';
             $isLogin = 'n';
         }
 
@@ -72,10 +78,11 @@ class publicController extends Controller
         return view('detailKelas', [
             "title" => $title,
             'course' => $course,
-            'role' => $this->user['role'],
+            'role' => $role,
             'content' => $content,
             'isLogin' => $isLogin,
-            'alreadyCourse' => $alreadyCourse
+            'alreadyCourse' => $alreadyCourse,
+            'ratings' => $ratings
         ]);
     }
 
@@ -105,15 +112,22 @@ class publicController extends Controller
         $contentsId = $this->courseCtrl->getBundlingContentById($courseId);
 
         $contents = [];
-        foreach ($contentsId as $row) {
-            $contents[] = $this->courseCtrl->getCourseById($row);
+        $ratings = [];
+        if ($contentsId) {
+            foreach ($contentsId as $row) {
+                $contents[] = $this->courseCtrl->getCourseById($row);
+                $ratings[] = $this->courseCtrl->getCourseRating($row);
+            }
         }
+
 
         $isLogin = 'n';
         if ($this->user != null) {
+            $role = $this->user['role'];
             $isLogin = 'y';
             // dd($course);
         } else {
+            $role = '';
             $isLogin = 'n';
         }
 
@@ -121,7 +135,8 @@ class publicController extends Controller
         return view('detailBundling', [
             "title" => $title,
             'bundling' => $bundling,
-            'role' => $this->user['role'],
+            'ratings' => $ratings,
+            'role' => $role,
             'contents' => $contents, // Pastikan ini adalah array
             'isLogin' => $isLogin
         ]);

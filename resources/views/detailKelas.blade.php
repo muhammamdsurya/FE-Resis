@@ -57,6 +57,18 @@
             color: #6c757d;
             /* Muted color for subtitle */
         }
+
+        .rating-stars {
+            color: #f8d64e;
+        }
+
+        .rating-box {
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
     </style>
     <section id="detail-kelas" class="hero section py-5" style="background-color: #f9f9f9;">
         <div class="container my-5">
@@ -98,14 +110,15 @@
                         <div class="card-body text-center py-4">
                             <h5 class="card-title text-success fw-bold fs-3">Rp.
                                 {{ number_format($course->course->price, 0, ',', '.') }}</h5>
-                                @if ($role == 'admin')
-                                <a href="{{ route('detail-kelas', ['id' => $course->course->id]) }}"  class="btn btn-success btn-lg mt-3 px-4">Edit kelas</a>
-                                @elseif ( $role == 'instructor')
-                                <a href="{{ route('instructor.detail-kelas', ['id' => $course->course->id]) }}"  class="btn btn-success btn-lg mt-3 px-4">Lihat kelas</a>
-                                @else
+                            @if ($role == 'admin')
+                                <a href="{{ route('detail-kelas', ['id' => $course->course->id]) }}"
+                                    class="btn btn-success btn-lg mt-3 px-4">Edit kelas</a>
+                            @elseif ($role == 'instructor')
+                                <a href="{{ route('instructor.detail-kelas', ['id' => $course->course->id]) }}"
+                                    class="btn btn-success btn-lg mt-3 px-4">Lihat kelas</a>
+                            @else
                                 <button id="checkoutBtn" class="btn btn-success btn-lg mt-3 px-4">Belajar Sekarang</button>
-
-                                @endif
+                            @endif
                         </div>
                         <hr class="border border-dark border-1 opacity-20 mx-4">
                         <div class="card-body d-grid gap-2 py-3 px-4">
@@ -140,8 +153,8 @@
                     <div class="mb-5">
                         <h4 class="fw-bold mb-3">Pengajar</h4>
                         <div class="d-flex align-items-center gap-3">
-                            <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}" alt="Instructor"
-                                class="rounded-circle" width="100rem">
+                            <img src="{{ $course->instructor->photo_profile }}" alt="Instructor" class="rounded-circle"
+                                width="100rem">
                             <div>
                                 <h6 class="fw-bold">{{ $course->instructor->full_name }}</h6>
                                 <p class="text-muted">{{ $course->instructor->instructor->education }}</p>
@@ -198,10 +211,8 @@
                             @foreach ($content as $row)
                                 <div class="faq-item">
                                     <h3>{{ $row->content_title }}</h3>
-
                                     <div class="faq-content">
-                                        <p>{{ $row->content_description }}</p>
-
+                                        <p>{!! $row->content_description !!}</p>
                                     </div>
                                     <i class="faq-toggle bi bi-chevron-right"></i>
                                 </div><!-- End Faq item-->
@@ -229,122 +240,67 @@
             <p class="text-muted">Pengalaman dari mereka tentang kelas ini</p>
         </div>
         <!-- End Section Title -->
-
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-            <div class="swiper init-swiper">
-                <script type="application/json" class="swiper-config">
-        {
-          "loop": true,
-          "speed": 600,
-          "autoplay": {
-            "delay": 5000
-          },
-          "slidesPerView": "auto",
-          "pagination": {
-            "el": ".swiper-pagination",
-            "type": "bullets",
-            "clickable": true
-          },
-          "breakpoints": {
-            "320": {
-              "slidesPerView": 1,
-              "spaceBetween": 40
-            },
-            "1200": {
-              "slidesPerView": 3,
-              "spaceBetween": 1
-            }
-          }
-        }
-      </script>
-                <div class="swiper-wrapper">
-
-                    <div class="swiper-slide">
-                        <div class="testimonial-item">
-                            <div class="stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i>
+        <div class="container">
+            @if ($ratings->data != null)
+                @foreach ($ratings->data as $rating)
+                    <div class="rating-box">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5>{{ $rating->student_name }}</h5>
+                                <p class="mb-0">{{ $rating->description }} stars</p>
                             </div>
-                            <p>
-                                Pembelajarannya menarik ditambah lagi ada tips cara jawab latihan soal dengan cepat, apalagi
-                                praktikumnya menggunakan app simuasi yang keadaannya standar.Thanks ya ka.
-                            </p>
-                            <div class="profile mt-auto">
-                                <img src="{{ asset('assets/img/testimonials/testimonials-4.jpg') }}"
-                                    class="testimonial-img" alt="">
-                                <h3>Dinda</h3>
-                                <h4>Umum</h4>
+
+                            <div class="rating-stars fs-3">
+                                @for ($i = 1; $i <= $rating->rating; $i++)
+                                    <i class="bi bi-star-fill text-warning me-1"></i>
+                                @endfor
                             </div>
+
                         </div>
-                    </div><!-- End testimonial item -->
+                    </div>
+                @endforeach
+                @else
+                <p>Belum ada rating</p>
+            @endif
 
-                    <div class="swiper-slide">
-                        <div class="testimonial-item">
-                            <div class="stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i>
-                            </div>
-                            <p>
-                                kadimm enak mengajarnya, menjelaskan dengan detail terkait materi yang diajarkan, menerima
-                                dan menjawab pertanyaan yang masih kita bingung/kurang paham jugaa
-                            </p>
-                            <div class="profile mt-auto">
-                                <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}"
-                                    class="testimonial-img" alt="">
-                                <h3>Elvyra</h3>
-                                <h4>Siswi di SMK Negeri 5 Kota Bekasi</h4>
-                            </div>
-                        </div>
-                    </div><!-- End testimonial item -->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <!-- Previous Button -->
+                    @if ($ratings->pagination->page > 1)
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{{ route('detail.kelas', ['page' => $ratings->pagination->page - 1]) }}">Previous</a>
+                        </li>
+                    @else
+                        <li class="page-item disabled">
+                            <a class="page-link">Previous</a>
+                        </li>
+                    @endif
 
-                    <div class="swiper-slide">
-                        <div class="testimonial-item">
-                            <div class="stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i>
-                            </div>
-                            <p>
-                                Materi yang disajikan sangat mudah dipahami dan langsung dapat diaplikasikan dalam pekerjaan
-                                sehari-hari saya sebagai ahli kimia. Terima kasih, Akuanalis.com!"
-                            </p>
-                            <div class="profile mt-auto">
-                                <img src="{{ asset('assets/img/testimonials/testimonials-2.jpg') }}"
-                                    class="testimonial-img" alt="">
-                                <h3>Azizah</h3>
-                                <h4>Umum</h4>
-                            </div>
-                        </div>
-                    </div><!-- End testimonial item -->
+                    <!-- Page Numbers -->
+                    @for ($i = 1; $i <= $ratings->pagination->total_page; $i++)
+                        <li class="page-item {{ $ratings->pagination->page === $i ? 'active' : '' }}">
+                            <a class="page-link"
+                                href="{{ route('detail.kelas', ['courseId' => $course->course->id, 'page' => $i]) }}">{{ $i }}</a>
+                        </li>
+                    @endfor
 
-                    <div class="swiper-slide">
-                        <div class="testimonial-item">
-                            <div class="stars">
-                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                                    class="bi bi-star-fill"></i>
-                            </div>
-                            <p>
-                                Materi yang disajikan sangat mudah dipahami dan langsung dapat diaplikasikan dalam pekerjaan
-                                sehari-hari saya sebagai ahli kimia. Terima kasih, Akuanalis.com!"
-                            </p>
-                            <div class="profile mt-auto">
-                                <img src="{{ asset('assets/img/testimonials/testimonials-3.jpg') }}"
-                                    class="testimonial-img" alt="">
-                                <h3>Azizah</h3>
-                                <h4>Umum</h4>
-                            </div>
-                        </div>
-                    </div><!-- End testimonial item -->
-
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
+                    <!-- Next Button -->
+                    @if ($ratings->pagination->page < $ratings->pagination->total_page)
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{{ route('detail.kelas', ['courseId' => $course->course->id, 'page' => $ratings->pagination->page + 1]) }}">Next</a>
+                        </li>
+                    @else
+                        <li class="page-item disabled">
+                            <a class="page-link">Next</a>
+                        </li>
+                    @endif
+                </ul>
+            </nav>
 
         </div>
+
 
     </section><!-- /Testimonials Section -->
 
@@ -354,15 +310,31 @@
         <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"></script>
     @endif
     <script>
+        $(document).ready(function() {
+
+            // Function to generate stars based on rating value
+            function generateStars(rating) {
+                let stars = '';
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= rating) {
+                        stars += '<i class="fas fa-star"></i>';
+                    } else {
+                        stars += '<i class="far fa-star"></i>';
+                    }
+                }
+                return stars;
+            }
+        });
         $('#checkoutBtn').on('click', function(event) {
             event.preventDefault();
 
 
             if ('{{ $isLogin }}' == 'y') {
 
-                if('{{$alreadyCourse}}' == 'y'){
-                    window.location.href='/user/detail-kelas/{{ $course->course->id }}'
-                }else{
+                if ('{{ $alreadyCourse }}' == 'y') {
+                    window.location.href = '/user/detail-kelas/{{ $course->course->id }}'
+                } else {
+                    createOverlay("Proses Membeli Kelas...");
                     $.ajax({
                         url: '{{ route('user.checkout') }}', // Direct API endpoint
                         method: 'POST',
@@ -375,17 +347,18 @@
                             courseId: '{{ $course->course->id }}'
                         }),
                         success: function(response) {
-    
+
                             // Swal.fire('Berhasil', response.data.message, 'success');
+                            gOverlay.hide()
                             if (response.data.midtrans_snap_token) {
-                                const midTransSnap = new MidTransSnap(response.data.midtrans_snap_token);
+                                const midTransSnap = new MidTransSnap(response.data
+                                    .midtrans_snap_token);
                                 midTransSnap.pay();
                             }
-    
+
                         },
                         error: function(xhr, status, error) {
-                            console.error('Error:', error); // Log the error for debugging
-                            console.error('Response Text:', xhr.responseText);
+                            gOverlay.hide()
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                         }
                     });

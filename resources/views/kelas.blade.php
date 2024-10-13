@@ -50,7 +50,7 @@
                                     <div class="card-body">
                                         <div class="header-card d-flex justify-content-between mb-3">
                                             <p class="text-muted fs-6 mb-0"><i
-                                                    class="bi bi-star-fill text-warning me-1"></i>4.9
+                                                    class="bi bi-star-fill text-warning me-1"></i>{{ $course->course->rating }}
                                             </p>
                                             <p class="badge bg-primary fs-6 mb-0">{{ $course->course_category->name }}</p>
                                         </div>
@@ -146,5 +146,7 @@
 
 
             </div>
+        <a href="{{ route('kelas', ['free' => 'trial']) }}" class="btn btn-secondary btn-sm">Coba kelas gratis</a>
         </div>
+
     @endsection

@@ -82,13 +82,15 @@ class UserController extends Controller
     {
         $title = 'Dashboard';
 
-        $userCourses = $this->userCourseCtrl->getCoursesUser();
+        $userCourses = $this->userCourseCtrl->getCoursesUser('active');
+        $expired = $this->userCourseCtrl->getCoursesUser('expired');
 
 
         return view('user.dashboard', [
             "title" => $title,
             "id" => $this->user['id'],
             'userCourses' => $userCourses,
+            'expired' => $expired,
             "full_name" => $this->user['full_name'],
         ]);
     }
@@ -123,16 +125,21 @@ class UserController extends Controller
         ]);
     }
 
-    public function kelas()
+    public function kelas(Request $request)
     {
         $title = 'Kelasku';
-        $userCourses = $this->userCourseCtrl->getCoursesUser();
+        $filter = $request->get('filter') ?? 'all';
+        $page = $request->get('page') ?? 0;
+        $userCourses = $this->userCourseCtrl->getCoursesUserFilter($filter, $page);
 
         // dd($userCourses);
 
         return view('user.kelas', [
             "title" => $title,
+            "filter" => $filter,
             "userCourses" => $userCourses,
+            "page" => $page,
+            "filter" => $filter,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
         ]);
@@ -152,8 +159,8 @@ class UserController extends Controller
             foreach ($transactions->data as $transaction) {
                 $transaction->course = $this->courseCtrl->getCourseById($transaction->course_id)->course;
             }
-            // dd($transactions);
         }
+        // dd($transactions);
 
         $title = 'Data Transaksi';
 
@@ -176,21 +183,25 @@ class UserController extends Controller
             "full_name" => $this->user['full_name'],
         ]);
     }
-    public function diskusi($courseId)
+    public function diskusi(Request $request, $courseId)
     {
         $title = 'Diskusi';
 
         $userCourse = $this->userCourseCtrl->getCoursesUserByCourseId($courseId);
 
 
-        $courseForums = $this->courseForumCtrl->courseForums($courseId);
-        foreach ($courseForums->data as $courseForum) {
-            $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
+        $page = $request->get('page') ?? 0;
 
-            $courseForum->reply_count = count($courseForum->course_forum_reply);
+
+        $courseForums = $this->courseForumCtrl->courseForums($courseId, $page);
+        if(isset($courseForums->data)){
+            foreach ($courseForums->data as $courseForum) {
+                $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
+
+                $courseForum->reply_count = count($courseForum->course_forum_reply);
+            }
         }
 
-        // dd($courseForums);
         // Lakukan operasi lain yang diperlukan
 
         return view('user.diskusi', [
@@ -211,6 +222,7 @@ class UserController extends Controller
         }
         $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
         $userCourse = $this->userCourseCtrl->getCoursesUserByCourseId($courseId);
+        $userRate = $this->userCourseCtrl->getRate($userCourse->id);
         $courseContents = $this->userCourseCtrl->getCoursesUserContents($userCourse->id);
         if (isset($courseContents)) {
             // MENDAPATKAN DETAILNYA
@@ -294,6 +306,7 @@ class UserController extends Controller
                     $courseContentQuiz = $this->userCourseCtrl->userCourseContentQuiz($userCourse->id, $selectedCourseContentId);
                     $courseContent->quiz = $courseContentQuiz;
 
+                   if($courseContent->quiz->questions){
                     foreach ($courseContent->quiz->questions as $index => $question) {
                         $question->index = $index;
                         foreach ($question->Options as $indexOption => $option) {
@@ -311,6 +324,7 @@ class UserController extends Controller
                     shuffle($courseContent->quiz->questions);
 
                     $courseContent->quiz->questionTotal =  count($courseContent->quiz->questions);
+                   }
                 }
             }
         }
@@ -318,9 +332,11 @@ class UserController extends Controller
 
 
 
+
         return view('user.detailKelas', [
             "title" => $title,
             "courseId" => $courseId,
+            "userRate" => $userRate,
             "selectedCourseContentId" => $selectedCourseContentId,
             "previousCourseContentId" => $previousCourseContentId,
             "nextCourseContentId" => $nextCourseContentId,

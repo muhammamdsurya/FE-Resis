@@ -85,20 +85,42 @@
                 </div>
             </div>
 
-
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link">Previous</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
-                </ul>
-            </nav>
+            @if($filter != 'active'  && isset($transactions))
+             <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <!-- Previous Button -->
+                            @if ($transactions->pagination->page > 1)
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="/user/transaksi?filter= {{$filter}}&page={{$transactions->pagination->page - 1}}">Previous</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <a class="page-link">Previous</a>
+                                </li>
+                            @endif
+            
+                            <!-- Page Numbers -->
+                            @for ($i = 1; $i <= $transactions->pagination->total_page; $i++)
+                                <li class="page-item {{ $transactions->pagination->page === $i ? 'active' : '' }}">
+                                    <a class="page-link" href="/user/transaksi?filter= {{$filter}}&page={{$i}}">{{ $i }}</a>
+                                </li>
+                            @endfor
+            
+                            <!-- Next Button -->
+                            @if ($transactions->pagination->page < $transactions->pagination->total_page)
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="/user/transaksi?filter= {{$filter}}&page={{$transactions->pagination->page + 1}}">Next</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <a class="page-link">Next</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </nav>
+            @endif
 
         </section>
     </div>

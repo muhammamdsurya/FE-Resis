@@ -89,7 +89,7 @@
                         email: email
                     }), // Kirim email sebagai data JSON
                     success: function(response) {
-                        if (response.status === 'success') {
+                        if (response.status_code === 200) {
                             messageHeader.text('Aktivasi Berhasil');
                             message.text('Akun Anda berhasil diaktifkan. Silakan login.');
                             activationBox.addClass('success').removeClass('error');
