@@ -191,15 +191,19 @@ class InstructorController extends Controller
         ]);
     }
 
-    public function diskusi ($courseId){
+    public function diskusi (Request $request, $courseId){
         $title = 'Diskusi ';
 
-        $courseForums = $this->courseForumCtrl->courseForums($courseId);
+        $page = $request->get('page') ?? 0;
+
+        
+        $courseForums = $this->courseForumCtrl->courseForums($courseId, $page);
+        if(isset($courseForums->data)){
         foreach ($courseForums->data as $courseForum){
             $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
 
             $courseForum->reply_count = count($courseForum->course_forum_reply);
-        };
+        };}
 
 
         // dd($courseForum);    

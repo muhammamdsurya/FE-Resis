@@ -127,10 +127,45 @@
             </div>
             @endforeach
             @endif
+            <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <!-- Previous Button -->
+                            @if ($courseForums->pagination->page > 1)
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="/user/diskusi-kelas/{{$courseId}}?page={{$courseForums->pagination->page - 1}}">Previous</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <a class="page-link">Previous</a>
+                                </li>
+                            @endif
+            
+                            <!-- Page Numbers -->
+                            @for ($i = 1; $i <= $courseForums->pagination->total_page; $i++)
+                                <li class="page-item {{ $courseForums->pagination->page === $i ? 'active' : '' }}">
+                                    <a class="page-link" href="/user/diskusi-kelas/{{$courseId}}?page={{$i}}">{{ $i }}</a>
+                                </li>
+                            @endfor
+            
+                            <!-- Next Button -->
+                            @if ($courseForums->pagination->page < $courseForums->pagination->total_page)
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="/user/diskusi-kelas/{{$courseId}}?page={{$courseForums->pagination->page + 1}}">Next</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <a class="page-link">Next</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </nav>
         </div>
 
     </div>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- SummerNote -->

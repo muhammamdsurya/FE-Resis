@@ -176,21 +176,25 @@ class UserController extends Controller
             "full_name" => $this->user['full_name'],
         ]);
     }
-    public function diskusi($courseId)
+    public function diskusi(Request $request, $courseId)
     {
         $title = 'Diskusi';
 
         $userCourse = $this->userCourseCtrl->getCoursesUserByCourseId($courseId);
 
 
-        $courseForums = $this->courseForumCtrl->courseForums($courseId);
-        foreach ($courseForums->data as $courseForum) {
-            $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
+        $page = $request->get('page') ?? 0;
 
-            $courseForum->reply_count = count($courseForum->course_forum_reply);
+        
+        $courseForums = $this->courseForumCtrl->courseForums($courseId, $page);
+        if(isset($courseForums->data)){
+            foreach ($courseForums->data as $courseForum) {
+                $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
+    
+                $courseForum->reply_count = count($courseForum->course_forum_reply);
+            }
         }
 
-        // dd($courseForums);
         // Lakukan operasi lain yang diperlukan
 
         return view('user.diskusi', [
