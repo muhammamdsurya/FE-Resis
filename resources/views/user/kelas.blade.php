@@ -1,6 +1,28 @@
 @extends('layout.userLayout')
 @section('title', $title)
 
+@section('filter')
+
+    <!-- Filter Dropdown -->
+    <div class="filter-dropdown d-md-none d-sm-block ms-md-3">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Filter
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+             
+                <li><a class="dropdown-item {{ $filter == 'all' ? 'active' : '' }}" href="?filter=all">Semua</a></li>
+                <li><a class="dropdown-item {{ $filter == 'active' ? 'active' : '' }}" href="?filter=active">Aktif</a></li>
+                <li><a class="dropdown-item {{ $filter == 'expired' ? 'active' : '' }}" href="?filter=expired">Expired</a></li>
+
+            </ul>
+        </div>
+    </div>
+
+
+@endsection
+
 @section('content')
 
     <style>
