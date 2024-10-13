@@ -2,12 +2,21 @@
 @section('title', $title)
 
 @section('filter')
-    <div class="position-relative">
-        <div class="d-flex justify-content-end position-absolute top-0 end-0 mt-2 me-2">
-            <button class="btn btn-{{ $filter == 'expired' ? 'primary' : 'secondary' }} me-2" type="button"
-                onclick="window.location.href='?status=expired'">Expired</button>
-            <button class="btn btn-{{ $filter == 'active' ? 'primary' : 'secondary' }}" type="button"
-                onclick="window.location.href='?status=active'">Active</button>
+
+    <!-- Filter Dropdown -->
+    <div class="filter-dropdown d-md-none d-sm-block ms-md-3">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Filter
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+             
+                <li><a class="dropdown-item {{ $filter == 'all' ? 'active' : '' }}" href="?filter=all">Semua</a></li>
+                <li><a class="dropdown-item {{ $filter == 'active' ? 'active' : '' }}" href="?filter=active">Aktif</a></li>
+                <li><a class="dropdown-item {{ $filter == 'expired' ? 'active' : '' }}" href="?filter=expired">Expired</a></li>
+
+            </ul>
         </div>
     </div>
 

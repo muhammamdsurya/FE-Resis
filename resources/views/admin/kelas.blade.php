@@ -423,6 +423,7 @@
                 const token = $("meta[name='csrf-token']").attr("content");
 
                 // Make an AJAX request to update the category
+                createOverlay("Proses...");
                 $.ajax({
                     url: `/admin/kelas/${categoryId}/edit`,
                     type: 'PUT',
@@ -433,6 +434,7 @@
                         "name": newName
                     },
                     success: function(response) {
+                        gOverlay.hide()
                         console.log(response);
                         $('#editCategoryModal').modal('hide'); // Hide the modal
                         Swal.fire('Berhasil!', 'Kategori berhasil diupdate.',
@@ -440,6 +442,7 @@
                         loadCategories(); // Reload categories
                     },
                     error: function(xhr, status, error) {
+                        gOverlay.hide()
                         console.error('Error updating category:', xhr.responseText);
                         Swal.fire('Error!',
                             'Terjadi kesalahan saat memperbarui kategori.',
@@ -464,6 +467,7 @@
                 };
 
                 // Make the AJAX request to add a new category
+                createOverlay("Proses...");
                 $.ajax({
                     url: '{{ route('categories.post') }}',
                     method: 'POST',
@@ -472,12 +476,14 @@
                     },
                     data: JSON.stringify(data),
                     success: function(response) {
+                        gOverlay.hide()
                         console.log("data:", response);
                         Swal.fire('Berhasil', 'Jenjang berhasil ditambahkan!',
                             'success');
                         loadCategories(); // Reload categories
                     },
                     error: function(xhr, status, error) {
+                        gOverlay.hide()
                         console.error('Error adding category:', error);
                         Swal.fire('Oops!',
                             'Terjadi kesalahan saat menambahkan jenjang!',
@@ -501,6 +507,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Make an AJAX request to delete the category
+                        createOverlay("Proses...");
                         $.ajax({
                             url: `/admin/kelas/${categoryId}/destroy`,
                             type: 'DELETE',
@@ -508,15 +515,14 @@
                                 'X-CSRF-TOKEN': token
                             },
                             success: function(response) {
-                                console.log(response);
+                                gOverlay.hide()
                                 Swal.fire('Dihapus!',
-                                    'Kategori berhasil dihapus.',
-                                    'success');
+                                'Kategori berhasil dihapus.',
+                                'success');
                                 loadCategories(); // Reload categories
                             },
                             error: function(xhr, status, error) {
-                                console.error('Error deleting category:',
-                                    xhr.responseText);
+                                gOverlay.hide()
                                 Swal.fire('Error!',
                                     'Terjadi kesalahan saat menghapus kategori.',
                                     'error');
