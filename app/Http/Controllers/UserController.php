@@ -123,16 +123,20 @@ class UserController extends Controller
         ]);
     }
 
-    public function kelas()
+    public function kelas(Request $request)
     {
         $title = 'Kelasku';
-        $userCourses = $this->userCourseCtrl->getCoursesUser();
+        $filter = $request->get('filter') ?? 'all';
+        $page = $request->get('page') ?? 0;
+        $userCourses = $this->userCourseCtrl->getCoursesUserFilter($filter, $page);
 
         // dd($userCourses);
 
         return view('user.kelas', [
             "title" => $title,
             "userCourses" => $userCourses,
+            "page" => $page,
+            "filter" => $filter,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
         ]);
