@@ -82,13 +82,15 @@ class UserController extends Controller
     {
         $title = 'Dashboard';
 
-        $userCourses = $this->userCourseCtrl->getCoursesUser();
+        $userCourses = $this->userCourseCtrl->getCoursesUser('active');
+        $expired = $this->userCourseCtrl->getCoursesUser('expired');
 
 
         return view('user.dashboard', [
             "title" => $title,
             "id" => $this->user['id'],
             'userCourses' => $userCourses,
+            'expired' => $expired,
             "full_name" => $this->user['full_name'],
         ]);
     }
@@ -134,6 +136,7 @@ class UserController extends Controller
 
         return view('user.kelas', [
             "title" => $title,
+            "filter" => $filter,
             "userCourses" => $userCourses,
             "page" => $page,
             "filter" => $filter,
@@ -189,12 +192,12 @@ class UserController extends Controller
 
         $page = $request->get('page') ?? 0;
 
-        
+
         $courseForums = $this->courseForumCtrl->courseForums($courseId, $page);
         if(isset($courseForums->data)){
             foreach ($courseForums->data as $courseForum) {
                 $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
-    
+
                 $courseForum->reply_count = count($courseForum->course_forum_reply);
             }
         }
@@ -326,7 +329,7 @@ class UserController extends Controller
             }
         }
 
-        
+
 
 
 

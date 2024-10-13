@@ -1,6 +1,6 @@
 <aside class= "main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link" style="text-decoration: none;">
+    <a href="{{route('user.dashboard')}}" class="brand-link" style="text-decoration: none;">
         <span class="brand-text font-weight-light">Dashboard</span>
     </a>
 

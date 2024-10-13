@@ -1,5 +1,135 @@
+@php
+    if ($course) {
+        // Gunakan null coalescing untuk menghindari kesalahan count()
+        $courseContents = $courseContents ?? []; // Pastikan ini adalah array
+
+        // Count total classes and completed ones
+        $totalClasses = count($courseContents);
+        $completedClasses = 0;
+
+        foreach ($courseContents as $courseContentSidebar) {
+            if ($courseContentSidebar->is_completed) {
+                $completedClasses++;
+            }
+        }
+
+        $completionPercentage = $totalClasses > 0 ? floor(($completedClasses / $totalClasses) * 100) : 0; // Use floor or round as needed
+    } else {
+        $totalClasses = 0;
+        $completedClasses = 0; // Pastikan ini didefinisikan meskipun $course tidak ada
+        $completionPercentage = 0; // Pastikan ini didefinisikan meskipun $course tidak ada
+    }
+@endphp
+
 @extends('layout.userLayout')
 @section('title', isset($courseContent) ? $courseContent->content_title : $title)
+
+
+@section('filter')
+    <!-- Filter Dropdown for Course Content -->
+    <div class="filter-dropdown d-md-none d-sm-block ms-md-3">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Materi
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                @if (isset($courseContents))
+                    @foreach ($courseContents as $courseContentSidebar)
+                        <li>
+                            <a href="?selectedCourseContentId={{ $courseContentSidebar->content_id }}"
+                                class="dropdown-item {{ $selectedCourseContentId == $courseContentSidebar->content_id ? 'active' : '' }}"
+                                {{ $courseContentSidebar->is_completed == false ? ($selectedCourseContentId == $courseContentSidebar->content_id ? '' : 'disabled') : '' }}>
+                                {{ $courseContentSidebar->courseDetail->content_title }}
+                            </a>
+                        </li>
+                    @endforeach
+                @endif
+                <li><a href="/user/diskusi-kelas/{{ $course->course->id }}" class="dropdown-item">Diskusi</a></li>
+
+                <!-- Tambahan Lihat Ulasan -->
+                <li>
+                    @if (isset($userRate))
+                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reviewModal"
+                            disabled>
+                            Lihat Ulasan
+                        </a>
+                    @else
+                        <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reviewModal"
+                            disabled>
+                            Tambah Ulasan
+                        </a>
+                    @endif
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Modal untuk Lihat dan Tambah Ulasan -->
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reviewModalLabel">
+                        @if (isset($userRate) && $userRate != null)
+                            Lihat Ulasan
+                        @else
+                            Tambah Ulasan
+                        @endif
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if (isset($userRate) && $userRate != null)
+                        <!-- Tampilkan ulasan jika sudah ada -->
+                        <div class="review-content">
+                            <p><strong>Ulasan:</strong></p>
+                            <p>{{ $userRate->description }}</p>
+                            <div class="rating">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($i <= $userRate->rating)
+                                        <i class="fas fa-star"></i>
+                                    @else
+                                        <i class="far fa-star"></i>
+                                    @endif
+                                @endfor
+                            </div>
+                        </div>
+                    @else
+                        <!-- Form untuk ulasan dan rating -->
+                        <div class="form-floating mt-2 mb-1">
+                            <textarea class="form-control" id="descRateMobile" placeholder="Tulis ulasan Anda di sini..." rows="4"></textarea>
+                            <label for="descRateMobile">Ulasan</label>
+                        </div>
+                        <div class="rating text-center">
+                            <input type="radio" id="star5Mobile" name="ratingMobile" value="5">
+                            <label for="star5Mobile" title="5 star"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star4Mobile" name="ratingMobile" value="4">
+                            <label for="star4Mobile" title="4 stars"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star3Mobile" name="ratingMobile" value="3">
+                            <label for="star3Mobile" title="3 stars"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star2Mobile" name="ratingMobile" value="2">
+                            <label for="star2Mobile" title="2 stars"><i class="fas fa-star"></i></label>
+                            <input type="radio" id="star1Mobile" name="ratingMobile" value="1">
+                            <label for="star1Mobile" title="1 star"><i class="fas fa-star"></i></label>
+                        </div>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    @if (!isset($userRate) || $userRate == null)
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="button" class="btn btn-primary">Kirim Ulasan</button>
+                    @else
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+@endsection
+
 
 @section('content')
 
@@ -31,34 +161,56 @@
             justify-content: flex-end;
             transform: scaleX(-1);
         }
+
         .rating input {
-            display: none; /* Sembunyikan input radio */
-        }
-        .rating label {
-            cursor: pointer;
-            font-size: 2rem; /* Ukuran ikon bintang */
-            color: #ccc; /* Warna bintang tidak terpilih */
-        }
-        .rating input:checked ~ label {
-            color: #f39c12; /* Warna bintang terpilih */
-        }
-        .rating label:hover,
-        .rating label:hover ~ label {
-            color: #f39c12; /* Warna bintang saat hover */
-        }
-        /* Menyediakan warna kuning untuk bintang yang terpilih */
-        .rating input:checked + label,
-        .rating input:checked + label ~ label {
-            color: #f39c12; /* Warna kuning */
+            display: none;
+            /* Sembunyikan input radio */
         }
 
-        #showStar{
+        .rating label {
+            cursor: pointer;
+            font-size: 2rem;
+            /* Ukuran ikon bintang */
+            color: #ccc;
+            /* Warna bintang tidak terpilih */
+        }
+
+        .rating input:checked~label {
+            color: #f39c12;
+            /* Warna bintang terpilih */
+        }
+
+        .rating label:hover,
+        .rating label:hover~label {
+            color: #f39c12;
+            /* Warna bintang saat hover */
+        }
+
+        /* Menyediakan warna kuning untuk bintang yang terpilih */
+        .rating input:checked+label,
+        .rating input:checked+label~label {
+            color: #f39c12;
+            /* Warna kuning */
+        }
+
+        #showStar {
             color: #f39c12;
         }
     </style>
 
 
     <div class="container-fluid">
+
+
+        <!-- Progress bar -->
+        <div class="progress mt-3 d-md-none d-sm-block" style="height: 25px;"> <!-- Adjusted height here -->
+            <div class="progress-bar" role="progressbar"
+                style="width: {{ $completionPercentage }}%; height: 100%; background-color: #28a745; font-size: 1.2em;"
+                aria-valuenow="{{ $completionPercentage }}" aria-valuemin="0" aria-valuemax="100">
+                {{ $completionPercentage }}% Tercapai
+            </div>
+        </div>
+
 
         <section class="col-12 mt-2 pb-5">
             @if (isset($course))
@@ -132,19 +284,6 @@
                     </div>
                     <!-- Kolom untuk Materi Selanjutnya -->
                     <div class="col-md-3 d-none d-lg-block materi-container px-3">
-                        @php
-                            // Count total classes and completed ones
-                            $totalClasses = count($courseContents);
-                            $completedClasses = 0;
-                            foreach ($courseContents as $courseContentSidebar) {
-                                if ($courseContentSidebar->is_completed) {
-                                    $completedClasses++;
-                                }
-                            }
-                            $completionPercentage =
-                                $totalClasses > 0 ? floor(($completedClasses / $totalClasses) * 100) : 0; // Use floor or round as needed
-
-                        @endphp
 
                         <!-- Progress bar -->
                         <div class="progress mt-3" style="height: 25px;"> <!-- Adjusted height here -->
@@ -169,46 +308,49 @@
                             <a href="/user/diskusi-kelas/{{ $course->course->id }}"
                                 class="list-group-item list-group-item-action">Diskusi</a>
                         </div>
-                        @if(!isset($userRate))
-                        <div class="form-floating mt-2 mb-1">
-                                        <input type="text" class="form-control" id="descRate" placeholder="Review">
-                                        <label for="descRate">Review</label>
-                                    </div>
-                        <div class="rating">
-                            <input type="radio" id="star5" name="rating" value="5">
-                            <label for="star5" title="5 star"><i class="fas fa-star"></i></label>
-                            <input type="radio" id="star4" name="rating" value="4">
-                            <label for="star4" title="4 stars"><i class="fas fa-star"></i></label>
-                            <input type="radio" id="star3" name="rating" value="3">
-                            <label for="star3" title="3 stars"><i class="fas fa-star"></i></label>
-                            <input type="radio" id="star2" name="rating" value="2">
-                            <label for="star2" title="2 stars"><i class="fas fa-star"></i></label>
-                            <input type="radio" id="star1" name="rating" value="1">
-                            <label for="star1" title="1 stars"><i class="fas fa-star"></i></label>
-                        </div>
-                        @else
-                                 <div class="form-floating mt-2 mb-1">
-                                        <input type="text" class="form-control" value="{{$userRate->description}}" placeholder="Review" disabled>
-                                        <label for="descRate">Review</label>
-                                    </div>
-                                    <p style=" font-size: 1.5rem;">
-                                        <i class="fas fa-star" id="showStar"></i> {{$userRate->rating}}
-                                    </p>
-                        @endif
-                        
 
+                        @if (!isset($userRate))
+                            <div class="form-floating mt-2 mb-1">
+                                <textarea class="form-control" id="descRate" placeholder="Review" rows="4"></textarea>
+                                <label for="descRate">Ulasan</label>
+                            </div>
+                            <div class="rating">
+                                <input type="radio" id="star5" name="rating" value="5">
+                                <label for="star5" title="5 star"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star4" name="rating" value="4">
+                                <label for="star4" title="4 stars"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star3" name="rating" value="3">
+                                <label for="star3" title="3 stars"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star2" name="rating" value="2">
+                                <label for="star2" title="2 stars"><i class="fas fa-star"></i></label>
+                                <input type="radio" id="star1" name="rating" value="1">
+                                <label for="star1" title="1 stars"><i class="fas fa-star"></i></label>
+                            </div>
+                        @else
+                            <div class="form-floating mt-2 mb-1">
+                                <textarea class="form-control" placeholder="Review" rows="4" disabled>{{ $userRate->description }}</textarea>
+
+                                <label for="descRate">Review</label>
+                            </div>
+                            <p style=" font-size: 1.5rem;">
+                                <i class="fas fa-star" id="showStar"></i> {{ $userRate->rating }}
+                            </p>
+                        @endif
 
                     </div>
 
                 </div>
+            @else
+                <!-- Konten alternatif jika $course tidak ada, jika perlu -->
+                <p>Course tidak ditemukan.</p>
             @endif
 
         </section>
     </div>
 
-    @if(!isset($userRate))
-    <script>
-        const ratingInputs = document.querySelectorAll('input[name="rating"]');
+    @if (!isset($userRate))
+        <script>
+            const ratingInputs = document.querySelectorAll('input[name="rating"]');
 
         ratingInputs.forEach((input) => {
             input.addEventListener('change', function() {
@@ -216,9 +358,9 @@
                 createOverlay("Proses...");
 
 
-                var descRate  = $('#descRate').val()
+                    var descRate = $('#descRate').val()
 
-                var formData = new FormData();
+                    var formData = new FormData();
                     formData.append('rating', selectedValue);
                     formData.append('description', descRate);
                     formData.append('studentId', '{{ $userCourse->id }}');
@@ -249,10 +391,10 @@
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                         }
                     });
-               
+
+                });
             });
-        });
-    </script>
+        </script>
     @endif
 
 
