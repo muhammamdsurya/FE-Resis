@@ -34,6 +34,7 @@
 
                     const email = $('#email').val();
 
+                    createOverlay("Proses...");
                     $.ajax({
                         url: '{{ route('reset.password') }}', // Route untuk mengatur password
                         method: 'POST',
@@ -48,6 +49,7 @@
                         }),
                         success: function(response) {
                             if (response.status == 'success') {
+                                gOverlay.hide()
                                 Swal.fire({
                                     title: 'Berhasil!',
                                     text: response.message,
@@ -58,6 +60,7 @@
                             }
                         },
                         error: function(xhr) {
+                            gOverlay.hide()
                             Swal.fire({
                                 title: 'Gagal!',
                                 text: xhr.responseJSON.message,

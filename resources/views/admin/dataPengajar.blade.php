@@ -345,6 +345,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Ganti URL berikut dengan URL yang sesuai untuk menghapus admin
+                    createOverlay("Proses...");
                     $.ajax({
                         url: '/admin/data-pengajar/' +
                             instructorId, // Misal menggunakan route yang sesuai
@@ -353,8 +354,7 @@
                             'X-CSRF-TOKEN': token
                         },
                         success: function(response) {
-                            console.log(response);
-                            // Tindakan setelah penghapusan berhasil
+                            gOverlay.hide()
                             Swal.fire(
                                 'Terhapus!',
                                 'Instruktur telah dihapus.',
@@ -364,8 +364,7 @@
                             location.reload();
                         },
                         error: function(xhr, status, error) {
-                            console.log(xhr
-                                .responseText); // Menampilkan detail kesalahan di konsol
+                            gOverlay.hide()
                             Swal.fire(
                                 'Gagal!',
                                 'Terjadi kesalahan saat menghapus admin. ' + (xhr

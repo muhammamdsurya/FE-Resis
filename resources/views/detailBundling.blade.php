@@ -437,7 +437,7 @@
 
 
             if ('{{ $isLogin }}' == 'y') {
-
+                createOverlay("Proses Membeli Kelas...");
                 $.ajax({
                     url: '{{ route('user.checkout') }}', // Direct API endpoint
                     method: 'POST',
@@ -450,7 +450,7 @@
                         bundleId: '{{ $bundling->id }}'
                     }),
                     success: function(response) {
-
+                        gOverlay.hide()
                         // Swal.fire('Berhasil', response.data.message, 'success');
                         if (response.data.midtrans_snap_token) {
                             const midTransSnap = new MidTransSnap(response.data.midtrans_snap_token);
@@ -459,8 +459,7 @@
 
                     },
                     error: function(xhr, status, error) {
-                        console.error('Error:', error); // Log the error for debugging
-                        console.error('Response Text:', xhr.responseText);
+                        gOverlay.hide()
                         Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                     }
                 });

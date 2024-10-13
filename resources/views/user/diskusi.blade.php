@@ -207,7 +207,7 @@ function send(id){
     formData.append('reply', reply);
     formData.append('forumId', id);
    
-
+    createOverlay("Proses...");
         $.ajax({
 
                 url: '{{ route("diskusi.post.reply", $courseId) }}', // Direct API endpoint
@@ -249,8 +249,7 @@ function send(id){
                         });
                     }
                 
-                    console.log(response);
-                    
+                    gOverlay.hide()
                     window.location.reload()
                     Swal.fire('Berhasil', 'Berhasil membalas diskusi', 'success');
 
@@ -266,6 +265,7 @@ function send(id){
 function deleteForum(forumId){
             var formData = new FormData();
             formData.append('forumId', forumId);
+            createOverlay("Proses...");
             $.ajax({
                         url: '{{ route("diskusi.delete", $courseId) }}', // Direct API endpoint
                         method: 'POST',
@@ -276,10 +276,12 @@ function deleteForum(forumId){
                         data: formData,
                         processData: false,
                         contentType: false,
-                        success: function(response) {
+                        success: function(response) {  
+                            gOverlay.hide()
                             Swal.fire('Berhasil', 'Berhasil menghapus diskusi', 'success');
                         },
                         error: function(xhr, status, error) {
+                        gOverlay.hide()
                             console.log( xhr.responseJSON.message);
                             console.log( xhr.responseJSON.error);
                             console.log(xhr);
@@ -310,7 +312,7 @@ function showReply(id){
         }
 
 
-
+        createOverlay("Proses...");
         $.ajax({
 
             url: '{{ route("diskusi.post", $courseId) }}', // Direct API endpoint
@@ -348,7 +350,7 @@ function showReply(id){
                     });
                 }
             
-                
+                gOverlay.hide()
                 window.location.reload()
                 Swal.fire('Berhasil', 'Berhasil membuat diskusi', 'success');
 
@@ -364,6 +366,7 @@ function showReply(id){
             var formData = new FormData();
             formData.append('forumId', forumId);
             formData.append('replyId', replyId);
+            createOverlay("Proses...");
             $.ajax({
                         url: '{{ route("diskusi.reply.delete", $courseId) }}', // Direct API endpoint
                         method: 'POST',
@@ -375,10 +378,12 @@ function showReply(id){
                         processData: false,
                         contentType: false,
                         success: function(response) {
+                            gOverlay.hide()
                             Swal.fire('Berhasil', 'Berhasil menghapus balasan diskusi', 'success');
                             window.location.reload()
                         },
                         error: function(xhr, status, error) {
+                            gOverlay.hide()
                             console.log( xhr.responseJSON.message);
                             console.log( xhr.responseJSON.error);
                             console.log(xhr);
