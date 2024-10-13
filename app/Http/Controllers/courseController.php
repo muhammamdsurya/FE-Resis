@@ -461,6 +461,16 @@ class courseController extends Controller
         }
     }
 
+    public function getFreeCourse($page)
+    {
+        // Pass the page parameter in the API request
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/free-trial', [
+            'page' => $page
+        ]);
+
+        return json_decode($response->getBody()->getContents());
+    }
+
     public function getAllCourse($page)
     {
         // Pass the page parameter in the API request
@@ -506,8 +516,6 @@ class courseController extends Controller
 
     public function getCourseRating($courseId) {
         $response = Http::withApiSession()->get($this->apiUrl . 'courses/' . $courseId . '/ratings');
-
-        dd($response->body());
         return json_decode($response->getBody()->getContents());
     }
 

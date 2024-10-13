@@ -1,23 +1,5 @@
 @extends('layout.userLayout')
 @section('title', $title)
-
-@section('filter')
-    <!-- Filter Dropdown -->
-    <div class="filter-dropdown d-md-inline-block ms-md-3">
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Filter
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li><a class="dropdown-item" href="#">Semua</a></li>
-                <li><a class="dropdown-item" href="#">Terbaru</a></li>
-                <li><a class="dropdown-item" href="#">Diskusi Saya</a></li>
-            </ul>
-        </div>
-    </div>
-@endsection
-
 @section('content')
 
     <style>
@@ -126,30 +108,61 @@
                                 @endforeach
                                 <!-- Tambahkan lebih banyak komentar di sini -->
 
-                                <!-- Formulir Komentar -->
-                                <div class="comment-form">
-                                    <div class="d-flex">
-                                        <img src="{{ asset('assets/img/testimonials/testimonials-1.jpg') }}" width=50
-                                            height=50 class="rounded-circle mr-3" alt="User">
-                                        <div class="w-100">
-                                            <input type="file" class="form-control mb-3"
-                                                id="replyImageFile-{{ $courseForum->course_forum_question->id }}"
-                                                name="video_file" required>
-                                            <textarea class="replyForum" rows="3" placeholder="Tulis komentar..."
-                                                id="reply-{{ $courseForum->course_forum_question->id }}"></textarea>
-                                            <button onclick="send('{{ $courseForum->course_forum_question->id }}')"
-                                                class="btn btn-primary mt-2">Kirim</button>
-                                        </div>
-                                    </div>
-                                </div>
+                    <!-- Formulir Komentar -->
+                    <div class="comment-form">
+                        <div class="d-flex">
+                            <img src="{{ asset ('assets/img/testimonials/testimonials-1.jpg')}}" width=50 height=50 class="rounded-circle mr-3" alt="User">
+                            <div class="w-100">
+                                <input type="file" class="form-control mb-3" id="replyImageFile-{{$courseForum->course_forum_question->id}}"
+                                name="video_file" required>
+                                <textarea class="replyForum" rows="3" placeholder="Tulis komentar..." id="reply-{{$courseForum->course_forum_question->id}}"></textarea>
+                                <button onclick="send('{{$courseForum->course_forum_question->id}}')" class="btn btn-primary mt-2">Kirim</button>
                             </div>
                         </div>
-                    @endforeach
-                @endif
+                    </div>
+                </div>
             </div>
+            @endforeach
+            @endif
+            <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <!-- Previous Button -->
+                            @if ($courseForums->pagination->page > 1)
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="/user/diskusi-kelas/{{$courseId}}?page={{$courseForums->pagination->page - 1}}">Previous</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <a class="page-link">Previous</a>
+                                </li>
+                            @endif
 
+                            <!-- Page Numbers -->
+                            @for ($i = 1; $i <= $courseForums->pagination->total_page; $i++)
+                                <li class="page-item {{ $courseForums->pagination->page === $i ? 'active' : '' }}">
+                                    <a class="page-link" href="/user/diskusi-kelas/{{$courseId}}?page={{$i}}">{{ $i }}</a>
+                                </li>
+                            @endfor
+
+                            <!-- Next Button -->
+                            @if ($courseForums->pagination->page < $courseForums->pagination->total_page)
+                                <li class="page-item">
+                                    <a class="page-link"
+                                        href="/user/diskusi-kelas/{{$courseId}}?page={{$courseForums->pagination->page + 1}}">Next</a>
+                                </li>
+                            @else
+                                <li class="page-item disabled">
+                                    <a class="page-link">Next</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </nav>
         </div>
+
     </div>
+</div>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- SummerNote -->

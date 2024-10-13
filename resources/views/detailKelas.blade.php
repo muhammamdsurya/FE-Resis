@@ -240,25 +240,61 @@
             <p class="text-muted">Pengalaman dari mereka tentang kelas ini</p>
         </div>
         <!-- End Section Title -->
-
-
-
-        <div class="container mt-5">
-            <h3 class="text-center">User Ratings</h3>
-            <div id="ratingsContainer" class="mt-4">
+        <div class="container">
+            @foreach ($ratings->data as $rating)
                 <div class="rating-box">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            @dd($ratings)
-                            <h5>User: {{$ratings->student_name}}</h5>
-                            <p class="mb-0">Rated: {{$ratings->description}} stars</p>
+                            <h5>{{ $rating->student_name }}</h5>
+                            <p class="mb-0">{{ $rating->description }} stars</p>
                         </div>
-                        <div class="rating-stars">
-                            {{$ratings->rating}}
+
+                        <div class="rating-stars fs-3">
+                            @for ($i = 1; $i <= $rating->rating; $i++)
+                                <i class="bi bi-star-fill text-warning me-1"></i>
+                            @endfor
                         </div>
+
                     </div>
                 </div>
-            </div>
+            @endforeach
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <!-- Previous Button -->
+                    @if ($ratings->pagination->page > 1)
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{{ route('detail.kelas', ['page' => $ratings->pagination->page - 1]) }}">Previous</a>
+                        </li>
+                    @else
+                        <li class="page-item disabled">
+                            <a class="page-link">Previous</a>
+                        </li>
+                    @endif
+
+                    <!-- Page Numbers -->
+                    @for ($i = 1; $i <= $ratings->pagination->total_page; $i++)
+                        <li class="page-item {{ $ratings->pagination->page === $i ? 'active' : '' }}">
+                            <a class="page-link"
+                                href="{{ route('detail.kelas', ['courseId' => $course->course->id, 'page' => $i]) }}">{{ $i }}</a>
+                        </li>
+                    @endfor
+
+                    <!-- Next Button -->
+                    @if ($ratings->pagination->page < $ratings->pagination->total_page)
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{{ route('detail.kelas', ['courseId' => $course->course->id, 'page' => $ratings->pagination->page + 1]) }}">Next</a>
+                        </li>
+                    @else
+                        <li class="page-item disabled">
+                            <a class="page-link">Next</a>
+                        </li>
+                    @endif
+                </ul>
+            </nav>
+
         </div>
 
 
@@ -294,6 +330,7 @@
                 if ('{{ $alreadyCourse }}' == 'y') {
                     window.location.href = '/user/detail-kelas/{{ $course->course->id }}'
                 } else {
+                    createOverlay("Proses Membeli Kelas...");
                     $.ajax({
                         url: '{{ route('user.checkout') }}', // Direct API endpoint
                         method: 'POST',
@@ -308,6 +345,7 @@
                         success: function(response) {
 
                             // Swal.fire('Berhasil', response.data.message, 'success');
+                            gOverlay.hide()
                             if (response.data.midtrans_snap_token) {
                                 const midTransSnap = new MidTransSnap(response.data
                                     .midtrans_snap_token);
@@ -316,6 +354,7 @@
 
                         },
                         error: function(xhr, status, error) {
+                            gOverlay.hide()
                             console.error('Error:', error); // Log the error for debugging
                             console.error('Response Text:', xhr.responseText);
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');

@@ -146,6 +146,7 @@
 
 
             </div>
+        <a href="{{ route('kelas', ['free' => 'trial']) }}" class="btn btn-secondary btn-sm">Coba kelas gratis</a>
         </div>
 
     @endsection

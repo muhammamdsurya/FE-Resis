@@ -1,21 +1,6 @@
 @extends('layout.adminLayout')
 @section('title', $title)
 
-@section('filter')
-<!-- Filter Dropdown -->
-<div class="filter-dropdown d-md-inline-block ms-md-3">
-    <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-            Filter
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <li><a class="dropdown-item" href="#">Semua</a></li>
-            <li><a class="dropdown-item" href="#">Terbaru</a></li>
-            <li><a class="dropdown-item" href="#">Diskusi Saya</a></li>
-        </ul>
-    </div>
-</div>
-@endsection
 
 @section('content')
 
@@ -88,7 +73,7 @@
                                    <button type="button" onclick="deleteForumReply('{{$courseForum->course_forum_question->id}}', '{{$reply->course_forum_question_reply->id}}')" class="btn btn-danger mt-2">Hapus <i class="fas fa-trash"></i></button>
                                    </div>
                             </div>
-                           
+
                         </div>
                     </div>
                     @endforeach
@@ -110,6 +95,40 @@
             </div>
             @endforeach
             @endif
+            <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <!-- Previous Button -->
+                        @if ($courseForums->pagination->page > 1)
+                            <li class="page-item">
+                                <a class="page-link"
+                                    href="/admin/diskusi-kelas/{{$courseId}}?page={{$courseForums->pagination->page - 1}}">Previous</a>
+                            </li>
+                        @else
+                            <li class="page-item disabled">
+                                <a class="page-link">Previous</a>
+                            </li>
+                        @endif
+
+                        <!-- Page Numbers -->
+                        @for ($i = 1; $i <= $courseForums->pagination->total_page; $i++)
+                            <li class="page-item {{ $courseForums->pagination->page === $i ? 'active' : '' }}">
+                                <a class="page-link" href="/admin/diskusi-kelas/{{$courseId}}?page={{$i}}">{{ $i }}</a>
+                            </li>
+                        @endfor
+
+                        <!-- Next Button -->
+                        @if ($courseForums->pagination->page < $courseForums->pagination->total_page)
+                            <li class="page-item">
+                                <a class="page-link"
+                                    href="/admin/diskusi-kelas/{{$courseId}}?page={{$courseForums->pagination->page + 1}}">Next</a>
+                            </li>
+                        @else
+                            <li class="page-item disabled">
+                                <a class="page-link">Next</a>
+                            </li>
+                        @endif
+                    </ul>
+                </nav>
         </div>
 
     </div>
@@ -148,13 +167,13 @@ $(document).ready(function() {
 
 function send(id){
     const reply = $('#reply-'+id).val()
-    
 
-    
+
+
     var formData = new FormData();
     formData.append('reply', reply);
     formData.append('forumId', id);
-   
+
 
         $.ajax({
 
@@ -169,7 +188,7 @@ function send(id){
                 contentType: false,
                 success:  async function(response) {
                     const replyImg = $('#replyImageFile-'+id)[0].files[0];
-                    
+
                     if (replyImg) {
                         var formData = new FormData();
                         formData.append('forumId', id);
@@ -190,14 +209,14 @@ function send(id){
                             error: function(xhr, status, error) {
                                 console.log( xhr.responseJSON.message);
                                 console.log( xhr.responseJSON.error);
-                                
+
                                 Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                             }
                         });
                     }
-                
+
                     console.log(response);
-                    
+
                     window.location.reload()
                     Swal.fire('Berhasil', 'Berhasil membalas diskusi', 'success');
 
@@ -236,7 +255,7 @@ function deleteForum(forumId){
                             console.log( xhr.responseJSON.error);
                             console.log(xhr);
                             console.log( `ERROR : ${error}`);
-                            
+
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                         }
                     });
@@ -264,7 +283,7 @@ function deleteForumReply(forumId, replyId){
                             console.log( xhr.responseJSON.error);
                             console.log(xhr);
                             console.log( `ERROR : ${error}`);
-                            
+
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                         }
                     });
@@ -272,6 +291,6 @@ function deleteForumReply(forumId, replyId){
 
 
 
-  
+
 </script>
 @endsection

@@ -18,8 +18,8 @@ class userCourseController extends Controller
         $this->apiUrl = env('API_URL');
     }
 
-    function getCoursesUser()  {
-        $response = Http::withApiSession()->get($this->apiUrl. 'user/'.$this->user['id'].'/courses');
+    function getCoursesUser($status)  {
+        $response = Http::withApiSession()->get($this->apiUrl. 'user/'.$this->user['id'].'/courses?status=' . $status);
 
         return  json_decode(json_encode($response->json()));
     }
@@ -65,8 +65,6 @@ class userCourseController extends Controller
 
         return  json_decode(json_encode($response->json()));
     }
-
-
 
     public function rate( Request $request) {
         $rating =$request->get('rating');

@@ -21,7 +21,6 @@
     }
 @endphp
 
-
 @extends('layout.userLayout')
 @section('title', isset($courseContent) ? $courseContent->content_title : $title)
 
@@ -237,7 +236,8 @@
                                             allowfullscreen></iframe>
                                     </div>
                                 @elseif($courseContent->content_type == $quizType)
-                                    @foreach ($courseContent->quiz->questions as $quiz)
+                                 @if(isset($courseContent->quiz->questions))
+                                 @foreach ($courseContent->quiz->questions as $quiz)
                                         <div class="card p-4 mb-3 shadow-sm border-0 rounded-lg">
                                             <!-- Added shadow, no border, and rounded corners -->
                                             <p class="font-weight-bold h5 mb-3">{{ $quiz->question }}</p>
@@ -263,6 +263,7 @@
                                     <div class="d-flex justify-content-end mt-3"> <!-- Right-aligns the button -->
                                         <button id="submitBtnQuiz" class="btn btn-success">Kirim Jawaban</button>
                                     </div>
+                                 @endif
                                 @endif
                             </div>
                             <div class="mt-5">
@@ -351,9 +352,10 @@
         <script>
             const ratingInputs = document.querySelectorAll('input[name="rating"]');
 
-            ratingInputs.forEach((input) => {
-                input.addEventListener('change', function() {
-                    const selectedValue = this.value;
+        ratingInputs.forEach((input) => {
+            input.addEventListener('change', function() {
+                const selectedValue = this.value;
+                createOverlay("Proses...");
 
 
                     var descRate = $('#descRate').val()
@@ -362,6 +364,7 @@
                     formData.append('rating', selectedValue);
                     formData.append('description', descRate);
                     formData.append('studentId', '{{ $userCourse->id }}');
+
 
 
                     $.ajax({
@@ -375,22 +378,16 @@
                         processData: false,
                         contentType: false,
                         success: function(response) {
-
-
+                            gOverlay.hide()
                             Swal.fire({
                                 icon: 'success',
                                 title: response.data.title,
                                 text: response.data.content
                             })
-
                             window.location.reload();
                         },
                         error: function(xhr, status, error) {
-
-                            console.error('Error:', error); // Log the error for debugging
-                            console.error('Response Text:', xhr.responseText);
-                            console.error('Response Text:', xhr.responseJSON.message);
-                            console.error('Response Text:', xhr.responseJSON.error);
+                            gOverlay.hide()
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                         }
                     });
@@ -404,6 +401,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @if (isset($courseContent))
         @if ($courseContent->content_type == $quizType)
+        @if(isset($courseContent->quiz->questions))
+
             <script>
                 var questionOptionsSelected = []
 
@@ -441,7 +440,7 @@
 
 
 
-
+                    createOverlay("Proses...");
                     var formData = new FormData();
                     formData.append('answers', JSON.stringify(answers));
                     formData.append('studentId', '{{ $userCourse->id }}');
@@ -458,6 +457,7 @@
                         processData: false,
                         contentType: false,
                         success: function(response) {
+                            gOverlay.hide()
                             if (response.dataServer.passed_status) {
                                 // If the user passed the quiz
                                 Swal.fire({
@@ -466,7 +466,6 @@
                                     text: response.data.content
                                 }).then((result) => {
                                     if (result.isConfirmed) {
-
                                         document.getElementById('nextCourseButton').click();
                                     }
                                 });
@@ -485,14 +484,13 @@
                             }
                         },
                         error: function(xhr, status, error) {
-
-                            console.error('Error:', error); // Log the error for debugging
-                            console.error('Response Text:', xhr.responseText);
+                            gOverlay.hide()
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                         }
                     });
                 })
             </script>
+        @endif
         @endif
     @endif
 

@@ -26,10 +26,13 @@ class publicController extends Controller
         $page = $request->input('page', 1); // Default to page 1 if not set
         // Ambil nilai input 'q' dari form
         $query = $request->input('q');
+        $free = $request->input('free');
 
         if ($query) {
             // Fetch courses dengan parameter query
             $courses = $this->courseCtrl->getSearchCourse(urlencode($query));
+        } else if ($free) {
+            $courses = $this->courseCtrl->getFreeCourse($page);
         } else {
             // Fetch courses tanpa pencarian
             $courses = $this->courseCtrl->getAllCourse($page);
@@ -109,9 +112,11 @@ class publicController extends Controller
         $contentsId = $this->courseCtrl->getBundlingContentById($courseId);
 
         $contents = [];
+        $ratings = [];
         if ($contentsId) {
             foreach ($contentsId as $row) {
                 $contents[] = $this->courseCtrl->getCourseById($row);
+                $ratings[] = $this->courseCtrl->getCourseRating($row);
             }
         }
 
@@ -122,7 +127,7 @@ class publicController extends Controller
             $isLogin = 'y';
             // dd($course);
         } else {
-            $role ='';
+            $role = '';
             $isLogin = 'n';
         }
 
@@ -130,6 +135,7 @@ class publicController extends Controller
         return view('detailBundling', [
             "title" => $title,
             'bundling' => $bundling,
+            'ratings' => $ratings,
             'role' => $role,
             'contents' => $contents, // Pastikan ini adalah array
             'isLogin' => $isLogin

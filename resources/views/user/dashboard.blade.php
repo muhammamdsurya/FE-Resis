@@ -41,7 +41,7 @@
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3>{{ count($userCourses->data) }}</h3>
+                        <h3>{{ count($userCourses->data ?? []) }}</h3>
 
                         <p>Jumlah Kelas</p>
                     </div>
@@ -54,26 +54,11 @@
             <!-- ./col -->
             <div class="col-lg-3 col-6">
                 <!-- small box -->
-                <div class="small-box bg-success">
-                    <div class="inner">
-                        <h3>10</h3>
-
-                        <p>Selesai</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-users-cog"></i>
-                    </div>
-                    <a href="#" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-            <!-- ./col -->
-            <div class="col-lg-3 col-6">
-                <!-- small box -->
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>44</h3>
+                        <h3>{{ count($expired->data ?? []) }}</h3>
 
-                        <p>Diskusi</p>
+                        <p>Expired</p>
                     </div>
                     <div class="icon">
                         <i class="fas fa-user-graduate"></i>
