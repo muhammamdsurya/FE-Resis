@@ -241,23 +241,27 @@
         </div>
         <!-- End Section Title -->
         <div class="container">
-            @foreach ($ratings->data as $rating)
-                <div class="rating-box">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h5>{{ $rating->student_name }}</h5>
-                            <p class="mb-0">{{ $rating->description }} stars</p>
-                        </div>
+            @if ($ratings->data != null)
+                @foreach ($ratings->data as $rating)
+                    <div class="rating-box">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5>{{ $rating->student_name }}</h5>
+                                <p class="mb-0">{{ $rating->description }} stars</p>
+                            </div>
 
-                        <div class="rating-stars fs-3">
-                            @for ($i = 1; $i <= $rating->rating; $i++)
-                                <i class="bi bi-star-fill text-warning me-1"></i>
-                            @endfor
-                        </div>
+                            <div class="rating-stars fs-3">
+                                @for ($i = 1; $i <= $rating->rating; $i++)
+                                    <i class="bi bi-star-fill text-warning me-1"></i>
+                                @endfor
+                            </div>
 
+                        </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+                @else
+                <p>Belum ada rating</p>
+            @endif
 
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
@@ -355,8 +359,6 @@
                         },
                         error: function(xhr, status, error) {
                             gOverlay.hide()
-                            console.error('Error:', error); // Log the error for debugging
-                            console.error('Response Text:', xhr.responseText);
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                         }
                     });

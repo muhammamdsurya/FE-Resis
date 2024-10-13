@@ -655,6 +655,7 @@
 
             }
 
+            createOverlay("Proses...");
 
             $.ajax({
                 url: '{{ route('admin.kelas.content.post', $courseId) }}', // Direct API endpoint
@@ -667,12 +668,14 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
+                    gOverlay.hide()
                     Swal.fire('Berhasil', 'Berhasil membuat konten', 'success');
-
+                    
                     window.location.href = '?selectedCourseContentId=' + response.data.id
-
+                    
                 },
                 error: function(xhr, status, error) {
+                gOverlay.hide()
                     Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                 }
             });
@@ -841,6 +844,7 @@
 
 
             function deleteContent() {
+                createOverlay("Proses...");
                 $.ajax({
                     url: '{{ route('admin.kelas.content.delete', ['courseId' => $courseId, 'id' => $selectedCourseContentId]) }}', // Direct API endpoint
                     method: 'DELETE',
@@ -851,11 +855,13 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
+                        gOverlay.hide()
                         Swal.fire('Berhasil', 'Berhasil mengapus konten', 'success');
                         window.location.href = '?selectedCourseContentId='
-
+                        
                     },
                     error: function(xhr, status, error) {
+                        gOverlay.hide()
                         Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                     }
                 });
@@ -904,7 +910,7 @@
 
 
                 formData.append('isUpdateContentFile', isUpdateContentFile);
-
+                createOverlay("Proses...");
                 $.ajax({
                     url: '{{ route('admin.kelas.content.update', ['courseId' => $courseId, 'contentId' => $selectedCourseContentId]) }}', // Direct API endpoint
                     method: 'POST',
@@ -916,11 +922,13 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
+                        gOverlay.hide()
                         Swal.fire('Berhasil', 'Berhasil memperbarui konten', 'success')
                         window.location.reload()
-
+                        
                     },
                     error: function(xhr, status, error) {
+                        gOverlay.hide()
                         Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                     }
                 });

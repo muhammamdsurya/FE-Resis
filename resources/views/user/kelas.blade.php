@@ -47,6 +47,16 @@
             margin: 0;
         }
     </style>
+      <div class="row mb-3 text-center">
+                <div class="d-grid gap-2 d-none d-md-block">
+                    <button class="btn btn-{{ $filter == 'all' ? 'primary' : 'secondary' }}" type="button"
+                        onclick="window.location.href='?filter=all'">Semua</button>
+                    <button class="btn btn-{{ $filter == 'active' ? 'primary' : 'secondary' }}" type="button"
+                        onclick="window.location.href='?filter=active'">Aktif</button>
+                    <button class="btn btn-{{ $filter == 'expired' ? 'primary' : 'secondary' }}" type="button"
+                        onclick="window.location.href='?filter=expired'">Expired</button>
+                </div>
+            </div>
     <div class="container-fluid mt-3">
         <div id="coursesContainer" class="row g-2 mb-5">
             @if ($filter == 'expired')
@@ -137,7 +147,7 @@
                 @if ($userCourses->pagination->page > 1)
                     <li class="page-item">
                         <a class="page-link"
-                            href="{{ route('user.kelas', ['page' => $userCourses->pagination->page - 1]) }}">Previous</a>
+                            href="/user/kelas?filter={{$filter}}&page={{$userCourses->pagination->page + 1}}">Previous</a>
                     </li>
                 @else
                     <li class="page-item disabled">
@@ -148,7 +158,7 @@
                 <!-- Page Numbers -->
                 @for ($i = 1; $i <= $userCourses->pagination->total_page; $i++)
                     <li class="page-item {{ $userCourses->pagination->page === $i ? 'active' : '' }}">
-                        <a class="page-link" href="{{ route('user.kelas', ['page' => $i]) }}">{{ $i }}</a>
+                        <a class="page-link" href="/user/kelas?filter={{$filter}}&page={{$i}}">{{ $i }}</a>
                     </li>
                 @endfor
 
@@ -156,7 +166,7 @@
                 @if ($userCourses->pagination->page < $userCourses->pagination->total_page)
                     <li class="page-item">
                         <a class="page-link"
-                            href="{{ route('user.kelas', ['page' => $userCourses->pagination->page + 1]) }}">Next</a>
+                            href="/user/kelas?filter={{$filter}}&page={{$$userCourses->pagination->page - 1}}">Next</a>
                     </li>
                 @else
                     <li class="page-item disabled">

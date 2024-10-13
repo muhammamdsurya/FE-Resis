@@ -125,11 +125,12 @@ class UserController extends Controller
         ]);
     }
 
-    public function kelas(Request  $request)
+    public function kelas(Request $request)
     {
         $title = 'Kelasku';
-        $filter = $request->get('status') ?? 'active';
-        $userCourses = $this->userCourseCtrl->getCoursesUser($filter);
+        $filter = $request->get('filter') ?? 'all';
+        $page = $request->get('page') ?? 0;
+        $userCourses = $this->userCourseCtrl->getCoursesUserFilter($filter, $page);
 
         // dd($userCourses);
 
@@ -137,6 +138,8 @@ class UserController extends Controller
             "title" => $title,
             "filter" => $filter,
             "userCourses" => $userCourses,
+            "page" => $page,
+            "filter" => $filter,
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
         ]);
@@ -156,8 +159,8 @@ class UserController extends Controller
             foreach ($transactions->data as $transaction) {
                 $transaction->course = $this->courseCtrl->getCourseById($transaction->course_id)->course;
             }
-            // dd($transactions);
         }
+        // dd($transactions);
 
         $title = 'Data Transaksi';
 

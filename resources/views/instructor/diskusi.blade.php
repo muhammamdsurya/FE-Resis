@@ -173,7 +173,7 @@ function send(id){
     formData.append('reply', reply);
     formData.append('forumId', id);
 
-
+    createOverlay("Proses...");
         $.ajax({
 
                 url: '{{ route("instructor.diskusi.post.reply", $courseId) }}', // Direct API endpoint
@@ -214,8 +214,7 @@ function send(id){
                         });
                     }
 
-                    console.log(response);
-
+                    gOverlay.hide()
                     window.location.reload()
                     Swal.fire('Berhasil', 'Berhasil membalas diskusi', 'success');
 
@@ -238,6 +237,7 @@ function deleteForumReply(forumId, replyId){
             var formData = new FormData();
             formData.append('forumId', forumId);
             formData.append('replyId', replyId);
+            createOverlay("Proses...");
             $.ajax({
                         url: '{{ route("instructor.diskusi.reply.delete", $courseId) }}', // Direct API endpoint
                         method: 'POST',
@@ -249,10 +249,12 @@ function deleteForumReply(forumId, replyId){
                         processData: false,
                         contentType: false,
                         success: function(response) {
+                            gOverlay.hide()
                             Swal.fire('Berhasil', 'Berhasil menghapus balasan diskusi', 'success');
                             window.location.reload()
                         },
                         error: function(xhr, status, error) {
+                            gOverlay.hide()
                             console.log( xhr.responseJSON.message);
                             console.log( xhr.responseJSON.error);
                             console.log(xhr);

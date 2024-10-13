@@ -174,7 +174,7 @@ function send(id){
     formData.append('reply', reply);
     formData.append('forumId', id);
 
-
+    createOverlay("Proses...");
         $.ajax({
 
                 url: '{{ route("admin.diskusi.post.reply", $courseId) }}', // Direct API endpoint
@@ -215,8 +215,8 @@ function send(id){
                         });
                     }
 
-                    console.log(response);
 
+                    gOverlay.hide()
                     window.location.reload()
                     Swal.fire('Berhasil', 'Berhasil membalas diskusi', 'success');
 
@@ -237,6 +237,7 @@ function showReply(id){
 function deleteForum(forumId){
             var formData = new FormData();
             formData.append('forumId', forumId);
+            createOverlay("Proses...");
             $.ajax({
                         url: '{{ route("admin.diskusi.delete", $courseId) }}', // Direct API endpoint
                         method: 'POST',
@@ -248,9 +249,11 @@ function deleteForum(forumId){
                         processData: false,
                         contentType: false,
                         success: function(response) {
+                            gOverlay.hide()
                             Swal.fire('Berhasil', 'Berhasil menghapus diskusi', 'success');
                         },
                         error: function(xhr, status, error) {
+                            gOverlay.hide()
                             console.log( xhr.responseJSON.message);
                             console.log( xhr.responseJSON.error);
                             console.log(xhr);
@@ -264,6 +267,7 @@ function deleteForumReply(forumId, replyId){
             var formData = new FormData();
             formData.append('forumId', forumId);
             formData.append('replyId', replyId);
+            createOverlay("Proses...");
             $.ajax({
                         url: '{{ route("admin.diskusi.reply.delete", $courseId) }}', // Direct API endpoint
                         method: 'POST',
@@ -275,10 +279,12 @@ function deleteForumReply(forumId, replyId){
                         processData: false,
                         contentType: false,
                         success: function(response) {
+                            gOverlay.hide()
                             Swal.fire('Berhasil', 'Berhasil menghapus balasan diskusi', 'success');
                             window.location.reload()
                         },
                         error: function(xhr, status, error) {
+                            gOverlay.hide()
                             console.log( xhr.responseJSON.message);
                             console.log( xhr.responseJSON.error);
                             console.log(xhr);

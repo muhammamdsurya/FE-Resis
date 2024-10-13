@@ -200,12 +200,12 @@
 
 
 
-            var formData = new FormData();
-            formData.append('reply', reply);
-            formData.append('forumId', id);
+    var formData = new FormData();
+    formData.append('reply', reply);
+    formData.append('forumId', id);
 
-
-            $.ajax({
+    createOverlay("Proses...");
+        $.ajax({
 
                 url: '{{ route('diskusi.post.reply', $courseId) }}', // Direct API endpoint
                 method: 'POST',
@@ -245,8 +245,7 @@
                         });
                     }
 
-                    console.log(response);
-
+                    gOverlay.hide()
                     window.location.reload()
                     Swal.fire('Berhasil', 'Berhasil membalas diskusi', 'success');
 
@@ -262,29 +261,32 @@
         function deleteForum(forumId) {
             var formData = new FormData();
             formData.append('forumId', forumId);
+            createOverlay("Proses...");
             $.ajax({
-                url: '{{ route('diskusi.delete', $courseId) }}', // Direct API endpoint
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content')
-                },
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    Swal.fire('Berhasil', 'Berhasil menghapus diskusi', 'success');
-                },
-                error: function(xhr, status, error) {
-                    console.log(xhr.responseJSON.message);
-                    console.log(xhr.responseJSON.error);
-                    console.log(xhr);
-                    console.log(`ERROR : ${error}`);
+                        url: '{{ route("diskusi.delete", $courseId) }}', // Direct API endpoint
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content')
+                        },
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            gOverlay.hide()
+                            Swal.fire('Berhasil', 'Berhasil menghapus diskusi', 'success');
+                        },
+                        error: function(xhr, status, error) {
+                        gOverlay.hide()
+                            console.log( xhr.responseJSON.message);
+                            console.log( xhr.responseJSON.error);
+                            console.log(xhr);
+                            console.log( `ERROR : ${error}`);
 
-                    Swal.fire('Oops!', xhr.responseJSON.message, 'error');
-                }
-            });
-        }
+                            Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                        }
+                    });
+}
 
         function showReply(id) {
             const comments = document.getElementById('comments-' + id);
@@ -306,47 +308,47 @@
             }
 
 
+        createOverlay("Proses...");
+        $.ajax({
 
-            $.ajax({
+            url: '{{ route("diskusi.post", $courseId) }}', // Direct API endpoint
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                    .getAttribute('content')
+            },
+            data: JSON.stringify(data),
+            success: async function(response) {
+                const img = $('#questionImageFile')[0].files[0]
+                if (img) {
+                    var formData = new FormData();
+                    formData.append('img', img);
+                    formData.append('forumId', response.data.course_forum_question.id);
+                    await $.ajax({
+                        url: '{{ route("diskusi.post.img", $courseId) }}', // Direct API endpoint
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content')
+                        },
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                        },
+                        error: function(xhr, status, error) {
+                            console.log( xhr.responseJSON.message);
+                            console.log( xhr.responseJSON.error);
 
-                url: '{{ route('diskusi.post', $courseId) }}', // Direct API endpoint
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content')
-                },
-                data: JSON.stringify(data),
-                success: async function(response) {
-                    const img = $('#questionImageFile')[0].files[0]
-                    if (img) {
-                        var formData = new FormData();
-                        formData.append('img', img);
-                        formData.append('forumId', response.data.course_forum_question.id);
-                        await $.ajax({
-                            url: '{{ route('diskusi.post.img', $courseId) }}', // Direct API endpoint
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector(
-                                        'meta[name="csrf-token"]')
-                                    .getAttribute('content')
-                            },
-                            data: formData,
-                            processData: false,
-                            contentType: false,
-                            success: function(response) {},
-                            error: function(xhr, status, error) {
-                                console.log(xhr.responseJSON.message);
-                                console.log(xhr.responseJSON.error);
+                            Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                        }
+                    });
+                }
 
-                                Swal.fire('Oops!', xhr.responseJSON.message, 'error');
-                            }
-                        });
-                    }
-
-
-                    window.location.reload()
-                    Swal.fire('Berhasil', 'Berhasil membuat diskusi', 'success');
+                gOverlay.hide()
+                window.location.reload()
+                Swal.fire('Berhasil', 'Berhasil membuat diskusi', 'success');
 
                 },
                 error: function(xhr, status, error) {
@@ -360,29 +362,32 @@
             var formData = new FormData();
             formData.append('forumId', forumId);
             formData.append('replyId', replyId);
+            createOverlay("Proses...");
             $.ajax({
-                url: '{{ route('diskusi.reply.delete', $courseId) }}', // Direct API endpoint
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content')
-                },
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    Swal.fire('Berhasil', 'Berhasil menghapus balasan diskusi', 'success');
-                    window.location.reload()
-                },
-                error: function(xhr, status, error) {
-                    console.log(xhr.responseJSON.message);
-                    console.log(xhr.responseJSON.error);
-                    console.log(xhr);
-                    console.log(`ERROR : ${error}`);
+                        url: '{{ route("diskusi.reply.delete", $courseId) }}', // Direct API endpoint
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content')
+                        },
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            gOverlay.hide()
+                            Swal.fire('Berhasil', 'Berhasil menghapus balasan diskusi', 'success');
+                            window.location.reload()
+                        },
+                        error: function(xhr, status, error) {
+                            gOverlay.hide()
+                            console.log( xhr.responseJSON.message);
+                            console.log( xhr.responseJSON.error);
+                            console.log(xhr);
+                            console.log( `ERROR : ${error}`);
 
-                    Swal.fire('Oops!', xhr.responseJSON.message, 'error');
-                }
-            });
-        }
-    </script>
+                            Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                        }
+                    });
+}
+</script>
 @endsection
