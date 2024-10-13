@@ -152,8 +152,8 @@ class UserController extends Controller
             foreach ($transactions->data as $transaction) {
                 $transaction->course = $this->courseCtrl->getCourseById($transaction->course_id)->course;
             }
-            // dd($transactions);
         }
+        // dd($transactions);
 
         $title = 'Data Transaksi';
 
