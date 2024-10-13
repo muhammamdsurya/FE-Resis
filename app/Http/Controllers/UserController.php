@@ -316,9 +316,6 @@ class UserController extends Controller
             }
         }
 
-        
-
-        dd($courseContent);
 
 
 

@@ -504,6 +504,13 @@ class courseController extends Controller
         return json_decode($response->getBody()->getContents());
     }
 
+    public function getCourseRating($courseId) {
+        $response = Http::withApiSession()->get($this->apiUrl . 'courses/' . $courseId . '/ratings');
+
+        dd($response->body());
+        return json_decode($response->getBody()->getContents());
+    }
+
 
     public function getBundlingById($courseBundleId)
     {
@@ -516,4 +523,6 @@ class courseController extends Controller
 
         return json_decode($response->getBody()->getContents());
     }
+
+
 }

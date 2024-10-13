@@ -21,8 +21,8 @@
                     <li>
                         <a href="/" class="{{ request()->routeIs('beranda') ? 'active' : '' }}">Beranda</a>
                     </li>
-                    <li><a href="/kelas" class="{{ request()->routeIs('kelas') ? 'active' : '' }}">Kelas</a></li>
-                    <li><a href="/bundling" class="{{ request()->routeIs('bundling') ? 'active' : '' }}">Bundling</a></li>
+                    <li><a href="/kelas" class="{{ request()->routeIs('kelas') || request()->routeIs('detail.kelas') ? 'active' : '' }}">Kelas</a></li>
+                    <li><a href="/bundling" class="{{ request()->routeIs('bundling' || request()->routeIs('detail.bundling')) ? 'active' : '' }}">Bundling</a></li>
                     <li><a href="/kontak" class="{{ request()->routeIs('kontak') ? 'active' : '' }}">Kontak kami</a></li>
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
