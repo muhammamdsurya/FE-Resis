@@ -166,8 +166,8 @@
                                     <div class="col-lg-4 col-6"> <!-- Each card should be in its own column -->
                                         <div class="card shadow-sm border-0 rounded">
                                             <img src="{{ $content->instructor->photo_profile }}" alt="Instructor"
-                                                class="card-img-top rounded-circle mx-auto" width="50" height="50"
-                                                style="object-fit: cover; margin-top: 15px;">
+                                                class="card-img-top mx-auto rounded-circle"
+                                                style="object-fit: cover; margin-top: 15px; width:100px; height: 100px;">
                                             <div class="card-body text-center">
                                                 <h6 class="fw-bold">{{ $instructorName }}</h6> <!-- Use the variable -->
                                                 <p class="text-muted mb-1">
@@ -299,7 +299,7 @@
         <!-- End Section Title -->
         <div class="container">
             @foreach ($ratings as $rating)
-                @if (!empty($rating->data))
+                @if ($rating->data != null)
                     <!-- This checks if 'data' is not empty or null -->
                     @foreach ($rating->data as $row)
                         <div class="rating-box">
@@ -354,8 +354,6 @@
                             @endif
                         </ul>
                     </nav>
-                @else
-                    <p>Belum ada rating</p>
                 @endif
             @endforeach
 
