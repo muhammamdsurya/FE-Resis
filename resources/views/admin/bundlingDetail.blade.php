@@ -50,8 +50,7 @@
                         <h5 class="card-title">Data Bundling</h5>
                     </div>
                     <div class="card-body">
-                        <form id="courseForm" method="POST" action="{{ route('bundle.edit', ['id' => $bundle['id']]) }}"
-                            enctype="multipart/form-data">
+                        <form id="courseForm" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <!-- Image Section -->
@@ -118,8 +117,7 @@
                     </div>
                     <div class="card-body">
                         <!-- Courses Selection Form -->
-                        <form id="courseForm" method="POST"
-                            action="{{ route('bundleCourse.post', ['id' => $bundle['id']]) }}">
+                        <form id="coursePost" method="POST">
                             @csrf
                             <div class="row g-3 align-items-center" id="courseContainer">
                                 <div class="col-md-8 col-8">
@@ -195,7 +193,7 @@
                 minimumFractionDigits: 0
             }).format(value);
             e.target.value = value.replace('Rp', '')
-        .trim(); // Menghilangkan 'Rp' dan hanya menampilkan angka dengan titik
+                .trim(); // Menghilangkan 'Rp' dan hanya menampilkan angka dengan titik
         });
 
         // Pastikan format angka asli diambil saat form dikirim
@@ -241,7 +239,71 @@
                 reader.readAsDataURL(e.target.files[0]);
             });
         });
+        $('#courseForm').on('submit', function(e) {
+            e.preventDefault(); // Mencegah pengiriman default
 
+            // Membuat objek FormData
+            const formData = new FormData(this);
+
+            createOverlay('Proses...'); // Tampilkan overlay
+
+            // Mengirim data formulir menggunakan AJAX
+            $.ajax({
+                url: ' {{ route('bundle.edit', ['id' => $bundle['id']]) }}',
+                type: 'POST',
+                data: formData, // Mengambil data dari formulir
+                processData: false, // Mencegah jQuery mengubah data
+                contentType: false, // Mencegah jQuery menetapkan konten
+                success: function(response) {
+                    gOverlay.hide();
+                    // Lakukan sesuatu setelah berhasil
+                    Swal.fire('Sukses!', response.message, 'success');
+                    // Reload halaman atau arahkan ke halaman lain jika diperlukan
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    gOverlay.hide();
+                    console.error('Error:', xhr.responseText);
+                    // Menampilkan pesan error
+                    Swal.fire('Error!',
+                        'Terjadi kesalahan saat mengirim data. Silakan coba lagi.',
+                        'error');
+                },
+            });
+        });
+        $('#coursePost').on('submit', function(e) {
+            e.preventDefault(); // Mencegah pengiriman default
+
+            // Membuat objek FormData
+            const formData = new FormData(this);
+
+
+            createOverlay('Proses...'); // Tampilkan overlay
+
+            // Mengirim data formulir menggunakan AJAX
+            $.ajax({
+                url: '{{ route('bundleCourse.post', ['id' => $bundle['id']]) }}',
+                type: 'POST',
+                data: formData, // Mengambil data dari formulir
+                processData: false, // Mencegah jQuery mengubah data
+                contentType: false, // Mencegah jQuery menetapkan konten
+                success: function(response) {
+                    gOverlay.hide();
+                    // Lakukan sesuatu setelah berhasil
+                    Swal.fire('Sukses!', response.message, 'success');
+                    // Reload halaman atau arahkan ke halaman lain jika diperlukan
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    gOverlay.hide();
+                    console.error('Error:', xhr.responseText);
+                    // Menampilkan pesan error
+                    Swal.fire('Error!',
+                        'Terjadi kesalahan saat mengirim data. Silakan coba lagi.',
+                        'error');
+                },
+            });
+        });
         document.addEventListener('DOMContentLoaded', function() {
 
             document.getElementById('deleteButton').addEventListener('click', function() {
@@ -353,7 +415,7 @@
             button.addEventListener('click', function() {
                 event.preventDefault(); // Prevent default button behavior
 
-                const courseId = this.getAttribute('data-id');clicked button
+                const courseId = this.getAttribute('data-id');
                 confirmDelete(courseId); // Call the confirmDelete function or any other logic
             });
         });

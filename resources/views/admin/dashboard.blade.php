@@ -4,7 +4,7 @@
 @section('content')
     <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
-        <div class="row">
+        <div class="row g-3">
             <div class="col-lg-3 col-6">
                 <!-- small box -->
                 <div class="small-box bg-primary">
@@ -71,7 +71,7 @@
             <!-- ./col -->
         </div>
         <!-- /.row -->
-        <div class="row">
+        <div class="row g-3">
             <div class="col-lg-3 col-6">
                 <!-- small box -->
                 <div class="small-box bg-primary">
@@ -102,7 +102,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-5 col-6">
+            <div class="col-lg-5 col-12">
                 <!-- Total Income Box -->
                 <div class="small-box bg-success">
                     <div class="inner">
@@ -117,7 +117,6 @@
                 </div>
             </div>
         </div>
-
     </div>
     <!-- Main row -->
     <div class="row">
@@ -139,8 +138,8 @@
                             <option value="12">12 Bulan</option>
                         </select>
                     </div>
-                    <div class="chart" style="position: relative; height: 300px;">
-                        <canvas id="fewmonthChart" width="400" height="200"></canvas>
+                    <div class="chart" style="position: relative; height: auto;">
+                        <canvas id="fewmonthChart" style="width: 100%; height: 300px;"></canvas>
                     </div>
                 </div><!-- /.card-body -->
             </div>
@@ -176,8 +175,8 @@
                             <option value="12">Desember</option>
                         </select>
                     </div>
-                    <div class="chart" style="position: relative; height: 300px;">
-                        <canvas id="monthChart" width="400" height="400"></canvas>
+                    <div class="chart" style="position: relative; height: auto;">
+                        <canvas id="monthChart" style="width: 100%; height: 300px;"></canvas>
                     </div>
                 </div><!-- /.card-body -->
             </div>
@@ -197,7 +196,6 @@
 
 
     <script>
-
         let fewmonthChart;
         const fewmonthChartCanvas = document.getElementById('fewmonthChart');
 

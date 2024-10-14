@@ -4,7 +4,7 @@
 @section('content')
     <div class="container-fluid mt-2">
         <!-- Small boxes (Stat box) -->
-        <div class="row">
+        <div class="row g-2">
             <div class="col-lg-3 col-6">
                 <!-- small box -->
                 <div class="small-box bg-info">
