@@ -23,7 +23,7 @@
                 <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                 <li class="nav-item">
-                    <a href="/admin/dashboard" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <a href="/admin/dashboard" class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Beranda
@@ -31,7 +31,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/kelas" class="nav-link {{ request()->routeIs('kelas') ? 'active' : '' }}">
+                    <a href="/admin/kelas" class="nav-link {{ request()->routeIs('admin.kelas') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-book-reader"></i>
                         <p>
                             Data Kelas
@@ -39,7 +39,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/bundling" class="nav-link {{ request()->routeIs('bundling') ? 'active' : '' }}">
+                    <a href="/admin/bundling" class="nav-link {{ request()->routeIs('admin.bundling') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-box-open"></i>
                         <p>
                             Data Bundling
@@ -55,7 +55,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/data-admin" class="nav-link {{ request()->routeIs('data-admin') ? 'active' : '' }}">
+                    <a href="/admin/data-admin" class="nav-link {{ request()->routeIs('data.admin') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-user-lock"></i>
                         <p>
                             Data Admin
@@ -64,7 +64,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="/admin/data-pengajar"
-                        class="nav-link {{ request()->routeIs('data-pengajar') ? 'active' : '' }}">
+                        class="nav-link {{ request()->routeIs('data.pengajar') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-user-graduate"></i>
                         <p>
                             Data Pengajar
@@ -72,7 +72,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/data-siswa" class="nav-link {{ request()->routeIs('data-siswa') ? 'active' : '' }}">
+                    <a href="/admin/data-siswa" class="nav-link {{ request()->routeIs('data.siswa') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-graduation-cap"></i>
                         <p>
                             Data Siswa

@@ -52,9 +52,7 @@
                         <h5 class="card-title">Data Kelas</h5>
                     </div>
                     <div class="card-body">
-                        <form id="courseForm" method="POST"
-                            action="{{ route('kelas.edit', ['CourseId' => $course->course->id]) }}"
-                            enctype="multipart/form-data">
+                        <form id="courseForm" method="POST" enctype="multipart/form-data">
                             @csrf
                             <!-- Image Section -->
                             <div class="image-container text-center mb-4">
@@ -165,7 +163,8 @@
                                     <i class="fas fa-plus mr-2"></i>Tambah Materi Baru
                                 </a>
                                 <!-- Discussion link -->
-                                <a href="/admin/diskusi-kelas/{{$course->course->id}}" class="list-group-item list-group-item-action">Diskusi</a>
+                                <a href="/admin/diskusi-kelas/{{ $course->course->id }}"
+                                    class="list-group-item list-group-item-action">Diskusi</a>
                             </div>
                         </div>
 
@@ -195,7 +194,8 @@
                                         </a>
                                     </li>
                                     <!-- Discussion link -->
-                                    <li><a class="dropdown-item" href="/admin/diskusi-kelas/{{$course->course->id}}">Diskusi</a></li>
+                                    <li><a class="dropdown-item"
+                                            href="/admin/diskusi-kelas/{{ $course->course->id }}">Diskusi</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -241,10 +241,10 @@
 
                                 <div id="video-type">
                                     <!-- <div class="form-floating mb-3">
-                                                        <input type="text" class="form-control" id="contentVideoArticleContent"
-                                                            placeholder="name@example.com" name="name">
-                                                        <label for="contentVideoArticleContent">Judul Konten</label>
-                                                    </div> -->
+                                                            <input type="text" class="form-control" id="contentVideoArticleContent"
+                                                                placeholder="name@example.com" name="name">
+                                                            <label for="contentVideoArticleContent">Judul Konten</label>
+                                                        </div> -->
 
                                     <!-- Video Type Content Section -->
                                     <div id="video-type" class="content-type-section">
@@ -252,9 +252,9 @@
                                             <div class="col-md-6">
                                                 <div class="form-floating">
                                                     <input type="text" class="form-control"
-                                                        id="contentVideoArticleContent" placeholder="Judul Konten Video"
+                                                        id="contentVideoArticleContent" placeholder=""
                                                         name="video_content_name" required>
-                                                    <label for="contentVideoArticleContent">Judul Konten Video</label>
+                                                    <label for="contentVideoArticleContent">Materi</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -471,6 +471,40 @@
                 });
             @endif
         });
+
+        $('#courseForm').on('submit', function(e) {
+            e.preventDefault(); // Mencegah pengiriman default
+
+            // Membuat objek FormData
+            const formData = new FormData(this);
+
+            createOverlay('Proses...'); // Tampilkan overlay
+
+            // Mengirim data formulir menggunakan AJAX
+            $.ajax({
+                url: ' {{ route('kelas.edit', ['CourseId' => $course->course->id]) }}', // Menggunakan URL dari atribut action
+                type: 'POST',
+                data: formData, // Mengambil data dari formulir
+                processData: false, // Mencegah jQuery mengubah data
+                contentType: false, // Mencegah jQuery menetapkan konten
+                success: function(response) {
+                    gOverlay.hide();
+                    // Lakukan sesuatu setelah berhasil
+                    Swal.fire('Sukses!', response.message, 'success');
+                    // Reload halaman atau arahkan ke halaman lain jika diperlukan
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    gOverlay.hide();
+                    console.error('Error:', xhr.responseText);
+                    // Menampilkan pesan error
+                    Swal.fire('Error!',
+                        'Terjadi kesalahan saat mengirim data. Silakan coba lagi.',
+                        'error');
+                },
+            });
+        });
+
         document.getElementById('deleteButton').addEventListener('click', function() {
             const CourseId = this.getAttribute('data-id');
 
@@ -670,12 +704,12 @@
                 success: function(response) {
                     gOverlay.hide()
                     Swal.fire('Berhasil', 'Berhasil membuat konten', 'success');
-                    
+
                     window.location.href = '?selectedCourseContentId=' + response.data.id
-                    
+
                 },
                 error: function(xhr, status, error) {
-                gOverlay.hide()
+                    gOverlay.hide()
                     Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                 }
             });
@@ -858,7 +892,7 @@
                         gOverlay.hide()
                         Swal.fire('Berhasil', 'Berhasil mengapus konten', 'success');
                         window.location.href = '?selectedCourseContentId='
-                        
+
                     },
                     error: function(xhr, status, error) {
                         gOverlay.hide()
@@ -925,7 +959,7 @@
                         gOverlay.hide()
                         Swal.fire('Berhasil', 'Berhasil memperbarui konten', 'success')
                         window.location.reload()
-                        
+
                     },
                     error: function(xhr, status, error) {
                         gOverlay.hide()

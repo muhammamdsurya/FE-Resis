@@ -210,7 +210,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" action="{{ route('kelas.post') }}" enctype="multipart/form-data">
+                        <form method="POST" id="kelasForm" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -339,14 +339,27 @@
 
             // Populate the select element with options
             categoriesData.forEach(category => {
-                // Create a new option element
-                let option = document.createElement('option');
-                option.value = category.id; // Set the value to the category ID
-                option.textContent = category.name; // Set the display text to the category name
+                if (category) {
 
-                // Append the option to the select element
-                categorySelect.appendChild(option);
+
+                    // Create a new option element
+                    let option = document.createElement('option');
+                    option.value = category.id; // Set the value to the category ID
+                    option.textContent = category.name; // Set the display text to the category name
+
+                    // Append the option to the select element
+                    categorySelect.appendChild(option);
+                } else {
+                    // Create a new option element
+                    let option = document.createElement('option');
+                    option.value = 'Belum ada Kategori'; // Set the value to the category ID
+                    option.textContent = 'Belum ada Kategori'; // Set the display text to the category name
+
+                    // Append the option to the select element
+                    categorySelect.appendChild(option);
+                }
             });
+
 
             // Populate the select element with options
             // Assuming `instructorsData` is an array of objects, each containing an 'instructor' object.
@@ -364,9 +377,15 @@
                     // Append the option to the select element
                     instructorSelect.appendChild(option);
 
-                    console.log("Instructor:", item.full_name, instructor.id);
                 } else {
-                    console.error("Instructor data not found in item:", item);
+                    // Create a new option element
+                    let option = document.createElement('option');
+                    option.value = 'Belum ada Instruktur'; // Set the value to the instructor ID
+                    option.textContent =
+                        'Belum ada Instruktur'; // Set the display text to the instructor's full name
+
+                    // Append the option to the select element
+                    instructorSelect.appendChild(option);
                 }
             });
 
@@ -397,6 +416,41 @@
 
             // Load categories on page load
             loadCategories();
+
+            $('#kelasForm').on('submit', function(e) {
+                e.preventDefault(); // Mencegah pengiriman default
+
+                // Membuat objek FormData
+                const formData = new FormData(this);
+
+
+                createOverlay('Proses...'); // Tampilkan overlay
+
+                // Mengirim data formulir menggunakan AJAX
+                $.ajax({
+                    url: '{{ route('kelas.post') }}', // Menggunakan URL dari atribut action
+                    type: 'POST',
+                    data: formData, // Mengambil data dari formulir
+                    processData: false, // Mencegah jQuery mengubah data
+                    contentType: false, // Mencegah jQuery menetapkan konten
+                    success: function(response) {
+                        gOverlay.hide();
+                        console.log(response);
+                        // Lakukan sesuatu setelah berhasil
+                        Swal.fire('Sukses!', response.message, 'success');
+                        // Reload halaman atau arahkan ke halaman lain jika diperlukan
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        gOverlay.hide();
+                        console.error('Error:', xhr.responseText);
+                        // Menampilkan pesan error
+                        Swal.fire('Error!',
+                            'Terjadi kesalahan saat mengirim data. Silakan coba lagi.',
+                            'error');
+                    },
+                });
+            });
             // Handle the Edit button click
             $('#categoriesBody').on('click', '.edit-btn', function() {
                 const categoryId = $(this).data('id');
@@ -419,6 +473,7 @@
                 const token = $("meta[name='csrf-token']").attr("content");
 
                 // Make an AJAX request to update the category
+                createOverlay("Proses...");
                 $.ajax({
                     url: `/admin/kelas/${categoryId}/edit`,
                     type: 'PUT',
@@ -429,6 +484,7 @@
                         "name": newName
                     },
                     success: function(response) {
+                        gOverlay.hide()
                         $('#editCategoryModal').modal('hide'); // Hide the modal
                         Swal.fire('Berhasil!', 'Kategori berhasil diupdate.',
                             'success');
@@ -436,6 +492,7 @@
 
                     },
                     error: function(xhr, status, error) {
+                        gOverlay.hide()
                         console.error('Error updating category:', xhr.responseText);
                         Swal.fire('Error!',
                             'Terjadi kesalahan saat memperbarui kategori.',
@@ -459,22 +516,26 @@
                     name: level
                 };
 
+
                 // Make the AJAX request to add a new category
+                createOverlay("Proses...");
                 $.ajax({
                     url: '{{ route('categories.post') }}',
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr("content")
                     },
-                    data: JSON.stringify(data),
+                    data: data,
                     success: function(response) {
+                        gOverlay.hide()
                         Swal.fire('Berhasil', 'Jenjang berhasil ditambahkan!',
                             'success');
                         location.reload();
 
                     },
                     error: function(xhr, status, error) {
-                        console.error('Error adding category:', error);
+                        gOverlay.hide()
+                        console.error('Error adding category:', xhr.responseText);
                         Swal.fire('Oops!',
                             'Terjadi kesalahan saat menambahkan jenjang!',
                             'error');
@@ -486,7 +547,6 @@
                 e.preventDefault();
                 const token = $("meta[name='csrf-token']").attr("content");
                 const categoryId = $(this).data('id');
-                console.log(categoryId);
 
                 Swal.fire({
                     text: "Apa kamu yakin menghapus ini?",
@@ -498,6 +558,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // Make an AJAX request to delete the category
+                        createOverlay("Proses...");
                         $.ajax({
                             url: `/admin/kelas/${categoryId}/destroy`,
                             type: 'DELETE',
@@ -505,15 +566,14 @@
                                 'X-CSRF-TOKEN': token
                             },
                             success: function(response) {
+                                gOverlay.hide()
                                 Swal.fire('Dihapus!',
                                     'Kategori berhasil dihapus.',
                                     'success');
                                 location.reload();
-
                             },
                             error: function(xhr, status, error) {
-                                console.error('Error deleting category:',
-                                    xhr.responseText);
+                                gOverlay.hide()
                                 Swal.fire('Error!',
                                     'Terjadi kesalahan saat menghapus kategori.',
                                     'error');

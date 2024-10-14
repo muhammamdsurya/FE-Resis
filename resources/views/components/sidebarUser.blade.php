@@ -24,7 +24,7 @@
                 <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                 <li class="nav-item">
-                    <a href="/user/dashboard" class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                    <a href="/user/dashboard" class="nav-link {{ request()->routeIs('user.dashboard') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Beranda
@@ -32,7 +32,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/user/kelas" class="nav-link {{ request()->routeIs('kelas') ? 'active' : '' }}">
+                    <a href="/user/kelas" class="nav-link {{ request()->routeIs('user.kelas') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-book-reader"></i>
                         <p>
                             Kelasku

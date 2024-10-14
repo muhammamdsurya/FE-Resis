@@ -24,7 +24,7 @@
                with font-awesome or any other icon font library -->
                 <li class="nav-item">
                     <a href="/instructor/dashboard"
-                        class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        class="nav-link {{ request()->routeIs('instructor.dashboard') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
                             Beranda
@@ -32,7 +32,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/instructor/kelas" class="nav-link {{ request()->routeIs('kelas') ? 'active' : '' }}">
+                    <a href="/instructor/kelas" class="nav-link {{ request()->routeIs('instructor.kelas') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-book-reader"></i>
                         <p>
                             Data Kelas

@@ -151,7 +151,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('bundle.post') }}" method="POST" enctype="multipart/form-data">
+                    <form id="bundlingPost" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -163,9 +163,9 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="form-floating">
-                                    <input type="number" class="form-control" id="bundlePrice" placeholder="Harga"
+                                    <input type="text" class="form-control" id="priceInput" placeholder="Harga"
                                         name="price" required>
-                                    <label for="bundlePrice">Harga</label>
+                                    <label for="priceInput">Harga</label>
                                 </div>
                             </div>
                         </div>
@@ -216,6 +216,62 @@
                     confirmButtonText: 'OK'
                 });
             @endif
+        });
+        document.getElementById('priceInput').addEventListener('input', function(e) {
+            var value = e.target.value;
+            value = value.replace(/\D/g, ''); // Menghapus karakter selain angka
+            value = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(value);
+            e.target.value = value.replace('Rp', '')
+                .trim(); // Menghilangkan 'Rp' dan hanya menampilkan angka dengan titik
+        });
+
+        // Pastikan format angka asli diambil saat form dikirim
+        document.querySelector('form').addEventListener('submit', function() {
+            var priceInput = document.getElementById('priceInput');
+            priceInput.value = priceInput.value.replace(/\./g, ''); // Menghapus titik sebelum dikirimkan ke server
+        });
+
+        $('#bundlingPost').on('submit', function(e) {
+            e.preventDefault(); // Mencegah pengiriman default
+
+            // Membuat objek FormData
+            const formData = new FormData(this);
+
+            // Melihat isi FormData
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+            false;
+            createOverlay('Proses...'); // Tampilkan overlay
+
+            // Mengirim data formulir menggunakan AJAX
+            $.ajax({
+                url: '{{ route('bundle.post') }}', // Menggunakan URL dari atribut action
+                type: 'POST',
+                data: formData, // Mengambil data dari formulir
+                processData: false, // Mencegah jQuery mengubah data
+                contentType: false, // Mencegah jQuery menetapkan konten
+                success: function(response) {
+                    gOverlay.hide();
+                    console.log(response);
+                    // Lakukan sesuatu setelah berhasil
+                    Swal.fire('Sukses!', 'Data berhasil ditambahkan.', 'success');
+                    // Reload halaman atau arahkan ke halaman lain jika diperlukan
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    gOverlay.hide();
+                    console.error('Error:', xhr.responseText);
+                    // Menampilkan pesan error
+                    Swal.fire('Error!',
+                        'Terjadi kesalahan saat mengirim data. Silakan coba lagi.',
+                        'error');
+                },
+            });
         });
     </script>
 

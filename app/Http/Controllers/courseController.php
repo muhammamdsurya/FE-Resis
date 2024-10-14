@@ -43,13 +43,13 @@ class courseController extends Controller
         if ($response->successful()) {
             return response()->json([
                 'success' => true,
-                'data' => $response->json()
-            ], $response->status());
+                'message' => 'Data berhasil ditambahkan.'
+            ]);
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to add category.'
-            ], $response->status());
+                'message' => 'Ooops' . $response->body()
+            ]);
         }
     }
 
@@ -78,6 +78,7 @@ class courseController extends Controller
     public function kelas(Request $request)
 
     {
+
         $price = (int) $request->input('price');
 
         $apiSession = session('api_session');
@@ -120,13 +121,21 @@ class courseController extends Controller
 
                 // Check if the image upload was successful
                 if (!$imageResponse->successful()) {
-                    return redirect()->route('admin.kelas')->with('error', 'Image upload failed: ' . $imageResponse->body());
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'gagal menambahkan thumbnail' . $imageResponse->body()
+                    ]);
                 }
             }
 
-            return redirect()->route('admin.kelas')->with([
-                'message' => 'Data berhasil ditambahkan.',
-                'details' => null
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil ditambahkan.'
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'API Request failed: ' . $response->body()
             ]);
         }
     }
@@ -177,16 +186,28 @@ class courseController extends Controller
                 // Cek respons API
                 if ($imageResponse->successful()) {
                     // Debugging: Print response body to see if image upload succeeded
-                    return back()->with('message', 'Data dan thumbnail berhasil diperbarui.');
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Data berhasil diperbarui.'
+                    ]);
                 } else {
-                    return back()->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Data berhasil diperbarui tetapi gagal memperbarui thumbnail' . $response->body()
+                    ]);
                 }
             }
             // If no thumbnail is uploaded, only update the body
-            return back()->with('message', 'Data berhasil diperbarui.');
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil ditambahkan.'
+            ]);
         } else {
             // Handle case where the bundle data update fails
-            return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui data' . $response->body()
+            ]);
         }
     }
     public function bundlePost(Request $request)
@@ -236,14 +257,23 @@ class courseController extends Controller
 
                 // Check if the image upload was successful
                 if (!$imageResponse->successful()) {
-                    return redirect()->route('admin.bundling')->with('error', 'Image upload failed: ' . $imageResponse->body());
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Gagal menambahkan thumbnail ' . $imageResponse->body()
+                    ]);
                 }
             }
 
-            return redirect()->route('admin.bundling')->with('message', 'Data berhasil ditambahkan.');
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil ditambahkan.'
+            ]);
         }
 
-        return redirect()->route('admin.bundling')->with('error', 'Failed to create bundle: ' . $response->body());
+        return response()->json([
+            'success' => false,
+            'message' => 'Data gagal diambahkan. ' . $response->body()
+        ]);
     }
 
 
@@ -298,16 +328,28 @@ class courseController extends Controller
                 // Cek respons API
                 if ($imageResponse->successful()) {
                     // Debugging: Print response body to see if image upload succeeded
-                    return back()->with('message', 'Data dan thumbnail berhasil diperbarui.');
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Data berhasil diperbarui'
+                    ]);
                 } else {
-                    return back()->withErrors(['msg' => 'Data berhasil diperbarui, tetapi gagal mengunggah thumbnail.']);
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Data berhasil diperbarui tetapi gagal memperbarui thumbnail ' . $imageResponse->body()
+                    ]);
                 }
             }
             // If no thumbnail is uploaded, only update the body
-            return back()->with('message', 'Data berhasil diperbarui.');
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil diperbarui'
+            ]);
         } else {
             // Handle case where the bundle data update fails
-            return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
+            return response()->json([
+                'success' => false,
+                'message' => 'gagal memperbarui data'
+            ]);
         }
     }
 
@@ -335,10 +377,16 @@ class courseController extends Controller
 
         // Check if the request was successful
         if ($response->successful()) {
-            return redirect()->route('admin.bundling')->with('message', 'Data berhasil diperbarui.');
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil ditambahkan.'
+            ]);
         } else {
             // Handle the case where the update was not successful
-            return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Data gagal ditambahkan.'
+            ]);
         }
     }
 
@@ -507,13 +555,15 @@ class courseController extends Controller
         return json_decode($response->getBody()->getContents());
     }
 
-    public function getCourseContentById($courseId) {
+    public function getCourseContentById($courseId)
+    {
         $response = Http::withApiSession()->get($this->apiUrl . 'courses/' . $courseId . '/contents');
 
         return json_decode($response->getBody()->getContents());
     }
 
-    public function getCourseRating($courseId) {
+    public function getCourseRating($courseId)
+    {
         $response = Http::withApiSession()->get($this->apiUrl . 'courses/' . $courseId . '/ratings');
         return json_decode($response->getBody()->getContents());
     }
@@ -525,11 +575,10 @@ class courseController extends Controller
 
         return json_decode($response->getBody()->getContents());
     }
-    public function getBundlingContentById($courseBundleId) {
+    public function getBundlingContentById($courseBundleId)
+    {
         $response = Http::withApiSession()->get($this->apiUrl . 'courses/bundles/' . $courseBundleId . '/courses');
 
         return json_decode($response->getBody()->getContents());
     }
-
-
 }

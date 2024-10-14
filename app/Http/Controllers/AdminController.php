@@ -599,22 +599,22 @@ class AdminController extends Controller
     }
 
 
-    public function diskusi(Request $request,$courseId)
+    public function diskusi(Request $request, $courseId)
     {
         $title = 'Diskusi';
 
 
         $page = $request->get('page') ?? 0;
 
-        
-        $courseForums = $this->courseForumCtrl->courseForums($courseId, $page);
-        if(isset($courseForums->data)){
-        foreach ($courseForums->data as $courseForum) {
-            $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
 
-            $courseForum->reply_count = count($courseForum->course_forum_reply);
-        };
-    }
+        $courseForums = $this->courseForumCtrl->courseForums($courseId, $page);
+        if (isset($courseForums->data)) {
+            foreach ($courseForums->data as $courseForum) {
+                $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
+
+                $courseForum->reply_count = count($courseForum->course_forum_reply);
+            };
+        }
         // dd($courseForums);
         // Lakukan operasi lain yang diperlukan
 
@@ -629,186 +629,121 @@ class AdminController extends Controller
     public function downloadAdmin(Request $request)
     {
         // Mendapatkan data admin dari API
-        $dataAdmin = $this->fetchApiData($this->apiUrl . 'statistics/admins');
+        $response = Http::withApiSession()->get($this->apiUrl . 'statistics/admins/csv');
+        // Memeriksa apakah permintaan berhasil
+        if ($response->successful()) {
+            // Mendapatkan nama file dari header atau tentukan nama default
+            $filename = 'admins_data_' . date('d-m-Y') . '.csv';
 
-        $data = json_decode(json_encode($dataAdmin));
-
-        // Mengatur output CSV
-        $output = fopen('php://output', 'w');
-
-        // Menulis header CSV
-        fputcsv($output, ['Name', 'Email', 'Type', 'Created At']); // Sesuaikan header
-
-        // Menulis setiap baris data
-        foreach ($data->data as $admin) {
-            fputcsv($output, [
-                $admin->name,
-                $admin->email,
-                $admin->type,
-                Carbon::parse($admin->created_at)->format('d-m-Y'), // Mengubah format tanggal
+            // Mengembalikan file CSV sebagai unduhan
+            return Response::make($response->getBody(), 200, [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
             ]);
+        } else {
+            // Tangani error jika permintaan tidak berhasil
+            return redirect()->back()->with('error', 'Gagal mengunduh file CSV.');
         }
-
-        // Menentukan header untuk download
-        header('Content-Type: text/csv; charset=UTF-8');
-        header('Content-Disposition: attachment; filename="data_admin_' . date('d-m-Y') . '.csv"');
-
-        // Menutup output
-        fclose($output);
-        exit; // Menghentikan script agar tidak ada output lain yang tercetak
     }
 
     public function downloadUser(Request $request)
     {
         // Mendapatkan data admin dari API
-        $dataUser = $this->fetchApiData($this->apiUrl . 'statistics/users');
+        $response = Http::withApiSession()->get($this->apiUrl . 'statistics/users/csv');
+        // Memeriksa apakah permintaan berhasil
+        if ($response->successful()) {
+            // Mendapatkan nama file dari header atau tentukan nama default
+            $filename = 'users_data_' . date('d-m-Y') . '.csv';
 
-        $data = json_decode(json_encode($dataUser));
-
-        // Mengatur output CSV
-        $output = fopen('php://output', 'w');
-
-        // Menulis header CSV
-        fputcsv($output, ['Name', 'Email', 'Study Level', 'Institution', 'Birth Date', 'Created At']); // Sesuaikan header
-
-        // Menulis setiap baris data
-        foreach ($data->data as $admin) {
-            fputcsv($output, [
-                $admin->name,
-                $admin->email,
-                $admin->study_level,
-                $admin->institution,
-                Carbon::parse($admin->birth)->format('d-m-Y'), // Mengubah format tanggal
-                Carbon::parse($admin->created_at)->format('d-m-Y'), // Mengubah format tanggal
+            // Mengembalikan file CSV sebagai unduhan
+            return Response::make($response->getBody(), 200, [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
             ]);
+        } else {
+            // Tangani error jika permintaan tidak berhasil
+            return redirect()->back()->with('error', 'Gagal mengunduh file CSV.');
         }
-
-        // Menentukan header untuk download
-        header('Content-Type: text/csv; charset=UTF-8');
-        header('Content-Disposition: attachment; filename="data_siswa_' . date('d-m-Y') . '.csv"');
-
-        // Menutup output
-        fclose($output);
-        exit; // Menghentikan script agar tidak ada output lain yang tercetak
     }
 
     function downloadInstructor(Request $request)
     {
         // Mendapatkan data admin dari API
-        $dataUser = $this->fetchApiData($this->apiUrl . 'statistics/instructors');
+        $response = Http::withApiSession()->get($this->apiUrl . 'statistics/instructors/csv');
+        // Memeriksa apakah permintaan berhasil
+        if ($response->successful()) {
+            // Mendapatkan nama file dari header atau tentukan nama default
+            $filename = 'instructors_data_' . date('d-m-Y') . '.csv';
 
-        $data = json_decode(json_encode($dataUser));
-
-        // Mengatur output CSV
-        $output = fopen('php://output', 'w');
-
-        // Menulis header CSV
-        fputcsv($output, ['Name', 'Email', 'Education', 'Experience']); // Sesuaikan header
-
-        // Menulis setiap baris data
-        foreach ($data->data as $admin) {
-            fputcsv($output, [
-                $admin->name,
-                $admin->email,
-                $admin->education,
-                $admin->experience,
+            // Mengembalikan file CSV sebagai unduhan
+            return Response::make($response->getBody(), 200, [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
             ]);
+        } else {
+            // Tangani error jika permintaan tidak berhasil
+            return redirect()->back()->with('error', 'Gagal mengunduh file CSV.');
         }
-
-        // Menentukan header untuk download
-        header('Content-Type: text/csv; charset=UTF-8');
-        header('Content-Disposition: attachment; filename="data_instruktur_' . date('d-m-Y') . '.csv"');
-
-        // Menutup output
-        fclose($output);
-        exit; // Menghentikan script agar tidak ada output lain yang tercetak
     }
 
     function downloadSales(Request $request)
     {
         // Mendapatkan data admin dari API
-        $dataSales = $this->fetchApiData($this->apiUrl . 'statistics/sales');
+        $response = Http::withApiSession()->get($this->apiUrl . 'statistics/sales/transactions/csv');
+        // Memeriksa apakah permintaan berhasil
+        if ($response->successful()) {
+            // Mendapatkan nama file dari header atau tentukan nama default
+            $filename = 'sales_data_' . date('d-m-Y') . '.csv';
 
-        $data = json_decode(json_encode($dataSales));
-
-        // Mengatur output CSV
-        $output = fopen('php://output', 'w');
-
-        // Menulis header CSV
-        fputcsv($output, ['Name', 'Email', 'Transaction Type', 'Product Name', 'Course Price', 'Transaction Fee', 'Tax', 'Total Amount', 'Payment Status', 'Payment Type', 'Created At']);
-
-        // Menulis setiap baris data
-        foreach ($data->data as $sale) {
-            fputcsv($output, [
-                $sale->name,
-                $sale->email,
-                $sale->transaction_type,
-                $sale->product_name,
-                number_format($sale->course_price, 0, ',', '.'), // Format harga kursus
-                number_format($sale->transaction_fee, 0, ',', '.'), // Format biaya transaksi
-                number_format($sale->tax, 0, ',', '.'), // Format pajak
-                number_format($sale->total_amount, 0, ',', '.'), // Format total amount
-                $sale->payment_status,
-                $sale->payment_type,
-                Carbon::parse($sale->created_at)->format('d-m-Y H:i'), // Mengubah format tanggal
+            // Mengembalikan file CSV sebagai unduhan
+            return Response::make($response->getBody(), 200, [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
             ]);
+        } else {
+            // Tangani error jika permintaan tidak berhasil
+            return redirect()->back()->with('error', 'Gagal mengunduh file CSV.');
         }
-
-        // Menentukan header untuk download
-        header('Content-Type: text/csv; charset=UTF-8');
-        header('Content-Disposition: attachment; filename="data_sales_' . date('d-m-Y') . '.csv"');
-
-        // Menutup output
-        fclose($output);
-        exit; // Menghentikan script agar tidak ada output lain yang tercetak
     }
 
 
     public function downloadCourse(Request $request)
     {
-        // Mendapatkan data course dari API
+        // Mendapatkan data admin dari API
         $response = Http::withApiSession()->get($this->apiUrl . 'statistics/courses/csv');
-
-        // Memeriksa jika permintaan berhasil
+        // Memeriksa apakah permintaan berhasil
         if ($response->successful()) {
-            // Mengambil konten CSV dari respons
-            $csvContent = $response->body();
+            // Mendapatkan nama file dari header atau tentukan nama default
+            $filename = 'courses_data_' . date('d-m-Y') . '.csv';
 
-            // Menentukan header untuk download
-            $headers = [
-                'Content-Type' => 'text/csv; charset=UTF-8',
-                'Content-Disposition' => 'attachment; filename="data_kelas_' . date('d-m-Y') . '.csv"',
-            ];
-
-            // Mengembalikan respons CSV
-            return Response::make($csvContent, 200, $headers);
+            // Mengembalikan file CSV sebagai unduhan
+            return Response::make($response->getBody(), 200, [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ]);
+        } else {
+            // Tangani error jika permintaan tidak berhasil
+            return redirect()->back()->with('error', 'Gagal mengunduh file CSV.');
         }
-
-        // Mengembalikan respons error jika tidak berhasil
-        return redirect()->back()->with('error', 'Failed to download CSV');
     }
 
     public function downloadCourseBundle(Request $request)
     {
-        // Mendapatkan data course dari API
+        // Mendapatkan data admin dari API
         $response = Http::withApiSession()->get($this->apiUrl . 'statistics/courses/bundles/csv');
-
-        // Memeriksa jika permintaan berhasil
+        // Memeriksa apakah permintaan berhasil
         if ($response->successful()) {
-            // Mengambil konten CSV dari respons
-            $csvContent = $response->body();
+            // Mendapatkan nama file dari header atau tentukan nama default
+            $filename = 'bundles_data_' . date('d-m-Y') . '.csv';
 
-            // Menentukan header untuk download
-            $headers = [
-                'Content-Type' => 'text/csv; charset=UTF-8',
-                'Content-Disposition' => 'attachment; filename="data_bundling_' . date('d-m-Y') . '.csv"',
-            ];
-
-            // Mengembalikan respons CSV
-            return Response::make($csvContent, 200, $headers);
+            // Mengembalikan file CSV sebagai unduhan
+            return Response::make($response->getBody(), 200, [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ]);
+        } else {
+            // Tangani error jika permintaan tidak berhasil
+            return redirect()->back()->with('error', 'Gagal mengunduh file CSV.');
         }
-
-        // Mengembalikan respons error jika tidak berhasil
-        return redirect()->back()->with('error', 'Failed to download CSV');
     }
 }

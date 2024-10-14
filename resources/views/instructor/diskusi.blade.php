@@ -44,7 +44,7 @@
                         <div>
                             <h5 class="mb-1">{{$courseForum->student_name}}</h5>
                             @if(isset($courseForum->course_forum_question->question_image))
-                            <img src="{{$courseForum->course_forum_question->question_image}}" alt="">
+                            <img src="{{$courseForum->course_forum_question->question_image}}" class="img-fluid">
                             @endif
                             <h6 class="mb-1">{{$courseForum->course_forum_question->question_rtitle}}</h6>
                             <p>{!!$courseForum->course_forum_question->question_content!!}</p>
@@ -62,7 +62,7 @@
                             <div>
                                 <h6>{{$reply->name}}</h6>
                                 @if(isset($reply->course_forum_question_reply->reply_image))
-                                <img src="{{$reply->course_forum_question_reply->reply_image}}" alt="">
+                                <img src="{{$reply->course_forum_question_reply->reply_image}}" class="img-fluid" alt="">
                                 @endif
                                 <p>{!! $reply->course_forum_question_reply->reply !!}</p>
 
