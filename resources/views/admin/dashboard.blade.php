@@ -228,7 +228,6 @@
                         month: month
                     },
                     success: function(response) {
-                        console.log('Canvas:', monthChartCanvas);
                         updateMonthChart(response.months, month);
                         // Check if total_sales exists and is not undefined
                         if (response.months.total_sales !== undefined) {
@@ -288,7 +287,6 @@
             const totalSales = [salesData.total_sales]; // Ubah menjadi array
             const totalIncome = [salesData.total_income]; // Ubah menjadi array
 
-            console.log(totalSales, totalIncome);
 
             // Destroy the existing chart if it exists
             if (monthChart) {
@@ -346,7 +344,6 @@
             const totalSales = salesData.map(item => item.total_sales); // Get the corresponding sales for each month
             const totalIncome = salesData.map(item => item.total_income); // Get the corresponding sales for each month
 
-            console.log(totalSales, totalIncome);
 
             // Destroy the existing chart if it exists
             if (fewmonthChart) {

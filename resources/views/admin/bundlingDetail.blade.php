@@ -353,15 +353,13 @@
             button.addEventListener('click', function() {
                 event.preventDefault(); // Prevent default button behavior
 
-                const courseId = this.getAttribute('data-id');
-                console.log(courseId); // This will log the data-id of the clicked button
+                const courseId = this.getAttribute('data-id');clicked button
                 confirmDelete(courseId); // Call the confirmDelete function or any other logic
             });
         });
 
         function confirmDelete(courseId) {
             let bundleId = {!! json_encode($bundle['id']) !!};
-            console.log('bundle id' + bundleId); // Ini akan mencetak id bundel
 
             Swal.fire({
                 title: 'Konfirmasi Hapus',

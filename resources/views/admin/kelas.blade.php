@@ -334,7 +334,6 @@
     <script>
         $(document).ready(function() {
             let categoriesData = {!! $categories !!};
-            console.log(categoriesData);
             let instructorsData = {!! $instructors !!};
 
             // Get the select element
@@ -367,8 +366,6 @@
 
                     // Append the option to the select element
                     instructorSelect.appendChild(option);
-
-                    console.log("Instructor:", item.full_name, instructor.id);
                 } else {
                     console.error("Instructor data not found in item:", item);
                 }
@@ -435,7 +432,6 @@
                     },
                     success: function(response) {
                         gOverlay.hide()
-                        console.log(response);
                         $('#editCategoryModal').modal('hide'); // Hide the modal
                         Swal.fire('Berhasil!', 'Kategori berhasil diupdate.',
                             'success');
@@ -477,7 +473,6 @@
                     data: JSON.stringify(data),
                     success: function(response) {
                         gOverlay.hide()
-                        console.log("data:", response);
                         Swal.fire('Berhasil', 'Jenjang berhasil ditambahkan!',
                             'success');
                         loadCategories(); // Reload categories

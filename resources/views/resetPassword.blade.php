@@ -108,8 +108,6 @@
                         let errorMessage = response.message ? response.message.trim() :
                             'Terjadi kesalahan';
 
-                        // Log the full response to the console for debugging (optional)
-                        console.log(response);
 
                         // Check if the response contains a message
                         Swal.fire(
