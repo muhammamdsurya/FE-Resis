@@ -215,7 +215,6 @@
                             'Terjadi kesalahan, coba lagi!',
                             'error'
                         );
-                        console.log("Response Body: " + xhr.responseText);
                     }
                 });
             });

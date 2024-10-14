@@ -144,7 +144,6 @@
 
                 // Ambil email dari input
                 const email = document.querySelector('#emailModal').value;
-                console.log(email);
 
                 // Lakukan validasi
                 if (!email) {

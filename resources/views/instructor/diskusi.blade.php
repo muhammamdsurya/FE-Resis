@@ -206,9 +206,6 @@ function send(id){
                             success: function(response) {
                             },
                             error: function(xhr, status, error) {
-                                console.log( xhr.responseJSON.message);
-                                console.log( xhr.responseJSON.error);
-
                                 Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                             }
                         });
@@ -255,11 +252,6 @@ function deleteForumReply(forumId, replyId){
                         },
                         error: function(xhr, status, error) {
                             gOverlay.hide()
-                            console.log( xhr.responseJSON.message);
-                            console.log( xhr.responseJSON.error);
-                            console.log(xhr);
-                            console.log( `ERROR : ${error}`);
-
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                         }
                     });

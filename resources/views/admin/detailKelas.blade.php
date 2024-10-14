@@ -227,6 +227,7 @@
                                             <label for="contentName">Judul Materi</label>
                                         </div>
                                     </div>
+
                                     <div class="col-md-6">
                                         <div class="form-floating">
                                             <select class="form-control" id="contentType" name="level" required>
@@ -237,6 +238,14 @@
                                             <label for="contentType">Jenis Konten</label>
                                         </div>
                                     </div>
+
+                                    <div class="col-md-6 mt-2">
+                                        <div class="form-floating">
+                                        <textarea rows="3" placeholder="Deskripsi" id="contentDesc"></textarea>
+                                        </div>
+                                    </div>
+                                    
+                                   
                                 </div>
 
                                 <div id="video-type">
@@ -725,7 +734,6 @@
             const modal = new bootstrap.Modal(document.getElementById('modal-quiz'));
             if (indexQuiz != null) {
                 idQuizzesEdit = indexQuiz
-                console.log(quizees[indexQuiz]);
 
                 $('#questionQuizInput').val(quizees[indexQuiz].question)
                 quizees[indexQuiz].options.forEach((option, index) => {

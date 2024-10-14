@@ -292,16 +292,13 @@
             // Ketika image-container diklik, trigger input file yang sesuai
             $('.image-container').on('click', function() {
                 var instructorId = $(this).data('id'); // Ambil ID dari data-id elemen yang diklik
-                console.log(instructorId); // Cek ID yang diambil
                 $('#imageUpload' + instructorId).click(); // Trigger input file sesuai dengan ID instruktur
-                console.log()
             });
 
             // Mengubah tampilan gambar setelah memilih file
             $('input[type="file"]').on('change', function(e) {
                 var instructorId = $(this).attr('id').replace('imageUpload',
                     ''); // Ambil ID instruktur dari ID input file
-                console.log(instructorId); // Cek ID instruktur yang digunakan
                 var reader = new FileReader();
                 reader.onload = function(event) {
                     $('#imagePreview' + instructorId).attr('src', event.target
@@ -379,9 +376,6 @@
 
         $(document).on('click', '.edit-btn', function() {
             var instructorId = $(this).data('id');
-
-            // Additional logic if needed
-            console.log("Editing instructor with ID:", instructorId);
         });
 
         // Function to validate password strength
