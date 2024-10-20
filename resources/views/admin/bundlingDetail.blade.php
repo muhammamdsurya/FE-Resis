@@ -151,19 +151,19 @@
                                             <td colspan="2" class="text-center">Tidak ada kelas tersedia.</td>
                                         </tr>
                                     @else
+
                                         @foreach ($courseDetails as $item)
                                             <tr>
                                                 <td>{{ $item['course']['name'] ?? 'Unknown Course' }}</td>
                                                 <!-- Adjust according to your data structure -->
                                                 <td>
                                                     <button class="btn btn-danger deleteCourse" type="button"
-                                                        data-id="{{ $item['course']['id'] }}">Hapus</button>
+                                                        data-id="{{ $item['course']['id'] ?? '' }}">Hapus</button>
 
                                                 </td>
 
                                             </tr>
                                         @endforeach
-
                                     @endif
                                 </tbody>
 

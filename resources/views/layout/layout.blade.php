@@ -26,11 +26,11 @@
 
 <body class="index-page">
 
- <!-- overlay -->
- <script src="{{ asset('assets/js/overlay/iosOverlay.js') }}"></script>
-     <script src="{{ asset('assets/js/overlay/spin.min.js') }}"></script>
-     <link rel="stylesheet" href="{{ asset('assets/js/overlay/iosOverlay.css') }}">
-     <script src="{{ asset('assets/js/overlay/modernizr-2.0.6.min.js') }}"></script>
+    <!-- overlay -->
+    <script src="{{ asset('assets/js/overlay/iosOverlay.js') }}"></script>
+    <script src="{{ asset('assets/js/overlay/spin.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('assets/js/overlay/iosOverlay.css') }}">
+    <script src="{{ asset('assets/js/overlay/modernizr-2.0.6.min.js') }}"></script>
     <script type="text/javascript">
         function createOverlay(screenText) {
             var target = document.createElement("div");
@@ -82,19 +82,17 @@
     <script src="{{ asset('assets/vendor/aos/aos.js') }}"></script>
     <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
 
-    
-
 
     <!-- Main JS File -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
-    <script src="{{asset('assets/js/midtrans_snap.js')}}"></script>
+    <script src="{{ asset('assets/js/midtrans_snap.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- AdminLTE App -->
-     <!-- summernote -->
-     <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
+    <!-- summernote -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
 
-     
+
 
 </body>
 

@@ -956,6 +956,7 @@ span {
   visibility: visible;
   opacity: 1;
   padding-top: 10px;
+  margin: 0; /* Ensure no extra margin */
 }
 
 .faq .faq-container .faq-active .faq-toggle {

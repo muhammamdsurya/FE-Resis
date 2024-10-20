@@ -40,38 +40,44 @@
         <div class="container" data-aos="fade-up" data-aos-delay="100">
             <div class="row gx-2 gy-4">
                 @if ($pagination ?? false)
-                    @foreach ($courses->data as $course)
-                        <div class="col-lg-3 col-md-4 col-6">
-                            <a href="{{ route('detail.kelas', ['courseId' => $course->course->id]) }}">
-                                <div class="card h-100 shadow border-0 position-relative"
-                                    style="border-radius: 15px; overflow: hidden;">
-                                    <img src="{{ $course->course->thumbnail_image }}" class="card-img-top" alt="..."
-                                        style="height: 150px; object-fit: cover;">
-                                    <div class="card-body">
-                                        <div class="header-card d-flex justify-content-between mb-3">
-                                            <p class="text-muted fs-6 mb-0"><i
-                                                    class="bi bi-star-fill text-warning me-1"></i>{{ $course->course->rating }}
+                    @if ($courses->data)
+                        @foreach ($courses->data as $course)
+                            <div class="col-lg-3 col-md-4 col-6">
+                                <a href="{{ route('detail.kelas', ['courseId' => $course->course->id]) }}">
+                                    <div class="card h-100 shadow border-0 position-relative"
+                                        style="border-radius: 15px; overflow: hidden;">
+                                        <img src="{{ $course->course->thumbnail_image }}" class="card-img-top"
+                                            alt="..." style="height: 150px; object-fit: cover;">
+                                        <div class="card-body">
+                                            <div class="header-card d-flex justify-content-between mb-3">
+                                                <p class="text-muted fs-6 mb-0"><i
+                                                        class="bi bi-star-fill text-warning me-1"></i>{{ $course->course->rating }}
+                                                </p>
+                                                <p class="badge bg-primary fs-6 mb-0">{{ $course->course_category->name }}
+                                                </p>
+                                            </div>
+
+                                            <h5 class="card-title fw-bold text-dark">{{ $course->course->name }}</h5>
+                                            <h6 class="text-success fw-bold mb-3">Rp
+                                                {{ number_format($course->course->price, 0, ',', '.') }}</h6>
+                                            <p class="card-text text-muted">
+                                                {{ Str::limit($course->course->description, 50) }}
                                             </p>
-                                            <p class="badge bg-primary fs-6 mb-0">{{ $course->course_category->name }}</p>
                                         </div>
 
-                                        <h5 class="card-title fw-bold text-dark">{{ $course->course->name }}</h5>
-                                        <h6 class="text-success fw-bold mb-3">Rp
-                                            {{ number_format($course->course->price, 0, ',', '.') }}</h6>
-                                        <p class="card-text text-muted">{{ Str::limit($course->course->description, 50) }}
-                                        </p>
-                                    </div>
-
-                                    <!-- Dark overlay on hover -->
-                                    <div class="overlay d-flex align-items-center justify-content-center">
-                                        <div class="text-center">
-                                            <p class="text-white fw-bold fs-5">Lihat Detail</p>
+                                        <!-- Dark overlay on hover -->
+                                        <div class="overlay d-flex align-items-center justify-content-center">
+                                            <div class="text-center">
+                                                <p class="text-white fw-bold fs-5">Lihat Detail</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </a>
-                        </div>
-                    @endforeach
+                                </a>
+                            </div>
+                        @endforeach
+                    @else
+                        <p>Belum ada Kelas</p>
+                    @endif
                 @else
                     @foreach ($courses as $course)
                         <div class="col-lg-3 col-md-4 col-6">
@@ -146,7 +152,7 @@
 
 
             </div>
-        <a href="{{ route('kelas', ['free' => 'trial']) }}" class="btn btn-secondary btn-sm">Coba kelas gratis</a>
+            <a href="{{ route('kelas', ['free' => 'trial']) }}" class="btn btn-secondary btn-sm">Coba kelas gratis</a>
         </div>
 
     @endsection

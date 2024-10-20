@@ -31,7 +31,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/kelas" class="nav-link {{ request()->routeIs('admin.kelas') ? 'active' : '' }}">
+                    <a href="/admin/kelas" class="nav-link {{ request()->routeIs('admin.kelas') || request()->routeIs('detail-kelas') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-book-reader"></i>
                         <p>
                             Data Kelas
@@ -39,7 +39,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin/bundling" class="nav-link {{ request()->routeIs('admin.bundling') ? 'active' : '' }}">
+                    <a href="/admin/bundling" class="nav-link {{ request()->routeIs('admin.bundling') || request()->routeIs('detail-bundling')  ? 'active' : '' }}">
                         <i class="nav-icon fas fa-box-open"></i>
                         <p>
                             Data Bundling

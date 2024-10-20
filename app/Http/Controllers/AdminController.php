@@ -592,7 +592,7 @@ class AdminController extends Controller
             "id" => $this->user['id'],
             "full_name" => $this->user['full_name'],
             "role" => $this->user['role'],
-            "bundle" => $bundle, //
+            "bundle" => $bundle,
             "courses" => $courses,
             "courseDetails" => $courseDetails
         ]);

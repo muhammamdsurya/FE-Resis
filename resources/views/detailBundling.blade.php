@@ -76,6 +76,23 @@
             color: #6c757d;
             /* Muted color for subtitle */
         }
+
+        .rating-box {
+            background-color: #ffffff;
+            /* Warna latar belakang kotak rating */
+            border: 1px solid #dee2e6;
+            /* Border kotak */
+            transition: transform 0.2s;
+            /* Animasi saat hover */
+        }
+
+        .rating-box:hover {
+            transform: translateY(-5px);
+            /* Mengangkat kotak saat hover */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            /* Bayangan saat hover */
+        }
+
     </style>
     <section id="detail-kelas" class="hero section py-5" style="background-color: #f9f9f9">
         <div class="container my-5">
@@ -97,7 +114,7 @@
                                         {{ $bundling->name }}
                                     </h4>
                                     <p class="text-muted my-3">
-                                        {{ $bundling->description }}
+                                        {{ Str::limit($bundling->description, 200) }}
                                     </p>
                                 </div>
                             </div>
@@ -239,7 +256,7 @@
         <!-- End Section Title -->
 
         <div class="container">
-            <div class="row gx-2 gy-4">
+            <div class="row gx-2 gy-0">
                 @if ($contents)
                     @foreach ($contents as $content)
                         <div class="col-lg-3 col-md-4 col-6 mb-4" data-aos="fade-up" data-aos-delay="100">
@@ -302,22 +319,21 @@
                 @if ($rating->data != null)
                     <!-- This checks if 'data' is not empty or null -->
                     @foreach ($rating->data as $row)
-                        <div class="rating-box">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h5>{{ $row->student_name }}</h5>
-                                    <p class="mb-0">{{ $row->description }} stars</p>
+                        <div class="rating-box shad rounded p-3 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-0">{{ $row->student_name }}</h5>
+                                    <p class="mb-0 text-muted">{{ $row->description }} stars</p>
                                 </div>
-
                                 <div class="rating-stars fs-3">
                                     @for ($i = 1; $i <= $row->rating; $i++)
-                                        <i class="bi bi-star-fill text-warning me-1"></i>
+                                        <i class="bi bi-star-fill text-warning me-1 star-hover"></i>
                                     @endfor
                                 </div>
-
                             </div>
                         </div>
                     @endforeach
+
 
                     <nav aria-label="Page navigation example">
                         <ul class="pagination justify-content-center">

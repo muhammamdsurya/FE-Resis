@@ -45,9 +45,7 @@ Route::get('/register', function () {
 })->name('show'); // Menampilkan form registrasi
 
 
-
 // Grup rute untuk rute-rute yang terkait dengan admin
-
 Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     // data register
     Route::get('/', [AdminController::class, 'completeData'])->name('admin.data');
@@ -120,10 +118,7 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
 });
 
 
-// Grup rute untuk rute-rute yang terkait dengan admin
-
 Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(function () {
-
     Route::get('/', [UserController::class, 'completeData'])->name('user.data');
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
@@ -157,10 +152,8 @@ Route::prefix('instructor')->middleware(['whoami:instructor'])->group(function (
     Route::get('/detail-kelas/{id}', [InstructorController::class, 'detailKelas'])->name('instructor.detail-kelas');
     Route::get('/profile', [InstructorController::class, 'profile'])->name('profile');
 
-
      // CourseForum
      Route::get('/diskusi-kelas/{courseId}', [InstructorController::class, 'diskusi'])->name('instructor.diskusi');
-
      Route::post('/diskusi-kelas/{courseId}/reply', [courseForumController::class, 'replyCourseForum'])->name('instructor.diskusi.post.reply');
      Route::post('/diskusi-kelas/{courseId}/reply/image', [courseForumController::class, 'imageReplyForum'])->name('instructor.diskusi.post.reply.img');
      Route::post('/diskusi-kelas/{courseId}/reply/delete', [courseForumController::class, 'deleteReplyCourseForum'])->name('instructor.diskusi.reply.delete');
@@ -190,7 +183,6 @@ Route::prefix('instructor')->middleware('redirect.if.authenticated:instructor')-
 
 
 Route::post('/register', [AuthController::class, 'register'])->name('register'); // Proses registrasi user
-
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

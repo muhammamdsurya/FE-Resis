@@ -9,14 +9,15 @@
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3>{{count($courses['data'])}}</h3>
+                        <h3>{{ count($courses['data']) }}</h3>
 
                         <p>Jumlah Kelas</p>
                     </div>
                     <div class="icon">
                         <i class="fas fa-book-reader"></i>
                     </div>
-                    <a href="#" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('instructor.kelas') }}" class="small-box-footer">Lihat <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -31,7 +32,8 @@
                     <div class="icon">
                         <i class="fas fa-users-cog"></i>
                     </div>
-                    <a href="#" class="small-box-footer">Lihat <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('instructor.kelas') }}" class="small-box-footer">Lihat <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->

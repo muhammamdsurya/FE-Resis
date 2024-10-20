@@ -12,6 +12,15 @@
 @section('content')
 
     <style>
+        .card-title {
+            white-space: nowrap;
+            /* Prevent the text from wrapping */
+            overflow: hidden;
+            /* Hide overflowed text */
+            text-overflow: ellipsis;
+            /* Show ellipsis (...) for overflowed text */
+        }
+
         .card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
@@ -76,7 +85,7 @@
         </div>
 
 
-        <div id="coursesContainer" class="row g-2">
+        <div id="coursesContainer" class="row gx-2 gy-0">
             @if ($pagination ?? false) {{-- Jika ada pagination --}}
                 @foreach ($courses['data'] as $item)
                     {{-- Akses data dari courses['data'] --}}

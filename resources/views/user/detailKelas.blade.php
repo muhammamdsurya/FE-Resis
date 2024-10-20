@@ -228,7 +228,9 @@
                                             Your browser does not support the video tag.
                                         </video>
                                     </div>
-                                    <p>{!! $courseContent->content_description !!}</p>
+                                    <div>
+                                        {!! $courseContent->video->article_content !!}
+                                    </div>
                                 @elseif($courseContent->content_type == $addSrcType)
                                     <div class="ratio ratio-16x9 mb-3">
                                         <iframe src="{{ $courseContent->src->file }}" frameborder="0"
@@ -236,34 +238,35 @@
                                             allowfullscreen></iframe>
                                     </div>
                                 @elseif($courseContent->content_type == $quizType)
-                                 @if(isset($courseContent->quiz->questions))
-                                 @foreach ($courseContent->quiz->questions as $quiz)
-                                        <div class="card p-4 mb-3 shadow-sm border-0 rounded-lg">
-                                            <!-- Added shadow, no border, and rounded corners -->
-                                            <p class="font-weight-bold h5 mb-3">{{ $quiz->question }}</p>
-                                            <!-- Styled question text for emphasis -->
+                                    @if (isset($courseContent->quiz->questions))
+                                        @foreach ($courseContent->quiz->questions as $quiz)
+                                            <div class="card p-4 mb-3 shadow-sm border-0 rounded-lg">
+                                                <!-- Added shadow, no border, and rounded corners -->
+                                                <p class="font-weight-bold h5 mb-3">{{ $quiz->question }}</p>
+                                                <!-- Styled question text for emphasis -->
 
-                                            @foreach ($quiz->Options as $option)
-                                                <div class="form-check mb-2 bg-light p-1 rounded custom-radio-option"
-                                                    style="cursor: pointer;">
-                                                    <!-- Hidden radio button -->
-                                                    <input class="form-check-input d-none" type="radio"
-                                                        id="option-{{ $quiz->index }}-{{ $option->index }}"
-                                                        name="option-{{ $quiz->index }}" value="{{ $option->index }}"
-                                                        onclick="answer('{{ $quiz->index }}', '{{ $option->index }}')">
-                                                    <!-- Custom label that will show the selection state -->
-                                                    <label class="form-check-label py-1 w-100 rounded "
-                                                        for="option-{{ $quiz->index }}-{{ $option->index }}">
-                                                        {{ $option->name }}
-                                                    </label>
-                                                </div>
-                                            @endforeach
+                                                @foreach ($quiz->Options as $option)
+                                                    <div class="form-check mb-2 bg-light p-1 rounded custom-radio-option"
+                                                        style="cursor: pointer;">
+                                                        <!-- Hidden radio button -->
+                                                        <input class="form-check-input d-none" type="radio"
+                                                            id="option-{{ $quiz->index }}-{{ $option->index }}"
+                                                            name="option-{{ $quiz->index }}"
+                                                            value="{{ $option->index }}"
+                                                            onclick="answer('{{ $quiz->index }}', '{{ $option->index }}')">
+                                                        <!-- Custom label that will show the selection state -->
+                                                        <label class="form-check-label py-1 w-100 rounded "
+                                                            for="option-{{ $quiz->index }}-{{ $option->index }}">
+                                                            {{ $option->name }}
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endforeach
+                                        <div class="d-flex justify-content-end mt-3"> <!-- Right-aligns the button -->
+                                            <button id="submitBtnQuiz" class="btn btn-success">Kirim Jawaban</button>
                                         </div>
-                                    @endforeach
-                                    <div class="d-flex justify-content-end mt-3"> <!-- Right-aligns the button -->
-                                        <button id="submitBtnQuiz" class="btn btn-success">Kirim Jawaban</button>
-                                    </div>
-                                 @endif
+                                    @endif
                                 @endif
                             </div>
                             <div class="mt-5">
@@ -352,10 +355,10 @@
         <script>
             const ratingInputs = document.querySelectorAll('input[name="rating"]');
 
-        ratingInputs.forEach((input) => {
-            input.addEventListener('change', function() {
-                const selectedValue = this.value;
-                createOverlay("Proses...");
+            ratingInputs.forEach((input) => {
+                input.addEventListener('change', function() {
+                    const selectedValue = this.value;
+                    createOverlay("Proses...");
 
 
                     var descRate = $('#descRate').val()
@@ -401,96 +404,95 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @if (isset($courseContent))
         @if ($courseContent->content_type == $quizType)
-        @if(isset($courseContent->quiz->questions))
+            @if (isset($courseContent->quiz->questions))
+                <script>
+                    var questionOptionsSelected = []
 
-            <script>
-                var questionOptionsSelected = []
-
-                function answer(questionsIndex, indexOptions) {
-
-
-                    const existingIndex = questionOptionsSelected.findIndex(item => item.index === questionsIndex);
-                    if (existingIndex !== -1) {
-                        questionOptionsSelected[existingIndex].Option = indexOptions;
-                    } else {
-                        questionOptionsSelected.push({
-                            index: questionsIndex,
-                            Option: indexOptions
-                        });
-                    }
-                }
-
-                $('#submitBtnQuiz').on('click', function(event) {
-                    event.preventDefault(); // Prevent the default form submission
-
-                    var answers = []
-
-                    questionOptionsSelected.sort((a, b) => a.index - b.index);
+                    function answer(questionsIndex, indexOptions) {
 
 
-                    questionOptionsSelected.forEach(item => {
-                        answers.push(parseInt(item.Option));
-                    });
-
-                    if (questionOptionsSelected.length < '{{ $courseContent->quiz->questionTotal }}' || answers.length <=
-                        0) {
-                        Swal.fire('Oops!', 'Selesaikan Quiz terlebih dahulu', 'error');
-                        return;
-                    }
-
-
-
-                    createOverlay("Proses...");
-                    var formData = new FormData();
-                    formData.append('answers', JSON.stringify(answers));
-                    formData.append('studentId', '{{ $userCourse->id }}');
-
-
-                    $.ajax({
-                        url: '{{ route('quiz.answer', $courseContent->id) }}', // Direct API endpoint
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                .getAttribute('content')
-                        },
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function(response) {
-                            gOverlay.hide()
-                            if (response.dataServer.passed_status) {
-                                // If the user passed the quiz
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: response.data.title,
-                                    text: response.data.content
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        document.getElementById('nextCourseButton').click();
-                                    }
-                                });
-                            } else {
-                                // If the user did not pass the quiz
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: response.data.title,
-                                    text: response.data.content
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        // Optionally reload the page after confirmation
-                                        window.location.reload();
-                                    }
-                                });
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            gOverlay.hide()
-                            Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                        const existingIndex = questionOptionsSelected.findIndex(item => item.index === questionsIndex);
+                        if (existingIndex !== -1) {
+                            questionOptionsSelected[existingIndex].Option = indexOptions;
+                        } else {
+                            questionOptionsSelected.push({
+                                index: questionsIndex,
+                                Option: indexOptions
+                            });
                         }
-                    });
-                })
-            </script>
-        @endif
+                    }
+
+                    $('#submitBtnQuiz').on('click', function(event) {
+                        event.preventDefault(); // Prevent the default form submission
+
+                        var answers = []
+
+                        questionOptionsSelected.sort((a, b) => a.index - b.index);
+
+
+                        questionOptionsSelected.forEach(item => {
+                            answers.push(parseInt(item.Option));
+                        });
+
+                        if (questionOptionsSelected.length < '{{ $courseContent->quiz->questionTotal }}' || answers.length <=
+                            0) {
+                            Swal.fire('Oops!', 'Selesaikan Quiz terlebih dahulu', 'error');
+                            return;
+                        }
+
+
+
+                        createOverlay("Proses...");
+                        var formData = new FormData();
+                        formData.append('answers', JSON.stringify(answers));
+                        formData.append('studentId', '{{ $userCourse->id }}');
+
+
+                        $.ajax({
+                            url: '{{ route('quiz.answer', $courseContent->id) }}', // Direct API endpoint
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                    .getAttribute('content')
+                            },
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            success: function(response) {
+                                gOverlay.hide()
+                                if (response.dataServer.passed_status) {
+                                    // If the user passed the quiz
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: response.data.title,
+                                        text: response.data.content
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            document.getElementById('nextCourseButton').click();
+                                        }
+                                    });
+                                } else {
+                                    // If the user did not pass the quiz
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: response.data.title,
+                                        text: response.data.content
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            // Optionally reload the page after confirmation
+                                            window.location.reload();
+                                        }
+                                    });
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                gOverlay.hide()
+                                Swal.fire('Oops!', xhr.responseJSON.message, 'error');
+                            }
+                        });
+                    })
+                </script>
+            @endif
         @endif
     @endif
 

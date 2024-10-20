@@ -14,14 +14,14 @@
                 <!-- Name Field -->
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control shadow-sm" id="floatingFullName" placeholder="Full Name"
-                        name="full_name" value="{{ $full_name }}">
+                        name="full_name" value="{{ $full_name }}" readonly>
                     <label for="floatingFullName">Nama Lengkap</label>
                 </div>
 
                 <!-- Education Field -->
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control shadow-sm" id="floatingEducation" placeholder="Pendidikan"
-                        name="education" value="{{ $data['education'] }}">
+                        name="education" value="{{ $data['education'] }}" readonly>
                     <label for="floatingEducation">Pendidikan</label>
                 </div>
 
@@ -33,14 +33,14 @@
                 <!-- Email Field -->
                 <div class="form-floating mb-3">
                     <input type="email" class="form-control shadow-sm" id="floatingEmail" placeholder="Email"
-                        name="email" value="{{ $email }}">
+                        name="email" value="{{ $email }}" readonly>
                     <label for="floatingEmail">Email</label>
                 </div>
 
                 <!-- Experience Field -->
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control shadow-sm" id="floatingExperience" placeholder="Experience"
-                        name="experience" value="{{ $data['experience'] }}">
+                        name="experience" value="{{ $data['experience'] }}" readonly>
                     <label for="floatingExperience">Pengalaman</label>
                 </div>
 

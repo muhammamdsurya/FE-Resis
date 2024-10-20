@@ -59,7 +59,7 @@
             </div>
         </div>
 
-        <div id="coursesContainer" class="row g-2">
+        <div id="coursesContainer" class="row gx-2 gy-0">
             @if ($pagination ?? false) {{-- Jika ada pagination --}}
                 @foreach ($bundles['data'] as $item)
                     {{-- Akses data dari bundles['data'] --}}
@@ -72,7 +72,7 @@
                                         <p class="ml-auto fs-6 price">Rp{{ number_format($item['price'], 0, ',', '.') }}</p>
                                     </div>
                                     <h5 class="card-title">{{ $item['name'] }}</h5>
-                                    <p class="card-text">{{ $item['description'] }}</p>
+                                    <p class="card-text">{{ Str::limit($item['description'],20) }}</p>
                                 </div>
                             </div>
                         </a>

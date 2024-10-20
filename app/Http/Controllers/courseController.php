@@ -206,7 +206,9 @@ class courseController extends Controller
             // Handle case where the bundle data update fails
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal memperbarui data' . $response->body()
+                'message' => 'Gagal memperbarui data. Response body: ' . $response->body(),
+                'body' => json_encode($body) // Mengirimkan body dalam respons
+
             ]);
         }
     }
