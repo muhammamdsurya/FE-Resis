@@ -12,6 +12,15 @@
 @section('content')
 
     <style>
+        .card-title {
+            white-space: nowrap;
+            /* Prevent the text from wrapping */
+            overflow: hidden;
+            /* Hide overflowed text */
+            text-overflow: ellipsis;
+            /* Show ellipsis (...) for overflowed text */
+        }
+
         .card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
@@ -76,7 +85,7 @@
         </div>
 
 
-        <div id="coursesContainer" class="row g-2">
+        <div id="coursesContainer" class="row gx-2 gy-0">
             @if ($pagination ?? false) {{-- Jika ada pagination --}}
                 @foreach ($courses['data'] as $item)
                     {{-- Akses data dari courses['data'] --}}
@@ -104,8 +113,8 @@
                     <div class="col-lg-3 col-md-4 col-6">
                         <a href="{{ route('detail-kelas', ['id' => $item['id']]) }}" class="text-decoration-none">
                             <div class="card shadow-sm border-light rounded">
-                                <img src="{{ $item['thumbnail_image'] }}" class="card-img-top"
-                                    alt="{{ $item['name'] }}" style="height: 200px; object-fit: cover;">
+                                <img src="{{ $item['thumbnail_image'] }}" class="card-img-top" alt="{{ $item['name'] }}"
+                                    style="height: 200px; object-fit: cover;">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <p class="fs-6 mb-0">
@@ -160,9 +169,6 @@
             </nav>
         @endif
 
-
-
-
         <!-- Modal Jenjang -->
         <div class="modal fade" id="modal-default" tabindex="-1" aria-labelledby="modal-defaultLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -213,7 +219,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" action="{{ route('kelas.post') }}" enctype="multipart/form-data">
+                        <form method="POST" id="kelasForm" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -334,7 +340,6 @@
     <script>
         $(document).ready(function() {
             let categoriesData = {!! $categories !!};
-            console.log(categoriesData);
             let instructorsData = {!! $instructors !!};
 
             // Get the select element
@@ -343,14 +348,27 @@
 
             // Populate the select element with options
             categoriesData.forEach(category => {
-                // Create a new option element
-                let option = document.createElement('option');
-                option.value = category.id; // Set the value to the category ID
-                option.textContent = category.name; // Set the display text to the category name
+                if (category) {
 
-                // Append the option to the select element
-                categorySelect.appendChild(option);
+
+                    // Create a new option element
+                    let option = document.createElement('option');
+                    option.value = category.id; // Set the value to the category ID
+                    option.textContent = category.name; // Set the display text to the category name
+
+                    // Append the option to the select element
+                    categorySelect.appendChild(option);
+                } else {
+                    // Create a new option element
+                    let option = document.createElement('option');
+                    option.value = 'Belum ada Kategori'; // Set the value to the category ID
+                    option.textContent = 'Belum ada Kategori'; // Set the display text to the category name
+
+                    // Append the option to the select element
+                    categorySelect.appendChild(option);
+                }
             });
+
 
             // Populate the select element with options
             // Assuming `instructorsData` is an array of objects, each containing an 'instructor' object.
@@ -368,9 +386,15 @@
                     // Append the option to the select element
                     instructorSelect.appendChild(option);
 
-                    console.log("Instructor:", item.full_name, instructor.id);
                 } else {
-                    console.error("Instructor data not found in item:", item);
+                    // Create a new option element
+                    let option = document.createElement('option');
+                    option.value = 'Belum ada Instruktur'; // Set the value to the instructor ID
+                    option.textContent =
+                        'Belum ada Instruktur'; // Set the display text to the instructor's full name
+
+                    // Append the option to the select element
+                    instructorSelect.appendChild(option);
                 }
             });
 
@@ -385,11 +409,11 @@
                     <td>${index + 1}</td>
                     <td>${category.name}</td>
                     <td>
-                        <button class="btn btn-warning edit-btn btn-sm data-id="${category.id}">
+                        <button class="btn btn-warning edit-btn btn-sm" data-id="${category.id}">
                             <i class="fas fa-edit"></i> <!-- Ikon Edit -->
                             <span class="d-none d-sm-inline ml-1">Edit</span> <!-- Teks untuk desktop -->
                         </button>
-                        <button class="btn btn-danger delete-btn btn-sm data-id="${category.id}">
+                        <button class="btn btn-danger delete-btn btn-sm" data-id="${category.id}">
                             <i class="fas fa-trash"></i> <!-- Ikon Hapus -->
                             <span class="d-none d-sm-inline ml-1">Hapus</span> <!-- Teks untuk desktop -->
                         </button>
@@ -401,6 +425,41 @@
 
             // Load categories on page load
             loadCategories();
+
+            $('#kelasForm').on('submit', function(e) {
+                e.preventDefault(); // Mencegah pengiriman default
+
+                // Membuat objek FormData
+                const formData = new FormData(this);
+
+
+                createOverlay('Proses...'); // Tampilkan overlay
+
+                // Mengirim data formulir menggunakan AJAX
+                $.ajax({
+                    url: '{{ route('kelas.post') }}', // Menggunakan URL dari atribut action
+                    type: 'POST',
+                    data: formData, // Mengambil data dari formulir
+                    processData: false, // Mencegah jQuery mengubah data
+                    contentType: false, // Mencegah jQuery menetapkan konten
+                    success: function(response) {
+                        gOverlay.hide();
+                        console.log(response);
+                        // Lakukan sesuatu setelah berhasil
+                        Swal.fire('Sukses!', response.message, 'success');
+                        // Reload halaman atau arahkan ke halaman lain jika diperlukan
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        gOverlay.hide();
+                        console.error('Error:', xhr.responseText);
+                        // Menampilkan pesan error
+                        Swal.fire('Error!',
+                            'Terjadi kesalahan saat mengirim data. Silakan coba lagi.',
+                            'error');
+                    },
+                });
+            });
             // Handle the Edit button click
             $('#categoriesBody').on('click', '.edit-btn', function() {
                 const categoryId = $(this).data('id');
@@ -435,11 +494,11 @@
                     },
                     success: function(response) {
                         gOverlay.hide()
-                        console.log(response);
                         $('#editCategoryModal').modal('hide'); // Hide the modal
                         Swal.fire('Berhasil!', 'Kategori berhasil diupdate.',
                             'success');
-                        loadCategories(); // Reload categories
+                        location.reload();
+
                     },
                     error: function(xhr, status, error) {
                         gOverlay.hide()
@@ -466,6 +525,7 @@
                     name: level
                 };
 
+
                 // Make the AJAX request to add a new category
                 createOverlay("Proses...");
                 $.ajax({
@@ -474,17 +534,17 @@
                     headers: {
                         'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr("content")
                     },
-                    data: JSON.stringify(data),
+                    data: data,
                     success: function(response) {
                         gOverlay.hide()
-                        console.log("data:", response);
                         Swal.fire('Berhasil', 'Jenjang berhasil ditambahkan!',
                             'success');
-                        loadCategories(); // Reload categories
+                        location.reload();
+
                     },
                     error: function(xhr, status, error) {
                         gOverlay.hide()
-                        console.error('Error adding category:', error);
+                        console.error('Error adding category:', xhr.responseText);
                         Swal.fire('Oops!',
                             'Terjadi kesalahan saat menambahkan jenjang!',
                             'error');
@@ -517,9 +577,9 @@
                             success: function(response) {
                                 gOverlay.hide()
                                 Swal.fire('Dihapus!',
-                                'Kategori berhasil dihapus.',
-                                'success');
-                                loadCategories(); // Reload categories
+                                    'Kategori berhasil dihapus.',
+                                    'success');
+                                location.reload();
                             },
                             error: function(xhr, status, error) {
                                 gOverlay.hide()

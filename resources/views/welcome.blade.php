@@ -330,7 +330,8 @@
                             <h3>Apa itu AkuAnalis?</h3>
                             <div class="faq-content">
                                 <p>Selamat datang di AkuAnalis by Resi's Project!
-                                    Kami adalah media belajar yang menyediakan Online Course dengan fokus di bidang Kimia
+                                    Kami adalah media 
+                                    yang menyediakan Online Course dengan fokus di bidang Kimia
                                     Analisis serta dapat diakses dengan mudah oleh siswa/i. Yuk segera daftarkan diri kalian
                                     dan nikmati fitur yang kami sediakan!
                                 </p>

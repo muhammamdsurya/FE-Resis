@@ -71,7 +71,7 @@ class InstructorController extends Controller
     public function dashboard()
     {
         $title = 'Dashboard';
-        $courses = $this->fetchApiData($this->apiUrl . 'courses' );
+        $courses = $this->fetchApiData($this->apiUrl . 'courses');
 
 
         // Lakukan operasi lain yang diperlukan
@@ -136,16 +136,24 @@ class InstructorController extends Controller
 
     public function detailKelas(Request $request, $id)
     {
-        $title = 'Detail Kelas';
-
-        $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
+        // Fetch course details
         $course = $this->fetchApiData($this->apiUrl . 'courses/' . $id);
-        // Initialize course contents, assuming it's fetched properly
-        $courseContents = $this->courseContentCtrl->courseContents($id) ?? []; // Fetch course contents safely
-        $courseContent = null;
-        $previousCourseContentId = '';
-        $nextCourseContentId = '';
+        if (isset($course)) {
+            $title = json_decode(json_encode($course))->course->name;
+        }
 
+        // Fetch course contents
+        $courseContents = $this->courseContentCtrl->courseContents($id) ?? []; // Ensure you fetch course contents safely
+
+        // Initialize selectedCourseContentId
+        $selectedCourseContentId = $request->get("selectedCourseContentId", null);
+
+        // If no specific content ID is provided, set it to the first content's ID
+        if (empty($selectedCourseContentId) && count($courseContents) > 0) {
+            $selectedCourseContentId = $courseContents[0]->id; // Select the first content by default
+        }
+
+        // Initialize other variables
         $courseContent = null;
         $previousCourseContentId = '';
         $nextCourseContentId = '';
@@ -154,46 +162,41 @@ class InstructorController extends Controller
         $addSrcType = 'additional_source';
         $quizType = 'quiz';
 
-        if ($selectedCourseContentId != '') {
-            if ($selectedCourseContentId != '') {
-                $selectedIndex = -1; // Use -1 to indicate not found initially
-                foreach ($courseContents as $index => $content) {
-                    if ($content->id === $selectedCourseContentId) {
-                        $selectedIndex = $index; // Set the selected index
-                        $courseContent = $content; // Assign selected course content
-                        break;
-                    }
+        // Find selected course content
+        if ($selectedCourseContentId) {
+            $selectedIndex = -1; // Default to not found
+            foreach ($courseContents as $index => $content) {
+                if ($content->id === $selectedCourseContentId) {
+                    $selectedIndex = $index; // Set the selected index
+                    $courseContent = $content; // Assign selected course content
+                    break;
                 }
+            }
 
-
-                // NEXT PREVIOUS
-
-                // Initialize next and previous IDs
-                if ($selectedIndex !== -1) { // Ensure we found the selected index
-                    if ($selectedIndex > 0) {
-                        $previousCourseContentId = $courseContents[$selectedIndex - 1]->id;
-                    }
-                    if ($selectedIndex < count($courseContents) - 1) {
-                        $nextCourseContentId = $courseContents[$selectedIndex + 1]->id;
-                    }
+            // NEXT PREVIOUS
+            if ($selectedIndex !== -1) { // Ensure we found the selected index
+                if ($selectedIndex > 0) {
+                    $previousCourseContentId = $courseContents[$selectedIndex - 1]->id; // Get previous content ID
                 }
+                if ($selectedIndex < count($courseContents) - 1) {
+                    $nextCourseContentId = $courseContents[$selectedIndex + 1]->id; // Get next content ID
+                }
+            }
 
-                if ($courseContent) {
-                    if ($courseContent->content_type == $videoType) {
-                        $courseContentVideo = $this->courseContentCtrl->courseContentVideo($id, $selectedCourseContentId);
-                        $courseContent->video = $courseContentVideo;
-                    } elseif ($courseContent->content_type == $addSrcType) {
-                        $courseContentSrc = $this->courseContentCtrl->courseContentSrc($id, $selectedCourseContentId);
-                        $courseContent->src = $courseContentSrc;
-                    } elseif ($courseContent->content_type == $quizType) {
-                        $courseContentQuiz = $this->courseContentCtrl->courseContentQuiz($id, $selectedCourseContentId);
-                        $courseContent->quiz = $courseContentQuiz;
-                    }
+            // Load specific content details based on type
+            if ($courseContent) {
+                if ($courseContent->content_type == $videoType) {
+                    $courseContentVideo = $this->courseContentCtrl->courseContentVideo($id, $selectedCourseContentId);
+                    $courseContent->video = $courseContentVideo;
+                } elseif ($courseContent->content_type == $addSrcType) {
+                    $courseContentSrc = $this->courseContentCtrl->courseContentSrc($id, $selectedCourseContentId);
+                    $courseContent->src = $courseContentSrc;
+                } elseif ($courseContent->content_type == $quizType) {
+                    $courseContentQuiz = $this->courseContentCtrl->courseContentQuiz($id, $selectedCourseContentId);
+                    $courseContent->quiz = $courseContentQuiz;
                 }
             }
         }
-
-        // dd($courseContent);answer
 
         return view('instructor.detailKelas', [
             "title" => $title,
@@ -212,6 +215,7 @@ class InstructorController extends Controller
             "quizType" => $quizType,
         ]);
     }
+
 
     public function diskusi(Request $request, $courseId)
     {

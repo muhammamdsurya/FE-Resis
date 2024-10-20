@@ -47,7 +47,7 @@ class courseContentController extends Controller
 
 
         $response = Http::withHeaders($headers);
-        
+
 
         $jsonData = [
             'course_id' => $courseId,
@@ -59,19 +59,19 @@ class courseContentController extends Controller
         if($contentType == 'video'){
 
             $validator = Validator::make($request->all(), [
-                'videoContentFile' => 'required|file|mimes:mp4,mov,avi,wmv,flv', 
+                'videoContentFile' => 'required|file|mimes:mp4,mov,avi,wmv,flv',
                 'videoContentThumbFile' => 'required|file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'videoArticleContent' => 'required|string',
                 'videoDuration' => 'required|integer',
             ]);
-            
+
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'message' => $validator->errors()->first(),
                 ], 400);
             }
-    
+
 
             $videoContentFile = $request->file('videoContentFile');
             $videoContentThumbFile = $request->file('videoContentThumbFile');
@@ -79,7 +79,7 @@ class courseContentController extends Controller
             $videoDuration = $request->get('videoDuration');
 
 
-            //Merge 
+            //Merge
 
             $jsonData = array_merge($jsonData, [
                 'video_article_content' => $videoArticleContent,
@@ -88,33 +88,33 @@ class courseContentController extends Controller
 
             $response->attach('video_content', fopen($videoContentFile->getRealPath(), 'r'), $videoContentFile->getClientOriginalName())->attach('video_thumbnail', fopen($videoContentThumbFile->getRealPath(), 'r'), $videoContentThumbFile->getClientOriginalName());
 
-           
+
         } else if($contentType == 'quiz'){
 
-            $quizzes = json_decode($request->get('quizzes'), true); 
+            $quizzes = json_decode($request->get('quizzes'), true);
             $jsonData = array_merge($jsonData, [
                 'quiz' => $quizzes,
             ]);
 
         }else if($contentType == "additional_source") {
             $validator = Validator::make($request->all(), [
-                'additionalSrcFile' => 'required|file|mimes:pdf', 
+                'additionalSrcFile' => 'required|file|mimes:pdf',
             ]);
-            
+
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'message' => $validator->errors()->first(),
                 ], 400);
             }
-    
+
 
             $additionalSrcFile = $request->file('additionalSrcFile');
 
 
             //Merge
             $response->attach('additional_source', fopen($additionalSrcFile->getRealPath(), 'r'), $additionalSrcFile->getClientOriginalName());
-            
+
         }else{
             return response()->json([
                 'success' => false,
@@ -123,7 +123,7 @@ class courseContentController extends Controller
         }
 
         $courseContentForm = json_encode($jsonData);
-        
+
 
         $response = $response->attach('course_content_form', $courseContentForm) ->post($this->apiUrl . 'courses/' . $courseId . '/contents');
 
@@ -136,7 +136,7 @@ class courseContentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $response->body()  ,
-                'error' => $response->json() 
+                'error' => $response->json()
             ], $response->status());
         }
     }
@@ -163,7 +163,7 @@ class courseContentController extends Controller
         $headers = [
             'Cookie' => 'session=' . $apiSession
         ];
-        
+
         $jsonData = [
             'content_title' => $contentTitle,
             'content_description' => $contentDesc,
@@ -181,54 +181,57 @@ class courseContentController extends Controller
         if($courseContent->content_type == $videoType){
             if($isUpdateContentFile == 'true'){
                 $validator = Validator::make($request->all(), [
-                    'videoContentFile' => 'required|file|mimes:mp4,mov,avi,wmv,flv', 
+                    'videoContentFile' => 'required|file|mimes:mp4,mov,avi,wmv,flv',
                     'videoContentThumbFile' => 'required|file|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                     'videoArticleContent' => 'required|string',
                     'videoDuration' => 'required|integer',
                 ]);
-                
+
                 if ($validator->fails()) {
                     return response()->json([
                         'success' => false,
                         'message' => $validator->errors()->first(),
                     ], 400);
                 }
-        
-    
+
+
                 $videoContentFile = $request->file('videoContentFile');
                 $videoContentThumbFile = $request->file('videoContentThumbFile');
                 $videoArticleContent = $request->get('videoArticleContent');
                 $videoDuration = $request->get('videoDuration');
-                
+
                 $bodyVideoUpdateJson =[
                     'article_content' => $videoArticleContent,
                     'video_duration' => intval( $videoDuration),
                 ];
 
-                $response =  Http::withHeaders($headers)->attach('video_content', fopen($videoContentFile->getRealPath(), 'r'), $videoContentFile->getClientOriginalName())->attach('video_thumbnail', fopen($videoContentThumbFile->getRealPath(), 'r'), $videoContentThumbFile->getClientOriginalName())->attach('video_content_form',  json_encode($bodyVideoUpdateJson))->put($this->apiUrl . 'courses/' . $courseId . '/contents/'.$contentId.'/video');
+                $response =  Http::withHeaders($headers)
+                ->attach('video_content', fopen($videoContentFile->getRealPath(), 'r'), $videoContentFile->getClientOriginalName())
+                ->attach('video_thumbnail', fopen($videoContentThumbFile->getRealPath(), 'r'), $videoContentThumbFile->getClientOriginalName())
+                ->attach('video_content_form',  json_encode($bodyVideoUpdateJson))->put($this->apiUrl . 'courses/' . $courseId . '/contents/'.$contentId.'/video');
 
                 if (!$response->successful()) {
                     return response()->json([
                         'success' => false,
                         'message' => $response->body()  ,
-                        'error' => $response->json() 
+                        'error' => $response->json()
                     ], $response->status());
                 }
             }
         } else if ($courseContent->content_type == $addSrcType){
             if($isUpdateContentFile == 'true'){
                 $validator = Validator::make($request->all(), [
-                    'additionalSrcFile' => 'required|file|mimes:pdf', 
+                    'additionalSrcFile' => 'required|file|mimes:pdf',
                 ]);
-                
+
                 if ($validator->fails()) {
                     return response()->json([
                         'success' => false,
                         'message' => $validator->errors()->first(),
                     ], 400);
                 }
-        
-    
+
+
                 $additionalSrcFile = $request->file('additionalSrcFile');
 
 
@@ -238,13 +241,13 @@ class courseContentController extends Controller
                     return response()->json([
                         'success' => false,
                         'message' => $response->body()  ,
-                        'error' => $response->json() 
+                        'error' => $response->json()
                     ], $response->status());
                 }
-    
+
             }
         } else if ($courseContent->content_type == $quizType){
-            $quizzes = $request->get('quizzes');     
+            $quizzes = $request->get('quizzes');
             $quizzes = json_decode($request->get('quizzes'), true);
             $passGrade = $quizzes['passing_grade'];
             $quizContent = $quizzes['quizz_content'];
@@ -257,7 +260,7 @@ class courseContentController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => $response->body()  ,
-                    'error' => $response->json() 
+                    'error' => $response->json()
                 ], $response->status());
             }
         }else{
@@ -270,7 +273,7 @@ class courseContentController extends Controller
 
 
         $response = Http::withHeaders($headers)->put($this->apiUrl . 'courses/' . $courseId . '/contents/'.$contentId,$jsonData);
-        
+
         if ($response->successful()) {
             return response()->json([
                 'success' => true,
@@ -280,7 +283,7 @@ class courseContentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $response->body()  ,
-                'error' => $response->json() 
+                'error' => $response->json()
             ], $response->status());
         }
     }
@@ -302,7 +305,7 @@ class courseContentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $response->body()  ,
-                'error' => $response->json() 
+                'error' => $response->json()
             ], $response->status());
         }
     }
@@ -327,8 +330,8 @@ class courseContentController extends Controller
         return  json_decode(json_encode($response->json()));
     }
 
-   
 
 
- 
+
+
 }

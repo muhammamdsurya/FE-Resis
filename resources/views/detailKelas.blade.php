@@ -58,16 +58,20 @@
             /* Muted color for subtitle */
         }
 
-        .rating-stars {
-            color: #f8d64e;
+        .rating-box {
+            background-color: #ffffff;
+            /* Warna latar belakang kotak rating */
+            border: 1px solid #dee2e6;
+            /* Border kotak */
+            transition: transform 0.2s;
+            /* Animasi saat hover */
         }
 
-        .rating-box {
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            background-color: #f9f9f9;
+        .rating-box:hover {
+            transform: translateY(-5px);
+            /* Mengangkat kotak saat hover */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            /* Bayangan saat hover */
         }
     </style>
     <section id="detail-kelas" class="hero section py-5" style="background-color: #f9f9f9;">
@@ -97,7 +101,7 @@
                                             {{ $course->course_category->name }}
                                         </p>
                                     </div>
-                                    <p class="text-muted">{{ $course->course->description }}</p>
+                                    <p class="text-muted">{{ Str::limit($course->course->description, 200) }}</p>
                                 </div>
                             </div><!-- End Text -->
                         </div>
@@ -153,8 +157,8 @@
                     <div class="mb-5">
                         <h4 class="fw-bold mb-3">Pengajar</h4>
                         <div class="d-flex align-items-center gap-3">
-                            <img src="{{ $course->instructor->photo_profile }}" alt="Instructor" class="rounded-circle"
-                                width="100rem">
+                            <img src="{{ $course->instructor->photo_profile }}" alt="Instructor"
+                                class="rounded-circle shadow-sm" width="100rem">
                             <div>
                                 <h6 class="fw-bold">{{ $course->instructor->full_name }}</h6>
                                 <p class="text-muted">{{ $course->instructor->instructor->education }}</p>
@@ -212,7 +216,7 @@
                                 <div class="faq-item">
                                     <h3>{{ $row->content_title }}</h3>
                                     <div class="faq-content">
-                                        <p>{!! $row->content_description !!}</p>
+                                        <p>{{ $row->content_description }}</p>
                                     </div>
                                     <i class="faq-toggle bi bi-chevron-right"></i>
                                 </div><!-- End Faq item-->
@@ -220,8 +224,8 @@
                         @else
                             <p>Belum Ada Konten </p>
                         @endif
-
                     </div>
+
 
                 </div><!-- End Faq Column-->
 
@@ -242,24 +246,22 @@
         <!-- End Section Title -->
         <div class="container">
             @if ($ratings->data != null)
-                @foreach ($ratings->data as $rating)
-                    <div class="rating-box">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h5>{{ $rating->student_name }}</h5>
-                                <p class="mb-0">{{ $rating->description }} stars</p>
+                @foreach ($ratings->data as $row)
+                    <div class="rating-box shad rounded p-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="mb-0">{{ $row->student_name }}</h5>
+                                <p class="mb-0 text-muted">{{ $row->description }} stars</p>
                             </div>
-
                             <div class="rating-stars fs-3">
-                                @for ($i = 1; $i <= $rating->rating; $i++)
-                                    <i class="bi bi-star-fill text-warning me-1"></i>
+                                @for ($i = 1; $i <= $row->rating; $i++)
+                                    <i class="bi bi-star-fill text-warning me-1 star-hover"></i>
                                 @endfor
                             </div>
-
                         </div>
                     </div>
                 @endforeach
-                @else
+            @else
                 <p>Belum ada rating</p>
             @endif
 

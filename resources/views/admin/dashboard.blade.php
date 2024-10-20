@@ -4,7 +4,7 @@
 @section('content')
     <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
-        <div class="row">
+        <div class="row gx-2 gy-0">
             <div class="col-lg-3 col-6">
                 <!-- small box -->
                 <div class="small-box bg-primary">
@@ -71,7 +71,7 @@
             <!-- ./col -->
         </div>
         <!-- /.row -->
-        <div class="row">
+        <div class="row gx-2 gy-0">
             <div class="col-lg-3 col-6">
                 <!-- small box -->
                 <div class="small-box bg-primary">
@@ -102,7 +102,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-5 col-6">
+            <div class="col-lg-5 col-12">
                 <!-- Total Income Box -->
                 <div class="small-box bg-success">
                     <div class="inner">
@@ -117,77 +117,76 @@
                 </div>
             </div>
         </div>
+        <!-- Main row -->
+        <div class="row">
+            <!-- Right col for few months statistics -->
+            <section class="col-lg-8 connectedSortable">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-bar mr-1"></i>
+                            Statistik Penjualan Beberapa Bulan
+                        </h3>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="monthRange">Pilih Rentang Bulan:</label>
+                            <select id="monthRange" class="form-control" onchange="fetchSalesData(this.value)">
+                                <option value="">Pilih Rentang Bulan</option>
+                                <option value="6">6 Bulan</option>
+                                <option value="12">12 Bulan</option>
+                            </select>
+                        </div>
+                        <div class="chart" style="position: relative; height: auto;">
+                            <canvas id="fewmonthChart" style="width: 100%; height: 300px;"></canvas>
+                        </div>
+                    </div><!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </section>
+            <!-- /.Right col -->
+            <!-- Left col for monthly statistics -->
+            <section class="col-lg-4 connectedSortable">
+                <!-- Custom tabs (Charts with tabs) -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-pie mr-1"></i>
+                            Statistik Penjualan Per Bulan
+                        </h3>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="monthRange">Pilih Bulan:</label>
+                            <select id="monthRange" class="form-control" onchange="fetchMonthData(this.value)">
+                                <option value="">Pilih Bulan</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                        </div>
+                        <div class="chart" style="position: relative; height: auto;">
+                            <canvas id="monthChart" style="width: 100%; height: 300px;"></canvas>
+                        </div>
+                    </div><!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </section>
+            <!-- /.Left col -->
+        </div>
+    </div>
 
-    </div>
-    <!-- Main row -->
-    <div class="row">
-        <!-- Right col for few months statistics -->
-        <section class="col-lg-8 connectedSortable">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-chart-bar mr-1"></i>
-                        Statistik Penjualan Beberapa Bulan
-                    </h3>
-                </div><!-- /.card-header -->
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="monthRange">Pilih Rentang Bulan:</label>
-                        <select id="monthRange" class="form-control" onchange="fetchSalesData(this.value)">
-                            <option value="">Pilih Rentang Bulan</option>
-                            <option value="6">6 Bulan</option>
-                            <option value="12">12 Bulan</option>
-                        </select>
-                    </div>
-                    <div class="chart" style="position: relative; height: 300px;">
-                        <canvas id="fewmonthChart" width="400" height="200"></canvas>
-                    </div>
-                </div><!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-        </section>
-        <!-- /.Right col -->
-        <!-- Left col for monthly statistics -->
-        <section class="col-lg-4 connectedSortable">
-            <!-- Custom tabs (Charts with tabs) -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-chart-pie mr-1"></i>
-                        Statistik Penjualan Per Bulan
-                    </h3>
-                </div><!-- /.card-header -->
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="monthRange">Pilih Bulan:</label>
-                        <select id="monthRange" class="form-control" onchange="fetchMonthData(this.value)">
-                            <option value="">Pilih Bulan</option>
-                            <option value="1">Januari</option>
-                            <option value="2">Februari</option>
-                            <option value="3">Maret</option>
-                            <option value="4">April</option>
-                            <option value="5">Mei</option>
-                            <option value="6">Juni</option>
-                            <option value="7">Juli</option>
-                            <option value="8">Agustus</option>
-                            <option value="9">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
-                        </select>
-                    </div>
-                    <div class="chart" style="position: relative; height: 300px;">
-                        <canvas id="monthChart" width="400" height="400"></canvas>
-                    </div>
-                </div><!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-        </section>
-        <!-- /.Left col -->
-    </div>
 
     <!-- /.row (main row) -->
-    </div><!-- /.container-fluid -->
 
     <!-- ChartJS -->
     {{-- <script src="{{ asset('assets/plugins/chart.js/Chart.min.js') }}"></script> --}}
@@ -197,7 +196,6 @@
 
 
     <script>
-
         let fewmonthChart;
         const fewmonthChartCanvas = document.getElementById('fewmonthChart');
 
@@ -228,7 +226,6 @@
                         month: month
                     },
                     success: function(response) {
-                        console.log('Canvas:', monthChartCanvas);
                         updateMonthChart(response.months, month);
                         // Check if total_sales exists and is not undefined
                         if (response.months.total_sales !== undefined) {
@@ -288,7 +285,6 @@
             const totalSales = [salesData.total_sales]; // Ubah menjadi array
             const totalIncome = [salesData.total_income]; // Ubah menjadi array
 
-            console.log(totalSales, totalIncome);
 
             // Destroy the existing chart if it exists
             if (monthChart) {
@@ -346,7 +342,6 @@
             const totalSales = salesData.map(item => item.total_sales); // Get the corresponding sales for each month
             const totalIncome = salesData.map(item => item.total_income); // Get the corresponding sales for each month
 
-            console.log(totalSales, totalIncome);
 
             // Destroy the existing chart if it exists
             if (fewmonthChart) {

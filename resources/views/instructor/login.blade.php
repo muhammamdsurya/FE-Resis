@@ -6,13 +6,19 @@
             <div class="container bg-light col-lg-10">
                 <div class="row d-flex justify-content-center align-items-center shadow py-3">
                     <div class="col-md-5 col-lg-5">
-                        <img src="{{ asset('assets/img/logo.png') }}" class="img-fluid d-none d-md-block" style="width: 20rem;" alt="Sample image">
+                        <img src="{{ asset('assets/img/logo.png') }}" class="img-fluid d-none d-md-block" style="width: 20rem;"
+                            alt="Sample image">
                     </div>
 
                     <div class="col-md-5 col-lg-5 ">
                         <form method="POST" action="{{ route('login.instructor') }}">
                             @csrf
                             <h3 class="text-center mb-3">Instruktur Login</h3>
+                            @if (session('error'))
+                                <div id="alert-message" class="alert alert-danger">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
                             <!-- Input field untuk email -->
                             <div class="form-floating mb-3">
                                 <input type="email" class="form-control @error('email') is-invalid @enderror"

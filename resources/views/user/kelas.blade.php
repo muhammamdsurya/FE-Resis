@@ -2,23 +2,44 @@
 @section('title', $title)
 
 @section('filter')
+    <div class="position-relative">
+        <div class="position-relative">
+            <div class="row mb-3 text-center">
+                <!-- Tombol grid untuk desktop (di atas layar md) -->
+                <div class="d-grid gap-2 d-none d-md-block">
+                    <button class="btn btn-{{ $filter == 'all' ? 'primary' : 'secondary' }}" type="button"
+                        onclick="window.location.href='?filter=all'">Semua</button>
+                    <button class="btn btn-{{ $filter == 'active' ? 'primary' : 'secondary' }}" type="button"
+                        onclick="window.location.href='?filter=active'">Aktif</button>
+                    <button class="btn btn-{{ $filter == 'expired' ? 'primary' : 'secondary' }}" type="button"
+                        onclick="window.location.href='?filter=expired'">Expired</button>
+                </div>
 
-    <!-- Filter Dropdown -->
-    <div class="filter-dropdown d-md-none d-sm-block ms-md-3">
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Filter
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-             
-                <li><a class="dropdown-item {{ $filter == 'all' ? 'active' : '' }}" href="?filter=all">Semua</a></li>
-                <li><a class="dropdown-item {{ $filter == 'active' ? 'active' : '' }}" href="?filter=active">Aktif</a></li>
-                <li><a class="dropdown-item {{ $filter == 'expired' ? 'active' : '' }}" href="?filter=expired">Expired</a></li>
-
-            </ul>
+                <!-- Dropdown untuk mobile (di bawah layar md) -->
+                <div class="dropdown d-md-none">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Filter
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                        <li>
+                            <a class="dropdown-item {{ $filter == 'all' ? 'active' : '' }}" href="?filter=all">Semua</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {{ $filter == 'active' ? 'active' : '' }}"
+                                href="?filter=active">Aktif</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item {{ $filter == 'expired' ? 'active' : '' }}"
+                                href="?filter=expired">Expired</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
+
     </div>
+
 
 
 @endsection
@@ -56,16 +77,7 @@
             margin: 0;
         }
     </style>
-      <div class="row mb-3 text-center">
-                <div class="d-grid gap-2 d-none d-md-block">
-                    <button class="btn btn-{{ $filter == 'all' ? 'primary' : 'secondary' }}" type="button"
-                        onclick="window.location.href='?filter=all'">Semua</button>
-                    <button class="btn btn-{{ $filter == 'active' ? 'primary' : 'secondary' }}" type="button"
-                        onclick="window.location.href='?filter=active'">Aktif</button>
-                    <button class="btn btn-{{ $filter == 'expired' ? 'primary' : 'secondary' }}" type="button"
-                        onclick="window.location.href='?filter=expired'">Expired</button>
-                </div>
-            </div>
+
     <div class="container-fluid mt-3">
         <div id="coursesContainer" class="row g-2 mb-5">
             @if ($filter == 'expired')
@@ -156,7 +168,7 @@
                 @if ($userCourses->pagination->page > 1)
                     <li class="page-item">
                         <a class="page-link"
-                            href="/user/kelas?filter={{$filter}}&page={{$userCourses->pagination->page + 1}}">Previous</a>
+                            href="/user/kelas?filter={{ $filter }}&page={{ $userCourses->pagination->page + 1 }}">Previous</a>
                     </li>
                 @else
                     <li class="page-item disabled">
@@ -167,7 +179,8 @@
                 <!-- Page Numbers -->
                 @for ($i = 1; $i <= $userCourses->pagination->total_page; $i++)
                     <li class="page-item {{ $userCourses->pagination->page === $i ? 'active' : '' }}">
-                        <a class="page-link" href="/user/kelas?filter={{$filter}}&page={{$i}}">{{ $i }}</a>
+                        <a class="page-link"
+                            href="/user/kelas?filter={{ $filter }}&page={{ $i }}">{{ $i }}</a>
                     </li>
                 @endfor
 
@@ -175,7 +188,7 @@
                 @if ($userCourses->pagination->page < $userCourses->pagination->total_page)
                     <li class="page-item">
                         <a class="page-link"
-                            href="/user/kelas?filter={{$filter}}&page={{$$userCourses->pagination->page - 1}}">Next</a>
+                            href="/user/kelas?filter={{ $filter }}&page={{ $$userCourses->pagination->page - 1 }}">Next</a>
                     </li>
                 @else
                     <li class="page-item disabled">

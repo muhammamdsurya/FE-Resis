@@ -102,8 +102,7 @@
                         messageHeader.text('Aktivasi Gagal');
                         message.text('Token mungkin tidak valid atau sudah kadaluarsa.');
                         activationBox.addClass('error').removeClass('success');
-                        icon.addClass('fa-times-circle'); // Tampilkan ikon kegagalan
-                        console.log(xhr.responseText);
+                        icon.addClass('fa-times-circle'); 
                     }
                 });
             }
