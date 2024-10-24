@@ -19,7 +19,7 @@
                 </div>
                 <!-- Contact Form -->
                 <div class="col-lg-6">
-                    <form id="messageForm" onsubmit="return sendMessage()">
+                    <form>
                         <div class="mb-3">
                             <label for="nameInput" class="form-label">Nama</label>
                             <input type="text" class="form-control" id="nameInput" required>
@@ -29,8 +29,21 @@
                             <textarea class="form-control" id="messageTextarea" rows="3" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <button type="submit" class="btn btn-success" style="width: 100%">
-                                <i class="bi bi-whatsapp"></i> Kirim via WhatsApp
+                            <button type="button" class="btn btn-success" style="width: 100%"
+                                onclick="sendMessage('628889162042')">
+                                <i class="bi bi-whatsapp"></i> Admin 1 (Dimas)
+                            </button>
+                        </div>
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-success" style="width: 100%"
+                                onclick="sendMessage('6285782244353')">
+                                <i class="bi bi-whatsapp"></i> Admin 2 (Gita)
+                            </button>
+                        </div>
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-success" style="width: 100%"
+                                onclick="sendMessage('625133795890')">
+                                <i class="bi bi-whatsapp"></i> Admin 3 (Okta)
                             </button>
                         </div>
                     </form>
@@ -40,35 +53,25 @@
     </section>
 
     <script>
-        function sendMessage() {
+        function sendMessage(whatsappNumber) {
             const form = document.getElementById('messageForm');
 
-            // Memeriksa validitas formulir
-            if (!form.checkValidity()) {
-                form.reportValidity(); // Menampilkan pesan kesalahan
-                return false; // Mencegah pengiriman formulir
-            }
-
-            // Ambil nilai dari input dan textarea
+            // Get values from input and textarea
             const name = document.getElementById('nameInput').value.trim();
             const message = document.getElementById('messageTextarea').value.trim();
 
-            // Encode nilai untuk URL
+            // Encode values for URL
             const encodedName = encodeURIComponent(name);
             const encodedMessage = encodeURIComponent(message);
 
-            // Ambil nomor WhatsApp dari server (harus diubah dengan nomor Anda)
-            const whatsappNumber = '+628889162042';
-
-            // Buat URL WhatsApp dengan parameter teks
+            // Construct WhatsApp URL with the selected number
             const whatsappURL =
                 `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=Nama:%20${encodedName}%0APesan:%20${encodedMessage}`;
 
-            // Arahkan ke URL WhatsApp
+            // Open WhatsApp URL in a new tab
             window.open(whatsappURL, '_blank');
 
-            // Mencegah pengiriman formulir secara default
-            return false;
+            return false; // Prevent form default submission
         }
     </script>
 @endsection
