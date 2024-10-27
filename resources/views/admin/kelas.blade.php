@@ -80,35 +80,41 @@
                     <span class="d-none d-lg-inline">Jenjang</span> <!-- Teks Jenjang untuk desktop -->
                 </button>
             </div>
-
-
         </div>
 
 
         <div id="coursesContainer" class="row gx-2 gy-0">
-            @if ($pagination ?? false) {{-- Jika ada pagination --}}
-                @foreach ($courses['data'] as $item)
-                    {{-- Akses data dari courses['data'] --}}
-                    <div class="col-lg-3 col-md-4 col-6">
-                        <a href="{{ route('detail-kelas', ['id' => $item['course']['id']]) }}" class="text-decoration-none">
-                            <div class="card shadow-sm border-light rounded">
-                                <img src="{{ $item['course']['thumbnail_image'] }}" class="card-img-top"
-                                    alt="{{ $item['course']['thumbnail_image'] }}">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <p class="fs-6 mb-0">
-                                            <i class="fas fa-star text-warning me-1"></i>{{ $item['course']['rating'] }}
-                                        </p>
-                                        <p class="fs-6 mb-0 text-muted">{{ $item['course_category']['name'] }}</p>
+            @if ($courses['data'])
+                @if ($pagination ?? false) {{-- Jika ada pagination --}}
+                    @foreach ($courses['data'] as $item)
+                        {{-- Akses data dari courses['data'] --}}
+                        <div class="col-lg-3 col-md-4 col-6">
+                            <a href="{{ route('detail-kelas', ['id' => $item['course']['id']]) }}"
+                                class="text-decoration-none">
+                                <div class="card shadow-sm border-light rounded">
+                                    <img src="{{ $item['course']['thumbnail_image'] }}" class="card-img-top"
+                                        alt="{{ $item['course']['thumbnail_image'] }}">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <p class="fs-6 mb-0">
+                                                <i class="fas fa-star text-warning me-1"></i>{{ $item['course']['rating'] }}
+                                            </p>
+                                            <p class="fs-6 mb-0 text-muted">{{ $item['course_category']['name'] }}</p>
+                                        </div>
+                                        <h5 class="card-title mt-2">{{ $item['course']['name'] }}</h5>
                                     </div>
-                                    <h5 class="card-title mt-2">{{ $item['course']['name'] }}</h5>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
+                            </a>
+                        </div>
+                    @endforeach
+                @endif
             @else
-                {{-- Jika tidak ada pagination --}}
+                <div class="col-12 text-center">
+                    <h4>Data kelas kosong</h4>
+                </div>
+            @endif
+            {{-- Jika tidak ada pagination --}}
+            @if ($courses['data'] != null)
                 @foreach ($courses as $item)
                     <div class="col-lg-3 col-md-4 col-6">
                         <a href="{{ route('detail-kelas', ['id' => $item['id']]) }}" class="text-decoration-none">
@@ -347,27 +353,30 @@
             const instructorSelect = document.getElementById('instructorSelect');
 
             // Populate the select element with options
-            categoriesData.forEach(category => {
-                if (category) {
+            if (categoriesData != null) {
+                categoriesData.forEach(category => {
+                    if (category) {
 
 
-                    // Create a new option element
-                    let option = document.createElement('option');
-                    option.value = category.id; // Set the value to the category ID
-                    option.textContent = category.name; // Set the display text to the category name
+                        // Create a new option element
+                        let option = document.createElement('option');
+                        option.value = category.id; // Set the value to the category ID
+                        option.textContent = category.name; // Set the display text to the category name
 
-                    // Append the option to the select element
-                    categorySelect.appendChild(option);
-                } else {
-                    // Create a new option element
-                    let option = document.createElement('option');
-                    option.value = 'Belum ada Kategori'; // Set the value to the category ID
-                    option.textContent = 'Belum ada Kategori'; // Set the display text to the category name
+                        // Append the option to the select element
+                        categorySelect.appendChild(option);
+                    } else {
+                        // Create a new option element
+                        let option = document.createElement('option');
+                        option.value = 'Belum ada Kategori'; // Set the value to the category ID
+                        option.textContent =
+                        'Belum ada Kategori'; // Set the display text to the category name
 
-                    // Append the option to the select element
-                    categorySelect.appendChild(option);
-                }
-            });
+                        // Append the option to the select element
+                        categorySelect.appendChild(option);
+                    }
+                });
+            }
 
 
             // Populate the select element with options
@@ -400,11 +409,13 @@
 
             // Fungsi untuk memuat kategori ke dalam tabel
             const loadCategories = () => {
-                $('#categoriesBody').empty(); // Clear the current table body
+                $('#categoriesBody').empty(); // Bersihkan konten tabel sebelumnya
 
-                // Populate the table with existing data
-                categoriesData.forEach((category, index) => {
-                    $('#categoriesBody').append(`
+                // Periksa apakah ada data di categoriesData
+                if (categoriesData != null) {
+                    // Jika data tersedia, tambahkan setiap kategori ke dalam tabel
+                    categoriesData.forEach((category, index) => {
+                        $('#categoriesBody').append(`
                 <tr>
                     <td>${index + 1}</td>
                     <td>${category.name}</td>
@@ -420,10 +431,17 @@
                     </td>
                 </tr>
             `);
-                });
+                    });
+                } else {
+                    // Jika tidak ada data, tambahkan baris placeholder
+                    $('#categoriesBody').append(`
+            <tr>
+                <td colspan="3" class="text-center">Belum ada jenjang</td>
+            </tr>
+        `);
+                }
             };
 
-            // Load categories on page load
             loadCategories();
 
             $('#kelasForm').on('submit', function(e) {
@@ -444,7 +462,6 @@
                     contentType: false, // Mencegah jQuery menetapkan konten
                     success: function(response) {
                         gOverlay.hide();
-                        console.log(response);
                         // Lakukan sesuatu setelah berhasil
                         Swal.fire('Sukses!', response.message, 'success');
                         // Reload halaman atau arahkan ke halaman lain jika diperlukan
@@ -512,7 +529,7 @@
 
             $('#tambahJenjang').on('click', function(event) {
                 event.preventDefault();
-
+                console.log("klik");
                 const levelInput = $('#levelInput');
                 const level = levelInput.val().trim();
 

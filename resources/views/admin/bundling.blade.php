@@ -60,27 +60,35 @@
         </div>
 
         <div id="coursesContainer" class="row gx-2 gy-0">
-            @if ($pagination ?? false) {{-- Jika ada pagination --}}
-                @foreach ($bundles['data'] as $item)
-                    {{-- Akses data dari bundles['data'] --}}
-                    <div class="col-lg-3 col-md-4 col-6">
-                        <a href="{{ route('detail-bundling', ['id' => $item['id']]) }}" class="text-decoration-none">
-                            <div class="card bundle-card shadow-sm" style="width: 100%;">
-                                <img src="{{ $item['thumbnail_image'] }}" class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <div class="header-card d-flex justify-content-between">
-                                        <p class="ml-auto fs-6 price">Rp{{ number_format($item['price'], 0, ',', '.') }}</p>
+            @if ($bundles['data'])
+                @if ($pagination ?? false) {{-- Jika ada pagination --}}
+                    @foreach ($bundles['data'] as $item)
+                        {{-- Akses data dari bundles['data'] --}}
+                        <div class="col-lg-3 col-md-4 col-6">
+                            <a href="{{ route('detail-bundling', ['id' => $item['id']]) }}" class="text-decoration-none">
+                                <div class="card bundle-card shadow-sm" style="width: 100%;">
+                                    <img src="{{ $item['thumbnail_image'] }}" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <div class="header-card d-flex justify-content-between">
+                                            <p class="ml-auto fs-6 price">Rp{{ number_format($item['price'], 0, ',', '.') }}
+                                            </p>
+                                        </div>
+                                        <h5 class="card-title">{{ $item['name'] }}</h5>
+                                        <p class="card-text">{{ Str::limit($item['description'], 20) }}</p>
                                     </div>
-                                    <h5 class="card-title">{{ $item['name'] }}</h5>
-                                    <p class="card-text">{{ Str::limit($item['description'],20) }}</p>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
+                            </a>
+                        </div>
+                    @endforeach
+                @endif
             @else
-                {{-- Jika tidak ada pagination --}}
-                @foreach ($bundles as $item)
+                <div class="col-12 text-center">
+                    <h4>Data kelas kosong</h4>
+                </div>
+            @endif
+            {{-- Jika tidak ada pagination --}}
+            @if ($bundles['data'] != null)
+                @foreach ($bundles['data'] as $item)
                     <div class="col-lg-3 col-md-4 col-6">
                         <a href="{{ route('detail-bundling', ['id' => $item['id']]) }}" class="text-decoration-none">
                             <div class="card bundle-card shadow-sm" style="width: 100%;">

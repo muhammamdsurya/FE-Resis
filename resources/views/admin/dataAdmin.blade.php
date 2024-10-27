@@ -78,11 +78,11 @@
                 <table class="table table-hover table-striped table-bordered">
                     <thead class="table-primary">
                         <tr>
-                            <th>Nama</th>
+                            <th>Name</th>
                             <th>Email</th>
-                            <th>Tipe</th>
-                            <th>Dibuat</th>
-                            <th>Aksi</th>
+                            <th>Type</th>
+                            <th>Created</th>
+                            <th>Act</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -95,7 +95,7 @@
                                 <td>{{ \Carbon\Carbon::parse($admin->created_at)->format('d F Y, H:i') }}</td>
                                 <td>
                                     @if ($type === 'super')
-                                        <button class="btn btn-danger btn-sm me-2" data-id="{{ $admin->id }}">
+                                        <button class="btn btn-danger btn-sm me-2 delete-btn" data-id="{{ $admin->id }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     @endif

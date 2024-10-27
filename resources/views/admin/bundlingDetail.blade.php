@@ -123,10 +123,15 @@
                                 <div class="col-md-8 col-8">
                                     <div class="form-floating">
                                         <select class="form-control" id="bundleSelect" name="bundleSelect[]">
-                                            @foreach ($courses as $row)
-                                                <option value="{{ $row['id'] }}">{{ $row['name'] }}
-                                                </option>
-                                            @endforeach
+                                            @if ($courses != null)
+
+
+                                                @foreach ($courses as $row)
+                                                    <option value="{{ $row['id'] }}">{{ $row['name'] }}
+                                                    </option>
+                                                @endforeach
+
+                                            @endif
                                         </select>
                                         <label for="bundleSelect">Pilih Kelas</label>
                                     </div>
@@ -151,7 +156,6 @@
                                             <td colspan="2" class="text-center">Tidak ada kelas tersedia.</td>
                                         </tr>
                                     @else
-
                                         @foreach ($courseDetails as $item)
                                             <tr>
                                                 <td>{{ $item['course']['name'] ?? 'Unknown Course' }}</td>

@@ -39,34 +39,40 @@
 
         <div class="container" data-aos="fade-up" data-aos-delay="100">
             <div class="row gx-2 gy-4">
-                @foreach ($bundling->data as $bundling)
-                    <div class="col-lg-3 col-md-4 col-6">
-                        <a href="{{ route('detail.bundling', ['courseBundleId' => $bundling->id]) }}">
-                            <div class="card h-100 shadow border-0 position-relative"
-                                style="border-radius: 15px; overflow: hidden;">
-                                <img src="{{ $bundling->thumbnail_image }}" class="card-img-top" alt="..."
-                                    style="height: 150px; object-fit: cover;">
-                                <div class="card-body">
-                                    <div class="header-card d-flex justify-content-between mb-3">
-                                        <h6 class="text-success fw-bold mb-3">Rp
-                                            {{ number_format($bundling->price, 0, ',', '.') }}</h6>
+                @if ($bundling->data)
+                    @foreach ($bundling->data as $bundling)
+                        <div class="col-lg-3 col-md-4 col-6">
+                            <a href="{{ route('detail.bundling', ['courseBundleId' => $bundling->id]) }}">
+                                <div class="card h-100 shadow border-0 position-relative"
+                                    style="border-radius: 15px; overflow: hidden;">
+                                    <img src="{{ $bundling->thumbnail_image }}" class="card-img-top" alt="..."
+                                        style="height: 150px; object-fit: cover;">
+                                    <div class="card-body">
+                                        <div class="header-card d-flex justify-content-between mb-3">
+                                            <h6 class="text-success fw-bold mb-3">Rp
+                                                {{ number_format($bundling->price, 0, ',', '.') }}</h6>
+                                        </div>
+
+                                        <h5 class="card-title fw-bold text-dark">{{ $bundling->name }}</h5>
+
+                                        <p class="card-text text-muted">{{ Str::limit($bundling->description, 50) }}</p>
                                     </div>
 
-                                    <h5 class="card-title fw-bold text-dark">{{ $bundling->name }}</h5>
-
-                                    <p class="card-text text-muted">{{ Str::limit($bundling->description, 50) }}</p>
-                                </div>
-
-                                <!-- Dark overlay on hover -->
-                                <div class="overlay d-flex align-items-center justify-content-center">
-                                    <div class="text-center">
-                                        <p class="text-white fw-bold fs-5">Lihat Detail</p>
+                                    <!-- Dark overlay on hover -->
+                                    <div class="overlay d-flex align-items-center justify-content-center">
+                                        <div class="text-center">
+                                            <p class="text-white fw-bold fs-5">Lihat Detail</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="container text-center">
+                        <h4 class="text-dark">Belum ada paket bundling</h4>
                     </div>
-                @endforeach
+                @endif
 
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
@@ -92,7 +98,8 @@
                         <!-- Next Button -->
                         @if ($pagination->page < $pagination->total_page)
                             <li class="page-item">
-                                <a class="page-link" href="{{ route('bundling', ['page' => $pagination->page + 1]) }}">Next</a>
+                                <a class="page-link"
+                                    href="{{ route('bundling', ['page' => $pagination->page + 1]) }}">Next</a>
                             </li>
                         @else
                             <li class="page-item disabled">
