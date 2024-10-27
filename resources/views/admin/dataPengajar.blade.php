@@ -4,16 +4,14 @@
 @section('content')
     <style>
         .image-container,
-        .image-container-add
-        {
+        .image-container-add {
             position: relative;
             display: inline-block;
 
         }
 
         .image-container img,
-        .image-container-add img
-        {
+        .image-container-add img {
             width: 100%;
             height: 50% !important;
             border-radius: 10px;
@@ -68,11 +66,12 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="registrationForm" method="POST" action="{{ route('admin.dataInstructor.regis') }}" enctype="multipart/form-data">
+                            <form id="registrationForm" method="POST" action="{{ route('admin.dataInstructor.regis') }}"
+                                enctype="multipart/form-data">
                                 @csrf
                                 <!-- Image Section -->
                                 <div class="image-container-add text-center mb-4 cursor-pointer">
-                                    <img src="{{asset('assets/img/testimonials/profile.jpg')}}" alt="upload gambar"
+                                    <img src="{{ asset('assets/img/testimonials/profile.jpg') }}" alt="upload gambar"
                                         class="img-fluid rounded shadow image-preview cursor-pointer" id="imagePreview">
                                     <div class="overlay">Ganti Gambar</div>
                                 </div>
@@ -141,31 +140,38 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data admin akan ditampilkan disini -->
-                        @foreach ($dataInstructor as $instructor)
+                        <!-- Data instruktur akan ditampilkan disini -->
+                        @if ($dataInstructor != null)
+                            @foreach ($dataInstructor as $instructor)
+                                <tr>
+                                    <td>{{ $instructor->name }}</td>
+                                    <td>{{ $instructor->email }}</td>
+                                    <td>{{ $instructor->education }}</td>
+                                    <td>{{ $instructor->experience }}</td>
+                                    <td class="d-flex justify-content-center">
+                                        @if ($type === 'super')
+                                            <div class="d-flex justify-content-center">
+                                                <!-- Delete Button -->
+                                                <button class="btn btn-danger btn-sm me-2 delete-btn"
+                                                    data-id="{{ $instructor->id }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                <!-- Edit Button -->
+                                                <button class="btn btn-success btn-sm edit-btn"
+                                                    data-id="{{ $instructor->id }}" data-bs-toggle="modal"
+                                                    data-bs-target="#modal-{{ $instructor->id }}">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </div>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
                             <tr>
-                                <td>{{ $instructor->name }}</td>
-                                <td>{{ $instructor->email }}</td>
-                                <td>{{ $instructor->education }}</td>
-                                <td>{{ $instructor->experience }}</td>
-                                <td class="d-flex justify-content-center">
-                                    @if ($type === 'super')
-                                        <div class="d-flex justify-content-center">
-                                            <!-- Delete Button -->
-                                            <button class="btn btn-danger btn-sm me-2 delete-btn"
-                                                data-id="{{ $instructor->id }}">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                            <!-- Edit Button -->
-                                            <button class="btn btn-success btn-sm edit-btn" data-id="{{ $instructor->id }}"
-                                                data-bs-toggle="modal" data-bs-target="#modal-{{ $instructor->id }}">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                        </div>
-                                    @endif
-                                </td>
+                                <td colspan="3" class="text-center">Belum ada instruktur</td>
                             </tr>
-                        @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -345,7 +351,7 @@
                     createOverlay("Proses...");
                     $.ajax({
                         url: '/admin/data-pengajar/' +
-                            instructorId, // Misal menggunakan route yang sesuai
+                            instructorId + '/delete', // Misal menggunakan route yang sesuai
                         type: 'DELETE',
                         headers: {
                             'X-CSRF-TOKEN': token

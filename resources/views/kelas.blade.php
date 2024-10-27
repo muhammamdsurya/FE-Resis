@@ -76,7 +76,9 @@
                             </div>
                         @endforeach
                     @else
-                        <p>Belum ada Kelas</p>
+                        <div class="container text-center">
+                            <h4 class="text-dark">Belum ada Kelas</h4>
+                        </div>
                     @endif
                 @else
                     @foreach ($courses as $course)

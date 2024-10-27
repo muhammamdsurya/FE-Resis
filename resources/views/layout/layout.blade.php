@@ -88,11 +88,6 @@
     <script src="{{ asset('assets/js/midtrans_snap.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- AdminLTE App -->
-    <!-- summernote -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
-
-
 
 </body>
 
