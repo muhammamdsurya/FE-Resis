@@ -169,7 +169,7 @@
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="3" class="text-center">Belum ada instruktur</td>
+                                <td colspan="5" class="text-center">Belum ada data</td>
                             </tr>
                         @endif
                     </tbody>
@@ -213,63 +213,69 @@
         </nav>
     </div>
 
-    @foreach ($dataInstructor as $instructor)
-        <!-- Modal with unique ID for each instructor -->
-        <div class="modal fade" id="modal-{{ $instructor->id }}" tabindex="-1"
-            aria-labelledby="modalLabel{{ $instructor->id }}" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalLabel{{ $instructor->id }}">Edit Instruktur</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{{ route('admin.dataPengajar.edit', ['id' => $instructor->id]) }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" class="form-control" id="id" name="id"
-                                value="{{ $instructor->id }}">
-                            <!-- Image Section -->
-                            <div class="image-container text-center mb-4" data-id="{{ $instructor->id }}">
-                                <img src="{{ $instructor->photo_profile }}" alt="{{ $instructor->name }}"
-                                    class="img-fluid rounded shadow image-preview"
-                                    id="imagePreview{{ $instructor->id }}">
-                                <div class="overlay">Ganti Gambar</div>
-                            </div>
-                            <input type="file" id="imageUpload{{ $instructor->id }}" name="image"
-                                style="display: none;" accept="image/*">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-12 mb-3">
-                                    <label for="fullName" class="form-label">Full name</label>
-                                    <input type="text" class="form-control" id="fullName" name="full_name"
-                                        value="{{ $instructor->name }}" readonly>
+    @if ($dataInstructor)
+
+
+        @foreach ($dataInstructor as $instructor)
+            <!-- Modal with unique ID for each instructor -->
+            <div class="modal fade" id="modal-{{ $instructor->id }}" tabindex="-1"
+                aria-labelledby="modalLabel{{ $instructor->id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLabel{{ $instructor->id }}">Edit Instruktur</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ route('admin.dataPengajar.edit', ['id' => $instructor->id]) }}"
+                                method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" class="form-control" id="id" name="id"
+                                    value="{{ $instructor->id }}">
+                                <!-- Image Section -->
+                                <div class="image-container text-center mb-4" data-id="{{ $instructor->id }}">
+                                    <img src="{{ $instructor->photo_profile }}" alt="{{ $instructor->name }}"
+                                        class="img-fluid rounded shadow image-preview"
+                                        id="imagePreview{{ $instructor->id }}">
+                                    <div class="overlay">Ganti Gambar</div>
                                 </div>
-                                <div class="col-lg-6 col-md-12 mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email"
-                                        value="{{ $instructor->email }}" readonly>
+                                <input type="file" id="imageUpload{{ $instructor->id }}" name="image"
+                                    style="display: none;" accept="image/*">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-12 mb-3">
+                                        <label for="fullName" class="form-label">Full name</label>
+                                        <input type="text" class="form-control" id="fullName" name="full_name"
+                                            value="{{ $instructor->name }}" readonly>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12 mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email"
+                                            value="{{ $instructor->email }}" readonly>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12 mb-3">
+                                        <label for="education" class="form-label">Education</label>
+                                        <input type="text" class="form-control" id="education" name="education"
+                                            value="{{ $instructor->education }}">
+                                    </div>
+                                    <div class="col-lg-6 col-md-12 mb-3">
+                                        <label for="experience" class="form-label">Experience</label>
+                                        <input type="text" class="form-control" id="experience" name="experience"
+                                            value="{{ $instructor->experience }}">
+                                    </div>
                                 </div>
-                                <div class="col-lg-6 col-md-12 mb-3">
-                                    <label for="education" class="form-label">Education</label>
-                                    <input type="text" class="form-control" id="education" name="education"
-                                        value="{{ $instructor->education }}">
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Tutup</button>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
                                 </div>
-                                <div class="col-lg-6 col-md-12 mb-3">
-                                    <label for="experience" class="form-label">Experience</label>
-                                    <input type="text" class="form-control" id="experience" name="experience"
-                                        value="{{ $instructor->experience }}">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    @endforeach
+        @endforeach
+    @endif
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

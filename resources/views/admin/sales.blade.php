@@ -25,20 +25,26 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($dataSales as $sale)
+                        @if ($dataSales)
+                            @foreach ($dataSales as $sale)
+                                <tr>
+                                    <td>{{ $sale->name }}</td>
+                                    <td>{{ $sale->transaction_type }}</td>
+                                    <td>{{ $sale->product_name }}</td>
+                                    <td>{{ number_format($sale->course_price, 0, ',', '.') }}</td>
+                                    <td>{{ number_format($sale->transaction_fee, 0, ',', '.') }}</td>
+                                    <td>{{ number_format($sale->tax, 0, ',', '.') }}</td>
+                                    <td>{{ number_format($sale->total_amount, 0, ',', '.') }}</td>
+                                    <td>{{ $sale->payment_status }}</td>
+                                    <td>{{ $sale->payment_type }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($sale->created_at)->format('d F Y, H:i') }}</td>
+                                </tr>
+                            @endforeach
+                            @else
                             <tr>
-                                <td>{{ $sale->name }}</td>
-                                <td>{{ $sale->transaction_type }}</td>
-                                <td>{{ $sale->product_name }}</td>
-                                <td>{{ number_format($sale->course_price, 0, ',', '.') }}</td>
-                                <td>{{ number_format($sale->transaction_fee, 0, ',', '.') }}</td>
-                                <td>{{ number_format($sale->tax, 0, ',', '.') }}</td>
-                                <td>{{ number_format($sale->total_amount, 0, ',', '.') }}</td>
-                                <td>{{ $sale->payment_status }}</td>
-                                <td>{{ $sale->payment_type }}</td>
-                                <td>{{ \Carbon\Carbon::parse($sale->created_at)->format('d F Y, H:i') }}</td>
+                                <td colspan="10" style="text-align: center;">Belum ada data</td>
                             </tr>
-                        @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>

@@ -15,7 +15,6 @@
                 <li><a class="dropdown-item {{ $filter == 'pending' ? 'active' : '' }} " href="?filter=pending">Pending</a></li>
                 <li><a class="dropdown-item {{ $filter == 'settlement' ? 'active' : '' }}" href="?filter=settlement">Settlement</a></li>
                 <li><a class="dropdown-item {{ $filter == 'expire' ? 'active' : '' }}" href="?filter=expire">Expired</a></li>
-
             </ul>
         </div>
     </div>
@@ -99,14 +98,14 @@
                                     <a class="page-link">Previous</a>
                                 </li>
                             @endif
-            
+
                             <!-- Page Numbers -->
                             @for ($i = 1; $i <= $transactions->pagination->total_page; $i++)
                                 <li class="page-item {{ $transactions->pagination->page === $i ? 'active' : '' }}">
                                     <a class="page-link" href="/user/transaksi?filter= {{$filter}}&page={{$i}}">{{ $i }}</a>
                                 </li>
                             @endfor
-            
+
                             <!-- Next Button -->
                             @if ($transactions->pagination->page < $transactions->pagination->total_page)
                                 <li class="page-item">
