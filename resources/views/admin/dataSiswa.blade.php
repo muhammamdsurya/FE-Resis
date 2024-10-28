@@ -22,17 +22,23 @@
                     </thead>
                     <tbody>
                         <!-- Data admin akan ditampilkan disini -->
-                        @foreach ($dataSiswa as $siswa)
-                            <tr>
-                                <td>{{ $siswa->name }}</td>
-                                <td>{{ $siswa->email }}</td>
-                                <td>{{ $siswa->study_level }}</td>
-                                <td>{{ $siswa->institution }}</td>
-                                <td>{{ \Carbon\Carbon::parse($siswa->birth)->format('d F Y') }}</td>
-                                <td>{{ \Carbon\Carbon::parse($siswa->created_at)->format('d F Y, H:i') }}</td>
+                        @if ($dataSiswa)
+                            @foreach ($dataSiswa as $siswa)
+                                <tr>
+                                    <td>{{ $siswa->name }}</td>
+                                    <td>{{ $siswa->email }}</td>
+                                    <td>{{ $siswa->study_level }}</td>
+                                    <td>{{ $siswa->institution }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($siswa->birth)->format('d F Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($siswa->created_at)->format('d F Y, H:i') }}</td>
 
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="6" class="text-center">Belum ada data</td>
                             </tr>
-                        @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>

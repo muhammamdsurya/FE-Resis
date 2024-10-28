@@ -4,7 +4,7 @@
 @section('content')
 
 
-<style>
+    <style>
         .card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
@@ -52,33 +52,42 @@
             </div>
         </div>
 
-        <div id="coursesContainer" class="row g-2">
-            @if ($pagination ?? false) {{-- Jika ada pagination --}}
-                @foreach ($courses['data'] as $item)
-                    {{-- Akses data dari courses['data'] --}}
-                    <div class="col-lg-3 col-md-4 col-6">
-                        <a href="{{ route('instructor.detail-kelas', ['id' => $item['course']['id']]) }}" class="text-decoration-none">
-                            <div class="card shadow-sm border-light rounded">
-                                <img src="{{ $item['course']['thumbnail_image'] }}" class="card-img-top"
-                                    alt="{{ $item['course']['thumbnail_image'] }}">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <p class="fs-6 mb-0">
-                                            <i class="fas fa-star text-warning me-1"></i>{{ $item['course']['rating'] }}
-                                        </p>
-                                        <p class="fs-6 mb-0 text-muted">{{ $item['course_category']['name'] }}</p>
+        <div id="coursesContainer" class="row gx-2 gy-0">
+            @if ($courses['data'])
+                @if ($pagination ?? false) {{-- Jika ada pagination --}}
+                    @foreach ($courses['data'] as $item)
+                        {{-- Akses data dari courses['data'] --}}
+                        <div class="col-lg-3 col-md-4 col-6">
+                            <a href="{{ route('instructor.detail-kelas', ['id' => $item['course']['id']]) }}"
+                                class="text-decoration-none">
+                                <div class="card shadow-sm border-light rounded">
+                                    <img src="{{ $item['course']['thumbnail_image'] }}" class="card-img-top"
+                                        alt="{{ $item['course']['thumbnail_image'] }}">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <p class="fs-6 mb-0">
+                                                <i class="fas fa-star text-warning me-1"></i>{{ $item['course']['rating'] }}
+                                            </p>
+                                            <p class="fs-6 mb-0 text-muted">{{ $item['course_category']['name'] }}</p>
+                                        </div>
+                                        <h5 class="card-title mt-2">{{ $item['course']['name'] }}</h5>
                                     </div>
-                                    <h5 class="card-title mt-2">{{ $item['course']['name'] }}</h5>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
+                            </a>
+                        </div>
+                    @endforeach
+                @endif
             @else
-                {{-- Jika tidak ada pagination --}}
+                <div class="col-12 text-center">
+                    <h4>Data kelas kosong</h4>
+                </div>
+            @endif
+            {{-- Jika tidak ada pagination --}}
+            @if ($courses['data'] != null)
                 @foreach ($courses as $item)
                     <div class="col-lg-3 col-md-4 col-6">
-                        <a href="{{ route('instructor.detail-kelas', ['id' => $item['id']]) }}" class="text-decoration-none">
+                        <a href="{{ route('instructor.detail-kelas', ['id' => $item['id']]) }}"
+                            class="text-decoration-none">
                             <div class="card shadow-sm border-light rounded">
                                 <img src="{{ asset('assets/img/values-1.png') }}" class="card-img-top"
                                     alt="{{ $item['name'] }}" style="height: 200px; object-fit: cover;">
@@ -118,7 +127,8 @@
                     <!-- Page Numbers -->
                     @for ($i = 1; $i <= $pagination['total_page']; $i++)
                         <li class="page-item {{ $pagination['page'] == $i ? 'active' : '' }}">
-                            <a class="page-link" href="{{ route('instructor.kelas', ['page' => $i]) }}">{{ $i }}</a>
+                            <a class="page-link"
+                                href="{{ route('instructor.kelas', ['page' => $i]) }}">{{ $i }}</a>
                         </li>
                     @endfor
 
@@ -137,4 +147,4 @@
             </nav>
         @endif
 
-@endsection
+    @endsection

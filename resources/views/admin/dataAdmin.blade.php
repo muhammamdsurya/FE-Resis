@@ -87,6 +87,7 @@
                     </thead>
                     <tbody>
                         <!-- Data admin akan ditampilkan disini -->
+                        @if ($dataAdmin)
                         @foreach ($dataAdmin as $admin)
                             <tr>
                                 <td>{{ $admin->name }}</td>
@@ -102,6 +103,11 @@
                                 </td>
                             </tr>
                         @endforeach
+                        @else
+                        <tr>
+                            <td colspan="5" style="text-align: center;">Belum ada data</td>
+                        </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>
