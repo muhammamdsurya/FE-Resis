@@ -37,7 +37,7 @@
                                     <td>{{ number_format($sale->total_amount, 0, ',', '.') }}</td>
                                     <td>{{ $sale->payment_status }}</td>
                                     <td>{{ $sale->payment_type }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($sale->created_at)->format('d F Y, H:i') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($sale->created_at)->timezone('Asia/Jakarta')->format('d F Y, H:i') }}</td>
                                 </tr>
                             @endforeach
                             @else
