@@ -189,7 +189,6 @@
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <input type="text" class="form-control" id="levelInput" placeholder="Masukan Jenjang"
                                     name="name">
-
                                 <button type="button" id="tambahJenjang" class="btn btn-primary ml-2">
                                     <i class="fas fa-plus p-1"></i>
                                 </button>
@@ -356,8 +355,6 @@
             if (categoriesData != null) {
                 categoriesData.forEach(category => {
                     if (category) {
-
-
                         // Create a new option element
                         let option = document.createElement('option');
                         option.value = category.id; // Set the value to the category ID
@@ -370,7 +367,7 @@
                         let option = document.createElement('option');
                         option.value = 'Belum ada Kategori'; // Set the value to the category ID
                         option.textContent =
-                        'Belum ada Kategori'; // Set the display text to the category name
+                            'Belum ada Kategori'; // Set the display text to the category name
 
                         // Append the option to the select element
                         categorySelect.appendChild(option);
@@ -378,34 +375,37 @@
                 });
             }
 
-
             // Populate the select element with options
             // Assuming `instructorsData` is an array of objects, each containing an 'instructor' object.
-            instructorsData.forEach(item => {
-                const instructor = item.instructor; // Access the 'instructor' object inside the item
+            if (instructorsData != null) {
 
-                // Check if the instructor object exists
-                if (instructor) {
-                    // Create a new option element
-                    let option = document.createElement('option');
-                    option.value = instructor.id; // Set the value to the instructor ID
-                    option.textContent = item
-                        .full_name; // Set the display text to the instructor's full name
 
-                    // Append the option to the select element
-                    instructorSelect.appendChild(option);
+                instructorsData.forEach(item => {
+                    const instructor = item.instructor; // Access the 'instructor' object inside the item
 
-                } else {
-                    // Create a new option element
-                    let option = document.createElement('option');
-                    option.value = 'Belum ada Instruktur'; // Set the value to the instructor ID
-                    option.textContent =
-                        'Belum ada Instruktur'; // Set the display text to the instructor's full name
+                    // Check if the instructor object exists
+                    if (instructor) {
+                        // Create a new option element
+                        let option = document.createElement('option');
+                        option.value = instructor.id; // Set the value to the instructor ID
+                        option.textContent = item
+                            .full_name; // Set the display text to the instructor's full name
 
-                    // Append the option to the select element
-                    instructorSelect.appendChild(option);
-                }
-            });
+                        // Append the option to the select element
+                        instructorSelect.appendChild(option);
+
+                    } else {
+                        // Create a new option element
+                        let option = document.createElement('option');
+                        option.value = 'Belum ada Instruktur'; // Set the value to the instructor ID
+                        option.textContent =
+                            'Belum ada Instruktur'; // Set the display text to the instructor's full name
+
+                        // Append the option to the select element
+                        instructorSelect.appendChild(option);
+                    }
+                });
+            }
 
             // Fungsi untuk memuat kategori ke dalam tabel
             const loadCategories = () => {
