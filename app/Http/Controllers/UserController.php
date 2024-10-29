@@ -99,8 +99,10 @@ class UserController extends Controller
     public function formatDateToView($input)
     {
         $date = new DateTime($input, new DateTimeZone('UTC'));
+        $date->setTimezone(new DateTimeZone('Asia/Jakarta')); // Ubah ke UTC+7
         return $date->format('Y-m-d'); // Format ke YYYY-MM-DD
     }
+
     public function profile()
     {
         $title = 'Profile';
@@ -194,7 +196,7 @@ class UserController extends Controller
 
 
         $courseForums = $this->courseForumCtrl->courseForums($courseId, $page);
-        if(isset($courseForums->data)){
+        if (isset($courseForums->data)) {
             foreach ($courseForums->data as $courseForum) {
                 $courseForum->course_forum_reply = $this->courseForumCtrl->courseForumsReply($courseId, $courseForum->course_forum_question->id) ?? [];
 
@@ -306,25 +308,25 @@ class UserController extends Controller
                     $courseContentQuiz = $this->userCourseCtrl->userCourseContentQuiz($userCourse->id, $selectedCourseContentId);
                     $courseContent->quiz = $courseContentQuiz;
 
-                   if($courseContent->quiz->questions){
-                    foreach ($courseContent->quiz->questions as $index => $question) {
-                        $question->index = $index;
-                        foreach ($question->Options as $indexOption => $option) {
-                            $question->Options[$indexOption] = json_decode(json_encode([
-                                'name' => $option,
-                                'index' => $indexOption
-                            ]));
+                    if ($courseContent->quiz->questions) {
+                        foreach ($courseContent->quiz->questions as $index => $question) {
+                            $question->index = $index;
+                            foreach ($question->Options as $indexOption => $option) {
+                                $question->Options[$indexOption] = json_decode(json_encode([
+                                    'name' => $option,
+                                    'index' => $indexOption
+                                ]));
+                            }
+
+                            //Harus di random setelah index dicatat
+                            shuffle($question->Options);
                         }
 
                         //Harus di random setelah index dicatat
-                        shuffle($question->Options);
+                        shuffle($courseContent->quiz->questions);
+
+                        $courseContent->quiz->questionTotal =  count($courseContent->quiz->questions);
                     }
-
-                    //Harus di random setelah index dicatat
-                    shuffle($courseContent->quiz->questions);
-
-                    $courseContent->quiz->questionTotal =  count($courseContent->quiz->questions);
-                   }
                 }
             }
         }

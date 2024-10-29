@@ -93,7 +93,7 @@
                                 <td>{{ $admin->name }}</td>
                                 <td>{{ $admin->email }}</td>
                                 <td>{{ $admin->type }}</td>
-                                <td>{{ \Carbon\Carbon::parse($admin->created_at)->format('d F Y, H:i') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($admin->created_at)->timezone('Asia/Jakarta')->format('d F Y, H:i') }}</td>
                                 <td>
                                     @if ($type === 'super')
                                         <button class="btn btn-danger btn-sm me-2 delete-btn" data-id="{{ $admin->id }}">

@@ -29,8 +29,8 @@
                                     <td>{{ $siswa->email }}</td>
                                     <td>{{ $siswa->study_level }}</td>
                                     <td>{{ $siswa->institution }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($siswa->birth)->format('d F Y') }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($siswa->created_at)->format('d F Y, H:i') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($siswa->birth)->timezone('Asia/Jakarta')->format('d F Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($siswa->created_at)->timezone('Asia/Jakarta')->format('d F Y, H:i') }}</td>
 
                                 </tr>
                             @endforeach
