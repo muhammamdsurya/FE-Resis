@@ -2,7 +2,7 @@
 @section('title', $title)
 
 @section('content')
-    <div class="container ">
+    <div class="container pb-3">
         <!-- Profile Image Section -->
         <div class="image text-center mb-4">
             <img src="{{ $photo_profile }}" alt="Profile Picture" class="rounded-circle shadow" width="200rem" height="200rem">
@@ -64,8 +64,6 @@
 
 
     </div>
-
-
 
 
     <script>

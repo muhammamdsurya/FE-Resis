@@ -147,7 +147,7 @@
 
                 // Lakukan validasi
                 if (!email) {
-                    alert('Email harus diisi!');
+                    Swal.fire('Gagal!', 'email harus diisi', 'error');
                     return;
                 }
 

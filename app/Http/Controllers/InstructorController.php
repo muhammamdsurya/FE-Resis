@@ -73,6 +73,10 @@ class InstructorController extends Controller
         $title = 'Dashboard';
         $courses = $this->fetchApiData($this->apiUrl . 'courses');
 
+        $totalUsersData = $this->fetchApiData($this->apiUrl . 'statistics/users/count');
+        $totalUsers = $totalUsersData['total_users'] ?? 0;
+
+
 
         // Lakukan operasi lain yang diperlukan
 
@@ -80,6 +84,7 @@ class InstructorController extends Controller
             "title" => $title,
             "id" => $this->user['id'],
             "courses" => $courses,
+            "users" => $totalUsers,
             "full_name" => $this->user['full_name'],
         ]);
     }

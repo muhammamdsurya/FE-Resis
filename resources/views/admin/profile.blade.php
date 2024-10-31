@@ -57,7 +57,7 @@
 
                 // Lakukan validasi
                 if (!email) {
-                    alert('Email harus diisi!');
+                    Swal.fire('Gagal!', 'Email harus diisi', 'error');
                     return;
                 }
 
@@ -80,11 +80,11 @@
                     })
                     .then(data => {
                         // Tampilkan pesan sukses
-                        alert(data.message); // Ubah ini untuk menggunakan SweetAlert atau cara lain
+                        Swal.fire('Sukses!', data.message, 'success');
                     })
                     .catch(error => {
                         // Tangani error
-                        alert(error.message); // Ubah ini untuk menggunakan SweetAlert atau cara lain
+                        Swal.fire('Sukses!', error.message, 'success');
                     });
             });
 
