@@ -3,26 +3,31 @@
 @section('content')
     <div class="login">
         <div class="container vh-100 d-flex justify-content-center align-items-center">
-            <div class="card shadow w-50 p-4">
-                <h4 class="text-center mb-2">Reset Password</h4>
-                <hr class="mb-4">
-                <form id="resetPasswordForm" onsubmit="return validatePassword()">
-                    <div class="mb-3 position-relative">
-                        <label for="newPassword" class="form-label">Password Baru</label>
-                        <input type="password" class="form-control" id="newPassword" name="new_password" required>
-                    </div>
+            <!-- Memastikan container memenuhi tinggi layar -->
+            <div class="card shadow" style="width: 400px;"> <!-- Mengatur lebar card -->
+                <div class="card-body">
+                    <h5 class="card-title text-center mb-2">Reset Password</h5>
+                    <hr class="mb-4">
+                    <form id="resetPasswordForm" onsubmit="return validatePassword()">
+                        <div class="mb-3 position-relative">
+                            <label for="newPassword" class="form-label">Password Baru</label>
+                            <input type="password" class="form-control" id="newPassword" name="new_password" required>
+                        </div>
 
-                    <div class="mb-3 position-relative">
+                        <div class="mb-3 position-relative">
 
-                        <label for="confirmPassword" class="form-label">Konfirmasi Password Baru</label>
-                        <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
-                    </div>
-                    <p class="small text-muted">Gunakan minimal 8 karakter dengan kombinasi huruf, angka & karakter khusus.
-                    </p>
+                            <label for="confirmPassword" class="form-label">Konfirmasi Password Baru</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirm_password"
+                                required>
+                        </div>
+                        <p class="small text-muted">Gunakan minimal 8 karakter dengan kombinasi huruf, angka & karakter
+                            khusus.
+                        </p>
 
 
-                    <button type="submit" class="btn btn-primary w-100">Reset Password</button>
-                </form>
+                        <button type="submit" class="btn btn-primary w-100">Reset Password</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -36,12 +41,13 @@
             const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
             if (!passwordRegex.test(newPassword)) {
-                Swal.fire('Ooops!','Password harus minimal 8 karakter dengan kombinasi huruf, angka, dan karakter khusus.','error');
+                Swal.fire('Ooops!', 'Password harus minimal 8 karakter dengan kombinasi huruf, angka, dan karakter khusus.',
+                    'error');
                 return false;
             }
 
             if (newPassword !== confirmPassword) {
-                Swal.fire('Ooops!','Password tidak cocok','error');
+                Swal.fire('Ooops!', 'Password tidak cocok', 'error');
                 return false;
             }
 
