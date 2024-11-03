@@ -16,7 +16,7 @@
                             <h3 class="text-center mb-3">Admin Login</h3>
                             <!-- Display error message -->
                             @if (session('error'))
-                                <div  id="alert-message" class="alert alert-danger">
+                                <div id="alert-message" class="alert alert-danger">
                                     {{ session('error') }}
                                 </div>
                             @endif
@@ -41,6 +41,12 @@
                                 @enderror
                             </div>
 
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+
+                                <a href="{{ route('reset.password.public') }}" class="text-body link-primary">Lupa
+                                    Password?</a>
+                            </div>
+
                             <div class="text-center text-lg-start mt-4 pt-2">
                                 <button type="submit" class="btn btn-primary w-100">Login</button>
 
@@ -50,6 +56,4 @@
             </div>
         </div>
     </div>
-
-
 @endsection
