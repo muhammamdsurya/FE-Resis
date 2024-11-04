@@ -107,12 +107,16 @@ class AuthController extends Controller
 
         // Cek jika API mengembalikan sukses
         if ($response->successful()) {
-            $personId = $response->json('id');
-            // Simpan person_id ke sesi
-            session(['person_id' => $personId]);
+            if ($response->json('activated_at') != null) {
+                return redirect()->route('data.admin')->with('message', 'Data Berhasil Dipulihkan');
+            } else {
+                $personId = $response->json('id');
+                // Simpan person_id ke sesi
+                session(['person_id' => $personId]);
 
-            // Redirect ke halaman yang diinginkan
-            return redirect()->route('admin.data');
+                // Redirect ke halaman yang diinginkan
+                return redirect()->route('admin.data');
+            }
         } else {
             return redirect()->route('data.admin')->with('error', $response->body());
         }
@@ -262,31 +266,34 @@ class AuthController extends Controller
         $response = Http::withHeaders($headers)->post($api, $body);
 
         // Use the attach method for a multipart/form-data request
-
         // Cek jika API mengembalikan sukses
         if ($response->successful()) {
-            $personId = $response->json('id');
-            // Simpan person_id ke sesi
-            session(['person_id' => $personId]);
-            if ($request->hasFile('image')) {
-                // Use the attach method for a multipart/form-data request
-                $imageResponse = Http::withHeaders(['Cookie' => 'session=' . $apiSession])
-                    ->attach(
-                        'photo_profile',
-                        fopen($request->file('image')->getRealPath(), 'r'), // Open the file for reading
-                        $request->file('image')->getClientOriginalName() // Get the original filename
-                    )
-                    ->put($this->apiUrl . "instructors/" . $personId . "/photo_profile");
-
-                // Cek respons API
-                if ($imageResponse->successful()) {
-                    // Debugging: Print response body to see if image upload succeeded
-                    return redirect()->route('instructor.data')->with('success', 'Data dan photo berhasil ditambahkan.');
-                } else {
-                    return back()->withErrors(['error' => 'Data berhasil ditambah, tetapi gagal mengunggah photo.']);
-                }
+            if ($response->json('activated_at') != null) {
+                return back()->with('message', 'Data Berhasil Dipulihkan');
             } else {
-                return back()->with('error', $request->body());
+                $personId = $response->json('id');
+                // Simpan person_id ke sesi
+                session(['person_id' => $personId]);
+                if ($request->hasFile('image')) {
+                    // Use the attach method for a multipart/form-data request
+                    $imageResponse = Http::withHeaders(['Cookie' => 'session=' . $apiSession])
+                        ->attach(
+                            'photo_profile',
+                            fopen($request->file('image')->getRealPath(), 'r'), // Open the file for reading
+                            $request->file('image')->getClientOriginalName() // Get the original filename
+                        )
+                        ->put($this->apiUrl . "instructors/" . $personId . "/photo_profile");
+
+                    // Cek respons API
+                    if ($imageResponse->successful()) {
+                        // Debugging: Print response body to see if image upload succeeded
+                        return redirect()->route('instructor.data')->with('success', 'Data dan photo berhasil ditambahkan.');
+                    } else {
+                        return back()->withErrors(['error' => 'Data berhasil ditambah, tetapi gagal mengunggah photo.']);
+                    }
+                } else {
+                    return back()->with('error', 'Masukan foto profil terlebih dahulu');
+                }
             }
         } else {
             // Handle case where the bundle data update fails
