@@ -76,7 +76,7 @@
                                     <div class="overlay">Ganti Gambar</div>
                                 </div>
                                 <input type="file" id="imageUpload" name="image" style="display: none; cursor-pointer"
-                                    accept="image/*">
+                                    accept="image/*" >
 
                                 <!-- Name input -->
                                 <div class="form-floating mb-3">
@@ -334,8 +334,6 @@
                 reader.readAsDataURL(e.target.files[0]); // Membaca file yang dipilih
             });
         });
-
-
 
 
         $(document).on('click', '.delete-btn', function() {
