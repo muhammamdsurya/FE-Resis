@@ -112,10 +112,8 @@ class AuthController extends Controller
             } else {
                 $personId = $response->json('id');
                 // Simpan person_id ke sesi
-                session(['person_id' => $personId]);
-
                 // Redirect ke halaman yang diinginkan
-                return redirect()->route('admin.data');
+                return redirect()->route('admin.data', ['id' => $personId]);
             }
         } else {
             return redirect()->route('data.admin')->with('error', $response->body());
@@ -260,11 +258,9 @@ class AuthController extends Controller
             'full_name' => $request->full_name
         ];
 
-
         // Hit API users/auth/register
         $api = $this->apiUrl . 'instructors/auth/register';
         $response = Http::withHeaders($headers)->post($api, $body);
-
         // Use the attach method for a multipart/form-data request
         // Cek jika API mengembalikan sukses
         if ($response->successful()) {
@@ -273,7 +269,6 @@ class AuthController extends Controller
             } else {
                 $personId = $response->json('id');
                 // Simpan person_id ke sesi
-                session(['person_id' => $personId]);
                 if ($request->hasFile('image')) {
                     // Use the attach method for a multipart/form-data request
                     $imageResponse = Http::withHeaders(['Cookie' => 'session=' . $apiSession])
@@ -287,7 +282,7 @@ class AuthController extends Controller
                     // Cek respons API
                     if ($imageResponse->successful()) {
                         // Debugging: Print response body to see if image upload succeeded
-                        return redirect()->route('instructor.data')->with('success', 'Data dan photo berhasil ditambahkan.');
+                        return redirect()->route('instructor.data', ['personId' => $personId]);
                     } else {
                         return back()->withErrors(['error' => 'Data berhasil ditambah, tetapi gagal mengunggah photo.']);
                     }

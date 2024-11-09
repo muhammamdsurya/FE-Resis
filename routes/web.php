@@ -48,11 +48,10 @@ Route::get('/register', function () {
 // Grup rute untuk rute-rute yang terkait dengan admin
 Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     // data register
-    Route::get('/', [AdminController::class, 'completeData'])->name('admin.data');
+    Route::get('/complete-data/admin/{id}', [AdminController::class, 'completeData'])->name('admin.data');
     Route::post('/complete-data', [AdminController::class, 'completePost'])->name('complete.post.admin');
-    Route::get('/regis/data-pengajar', [AdminController::class, 'completeDataPengajar'])->name('instructor.data');
+    Route::get('/regis/data-pengajar/{personId}', [AdminController::class, 'completeDataPengajar'])->name('instructor.data');
     Route::post('/complete-data/pengajar', [AdminController::class, 'completePostPengajar'])->name('complete.post.pengajar');
-
 
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/dashboard/sales', [AdminController::class, 'getSalesData'])->name('admin.sales');
