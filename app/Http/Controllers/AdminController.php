@@ -426,6 +426,7 @@ class AdminController extends Controller
         } else {
             // Handle case where the bundle data update fails
             return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
+
         }
     }
 
