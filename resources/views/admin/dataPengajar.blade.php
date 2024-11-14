@@ -76,7 +76,7 @@
                                     <div class="overlay">Ganti Gambar</div>
                                 </div>
                                 <input type="file" id="imageUpload" name="image" style="display: none; cursor-pointer"
-                                    accept="image/*" >
+                                    accept="image/*">
 
                                 <!-- Name input -->
                                 <div class="form-floating mb-3">
@@ -146,22 +146,30 @@
                                 <tr>
                                     <td>{{ $instructor->name }}</td>
                                     <td>{{ $instructor->email }}</td>
-                                    <td>{{ $instructor->education }}</td>
-                                    <td>{{ $instructor->experience }}</td>
+                                    <td>{{ $instructor->education ?? '' }}</td>
+                                    <td>{{ $instructor->experience ?? '' }}</td>
                                     <td class="d-flex justify-content-center">
                                         @if ($type === 'super')
                                             <div class="d-flex justify-content-center">
                                                 <!-- Delete Button -->
-                                                <button class="btn btn-danger btn-sm me-2 delete-btn"
-                                                    data-id="{{ $instructor->id }}">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                                <!-- Edit Button -->
-                                                <button class="btn btn-success btn-sm edit-btn"
-                                                    data-id="{{ $instructor->id }}" data-bs-toggle="modal"
-                                                    data-bs-target="#modal-{{ $instructor->id }}">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
+                                                @if ($instructor->education && $instructor->experience)
+                                                    <button class="btn btn-danger btn-sm me-2 delete-btn"
+                                                        data-id="{{ $instructor->id }}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                    <!-- Edit Button -->
+                                                    <button class="btn btn-success btn-sm edit-btn"
+                                                        data-id="{{ $instructor->id }}" data-bs-toggle="modal"
+                                                        data-bs-target="#modal-{{ $instructor->id }}">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                @else
+                                                    <a href="{{ route('instructor.data' , ['personId' => $instructor->id]) }}"
+                                                        class="btn btn-warning btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                @endif
+
                                             </div>
                                         @endif
                                     </td>
@@ -215,7 +223,6 @@
 
     @if ($dataInstructor)
 
-
         @foreach ($dataInstructor as $instructor)
             <!-- Modal with unique ID for each instructor -->
             <div class="modal fade" id="modal-{{ $instructor->id }}" tabindex="-1"
@@ -256,12 +263,12 @@
                                     <div class="col-lg-6 col-md-12 mb-3">
                                         <label for="education" class="form-label">Education</label>
                                         <input type="text" class="form-control" id="education" name="education"
-                                            value="{{ $instructor->education }}">
+                                            value="{{ $instructor->education ?? '' }}">
                                     </div>
                                     <div class="col-lg-6 col-md-12 mb-3">
                                         <label for="experience" class="form-label">Experience</label>
                                         <input type="text" class="form-control" id="experience" name="experience"
-                                            value="{{ $instructor->experience }}">
+                                            value="{{ $instructor->experience ?? '' }}">
                                     </div>
                                 </div>
                                 <div class="modal-footer">

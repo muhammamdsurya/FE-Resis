@@ -78,14 +78,12 @@ class AdminController extends Controller
     }
 
     // route admin.data
-    public function completeData()
+    public function completeData($id)
     {
-        // Ambil person_id dari sesi
-        $personId = session('person_id');
 
         return view('admin.completeData', [
             "title" => 'Isi Data',
-            "id" => $personId, // Kirim person_id dari sesi
+            "id" => $id, // Kirim person_id dari sesi
             "full_name" => $this->user['full_name'],
         ]);
     }
@@ -103,7 +101,6 @@ class AdminController extends Controller
                 'person_id' => $request->id,
                 'type' => $request->type,
             ]);
-
 
             if ($response->successful()) {
                 // Jika permintaan berhasil, arahkan ke view dengan pesan sukses
@@ -125,10 +122,9 @@ class AdminController extends Controller
         }
     }
 
-    public function completeDataPengajar()
+    public function completeDataPengajar($personId)
     {
         // Ambil person_id dari sesi
-        $personId = session('person_id');
 
         return view('admin.completeDataPengajar', [
             "title" => 'Isi Data',
@@ -151,7 +147,6 @@ class AdminController extends Controller
                 'education' => $request->education,
                 'experience' => $request->experience,
             ]);
-
 
             if ($response->successful()) {
                 // Jika permintaan berhasil, arahkan ke view dengan pesan sukses
@@ -330,8 +325,10 @@ class AdminController extends Controller
     public function dataAdmin(Request $request)
     {
         $title = 'Data Admin';
+        $page = $request->input('page', 1); // Get the current page or default to 1
 
-        $dataAdmin = $this->fetchApiData($this->apiUrl . 'statistics/admins');
+
+        $dataAdmin = $this->fetchApiData($this->apiUrl . 'statistics/admins?page=' . $page);
         $detailData = $this->getDetailData();
 
         // Lakukan operasi lain yang diperlukan
@@ -429,6 +426,7 @@ class AdminController extends Controller
         } else {
             // Handle case where the bundle data update fails
             return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
+
         }
     }
 
@@ -442,10 +440,10 @@ class AdminController extends Controller
     public function dataPengajar(Request $request)
     {
         $title = 'Data Pengajar';
+        $page = $request->input('page', 1); // Get the current page or default to 1
 
         $detailData = $this->getDetailData();
-        $dataInstructor = $this->fetchApiData($this->apiUrl . 'statistics/instructors');
-
+        $dataInstructor = $this->fetchApiData($this->apiUrl . 'statistics/instructors?page=' . $page);
 
         return view('admin.dataPengajar', [
             "title" => $title,
@@ -463,7 +461,8 @@ class AdminController extends Controller
     {
 
         $title = 'Data Siswa';
-        $dataSiswa = $this->fetchApiData($this->apiUrl . 'statistics/users');
+        $page = $request->input('page', 1); // Get the current page or default to 1
+        $dataSiswa = $this->fetchApiData($this->apiUrl . 'statistics/users?page=' . $page);
 
         return view('admin.dataSiswa', [
             "title" => $title,

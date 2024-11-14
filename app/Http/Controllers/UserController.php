@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use GrahamCampbell\ResultType\Success;
 use Illuminate\Support\Facades\Http;
 
 
@@ -40,7 +41,6 @@ class UserController extends Controller
         $api = $this->apiUrl . 'users/auth/data/' . $id;
 
         $response = Http::withApiSession()->get($api);
-
 
         return $response->json();
     }

@@ -88,25 +88,34 @@
                     <tbody>
                         <!-- Data admin akan ditampilkan disini -->
                         @if ($dataAdmin)
-                        @foreach ($dataAdmin as $admin)
-                            <tr>
-                                <td>{{ $admin->name }}</td>
-                                <td>{{ $admin->email }}</td>
-                                <td>{{ $admin->type }}</td>
-                                <td>{{ \Carbon\Carbon::parse($admin->created_at)->timezone('Asia/Jakarta')->format('d F Y, H:i') }}</td>
-                                <td>
-                                    @if ($type === 'super')
-                                        <button class="btn btn-danger btn-sm me-2 delete-btn" data-id="{{ $admin->id }}">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
+                            @foreach ($dataAdmin as $admin)
+                                <tr>
+                                    <td>{{ $admin->name }}</td>
+                                    <td>{{ $admin->email }}</td>
+                                    <td>{{ $admin->type ?? '' }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($admin->created_at)->timezone('Asia/Jakarta')->format('d F Y, H:i') }}
+                                    </td>
+                                    <td>
+                                        @if ($type === 'super')
+                                            @if ($admin->type)
+                                                <button class="btn btn-danger btn-sm me-2 delete-btn"
+                                                    data-id="{{ $admin->id }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            @else
+                                                <a href="{{ route('admin.data', ['id' => $admin->id]) }}"
+                                                    class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            @endif
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
                         @else
-                        <tr>
-                            <td colspan="5" style="text-align: center;">Belum ada data</td>
-                        </tr>
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Belum ada data</td>
+                            </tr>
                         @endif
                     </tbody>
                 </table>
