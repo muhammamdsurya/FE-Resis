@@ -129,37 +129,37 @@ class AuthController extends Controller
         ]);
 
         // Kirim permintaan POST ke API login
-        $response = Http::withClientUserIP()->post($this->apiUrl . 'admin/auth/login', [
+        $response = Http::post($this->apiUrl . 'admin/auth/login', [
             'email' => $request->email,
             'password' => $request->password,
         ]);
 
-        $cookies = $response->cookies();
-        // Cek status respons dari API
+        // Periksa status respons dari API
         if ($response->successful()) {
-            // Jika berhasil, lakukan sesuatu (misalnya menyimpan token ke session)
-            $userData = $response->json(); // Ambil seluruh data dari respons JSON
+            // Ambil semua data dari respons JSON (jika diperlukan)
+            $userData = $response->json();
 
-            // get the cookies from the response
-            $cookies = $response->cookies();
-            Log::info('Login API Response Cookies: ', ['cookies' => $cookies]);
-            // get the session cookie
-            $sessionCookie = null;
-            foreach ($cookies as $cookie) {
-                if (strpos($cookie, 'session') !== false) {
-                    $sessionCookie = $cookie;
-                    break;
+            // Ambil header 'Set-Cookie' dari respons
+            $cookieHeader = $response->header('Set-Cookie');
+
+            if ($cookieHeader) {
+                Log::info('Set-Cookie Header:', ['cookie' => $cookieHeader]);
+
+                // Cari nilai cookie sesi (contoh cookie: session=ABC123; Path=/; Secure; HttpOnly)
+                if (preg_match('/session=([^;]+)/', $cookieHeader, $matches)) {
+                    $sessionValue = $matches[1];
+
+                    // Simpan sesi ke Laravel session
+                    session(['api_session' => $sessionValue]);
+
+                    Log::info('Session Saved:', ['api_session' => $sessionValue]);
+                } else {
+                    Log::warning('Session cookie not found in Set-Cookie header.');
                 }
+            } else {
+                Log::error('Set-Cookie header not found in API response.');
             }
 
-            if ($sessionCookie) {
-                // parse the cookie string
-                $parts = explode(';', $sessionCookie);
-                $sessionValue = explode('=', $parts[0])[1];
-
-                // set the session session to laravel session
-                session(['api_session' => $sessionValue]);
-            }
 
             // Validate the response structure
             $requiredFields = ['id', 'email', 'full_name', 'photo_profile', 'role', 'created_at', 'updated_at', 'activated_at'];
@@ -310,29 +310,30 @@ class AuthController extends Controller
             'password' => $request->password,
         ]);
         if ($response->successful()) {
-            // Jika berhasil, lakukan sesuatu (misalnya menyimpan token ke session)
-            $userData = $response->json(); // Ambil seluruh data dari respons JSON
+            // Ambil semua data dari respons JSON (jika diperlukan)
+            $userData = $response->json();
 
-            // get the cookies from the response
-            $cookies = $response->cookies();
-            Log::info('Login API Response Cookies: ', ['cookies' => $cookies]);
-            // get the session cookie
-            $sessionCookie = null;
-            foreach ($cookies as $cookie) {
-                if (strpos($cookie, 'session') !== false) {
-                    $sessionCookie = $cookie;
-                    break;
+            // Ambil header 'Set-Cookie' dari respons
+            $cookieHeader = $response->header('Set-Cookie');
+
+            if ($cookieHeader) {
+                Log::info('Set-Cookie Header:', ['cookie' => $cookieHeader]);
+
+                // Cari nilai cookie sesi (contoh cookie: session=ABC123; Path=/; Secure; HttpOnly)
+                if (preg_match('/session=([^;]+)/', $cookieHeader, $matches)) {
+                    $sessionValue = $matches[1];
+
+                    // Simpan sesi ke Laravel session
+                    session(['api_session' => $sessionValue]);
+
+                    Log::info('Session Saved:', ['api_session' => $sessionValue]);
+                } else {
+                    Log::warning('Session cookie not found in Set-Cookie header.');
                 }
+            } else {
+                Log::error('Set-Cookie header not found in API response.');
             }
 
-            if ($sessionCookie) {
-                // parse the cookie string
-                $parts = explode(';', $sessionCookie);
-                $sessionValue = explode('=', $parts[0])[1];
-
-                // set the session session to laravel session
-                session(['api_session' => $sessionValue . '=']);
-            }
 
             // Validate the response structure
             $requiredFields = ['id', 'email', 'full_name', 'photo_profile', 'role', 'created_at', 'updated_at', 'activated_at'];

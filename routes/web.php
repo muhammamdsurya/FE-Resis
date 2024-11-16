@@ -56,7 +56,6 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/dashboard/sales', [AdminController::class, 'getSalesData'])->name('admin.sales');
     Route::get('/dashboard/sales/month', [AdminController::class, 'getSalesMonth'])->name('admin.salesMonth');
-
     //course
     Route::get('/kelas', [AdminController::class, 'kelas'])->name('admin.kelas');
     Route::get('/diskusi', [UserController::class, 'diskusi'])->name('diskusi');
