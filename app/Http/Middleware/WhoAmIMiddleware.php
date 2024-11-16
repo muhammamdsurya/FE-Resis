@@ -4,9 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
+use Symfony\Component\HttpFoundation\Response;
 
 
 class WhoAmIMiddleware
@@ -22,7 +23,8 @@ class WhoAmIMiddleware
     {
 
         try {
-            $apiSession = session('api_session');
+            $apiSession = Session::get('api_session');
+            // dd($apiSession);
             if (!$apiSession) {
                 throw new \Exception('Silahkan login kembali');
             }
@@ -34,8 +36,9 @@ class WhoAmIMiddleware
                 'Cookie' => 'session=' . $apiSession,
             ])->get(config('services.backend_api.url') . 'auth/whoami');
 
-            // Make the WhoAmI API request
+            // dd($response->body());
 
+            // Make the WhoAmI API request
             // Log the response headers for debugging
             Log::info('Response Headers:', ['headers' => $response->headers()]);
 
