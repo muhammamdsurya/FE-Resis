@@ -116,7 +116,7 @@ class AuthController extends Controller
                 return redirect()->route('admin.data', ['id' => $personId]);
             }
         } else {
-            return redirect()->route('data.admin')->with('error', $response->body());
+            return redirect()->route('data.admin')->with('error', "Email sudah terdaftar");
         }
     }
 
@@ -179,7 +179,7 @@ class AuthController extends Controller
             return redirect()->route('admin.dashboard');
         } else {
             // Jika gagal, kembalikan ke halaman login dengan pesan error
-            return redirect()->route('login.admin')->with('error', 'Username atau Password salah');
+            return redirect()->route('login.admin')->with('error', $response->body());
         }
     }
 
@@ -292,7 +292,7 @@ class AuthController extends Controller
             }
         } else {
             // Handle case where the bundle data update fails
-            return back()->with('error', $request->body());
+            return back()->with('error', "Email sudah digunakan");
         }
     }
     public function loginInstructor(Request $request)
