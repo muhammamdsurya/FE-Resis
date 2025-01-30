@@ -84,8 +84,8 @@
 
 
         <div id="coursesContainer" class="row gx-2 gy-0">
-            @if ($courses['data'])
-                @if ($pagination ?? false) {{-- Jika ada pagination --}}
+            @if ($pagination ?? false) {{-- Jika ada pagination --}}
+                @if ($courses['data'])
                     @foreach ($courses['data'] as $item)
                         {{-- Akses data dari courses['data'] --}}
                         <div class="col-lg-3 col-md-4 col-6">
@@ -107,33 +107,35 @@
                             </a>
                         </div>
                     @endforeach
+                @else
+                    <div class="col-12 text-center">
+                        <h4>Data kelas kosong</h4>
+                    </div>
                 @endif
             @else
-                <div class="col-12 text-center">
-                    <h4>Data kelas kosong</h4>
-                </div>
-            @endif
-            {{-- Jika tidak ada pagination --}}
-            @if ($courses['data'] != null)
-                @foreach ($courses as $item)
-                    <div class="col-lg-3 col-md-4 col-6">
-                        <a href="{{ route('detail-kelas', ['id' => $item['id']]) }}" class="text-decoration-none">
-                            <div class="card shadow-sm border-light rounded">
-                                <img src="{{ $item['thumbnail_image'] }}" class="card-img-top" alt="{{ $item['name'] }}"
-                                    style="height: 200px; object-fit: cover;">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <p class="fs-6 mb-0">
-                                            <i class="fas fa-star text-warning me-1"></i>{{ $item['rating'] }}
-                                        </p>
+                {{-- Jika tidak ada pagination --}}
+                @if ($courses != null)
+                    @foreach ($courses as $item)
+                        <div class="col-lg-3 col-md-4 col-6">
+                            <a href="{{ route('detail-kelas', ['id' => $item['id']]) }}" class="text-decoration-none">
+                                <div class="card shadow-sm border-light rounded">
+                                    <img src="{{ $item['thumbnail_image'] }}" class="card-img-top"
+                                        alt="{{ $item['thumbnail_image'] }}">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <p class="fs-6 mb-0">
+                                                <i class="fas fa-star text-warning me-1"></i>{{ $item['rating'] }}
+                                            </p>
+                                        </div>
+                                        <h5 class="card-title mt-2">{{ $item['name'] }}</h5>
                                     </div>
-                                    <h5 class="card-title mt-2">{{ $item['name'] }}</h5>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
+                            </a>
+                        </div>
+                    @endforeach
+                @endif
             @endif
+
         </div>
 
 

@@ -570,7 +570,6 @@ class courseController extends Controller
         return json_decode($response->getBody()->getContents());
     }
 
-
     public function getBundlingById($courseBundleId)
     {
         $response = Http::withApiSession()->get($this->apiUrl . 'courses/bundles/' . $courseBundleId);

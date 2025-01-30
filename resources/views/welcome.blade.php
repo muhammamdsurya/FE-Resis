@@ -253,7 +253,7 @@
                                 dan menjawab pertanyaan yang masih kita bingung/kurang paham jugaa
                             </p>
                             <div class="profile mt-auto">
-                                <img src="assets/img/testimonials/testimonials-2.jpg" class="testimonial-img"
+                                <img src="assets/img/testimonials/elvira.jpg" class="testimonial-img"
                                     alt="">
                                 <h3>Elvyra</h3>
                                 <h4>Siswi di SMK Negeri 5 Kota Bekasi</h4>
@@ -273,9 +273,9 @@
                                 sehari-hari saya sebagai ahli kimia. Terima kasih, AkuAnalis"
                             </p>
                             <div class="profile mt-auto">
-                                <img src="assets/img/testimonials/testimonials-3.jpg" class="testimonial-img"
+                                <img src="assets/img/testimonials/testimonials-4.jpg" class="testimonial-img"
                                     alt="">
-                                <h3>Azizah</h3>
+                                <h3>Hadi</h3>
                                 <h4>Umum</h4>
                             </div>
                         </div>
@@ -330,7 +330,7 @@
                             <h3>Apa itu AkuAnalis?</h3>
                             <div class="faq-content">
                                 <p>Selamat datang di AkuAnalis by Resi's Project!
-                                    Kami adalah media 
+                                    Kami adalah media
                                     yang menyediakan Online Course dengan fokus di bidang Kimia
                                     Analisis serta dapat diakses dengan mudah oleh siswa/i. Yuk segera daftarkan diri kalian
                                     dan nikmati fitur yang kami sediakan!
