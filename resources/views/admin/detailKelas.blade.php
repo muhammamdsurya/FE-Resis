@@ -85,10 +85,19 @@
                                 <div class="col-md-6 mb-1">
                                     <div class="form-floating">
                                         <select class="form-control" id="categorySelect" name="category_id">
-                                            <option value="" disabled>Select Jenjang</option>
+                                            <option value="{{ $course->course_category->id }}" selected>
+                                                {{ $course->course_category->name }}
+                                            </option>
+
                                             @foreach ($categories as $category)
-                                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                <!-- Mengecek apakah instruktur sudah dipilih sebelumnya -->
+                                                @if ($category->id != $course->course_category->id)
+                                                    <option value="{{ $category->id }}">
+                                                        {{ $category->name }}
+                                                    </option>
+                                                @endif
                                             @endforeach
+
                                         </select>
                                         <label for="categorySelect">Jenjang</label>
                                     </div>
@@ -96,11 +105,19 @@
                                 <div class="col-md-6">
                                     <div class="form-floating">
                                         <select class="form-control" id="instructorSelect" name="instructor_id">
-                                            <option value="" disabled>Select Pengajar</option>
+                                            <option value="{{ $course->instructor->instructor->id }}" selected>
+                                                {{ $course->instructor->full_name }}
+                                            </option>
+
                                             @foreach ($instructors as $instructor)
-                                                <option value="{{ $instructor->instructor->id }}">
-                                                    {{ $instructor->full_name }}</option>
+                                                <!-- Mengecek apakah instruktur sudah dipilih sebelumnya -->
+                                                @if ($instructor->instructor->id != $course->instructor->instructor->id)
+                                                    <option value="{{ $instructor->instructor->id }}">
+                                                        {{ $instructor->full_name }}
+                                                    </option>
+                                                @endif
                                             @endforeach
+
                                         </select>
                                         <label for="instructorSelect">Pengajar</label>
                                     </div>
@@ -266,7 +283,7 @@
                                                 <textarea rows="3" placeholder="Materi" id="contentVideoArticleContent" name="video_content_name" required></textarea>
                                             </div>
                                         </div>
-                                        <input type="hidden" class="form-control" id="contentVideoDuration">
+                                        <input type="hidden" class="form-control" id="contentVideoDuration" value="10">
                                     </div>
 
                                     <!-- Video and Thumbnail Input -->
@@ -316,8 +333,6 @@
 
                                 </div>
                             </div>
-
-
 
                             <div class="mt-5">
                                 <button
@@ -926,7 +941,6 @@
                 formData.append('contentTitle', contentName);
                 formData.append('contentDesc', contentDesc);
 
-
                 if (contentType == 'video') {
                     const contentVideoFile = $('#contentVideoFile')[0].files[0];
                     const contentVideoThumbFile = $('#contentVideoThumbFile')[0].files[0];
@@ -943,8 +957,6 @@
                     formData.append('videoContentThumbFile', contentVideoThumbFile);
                     formData.append('videoArticleContent', videoArticleContent);
                     formData.append('videoDuration', videoDuration);
-
-
 
                 } else if (contentType == 'additional_source') {
                     const additionalSrcFile = $('#contentAddSrcFile')[0].files[0];
@@ -1005,6 +1017,7 @@
                 });
 
                 $('#contentVideoDuration').val('{{ $courseContent->video->video_duration }}')
+
             </script>
         @elseif($courseContent->content_type == $quizType)
             <script>
