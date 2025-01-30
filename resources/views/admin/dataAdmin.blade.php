@@ -259,7 +259,10 @@
                                 'success'
                             );
                             // Reload halaman atau update tabel jika diperlukan
-                            location.reload();
+                            // Tunggu 1.5 detik sebelum reload
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
                         },
                         error: function(xhr, status, error) {
                             gOverlay.hide()

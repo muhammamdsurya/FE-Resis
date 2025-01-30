@@ -219,7 +219,6 @@
                     <div class="col-md-9">
                         @if (isset($courseContent))
                             <div class="mt-3">
-
                                 @if ($courseContent->content_type == $videoType)
                                     <div class="ratio ratio-16x9 mb-3">
                                         <video controls poster="{{ $courseContent->video->thumbnail_image }}" controls

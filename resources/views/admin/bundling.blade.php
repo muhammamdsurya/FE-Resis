@@ -28,14 +28,7 @@
             object-fit: cover;
         }
 
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
 
-        .text-muted {
-            font-size: 0.875rem;
-        }
     </style>
 
     <div class="container mt-3">
@@ -73,7 +66,7 @@
                                             <p class="ml-auto fs-6 price">Rp{{ number_format($item['price'], 0, ',', '.') }}
                                             </p>
                                         </div>
-                                        <h5 class="card-title">{{ $item['name'] }}</h5>
+                                        <h5 class="card-title fw-bold fs-6">{{ $item['name'] }}</h5>
                                         <p class="card-text">{{ Str::limit($item['description'], 20) }}</p>
                                     </div>
                                 </div>
@@ -98,7 +91,7 @@
                                         <p class="ml-auto fs-6 price">Rp{{ number_format($item['price'], 0, ',', '.') }}
                                         </p>
                                     </div>
-                                    <h5 class="card-title">{{ $item['name'] }}</h5>
+                                    <h5 class="card-title fw-bold fs-6">{{ $item['name'] }}</h5>
                                     <p class="card-text">{{ $item['description'] }}</p>
                                 </div>
                             </div>

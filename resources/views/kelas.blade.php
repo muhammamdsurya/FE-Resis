@@ -53,11 +53,11 @@
                                                 <p class="text-muted fs-6 mb-0"><i
                                                         class="bi bi-star-fill text-warning me-1"></i>{{ $course->course->rating }}
                                                 </p>
-                                                <p class="badge bg-primary fs-6 mb-0">{{ $course->course_category->name }}
+                                                <p class="badge bg-primary small mb-0">{{ $course->course_category->name }}
                                                 </p>
                                             </div>
 
-                                            <h5 class="card-title fw-bold text-dark">{{ $course->course->name }}</h5>
+                                            <h5 class="card-title fw-bold fs-6 text-dark">{{ $course->course->name }}</h5>
                                             <h6 class="text-success fw-bold mb-3">Rp
                                                 {{ number_format($course->course->price, 0, ',', '.') }}</h6>
                                             <p class="card-text text-muted">
