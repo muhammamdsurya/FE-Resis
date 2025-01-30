@@ -283,7 +283,8 @@
                                                 <textarea rows="3" placeholder="Materi" id="contentVideoArticleContent" name="video_content_name" required></textarea>
                                             </div>
                                         </div>
-                                        <input type="hidden" class="form-control" id="contentVideoDuration" value="10">
+                                        <input type="hidden" class="form-control" id="contentVideoDuration"
+                                            value="10">
                                     </div>
 
                                     <!-- Video and Thumbnail Input -->
@@ -517,9 +518,12 @@
                     if (response.success) {
                         Swal.fire('Sukses!', response.message, 'success');
                         // Reload halaman atau arahkan ke halaman lain jika diperlukan
-                        location.reload();
+                        // Tunggu 1.5 detik sebelum reload
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1500);
                     } else {
-                        Swal.fire('Ooops!',response.message + response.body, 'error');
+                        Swal.fire('Ooops!', response.message + response.body, 'error');
                     }
 
                 },
@@ -735,7 +739,10 @@
                     gOverlay.hide()
                     Swal.fire('Berhasil', 'Berhasil membuat konten', 'success');
 
-                    window.location.href = '?selectedCourseContentId=' + response.data.id
+                    // Tunggu 1.5 detik sebelum reload
+                    setTimeout(function() {
+                        window.location.href = '?selectedCourseContentId=' + response.data.id
+                    }, 1500);
 
                 },
                 error: function(xhr, status, error) {
@@ -921,7 +928,10 @@
                     success: function(response) {
                         gOverlay.hide()
                         Swal.fire('Berhasil', 'Berhasil mengapus konten', 'success');
-                        window.location.href = '?selectedCourseContentId='
+                        // Tunggu 1.5 detik sebelum reload
+                        setTimeout(function() {
+                            window.location.href = '?selectedCourseContentId='
+                        }, 1500);
 
                     },
                     error: function(xhr, status, error) {
@@ -989,7 +999,11 @@
                     success: function(response) {
                         gOverlay.hide()
                         Swal.fire('Berhasil', 'Berhasil memperbarui konten', 'success')
-                        window.location.reload()
+
+                        // Tunggu 1.5 detik sebelum reload
+                        setTimeout(function() {
+                            window.location.reload()
+                        }, 1500);
 
                     },
                     error: function(xhr, status, error) {
@@ -1017,7 +1031,6 @@
                 });
 
                 $('#contentVideoDuration').val('{{ $courseContent->video->video_duration }}')
-
             </script>
         @elseif($courseContent->content_type == $quizType)
             <script>

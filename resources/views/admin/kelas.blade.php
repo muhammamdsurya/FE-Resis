@@ -12,15 +12,6 @@
 @section('content')
 
     <style>
-        .card-title {
-            white-space: nowrap;
-            /* Prevent the text from wrapping */
-            overflow: hidden;
-            /* Hide overflowed text */
-            text-overflow: ellipsis;
-            /* Show ellipsis (...) for overflowed text */
-        }
-
         .card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
@@ -37,17 +28,8 @@
             object-fit: cover;
         }
 
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
         .card .card-body {
             background-color: #fff;
-        }
-
-        .text-muted {
-            font-size: 0.875rem;
         }
 
         .card .text-warning {
@@ -99,9 +81,10 @@
                                             <p class="fs-6 mb-0">
                                                 <i class="fas fa-star text-warning me-1"></i>{{ $item['course']['rating'] }}
                                             </p>
-                                            <p class="fs-6 mb-0 text-muted">{{ $item['course_category']['name'] }}</p>
+                                            <p class="mb-0 badge bg-primary small">{{ $item['course_category']['name'] }}
+                                            </p>
                                         </div>
-                                        <h5 class="card-title mt-2">{{ $item['course']['name'] }}</h5>
+                                        <h5 class="card-title fw-bold fs-6 mt-2">{{ $item['course']['name'] }}</h5>
                                     </div>
                                 </div>
                             </a>
@@ -127,7 +110,7 @@
                                                 <i class="fas fa-star text-warning me-1"></i>{{ $item['rating'] }}
                                             </p>
                                         </div>
-                                        <h5 class="card-title mt-2">{{ $item['name'] }}</h5>
+                                        <h5 class="card-title fw-bold fs-6 mt-2">{{ $item['name'] }}</h5>
                                     </div>
                                 </div>
                             </a>
@@ -467,7 +450,10 @@
                         // Lakukan sesuatu setelah berhasil
                         Swal.fire('Sukses!', response.message, 'success');
                         // Reload halaman atau arahkan ke halaman lain jika diperlukan
-                        location.reload();
+                        // Tunggu 1.5 detik sebelum reload
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1500);
                     },
                     error: function(xhr, status, error) {
                         gOverlay.hide();
@@ -516,7 +502,10 @@
                         $('#editCategoryModal').modal('hide'); // Hide the modal
                         Swal.fire('Berhasil!', 'Kategori berhasil diupdate.',
                             'success');
-                        location.reload();
+                        // Tunggu 1.5 detik sebelum reload
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1500);
 
                     },
                     error: function(xhr, status, error) {
@@ -558,7 +547,10 @@
                         gOverlay.hide()
                         Swal.fire('Berhasil', 'Jenjang berhasil ditambahkan!',
                             'success');
-                        location.reload();
+                        // Tunggu 1.5 detik sebelum reload
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1500);
 
                     },
                     error: function(xhr, status, error) {
@@ -598,7 +590,10 @@
                                 Swal.fire('Dihapus!',
                                     'Kategori berhasil dihapus.',
                                     'success');
-                                location.reload();
+                                // Tunggu 1.5 detik sebelum reload
+                                setTimeout(function() {
+                                    location.reload();
+                                }, 1500);
                             },
                             error: function(xhr, status, error) {
                                 gOverlay.hide()
