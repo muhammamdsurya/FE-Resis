@@ -224,6 +224,12 @@
 
     <div class="container">
 
+        <div id="uploadProgressContainer" style="display: none;">
+            <label>Upload Progress:</label>
+            <progress id="uploadProgress" value="0" max="100" style="width: 100%;"></progress>
+            <span id="uploadPercentage">0%</span>
+        </div>
+
         <div class="row">
             <!-- Column for Video and Description -->
             <div class="col-12">
@@ -434,6 +440,8 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <!-- SummerNote -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script>
 
     <script>
         document.getElementById('priceInput').addEventListener('input', function(e) {
@@ -703,10 +711,14 @@
                 const videoArticleContent = $('#contentVideoArticleContent').val()
                 const videoDuration = $('#contentVideoDuration').val()
 
-                formData.append('videoContentFile', contentVideoFile);
+                // formData.append('videoContentFile', contentVideoFile);
                 formData.append('videoContentThumbFile', contentVideoThumbFile);
                 formData.append('videoArticleContent', videoArticleContent);
                 formData.append('videoDuration', videoDuration);
+
+                uploadVideoInChunks(contentVideoFile, formData);
+
+                return;
 
             } else if (contentType == 'quiz') {
                 const passingGrade = $('#contentPassingGrade').val()
@@ -751,6 +763,118 @@
                 }
             });
         })
+
+        async function uploadVideoInChunks(file, formData) {
+            const chunkSize = 5 * 1024 * 1024; // 5MB per chunk
+            const totalChunks = Math.ceil(file.size / chunkSize);
+            const fileId = uuid.v4();
+
+            console.log(`Starting upload of ${totalChunks} chunks for file: ${file.name}`);
+
+            for (let i = 0; i < totalChunks; i++) {
+                const start = i * chunkSize;
+                const end = Math.min(file.size, start + chunkSize);
+                const chunk = file.slice(start, end);
+
+                const chunkFile = new File([chunk], file.name, {
+                    type: file.type
+                });
+
+                let chunkFormData = new FormData();
+                chunkFormData.append("video_content", chunkFile);
+                chunkFormData.append("video_id", fileId);
+                chunkFormData.append("chunk_index", i);
+                chunkFormData.append("total_chunks", totalChunks);
+
+                // Add additional form data if it's the last chunk
+                if (i === totalChunks - 1) {
+                    for (let [key, value] of formData.entries()) {
+                        chunkFormData.append(key, value);
+                    }
+                }
+
+                console.log(`Uploading chunk ${i + 1} of ${totalChunks}...`);
+
+                // Log the form data for this chunk
+                chunkFormData.forEach((value, key) => {
+                    console.log(`${key}: ${value}`);
+                });
+
+                // Upload the chunk and wait for the result
+                const uploadResult = await uploadVideoChunk(chunkFormData, totalChunks, i);
+
+                if (uploadResult.success) {
+                    console.log(`Chunk ${i + 1} uploaded successfully.`);
+                } else {
+                    console.error(`Error uploading chunk ${i + 1}:`, uploadResult.error);
+                    break; // Optionally stop if an error occurs
+                }
+            }
+        }
+
+        async function uploadVideoChunk(chunkFormData, totalChunks, chunkIndex) {
+            try {
+                const response = await $.ajax({
+                    url: '{{ route('admin.kelas.content.post', $courseId) }}',
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: chunkFormData,
+                    processData: false,
+                    contentType: false,
+                });
+                console.log("Response dari Backend:", response); // Cek di Console
+                // Jika response sukses, tampilkan Swal
+                if (response.success) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Upload Berhasil!",
+                        text: `Chunk ${chunkIndex + 1} dari ${totalChunks} berhasil diupload.`,
+                        // timer: 1500
+                    });
+                } else {
+                    // Jika ada error dari backend
+                    Swal.fire({
+                        icon: "error",
+                        title: "Upload Gagal!",
+                        text: response.message || "Terjadi kesalahan saat mengunggah video.",
+                    });
+                }
+
+                return response;
+
+            } catch (error) {
+                console.error("Upload failed for chunk:", chunkIndex + 1, error);
+
+                // Check if error response contains additional details
+                let errorMessage = error.statusText || "Tidak diketahui"; // Default message
+                if (error.response) {
+                    if (error.response.data) {
+                        // You can customize this depending on how the error data is structured
+                        errorMessage = error.response.data.message || error.response.data || errorMessage;
+                    } else if (error.response.statusText) {
+                        errorMessage = error.response.statusText;
+                    }
+                }
+
+                // Display Swal with detailed error message
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops!",
+                    text: `Gagal mengunggah chunk ${chunkIndex + 1}: ${errorMessage}`,
+                });
+
+                return {
+                    success: false,
+                    error: error
+                };
+            }
+
+        }
+
+
+
 
 
         var idQuizzesEdit = null
@@ -963,10 +1087,13 @@
                     const videoArticleContent = $('#contentVideoArticleContent').val();
                     const videoDuration = $('#contentVideoDuration').val()
 
-                    formData.append('videoContentFile', contentVideoFile);
+                    // formData.append('videoContentFile', contentVideoFile);
                     formData.append('videoContentThumbFile', contentVideoThumbFile);
                     formData.append('videoArticleContent', videoArticleContent);
                     formData.append('videoDuration', videoDuration);
+
+                    updateVideoInChunks(contentVideoFile, formData);
+                    return;
 
                 } else if (contentType == 'additional_source') {
                     const additionalSrcFile = $('#contentAddSrcFile')[0].files[0];
@@ -1011,6 +1138,114 @@
                         Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                     }
                 });
+            }
+
+            async function updateVideoInChunks(file, formData) {
+                const chunkSize = 5 * 1024 * 1024; // 5MB per chunk
+                const totalChunks = Math.ceil(file.size / chunkSize);
+                const fileId = uuid.v4();
+
+                console.log(`Starting upload of ${totalChunks} chunks for file: ${file.name}`);
+
+                for (let i = 0; i < totalChunks; i++) {
+                    const start = i * chunkSize;
+                    const end = Math.min(file.size, start + chunkSize);
+                    const chunk = file.slice(start, end);
+
+                    const chunkFile = new File([chunk], file.name, {
+                        type: file.type
+                    });
+
+                    let chunkFormData = new FormData();
+                    chunkFormData.append("video_content", chunkFile);
+                    chunkFormData.append("video_id", fileId);
+                    chunkFormData.append("chunk_index", i);
+                    chunkFormData.append("total_chunks", totalChunks);
+
+                    // Add additional form data if it's the last chunk
+                    if (i === totalChunks - 1) {
+                        for (let [key, value] of formData.entries()) {
+                            chunkFormData.append(key, value);
+                        }
+                    }
+
+                    console.log(`Uploading chunk ${i + 1} of ${totalChunks}...`);
+
+                    // Log the form data for this chunk
+                    chunkFormData.forEach((value, key) => {
+                        console.log(`${key}: ${value}`);
+                    });
+
+                    // Upload the chunk and wait for the result
+                    const uploadResult = await updateVideoChunk(chunkFormData, totalChunks, i);
+
+                    if (uploadResult.success) {
+                        console.log(`Chunk ${i + 1} uploaded successfully.`);
+                    } else {
+                        console.error(`Error uploading chunk ${i + 1}:`, uploadResult.error);
+                        break; // Optionally stop if an error occurs
+                    }
+                }
+            }
+
+            async function updateVideoChunk(chunkFormData, totalChunks, chunkIndex) {
+                try {
+                    const response = await $.ajax({
+                        url: '{{ route('admin.kelas.content.update', ['courseId' => $courseId, 'contentId' => $selectedCourseContentId]) }}', // Direct API endpoint
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: chunkFormData,
+                        processData: false,
+                        contentType: false,
+                    });
+                    console.log("Response dari Backend:", response); // Cek di Console
+                    // Jika response sukses, tampilkan Swal
+                    if (response.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Upload Berhasil!",
+                            text: `Chunk ${chunkIndex + 1} dari ${totalChunks} berhasil diupload.`,
+                            // timer: 1500
+                        });
+                    } else {
+                        // Jika ada error dari backend
+                        Swal.fire({
+                            icon: "error",
+                            title: "Upload Gagal!",
+                            text: response.message || "Terjadi kesalahan saat mengunggah video.",
+                        });
+                    }
+
+                    return response;
+
+                } catch (error) {
+                    console.error("Upload failed for chunk:", chunkIndex + 1, error);
+
+                    // Check if error response contains additional details
+                    let errorMessage = error.statusText || "Tidak diketahui"; // Default message
+                    if (error.response) {
+                        if (error.response.data) {
+                            // You can customize this depending on how the error data is structured
+                            errorMessage = error.response.data.message || error.response.data || errorMessage;
+                        } else if (error.response.statusText) {
+                            errorMessage = error.response.statusText;
+                        }
+                    }
+
+                    // Display Swal with detailed error message
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops!",
+                        text: `Gagal mengunggah chunk ${chunkIndex + 1}: ${errorMessage}`,
+                    });
+
+                    return {
+                        success: false,
+                        error: error
+                    };
+                }
 
             }
         </script>
