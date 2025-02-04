@@ -223,13 +223,6 @@
     </div>
 
     <div class="container">
-
-        <div id="uploadProgressContainer" style="display: none;">
-            <label>Upload Progress:</label>
-            <progress id="uploadProgress" value="0" max="100" style="width: 100%;"></progress>
-            <span id="uploadPercentage">0%</span>
-        </div>
-
         <div class="row">
             <!-- Column for Video and Description -->
             <div class="col-12">
@@ -711,6 +704,29 @@
                 const videoArticleContent = $('#contentVideoArticleContent').val()
                 const videoDuration = $('#contentVideoDuration').val()
 
+                // **Validasi format video**
+                const allowedVideoFormats = ['video/mp4'];
+                const allowedThumbnailFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+
+                if (!allowedVideoFormats.includes(contentVideoFile.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Format Video Tidak Valid!',
+                        text: 'Silakan pilih file dengan format MP4.',
+                    });
+                    return; // Hentikan proses jika format salah
+                }
+
+                // **Validasi format thumbnail**
+                if (!allowedThumbnailFormats.includes(contentVideoThumbFile.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Format Thumbnail Tidak Valid!',
+                        text: 'Silakan pilih file dengan format JPG, PNG, atau JPEG.',
+                    });
+                    return; // Hentikan proses jika format salah
+                }
+
                 // formData.append('videoContentFile', contentVideoFile);
                 formData.append('videoContentThumbFile', contentVideoThumbFile);
                 formData.append('videoArticleContent', videoArticleContent);
@@ -764,117 +780,98 @@
             });
         })
 
-        async function uploadVideoInChunks(file, formData) {
+        function uploadVideoInChunks(file, formData) {
             const chunkSize = 5 * 1024 * 1024; // 5MB per chunk
-            const totalChunks = Math.ceil(file.size / chunkSize);
-            const fileId = uuid.v4();
+            let totalChunks = Math.ceil(file.size / chunkSize);
+            let fileId = uuid.v4();
+            let chunkIndex = 0;
 
-            console.log(`Starting upload of ${totalChunks} chunks for file: ${file.name}`);
+            // 🔹 Menampilkan Swal dengan Progress Bar
+            Swal.fire({
+                title: "Uploading...",
+                html: `<div class="progress">
+                    <div id="uploadProgress" class="progress-bar progress-bar-striped progress-bar-animated"
+                         role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    0%
+                    </div>
+               </div>`,
+                allowOutsideClick: false,
+                showCancelButton: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    uploadNextChunk(); // Mulai upload setelah modal muncul
+                }
+            });
 
-            for (let i = 0; i < totalChunks; i++) {
-                const start = i * chunkSize;
-                const end = Math.min(file.size, start + chunkSize);
-                const chunk = file.slice(start, end);
+            function updateProgress() {
+                let progress = Math.round((chunkIndex / totalChunks) * 100);
+                $("#uploadProgress").css("width", progress + "%").text(progress + "%");
+            }
 
-                const chunkFile = new File([chunk], file.name, {
-                    type: file.type
-                });
-
+            function uploadNextChunk() {
+                let start = chunkIndex * chunkSize;
+                let end = Math.min(start + chunkSize, file.size);
+                let chunk = file.slice(start, end);
                 let chunkFormData = new FormData();
-                chunkFormData.append("video_content", chunkFile);
+                chunkFormData.append("video_content", new File([chunk], file.name, {
+                    type: file.type
+                }));
                 chunkFormData.append("video_id", fileId);
-                chunkFormData.append("chunk_index", i);
+                chunkFormData.append("chunk_index", chunkIndex);
                 chunkFormData.append("total_chunks", totalChunks);
 
-                // Add additional form data if it's the last chunk
-                if (i === totalChunks - 1) {
-                    for (let [key, value] of formData.entries()) {
-                        chunkFormData.append(key, value);
-                    }
+                // Tambahkan formData tambahan di setiap chunk
+                for (let [key, value] of formData.entries()) {
+                    chunkFormData.append(key, value);
                 }
 
-                console.log(`Uploading chunk ${i + 1} of ${totalChunks}...`);
-
-                // Log the form data for this chunk
-                chunkFormData.forEach((value, key) => {
-                    console.log(`${key}: ${value}`);
-                });
-
-                // Upload the chunk and wait for the result
-                const uploadResult = await uploadVideoChunk(chunkFormData, totalChunks, i);
-
-                if (uploadResult.success) {
-                    console.log(`Chunk ${i + 1} uploaded successfully.`);
-                } else {
-                    console.error(`Error uploading chunk ${i + 1}:`, uploadResult.error);
-                    break; // Optionally stop if an error occurs
-                }
-            }
-        }
-
-        async function uploadVideoChunk(chunkFormData, totalChunks, chunkIndex) {
-            try {
-                const response = await $.ajax({
-                    url: '{{ route('admin.kelas.content.post', $courseId) }}',
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
+                $.ajax({
+                    url: "{{ route('admin.kelas.content.post', $courseId) }}",
+                    type: "POST",
                     data: chunkFormData,
                     processData: false,
                     contentType: false,
-                });
-                console.log("Response dari Backend:", response); // Cek di Console
-                // Jika response sukses, tampilkan Swal
-                if (response.success) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Upload Berhasil!",
-                        text: `Chunk ${chunkIndex + 1} dari ${totalChunks} berhasil diupload.`,
-                        // timer: 1500
-                    });
-                } else {
-                    // Jika ada error dari backend
-                    Swal.fire({
-                        icon: "error",
-                        title: "Upload Gagal!",
-                        text: response.message || "Terjadi kesalahan saat mengunggah video.",
-                    });
-                }
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        chunkIndex++;
+                        updateProgress(); // Perbarui progress bar di Swal
 
-                return response;
+                        if (chunkIndex < totalChunks) {
+                            uploadNextChunk(); // Lanjut ke chunk berikutnya
+                        } else {
+                            $("#uploadProgress").css("width", "100%").text("Upload Selesai!");
+                            Swal.fire({
+                                icon: "success",
+                                title: "Upload Selesai!",
+                                text: "Video berhasil diunggah.",
+                                confirmButtonText: "OK"
+                            }).then(() => {
+                                // Arahkan ke halaman baru setelah pengguna menekan OK
+                                window.location.href = '?selectedCourseContentId=' + response.data.id;
+                            });
 
-            } catch (error) {
-                console.error("Upload failed for chunk:", chunkIndex + 1, error);
+                            // Aktifkan kembali tombol setelah upload selesai
+                            $("#saveContent").prop("disabled", false);
 
-                // Check if error response contains additional details
-                let errorMessage = error.statusText || "Tidak diketahui"; // Default message
-                if (error.response) {
-                    if (error.response.data) {
-                        // You can customize this depending on how the error data is structured
-                        errorMessage = error.response.data.message || error.response.data || errorMessage;
-                    } else if (error.response.statusText) {
-                        errorMessage = error.response.statusText;
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Upload Gagal!",
+                            text: xhr.responseJSON.message,
+                            confirmButtonText: "Coba Lagi"
+                        });
+                        $("#saveContent").prop("disabled", false); // Aktifkan kembali jika gagal
                     }
-                }
-
-                // Display Swal with detailed error message
-                Swal.fire({
-                    icon: "error",
-                    title: "Oops!",
-                    text: `Gagal mengunggah chunk ${chunkIndex + 1}: ${errorMessage}`,
                 });
-
-                return {
-                    success: false,
-                    error: error
-                };
             }
 
+            // 🔹 Nonaktifkan tombol saat upload berjalan
+            $("#saveContent").prop("disabled", true);
         }
-
-
-
 
 
         var idQuizzesEdit = null
@@ -1065,8 +1062,6 @@
                 });
             }
 
-
-
             function updateCourseContent() {
                 const contentName = $('#contentName').val()
                 const contentDesc = $('#contentDesc').val()
@@ -1082,6 +1077,30 @@
                     if (contentVideoFile || contentVideoThumbFile) {
                         isUpdateContentFile = true
                     }
+
+                    // **Validasi format video**
+                    const allowedVideoFormats = ['video/mp4'];
+                    const allowedThumbnailFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+
+                    if (!allowedVideoFormats.includes(contentVideoFile.type)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Format Video Tidak Valid!',
+                            text: 'Silakan pilih file dengan format MP4.',
+                        });
+                        return; // Hentikan proses jika format salah
+                    }
+
+                    // **Validasi format thumbnail**
+                    if (!allowedThumbnailFormats.includes(contentVideoThumbFile.type)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Format Thumbnail Tidak Valid!',
+                            text: 'Silakan pilih file dengan format JPG, PNG, atau JPEG.',
+                        });
+                        return; // Hentikan proses jika format salah
+                    }
+
 
                     // Mengambil konten dari Summernote
                     const videoArticleContent = $('#contentVideoArticleContent').val();
@@ -1140,113 +1159,97 @@
                 });
             }
 
-            async function updateVideoInChunks(file, formData) {
+            function updateVideoInChunks(file, formData) {
                 const chunkSize = 5 * 1024 * 1024; // 5MB per chunk
-                const totalChunks = Math.ceil(file.size / chunkSize);
-                const fileId = uuid.v4();
+                let totalChunks = Math.ceil(file.size / chunkSize);
+                let fileId = uuid.v4();
+                let chunkIndex = 0;
 
-                console.log(`Starting upload of ${totalChunks} chunks for file: ${file.name}`);
+                // 🔹 Menampilkan Swal dengan Progress Bar
+                Swal.fire({
+                    title: "Uploading...",
+                    html: `<div class="progress">
+                    <div id="uploadProgress" class="progress-bar progress-bar-striped progress-bar-animated"
+                         role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    0%
+                    </div>
+               </div>`,
+                    allowOutsideClick: false,
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        uploadNextChunk(); // Mulai upload setelah modal muncul
+                    }
+                });
 
-                for (let i = 0; i < totalChunks; i++) {
-                    const start = i * chunkSize;
-                    const end = Math.min(file.size, start + chunkSize);
-                    const chunk = file.slice(start, end);
+                function updateProgress() {
+                    let progress = Math.round((chunkIndex / totalChunks) * 100);
+                    $("#uploadProgress").css("width", progress + "%").text(progress + "%");
+                }
 
-                    const chunkFile = new File([chunk], file.name, {
-                        type: file.type
-                    });
-
+                function uploadNextChunk() {
+                    let start = chunkIndex * chunkSize;
+                    let end = Math.min(start + chunkSize, file.size);
+                    let chunk = file.slice(start, end);
                     let chunkFormData = new FormData();
-                    chunkFormData.append("video_content", chunkFile);
+                    chunkFormData.append("video_content", new File([chunk], file.name, {
+                        type: file.type
+                    }));
                     chunkFormData.append("video_id", fileId);
-                    chunkFormData.append("chunk_index", i);
+                    chunkFormData.append("chunk_index", chunkIndex);
                     chunkFormData.append("total_chunks", totalChunks);
 
-                    // Add additional form data if it's the last chunk
-                    if (i === totalChunks - 1) {
-                        for (let [key, value] of formData.entries()) {
-                            chunkFormData.append(key, value);
-                        }
+                    // Tambahkan formData tambahan di setiap chunk
+                    for (let [key, value] of formData.entries()) {
+                        chunkFormData.append(key, value);
                     }
 
-                    console.log(`Uploading chunk ${i + 1} of ${totalChunks}...`);
-
-                    // Log the form data for this chunk
-                    chunkFormData.forEach((value, key) => {
-                        console.log(`${key}: ${value}`);
-                    });
-
-                    // Upload the chunk and wait for the result
-                    const uploadResult = await updateVideoChunk(chunkFormData, totalChunks, i);
-
-                    if (uploadResult.success) {
-                        console.log(`Chunk ${i + 1} uploaded successfully.`);
-                    } else {
-                        console.error(`Error uploading chunk ${i + 1}:`, uploadResult.error);
-                        break; // Optionally stop if an error occurs
-                    }
-                }
-            }
-
-            async function updateVideoChunk(chunkFormData, totalChunks, chunkIndex) {
-                try {
-                    const response = await $.ajax({
+                    $.ajax({
                         url: '{{ route('admin.kelas.content.update', ['courseId' => $courseId, 'contentId' => $selectedCourseContentId]) }}', // Direct API endpoint
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
+                        type: "POST",
                         data: chunkFormData,
                         processData: false,
                         contentType: false,
-                    });
-                    console.log("Response dari Backend:", response); // Cek di Console
-                    // Jika response sukses, tampilkan Swal
-                    if (response.success) {
-                        Swal.fire({
-                            icon: "success",
-                            title: "Upload Berhasil!",
-                            text: `Chunk ${chunkIndex + 1} dari ${totalChunks} berhasil diupload.`,
-                            // timer: 1500
-                        });
-                    } else {
-                        // Jika ada error dari backend
-                        Swal.fire({
-                            icon: "error",
-                            title: "Upload Gagal!",
-                            text: response.message || "Terjadi kesalahan saat mengunggah video.",
-                        });
-                    }
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            chunkIndex++;
+                            updateProgress(); // Perbarui progress bar di Swal
 
-                    return response;
+                            if (chunkIndex < totalChunks) {
+                                uploadNextChunk(); // Lanjut ke chunk berikutnya
+                            } else {
+                                $("#uploadProgress").css("width", "100%").text("Upload Selesai!");
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Upload Selesai!",
+                                    text: "Video berhasil diunggah.",
+                                    confirmButtonText: "OK"
+                                }).then(() => {
+                                    // Arahkan ke halaman baru setelah pengguna menekan OK
+                                    window.location.href = '?selectedCourseContentId=' + response.data.id;
+                                });
 
-                } catch (error) {
-                    console.error("Upload failed for chunk:", chunkIndex + 1, error);
+                                // Aktifkan kembali tombol setelah upload selesai
+                                $("#saveContent").prop("disabled", false);
 
-                    // Check if error response contains additional details
-                    let errorMessage = error.statusText || "Tidak diketahui"; // Default message
-                    if (error.response) {
-                        if (error.response.data) {
-                            // You can customize this depending on how the error data is structured
-                            errorMessage = error.response.data.message || error.response.data || errorMessage;
-                        } else if (error.response.statusText) {
-                            errorMessage = error.response.statusText;
+                            }
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Upload Gagal!",
+                                text: xhr.responseJSON.message,
+                                confirmButtonText: "Coba Lagi"
+                            });
+                            $("#saveContent").prop("disabled", false); // Aktifkan kembali jika gagal
                         }
-                    }
-
-                    // Display Swal with detailed error message
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops!",
-                        text: `Gagal mengunggah chunk ${chunkIndex + 1}: ${errorMessage}`,
                     });
-
-                    return {
-                        success: false,
-                        error: error
-                    };
                 }
 
+                // 🔹 Nonaktifkan tombol saat upload berjalan
+                $("#saveContent").prop("disabled", true);
             }
         </script>
 
