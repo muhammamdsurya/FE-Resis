@@ -223,7 +223,6 @@
     </div>
 
     <div class="container">
-
         <div class="row">
             <!-- Column for Video and Description -->
             <div class="col-12">
@@ -434,6 +433,8 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <!-- SummerNote -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.2/summernote.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/uuid@8.3.2/dist/umd/uuid.min.js"></script>
 
     <script>
         document.getElementById('priceInput').addEventListener('input', function(e) {
@@ -703,10 +704,37 @@
                 const videoArticleContent = $('#contentVideoArticleContent').val()
                 const videoDuration = $('#contentVideoDuration').val()
 
-                formData.append('videoContentFile', contentVideoFile);
+                // **Validasi format video**
+                const allowedVideoFormats = ['video/mp4'];
+                const allowedThumbnailFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+
+                if (!allowedVideoFormats.includes(contentVideoFile.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Format Video Tidak Valid!',
+                        text: 'Silakan pilih file dengan format MP4.',
+                    });
+                    return; // Hentikan proses jika format salah
+                }
+
+                // **Validasi format thumbnail**
+                if (!allowedThumbnailFormats.includes(contentVideoThumbFile.type)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Format Thumbnail Tidak Valid!',
+                        text: 'Silakan pilih file dengan format JPG, PNG, atau JPEG.',
+                    });
+                    return; // Hentikan proses jika format salah
+                }
+
+                // formData.append('videoContentFile', contentVideoFile);
                 formData.append('videoContentThumbFile', contentVideoThumbFile);
                 formData.append('videoArticleContent', videoArticleContent);
                 formData.append('videoDuration', videoDuration);
+
+                uploadVideoInChunks(contentVideoFile, formData);
+
+                return;
 
             } else if (contentType == 'quiz') {
                 const passingGrade = $('#contentPassingGrade').val()
@@ -751,6 +779,99 @@
                 }
             });
         })
+
+        function uploadVideoInChunks(file, formData) {
+            const chunkSize = 5 * 1024 * 1024; // 5MB per chunk
+            let totalChunks = Math.ceil(file.size / chunkSize);
+            let fileId = uuid.v4();
+            let chunkIndex = 0;
+
+            // 🔹 Menampilkan Swal dengan Progress Bar
+            Swal.fire({
+                title: "Uploading...",
+                html: `<div class="progress">
+                    <div id="uploadProgress" class="progress-bar progress-bar-striped progress-bar-animated"
+                         role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    0%
+                    </div>
+               </div>`,
+                allowOutsideClick: false,
+                showCancelButton: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    uploadNextChunk(); // Mulai upload setelah modal muncul
+                }
+            });
+
+            function updateProgress() {
+                let progress = Math.round((chunkIndex / totalChunks) * 100);
+                $("#uploadProgress").css("width", progress + "%").text(progress + "%");
+            }
+
+            function uploadNextChunk() {
+                let start = chunkIndex * chunkSize;
+                let end = Math.min(start + chunkSize, file.size);
+                let chunk = file.slice(start, end);
+                let chunkFormData = new FormData();
+                chunkFormData.append("video_content", new File([chunk], file.name, {
+                    type: file.type
+                }));
+                chunkFormData.append("video_id", fileId);
+                chunkFormData.append("chunk_index", chunkIndex);
+                chunkFormData.append("total_chunks", totalChunks);
+
+                // Tambahkan formData tambahan di setiap chunk
+                for (let [key, value] of formData.entries()) {
+                    chunkFormData.append(key, value);
+                }
+
+                $.ajax({
+                    url: "{{ route('admin.kelas.content.post', $courseId) }}",
+                    type: "POST",
+                    data: chunkFormData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        chunkIndex++;
+                        updateProgress(); // Perbarui progress bar di Swal
+
+                        if (chunkIndex < totalChunks) {
+                            uploadNextChunk(); // Lanjut ke chunk berikutnya
+                        } else {
+                            $("#uploadProgress").css("width", "100%").text("Upload Selesai!");
+                            Swal.fire({
+                                icon: "success",
+                                title: "Upload Selesai!",
+                                text: "Video berhasil diunggah.",
+                                confirmButtonText: "OK"
+                            }).then(() => {
+                                // Arahkan ke halaman baru setelah pengguna menekan OK
+                                window.location.href = '?selectedCourseContentId=' + response.data.id;
+                            });
+
+                            // Aktifkan kembali tombol setelah upload selesai
+                            $("#saveContent").prop("disabled", false);
+
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Upload Gagal!",
+                            text: xhr.responseJSON.message,
+                            confirmButtonText: "Coba Lagi"
+                        });
+                        $("#saveContent").prop("disabled", false); // Aktifkan kembali jika gagal
+                    }
+                });
+            }
+
+            // 🔹 Nonaktifkan tombol saat upload berjalan
+            $("#saveContent").prop("disabled", true);
+        }
 
 
         var idQuizzesEdit = null
@@ -941,8 +1062,6 @@
                 });
             }
 
-
-
             function updateCourseContent() {
                 const contentName = $('#contentName').val()
                 const contentDesc = $('#contentDesc').val()
@@ -959,14 +1078,41 @@
                         isUpdateContentFile = true
                     }
 
+                    // **Validasi format video**
+                    const allowedVideoFormats = ['video/mp4'];
+                    const allowedThumbnailFormats = ['image/jpeg', 'image/png', 'image/jpg'];
+
+                    if (!allowedVideoFormats.includes(contentVideoFile.type)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Format Video Tidak Valid!',
+                            text: 'Silakan pilih file dengan format MP4.',
+                        });
+                        return; // Hentikan proses jika format salah
+                    }
+
+                    // **Validasi format thumbnail**
+                    if (!allowedThumbnailFormats.includes(contentVideoThumbFile.type)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Format Thumbnail Tidak Valid!',
+                            text: 'Silakan pilih file dengan format JPG, PNG, atau JPEG.',
+                        });
+                        return; // Hentikan proses jika format salah
+                    }
+
+
                     // Mengambil konten dari Summernote
                     const videoArticleContent = $('#contentVideoArticleContent').val();
                     const videoDuration = $('#contentVideoDuration').val()
 
-                    formData.append('videoContentFile', contentVideoFile);
+                    // formData.append('videoContentFile', contentVideoFile);
                     formData.append('videoContentThumbFile', contentVideoThumbFile);
                     formData.append('videoArticleContent', videoArticleContent);
                     formData.append('videoDuration', videoDuration);
+
+                    updateVideoInChunks(contentVideoFile, formData);
+                    return;
 
                 } else if (contentType == 'additional_source') {
                     const additionalSrcFile = $('#contentAddSrcFile')[0].files[0];
@@ -1011,7 +1157,99 @@
                         Swal.fire('Oops!', xhr.responseJSON.message, 'error');
                     }
                 });
+            }
 
+            function updateVideoInChunks(file, formData) {
+                const chunkSize = 5 * 1024 * 1024; // 5MB per chunk
+                let totalChunks = Math.ceil(file.size / chunkSize);
+                let fileId = uuid.v4();
+                let chunkIndex = 0;
+
+                // 🔹 Menampilkan Swal dengan Progress Bar
+                Swal.fire({
+                    title: "Uploading...",
+                    html: `<div class="progress">
+                    <div id="uploadProgress" class="progress-bar progress-bar-striped progress-bar-animated"
+                         role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    0%
+                    </div>
+               </div>`,
+                    allowOutsideClick: false,
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        uploadNextChunk(); // Mulai upload setelah modal muncul
+                    }
+                });
+
+                function updateProgress() {
+                    let progress = Math.round((chunkIndex / totalChunks) * 100);
+                    $("#uploadProgress").css("width", progress + "%").text(progress + "%");
+                }
+
+                function uploadNextChunk() {
+                    let start = chunkIndex * chunkSize;
+                    let end = Math.min(start + chunkSize, file.size);
+                    let chunk = file.slice(start, end);
+                    let chunkFormData = new FormData();
+                    chunkFormData.append("video_content", new File([chunk], file.name, {
+                        type: file.type
+                    }));
+                    chunkFormData.append("video_id", fileId);
+                    chunkFormData.append("chunk_index", chunkIndex);
+                    chunkFormData.append("total_chunks", totalChunks);
+
+                    // Tambahkan formData tambahan di setiap chunk
+                    for (let [key, value] of formData.entries()) {
+                        chunkFormData.append(key, value);
+                    }
+
+                    $.ajax({
+                        url: '{{ route('admin.kelas.content.update', ['courseId' => $courseId, 'contentId' => $selectedCourseContentId]) }}', // Direct API endpoint
+                        type: "POST",
+                        data: chunkFormData,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            chunkIndex++;
+                            updateProgress(); // Perbarui progress bar di Swal
+
+                            if (chunkIndex < totalChunks) {
+                                uploadNextChunk(); // Lanjut ke chunk berikutnya
+                            } else {
+                                $("#uploadProgress").css("width", "100%").text("Upload Selesai!");
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Upload Selesai!",
+                                    text: "Video berhasil diunggah.",
+                                    confirmButtonText: "OK"
+                                }).then(() => {
+                                    // Arahkan ke halaman baru setelah pengguna menekan OK
+                                    window.location.href = '?selectedCourseContentId=' + response.data.id;
+                                });
+
+                                // Aktifkan kembali tombol setelah upload selesai
+                                $("#saveContent").prop("disabled", false);
+
+                            }
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Upload Gagal!",
+                                text: xhr.responseJSON.message,
+                                confirmButtonText: "Coba Lagi"
+                            });
+                            $("#saveContent").prop("disabled", false); // Aktifkan kembali jika gagal
+                        }
+                    });
+                }
+
+                // 🔹 Nonaktifkan tombol saat upload berjalan
+                $("#saveContent").prop("disabled", true);
             }
         </script>
 

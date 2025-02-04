@@ -89,8 +89,8 @@ Route::prefix('admin')->middleware(['whoami:admin'])->group(function () {
     Route::put('/kelas/{id}/edit', [courseController::class, 'editCategory'])->name('categories.edit');
 
     // data Course
-    Route::post('/data/kelas/{id}/content/create', [courseContentController::class, 'createCourseContent'])->name('admin.kelas.content.post');
-    Route::post('/data/kelas/{courseId}/content/update/{contentId}', [courseContentController::class, 'updateCourseContent'])->name('admin.kelas.content.update');
+    Route::post('/data/kelas/{id}/content/create', [courseContentController::class, 'createCourseContent'])->withoutMiddleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)->name('admin.kelas.content.post');
+    Route::post('/data/kelas/{courseId}/content/update/{contentId}', [courseContentController::class, 'updateCourseContent'])->withoutMiddleware(\Illuminate\Routing\Middleware\ThrottleRequests::class)->name('admin.kelas.content.update');
     Route::delete('/data/kelas/{courseId}/content/{id}/delete', [courseContentController::class, 'deleteContent'])->name('admin.kelas.content.delete');
 
     // download
