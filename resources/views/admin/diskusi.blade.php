@@ -228,8 +228,10 @@
 
 
                     gOverlay.hide()
-                    window.location.reload()
                     Swal.fire('Berhasil', 'Berhasil membalas diskusi', 'success');
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 1500); // Delay 1.5 detik sebelum redirect
 
                 },
                 error: function(xhr, status, error) {
@@ -262,6 +264,10 @@
                 success: function(response) {
                     gOverlay.hide()
                     Swal.fire('Berhasil', 'Berhasil menghapus diskusi', 'success');
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 1500); // Delay 1.5 detik sebelum redirect
+
                 },
                 error: function(xhr, status, error) {
                     gOverlay.hide()
@@ -288,7 +294,9 @@
                 success: function(response) {
                     gOverlay.hide()
                     Swal.fire('Berhasil', 'Berhasil menghapus balasan diskusi', 'success');
-                    window.location.reload()
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 1500); // Delay 1.5 detik sebelum redirect
                 },
                 error: function(xhr, status, error) {
                     gOverlay.hide()

@@ -27,8 +27,6 @@
             height: 100px;
             object-fit: cover;
         }
-
-
     </style>
 
     <div class="container mt-3">
@@ -262,7 +260,9 @@
                     // Lakukan sesuatu setelah berhasil
                     Swal.fire('Sukses!', 'Data berhasil ditambahkan.', 'success');
                     // Reload halaman atau arahkan ke halaman lain jika diperlukan
-                    location.reload();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
                 },
                 error: function(xhr, status, error) {
                     gOverlay.hide();

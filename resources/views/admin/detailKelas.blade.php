@@ -567,8 +567,11 @@
                                     'success'
                                 ).then(() => {
                                     // Redirect to the specified route
-                                    window.location.href =
-                                        '{{ route('admin.kelas') }}'; // Redirect to the admin bundling page
+                                    setTimeout(() => {
+                                        window.location.href =
+                                            '{{ route('admin.kelas') }}'; // Redirect to the admin bundling page
+                                    }, 1500); // Delay 1.5 detik sebelum redirect
+
                                 });
                             } else {
                                 Swal.fire(
@@ -1223,14 +1226,14 @@
                             } else {
                                 $("#uploadProgress").css("width", "100%").text("Upload Selesai!");
                                 Swal.fire({
-                                    icon: "success",
-                                    title: "Upload Selesai!",
-                                    text: 'Video berhasil diubah!' ,
-                                    confirmButtonText: "OK"
-                                })
-                                .then(() => {
-                                    location.reload(); // Reload halaman setelah tombol OK ditekan
-                                });
+                                        icon: "success",
+                                        title: "Upload Selesai!",
+                                        text: 'Video berhasil diubah!',
+                                        confirmButtonText: "OK"
+                                    })
+                                    .then(() => {
+                                        location.reload(); // Reload halaman setelah tombol OK ditekan
+                                    });
 
                                 // Aktifkan kembali tombol setelah upload selesai
                                 $("#saveContent").prop("disabled", false);
