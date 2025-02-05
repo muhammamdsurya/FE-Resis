@@ -24,6 +24,9 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN touch database/database.sqlite \
     && chown www-data:www-data database/database.sqlite
 
+RUN echo "upload_max_filesize=50M" >> /usr/local/etc/php/php.ini \
+    && echo "post_max_size=50M" >> /usr/local/etc/php/php.ini
+
 # Expose port 8000
 EXPOSE 8000
 
