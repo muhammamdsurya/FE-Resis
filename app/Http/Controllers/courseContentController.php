@@ -246,7 +246,11 @@ class courseContentController extends Controller
 
     public function updateCourseContent(Request $request, $courseId, $contentId)
     {
-
+        Log::info('Request Data:', $request->except('video_content'));
+        Log::info('File Uploaded:', [
+            'video_content' => $request->hasFile('video_content') ? 'Yes' : 'No',
+            'file_name' => $request->file('video_content') ? $request->file('video_content')->getClientOriginalName() : null,
+        ]);
         $contentTitle = $request->get('contentTitle');
         if (!$contentTitle) return response()->json([
             'success' => false,
@@ -282,8 +286,6 @@ class courseContentController extends Controller
 
         $isUpdateContentFile = $request->get('isUpdateContentFile') ?? false;
 
-
-
         if ($courseContent->content_type == $videoType) {
             if ($isUpdateContentFile == 'true') {
                 $validator = Validator::make($request->all(), [
@@ -304,7 +306,6 @@ class courseContentController extends Controller
                     $videoId = $request->get('video_id');
                     $chunkIndex = $request->get('chunk_index');
                     $totalChunks = $request->get('total_chunks');
-                    $videoContentThumbFile = $request->file('videoContentThumbFile');
 
                     $videoContentThumbFile = $request->file('videoContentThumbFile');
                     $videoArticleContent = $request->get('videoArticleContent');
@@ -320,16 +321,6 @@ class courseContentController extends Controller
                     if ($chunkIndex == $totalChunks - 1 && !$videoContentThumbFile) {
                         throw new \Exception('File thumbnail tidak ditemukan dalam request.');
                     }
-
-                    if (intval($chunkIndex) === ($totalChunks - 1)) {
-                        // Pastikan jsonData sudah diinisialisasi sebagai array
-                        if (!is_array($jsonData)) {
-                            $jsonData = [];
-                        }
-                    }
-
-                    // Log hasil merging untuk debugging
-                    // Log::info('Merged jsonData:', $jsonData);
 
                     $bodyVideo = [
                         'article_content' => $videoArticleContent,
@@ -348,13 +339,14 @@ class courseContentController extends Controller
 
                         ]);
 
-                    if (!$response->successful()) {
-                        return response()->json([
-                            'success' => false,
-                            'message' => $response->body(),
-                            'error' => $response->json()
-                        ], $response->status());
-                    }
+                    // if ($response->successful()) {
+                    //     return response()->json([
+                    //         'success' => true,
+                    //         'message' => 'Video berhasil diubah!'
+                    //     ], 200);
+                    // } else {
+                    //     return response()->json(['message' => 'Upload gagal, coba lagi!'], 500);
+                    // }
                 } catch (\Exception $e) {
                     Log::error('Error processing upload chunk: ', [
                         'chunk_index' => $chunkIndex,

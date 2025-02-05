@@ -1107,6 +1107,7 @@
                     const videoDuration = $('#contentVideoDuration').val()
 
                     // formData.append('videoContentFile', contentVideoFile);
+                    formData.append('isUpdateContentFile', isUpdateContentFile);
                     formData.append('videoContentThumbFile', contentVideoThumbFile);
                     formData.append('videoArticleContent', videoArticleContent);
                     formData.append('videoDuration', videoDuration);
@@ -1224,12 +1225,13 @@
                                 Swal.fire({
                                     icon: "success",
                                     title: "Upload Selesai!",
-                                    text: "Video berhasil diunggah.",
+                                    text: 'oke' ,
                                     confirmButtonText: "OK"
-                                }).then(() => {
-                                    // Arahkan ke halaman baru setelah pengguna menekan OK
-                                    window.location.href = '?selectedCourseContentId=' + response.data.id;
-                                });
+                                })
+                                // .then(() => {
+                                //     // Arahkan ke halaman baru setelah pengguna menekan OK
+                                //     window.location.href = '?selectedCourseContentId=' + response.data.id;
+                                // });
 
                                 // Aktifkan kembali tombol setelah upload selesai
                                 $("#saveContent").prop("disabled", false);
@@ -1240,7 +1242,7 @@
                             Swal.fire({
                                 icon: "error",
                                 title: "Upload Gagal!",
-                                text: xhr.responseJSON.message,
+                                text: xhr.responseText,
                                 confirmButtonText: "Coba Lagi"
                             });
                             $("#saveContent").prop("disabled", false); // Aktifkan kembali jika gagal
