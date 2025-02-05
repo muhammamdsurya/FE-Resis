@@ -1236,7 +1236,7 @@
 
                             }
                         },
-                        error: function(xhr) {
+                        error: function(xhr, status, error) {
                             Swal.fire({
                                 icon: "error",
                                 title: "Upload Gagal!",

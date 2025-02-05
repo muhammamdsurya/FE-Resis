@@ -131,6 +131,7 @@ class courseContentController extends Controller
 
 
             try {
+
                 // Ambil file dan data lainnya dari request
                 $chunkFile = $request->file('video_content');
                 $videoId = $request->get('video_id');
@@ -141,7 +142,6 @@ class courseContentController extends Controller
                 $videoContentThumbFile = $request->file('videoContentThumbFile');
                 $videoArticleContent = $request->get('videoArticleContent');
                 $videoDuration = $request->get('videoDuration');
-
 
                 // Pastikan file chunk tidak null sebelum mengaksesnya
                 if (!$chunkFile) {
@@ -169,7 +169,6 @@ class courseContentController extends Controller
 
                 // Log hasil merging untuk debugging
                 // Log::info('Merged jsonData:', $jsonData);
-
                 $response = $response
                     ->attach('video_content', fopen($chunkFile->getRealPath(), 'r'), $chunkFile->getClientOriginalName())
                     ->attach('video_thumbnail', fopen($videoContentThumbFile->getRealPath(), 'r'), $videoContentThumbFile->getClientOriginalName())
@@ -182,16 +181,20 @@ class courseContentController extends Controller
 
                     ]);
 
-                return response()->json([
-                    'success' => true,
-                    'data' => json_decode(json_encode($response->json()))
-                ], 200);
+                if ($response->successful()) {
+                    return response()->json([
+                        'success' => true,
+                        'data' => json_decode(json_encode($response->json()))
+                    ], 200);
+                } else {
+                    return response()->json(['message' => $response->body()], 500);
+                }
             } catch (\Exception $e) {
                 Log::error('Error processing upload chunk: ', [
                     'chunk_index' => $chunkIndex,
                     'message' => $e->getMessage()
                 ]);
-                return response()->json(['error' => 'Gagal upload chunk'], 500);
+                return response()->json(['message' => $e->getMessage()], 500);
             }
         } else if ($contentType == 'quiz') {
 
@@ -333,7 +336,7 @@ class courseContentController extends Controller
                         'video_duration' => intval($videoDuration),
                     ];
 
-                    $response = $response
+                    $response =  Http::withHeaders($headers)
                         ->attach('video_content', fopen($chunkFile->getRealPath(), 'r'), $chunkFile->getClientOriginalName())
                         ->attach('video_thumbnail', fopen($videoContentThumbFile->getRealPath(), 'r'), $videoContentThumbFile->getClientOriginalName())
                         ->asMultipart()
@@ -345,10 +348,13 @@ class courseContentController extends Controller
 
                         ]);
 
-                    return response()->json([
-                        'success' => true,
-                        'data' => json_decode(json_encode($response->json()))
-                    ], 200);
+                    if (!$response->successful()) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => $response->body(),
+                            'error' => $response->json()
+                        ], $response->status());
+                    }
                 } catch (\Exception $e) {
                     Log::error('Error processing upload chunk: ', [
                         'chunk_index' => $chunkIndex,
