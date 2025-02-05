@@ -1225,13 +1225,12 @@
                                 Swal.fire({
                                     icon: "success",
                                     title: "Upload Selesai!",
-                                    text: 'oke' ,
+                                    text: 'Video berhasil diubah!' ,
                                     confirmButtonText: "OK"
                                 })
-                                // .then(() => {
-                                //     // Arahkan ke halaman baru setelah pengguna menekan OK
-                                //     window.location.href = '?selectedCourseContentId=' + response.data.id;
-                                // });
+                                .then(() => {
+                                    location.reload(); // Reload halaman setelah tombol OK ditekan
+                                });
 
                                 // Aktifkan kembali tombol setelah upload selesai
                                 $("#saveContent").prop("disabled", false);

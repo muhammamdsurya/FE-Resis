@@ -339,6 +339,8 @@ class courseContentController extends Controller
 
                         ]);
 
+                        Log::info("Response : "  . json_encode($response));
+
                     // if ($response->successful()) {
                     //     return response()->json([
                     //         'success' => true,
