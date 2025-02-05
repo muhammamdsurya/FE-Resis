@@ -242,9 +242,10 @@
                     }
 
                     gOverlay.hide()
-                    window.location.reload()
                     Swal.fire('Berhasil', 'Berhasil membalas diskusi', 'success');
-
+                    setTimeout(() => {
+                        window.location.reload()
+                    }, 1500); // Delay 1.5 detik sebelum redirect
                 },
                 error: function(xhr, status, error) {
                     Swal.fire('Oops!', xhr.responseJSON.message, 'error');

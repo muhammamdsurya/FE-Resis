@@ -263,7 +263,9 @@
                     // Lakukan sesuatu setelah berhasil
                     Swal.fire('Sukses!', response.message, 'success');
                     // Reload halaman atau arahkan ke halaman lain jika diperlukan
-                    location.reload();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
                 },
                 error: function(xhr, status, error) {
                     gOverlay.hide();
@@ -296,7 +298,9 @@
                     // Lakukan sesuatu setelah berhasil
                     Swal.fire('Sukses!', response.message, 'success');
                     // Reload halaman atau arahkan ke halaman lain jika diperlukan
-                    location.reload();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 1500);
                 },
                 error: function(xhr, status, error) {
                     gOverlay.hide();
@@ -337,9 +341,11 @@
                                         'Berhasil Dihapus!',
                                         'success'
                                     ).then(() => {
-                                        // Redirect to the specified route
-                                        window.location.href =
-                                            '{{ route('admin.bundling') }}'; // Redirect to the admin bundling page
+                                        setTimeout(function() {
+                                            window.location.href =
+                                                '{{ route('admin.bundling') }}';
+                                        }, 1500);
+                                        // Redirect to the admin bundling page
                                     });
                                 } else {
                                     Swal.fire(
@@ -466,7 +472,10 @@
                                 icon: 'success',
                                 confirmButtonText: 'Okay'
                             });
-                            window.location.href = `/admin/detail-bundling/${bundleId}`;
+
+                            setTimeout(() => {
+                                window.location.href = `/admin/detail-bundling/${bundleId}`;
+                            }, 1500); // Delay 1.5 detik sebelum redirect
 
                         })
                         .catch(error => {

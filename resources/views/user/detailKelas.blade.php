@@ -386,7 +386,9 @@
                                 title: response.data.title,
                                 text: response.data.content
                             })
-                            window.location.reload();
+                            setTimeout(() => {
+                                window.location.reload()
+                            }, 1500); // Delay 1.5 detik sebelum redirect
                         },
                         error: function(xhr, status, error) {
                             gOverlay.hide()

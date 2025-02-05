@@ -164,7 +164,7 @@
                                                         <i class="fas fa-edit"></i>
                                                     </button>
                                                 @else
-                                                    <a href="{{ route('instructor.data' , ['personId' => $instructor->id]) }}"
+                                                    <a href="{{ route('instructor.data', ['personId' => $instructor->id]) }}"
                                                         class="btn btn-warning btn-sm">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
@@ -375,7 +375,9 @@
                                 'success'
                             );
                             // Reload halaman atau update tabel jika diperlukan
-                            location.reload();
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500); // Delay 1.5 detik sebelum redirect
                         },
                         error: function(xhr, status, error) {
                             gOverlay.hide()
