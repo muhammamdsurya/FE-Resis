@@ -306,10 +306,9 @@
 
     </section><!-- /Testimonials Section -->
 
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @if ($isLogin == 'y')
-        <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"  data-client-key="Mid-client-Yq4abo_DfCAHzIeP"></script>
+        <script src="https://app.midtrans.com/snap/snap.js" data-client-key="{{ env('CLIENT_KEY') }}"></script>
     @endif
     <script>
         $(document).ready(function() {
@@ -349,16 +348,36 @@
                             courseId: '{{ $course->course->id }}'
                         }),
                         success: function(response) {
+                            console.log(response);
+                            gOverlay.hide();
 
-                            // Swal.fire('Berhasil', response.data.message, 'success');
-                            gOverlay.hide()
-                            if (response.data.midtrans_snap_token) {
-                                const midTransSnap = new MidTransSnap(response.data
-                                    .midtrans_snap_token);
-                                midTransSnap.pay();
+                            const token = response.data.midtrans_snap_token;
+
+                            if (token && token !== "") {
+                                // Kalau token ada → jalankan Snap
+                                snap.pay(token, {
+                                    onSuccess: function(result) {
+                                        console.log("Pembayaran sukses:", result);
+                                    },
+                                    onPending: function(result) {
+                                        console.log("Menunggu pembayaran:", result);
+                                    },
+                                    onError: function(result) {
+                                        console.log("Pembayaran gagal:", result);
+                                    },
+                                    onClose: function() {
+                                        console.log(
+                                            "Popup ditutup tanpa menyelesaikan pembayaran"
+                                            );
+                                    }
+                                });
+                            } else {
+                                // Kalau token kosong → tampilkan Swal berhasil
+                                Swal.fire('Berhasil', response.message || 'Invoice berhasil dibuat',
+                                    'success');
                             }
-
                         },
+
                         error: function(xhr, status, error) {
                             gOverlay.hide()
                             Swal.fire('Oops!', xhr.responseJSON.message, 'error');

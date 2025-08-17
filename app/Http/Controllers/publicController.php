@@ -46,7 +46,7 @@ class publicController extends Controller
         return view('kelas', [
             'title' => $title,
             'courses' => $courses,  // Pass course data
-            'pagination' => $courses->pagination ?? null,  // Pass pagination info
+            'pagination' => $courses->pagination ?? null,  // Pass pagination infos
         ]);
     }
 

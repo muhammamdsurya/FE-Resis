@@ -48,24 +48,23 @@ class transactionController extends Controller
         Log::info('Checkout Body', $body);
         Log::info('Checkout Headers', $headers);
 
-
         $response = Http::withHeaders($headers)->post($this->apiUrl . 'courses/transactions/token', $body);
         Log::info('Checkout Response', [
     'status' => $response->status(),
     'body'   => $response->body(),
 ]);
 
-
         if ($response->successful()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Berhasil membuat  invoice pembayaran',
-                'data' => json_decode($response->getBody()->getContents())
+                'data' => json_decode($response->getBody())
             ], 200);
+
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal membeli kelas',
+                'message' => $response->body(),
                 'error' => $response->body() // Include error details if available
             ], $response->status());
         }
