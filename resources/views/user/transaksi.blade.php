@@ -126,7 +126,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"></script>
+    <script type="text/javascript" src="https://app.midtrans.com/snap/snap.js" data-client-key="{{env('CLIENT_KEY')}}"></script>
     <script>
         function pay(token) {
             const midTransSnap = new MidTransSnap(token);
