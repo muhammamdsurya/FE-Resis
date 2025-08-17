@@ -36,7 +36,6 @@ class WhoAmIMiddleware
                 'Cookie' => 'session=' . $apiSession,
             ])->get(config('services.backend_api.url') . 'auth/whoami');
 
-            // dd($response->body());
 
             // Make the WhoAmI API request
             // Log the response headers for debugging

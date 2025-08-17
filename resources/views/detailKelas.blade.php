@@ -309,7 +309,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     @if ($isLogin == 'y')
-        <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"></script>
+        <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"  data-client-key="Mid-client-Yq4abo_DfCAHzIeP"></script>
     @endif
     <script>
         $(document).ready(function() {

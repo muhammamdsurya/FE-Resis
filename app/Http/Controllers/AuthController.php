@@ -50,22 +50,16 @@ class AuthController extends Controller
             // get the cookies from the response
             $cookies = $response->cookies();
             // get the session cookie
-            $sessionCookie = null;
-            foreach ($cookies as $cookie) {
-                if (strpos($cookie, 'session') !== false) {
-                    $sessionCookie = $cookie;
-                    break;
-                }
-            }
+           // ambil cookie "session" dari response
+    $cookies = $response->cookies();
+    $sessionCookie = $cookies->getCookieByName('session');
 
-            if ($sessionCookie) {
-                // parse the cookie string
-                $parts = explode(';', $sessionCookie);
-                $sessionValue = explode('=', $parts[0])[1];
+    if ($sessionCookie) {
+        $sessionValue = $sessionCookie->getValue();
 
-                // set the session session to laravel session
-                session(['api_session' => $sessionValue]);
-            }
+        // simpan di Laravel session
+        session(['api_session' => $sessionValue]);
+    }
 
             // Validate the response structure
             $requiredFields = ['id', 'email', 'full_name', 'photo_profile', 'role', 'created_at', 'updated_at', 'activated_at'];
