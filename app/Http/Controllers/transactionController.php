@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 
 class transactionController extends Controller
@@ -44,7 +45,16 @@ class transactionController extends Controller
             ];
         }
 
+        Log::info('Checkout Body', $body);
+        Log::info('Checkout Headers', $headers);
+
+
         $response = Http::withHeaders($headers)->post($this->apiUrl . 'courses/transactions/token', $body);
+        Log::info('Checkout Response', [
+    'status' => $response->status(),
+    'body'   => $response->body(),
+]);
+
 
         if ($response->successful()) {
             return response()->json([
