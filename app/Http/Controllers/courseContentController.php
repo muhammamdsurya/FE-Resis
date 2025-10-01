@@ -339,7 +339,7 @@ class courseContentController extends Controller
 
                         ]);
 
-                        Log::info("Response : "  . json_encode($response));
+                    Log::info("Response : "  . json_encode($response));
 
                     // if ($response->successful()) {
                     //     return response()->json([
@@ -386,13 +386,23 @@ class courseContentController extends Controller
             }
         } else if ($courseContent->content_type == $quizType) {
             $quizzes = $request->get('quizzes');
+            Log::info("Objek Quizess: " . $request->get('quizzes'));
+
             $quizzes = json_decode($request->get('quizzes'), true);
-            $passGrade = $quizzes['passing_grade'];
-            $quizContent = $quizzes['quizz_content'];
+
+            $passGrade = $quizzes['passing_grade'] ?? null;
+            $quizContent = $quizzes['quizz_content'] ?? null;
+
+            Log::info("Objek PassGrade: " . $passGrade);
+            Log::info("Objek Quiz Content: " . json_encode($quizContent));
+
             $jsonQuiz = [
                 'passing_grade' => $passGrade,
-                'quizz_content' => $quizContent
+                'quiz_content' => $quizContent,
             ];
+
+            Log::info("Json Quiz", $jsonQuiz);
+
             $response = Http::withHeaders($headers)->put($this->apiUrl . 'courses/' . $courseId . '/contents/' . $contentId . '/quiz', $jsonQuiz);
             if (!$response->successful()) {
                 return response()->json([
