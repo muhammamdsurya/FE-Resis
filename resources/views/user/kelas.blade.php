@@ -91,17 +91,23 @@
                                     <img src="{{ $userCourse->course->thumbnail_image }}" class="card-img-top"
                                         alt="..." style="height: 150px; object-fit: cover;">
                                     <div class="card-body">
-                                        <div class="header-card d-flex justify-content-between mb-3">
-                                            <p class="text-muted fs-6 mb-0"><i
-                                                    class="fas fa-star text-warning me-1"></i>{{ $userCourse->course->rating }}
-                                            </p>
-                                            <p class="badge bg-primary fs-6 mb-0">{{ $userCourse->course_category->name }}
-                                            </p>
+                                        <div class="header-card d-flex justify-content-between align-items-center mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-star text-warning me-1"></i>
+                                                <span class="text-muted fs-6">{{ $userCourse->course->rating }}</span>
+                                            </div>
+                                            <span class="badge bg-primary small px-3 py-1 text-center"
+                                                style="white-space: normal;">
+                                                {{ $userCourse->course_category->name }}
+                                            </span>
                                         </div>
-                                        <h5 class="card-title fw-bold text-dark">{{ $userCourse->course->name }}</h5>
-                                        <p class="card-text text-muted">
-                                            {{ Str::limit($userCourse->course->description, 50) }}</p>
+
+                                        <h5 class="card-title fw-bold text-dark mb-1">{{ $userCourse->course->name }}</h5>
+                                        <p class="card-text text-muted mb-0">
+                                            {{ Str::limit($userCourse->course->description, 50) }}
+                                        </p>
                                     </div>
+
                                     <!-- Dark overlay on hover -->
                                     <div class="overlay d-flex align-items-center justify-content-center">
                                         <div class="text-center">
@@ -130,16 +136,23 @@
                                     <img src="{{ $userCourse->course->thumbnail_image }}" class="card-img-top"
                                         alt="..." style="height: 150px; object-fit: cover;">
                                     <div class="card-body">
-                                        <div class="header-card d-flex justify-content-between mb-3">
-                                            <p class="text-muted fs-6 mb-0"><i class="fas fa-star text-warning me-1"></i>4.9
-                                            </p>
-                                            <p class="badge bg-primary fs-6 mb-0">{{ $userCourse->course_category->name }}
-                                            </p>
+                                        <div class="header-card d-flex justify-content-between align-items-center mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-star text-warning me-1"></i>
+                                                <span class="text-muted fs-6">{{ $userCourse->course->rating }}</span>
+                                            </div>
+                                            <span class="badge bg-primary small px-3 py-1 text-center"
+                                                style="white-space: normal;">
+                                                {{ $userCourse->course_category->name }}
+                                            </span>
                                         </div>
-                                        <h5 class="card-title fw-bold text-dark">{{ $userCourse->course->name }}</h5>
-                                        <p class="card-text text-muted">
-                                            {{ Str::limit($userCourse->course->description, 50) }}</p>
+
+                                        <h5 class="card-title fw-bold text-dark mb-1">{{ $userCourse->course->name }}</h5>
+                                        <p class="card-text text-muted mb-0">
+                                            {{ Str::limit($userCourse->course->description, 50) }}
+                                        </p>
                                     </div>
+
                                     <!-- Dark overlay on hover -->
                                     <div class="overlay d-flex align-items-center justify-content-center">
                                         <div class="text-center">

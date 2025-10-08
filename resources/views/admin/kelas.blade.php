@@ -77,15 +77,22 @@
                                     <img src="{{ $item['course']['thumbnail_image'] }}" class="card-img-top"
                                         alt="{{ $item['course']['thumbnail_image'] }}">
                                     <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <p class="fs-6 mb-0">
-                                                <i class="fas fa-star text-warning me-1"></i>{{ $item['course']['rating'] }}
-                                            </p>
-                                            <p class="mb-0 badge bg-primary small">{{ $item['course_category']['name'] }}
-                                            </p>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div class="rating d-flex align-items-center me-2">
+                                                <i class="fas fa-star text-warning me-1"></i>
+                                                <span class="fs-6 mb-0 text-muted">{{ $item['course']['rating'] }}</span>
+                                            </div>
+                                            <span class="badge bg-primary small text-center px-2 py-1"
+                                                style="white-space: normal;">
+                                                {{ $item['course_category']['name'] }}
+                                            </span>
                                         </div>
-                                        <h5 class="card-title fw-bold fs-6 mt-2">{{ $item['course']['name'] }}</h5>
+
+                                        <h5 class="card-title fw-bold fs-6 mt-2">
+                                            {{ $item['course']['name'] }}
+                                        </h5>
                                     </div>
+
                                 </div>
                             </a>
                         </div>
@@ -105,12 +112,20 @@
                                     <img src="{{ $item['thumbnail_image'] }}" class="card-img-top"
                                         alt="{{ $item['thumbnail_image'] }}">
                                     <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <p class="fs-6 mb-0">
-                                                <i class="fas fa-star text-warning me-1"></i>{{ $item['rating'] }}
-                                            </p>
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div class="rating d-flex align-items-center me-2">
+                                                <i class="fas fa-star text-warning me-1"></i>
+                                                <span class="fs-6 mb-0 text-muted">{{ $item['course']['rating'] }}</span>
+                                            </div>
+                                            <span class="badge bg-primary small text-center px-2 py-1"
+                                                style="white-space: normal;">
+                                                {{ $item['course_category']['name'] }}
+                                            </span>
                                         </div>
-                                        <h5 class="card-title fw-bold fs-6 mt-2">{{ $item['name'] }}</h5>
+
+                                        <h5 class="card-title fw-bold fs-6 mt-2">
+                                            {{ $item['course']['name'] }}
+                                        </h5>
                                     </div>
                                 </div>
                             </a>
