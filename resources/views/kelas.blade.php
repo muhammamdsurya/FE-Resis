@@ -49,12 +49,16 @@
                                         <img src="{{ $course->course->thumbnail_image }}" class="card-img-top"
                                             alt="..." style="height: 150px; object-fit: cover;">
                                         <div class="card-body">
-                                            <div class="header-card d-flex justify-content-between mb-3">
-                                                <p class="text-muted fs-6 mb-0"><i
-                                                        class="bi bi-star-fill text-warning me-1"></i>{{ $course->course->rating }}
-                                                </p>
-                                                <p class="badge bg-primary small mb-0">{{ $course->course_category->name }}
-                                                </p>
+                                            <div class="header-card d-flex justify-content-between align-items-center mb-2">
+                                                <div class="rating d-flex align-items-center me-2">
+                                                    <i class="bi bi-star-fill text-warning me-1"></i>
+                                                    <span class="text-muted fs-6">{{ $course->course->rating }}</span>
+                                                </div>
+                                                <span
+                                                    class="badge bg-primary small text-wrap text-truncate text-center px-2 py-1"
+                                                    style="max-width: 120px;">
+                                                    {{ $course->course_category->name }}
+                                                </span>
                                             </div>
 
                                             <h5 class="card-title fw-bold fs-6 text-dark">{{ $course->course->name }}</h5>
@@ -89,16 +93,23 @@
                                     <img src="{{ $course->thumbnail_image }}" class="card-img-top" alt="..."
                                         style="height: 150px; object-fit: cover;">
                                     <div class="card-body">
-                                        <div class="header-card d-flex justify-content-between mb-3">
-                                            <p class="text-muted fs-6 mb-0"><i
-                                                    class="bi bi-star-fill text-warning me-1"></i>4.9
-                                            </p>
+                                        <div class="header-card d-flex justify-content-between align-items-center mb-2">
+                                            <div class="rating d-flex align-items-center me-2">
+                                                <i class="bi bi-star-fill text-warning me-1"></i>
+                                                <span class="text-muted fs-6">{{ $course->course->rating }}</span>
+                                            </div>
+                                            <span
+                                                class="badge bg-primary small text-wrap text-truncate text-center px-2 py-1"
+                                                style="max-width: 120px;">
+                                                {{ $course->course_category->name }}
+                                            </span>
                                         </div>
 
-                                        <h5 class="card-title fw-bold text-dark">{{ $course->name }}</h5>
+                                        <h5 class="card-title fw-bold fs-6 text-dark">{{ $course->course->name }}</h5>
                                         <h6 class="text-success fw-bold mb-3">Rp
-                                            {{ number_format($course->price, 0, ',', '.') }}</h6>
-                                        <p class="card-text text-muted">{{ Str::limit($course->description, 50) }}
+                                            {{ number_format($course->course->price, 0, ',', '.') }}</h6>
+                                        <p class="card-text text-muted">
+                                            {{ Str::limit($course->course->description, 50) }}
                                         </p>
                                     </div>
 
