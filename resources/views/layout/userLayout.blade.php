@@ -70,7 +70,6 @@
             <!-- Content Header (Page header) -->
             <div class="content-header">
                 <div class="container d-flex justify-content-between align-items-center">
-                    <h1 class="m-0">@yield('title')</h1>
                     @yield('filter')
                 </div><!-- /.container-fluid -->
             </div>
@@ -104,7 +103,7 @@
 <!-- Your custom scripts -->
     <script src="{{ asset('assets/js/midtrans_snap.js') }}"></script>
 
-     
+
 
 
 </body>

@@ -1,5 +1,4 @@
 @extends('layout.userLayout')
-@section('title', $title)
 
 @section('filter')
 

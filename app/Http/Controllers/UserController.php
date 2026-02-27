@@ -80,14 +80,11 @@ class UserController extends Controller
     }
     public function dashboard()
     {
-        $title = 'Dashboard';
-
         $userCourses = $this->userCourseCtrl->getCoursesUser('active');
         $expired = $this->userCourseCtrl->getCoursesUser('expired');
 
 
         return view('user.dashboard', [
-            "title" => $title,
             "id" => $this->user['id'],
             'userCourses' => $userCourses,
             'expired' => $expired,
@@ -105,7 +102,6 @@ class UserController extends Controller
 
     public function profile()
     {
-        $title = 'Profile';
         $profileData = $this->getProfileData();
         $detailData = $this->getDetailData();
 
@@ -116,7 +112,6 @@ class UserController extends Controller
 
 
         return view('user.profile', [
-            "title" => $title,
             "full_name" => $profileData['full_name'],
             "email" => $profileData['email'],
             "birth" => $format,
@@ -129,7 +124,6 @@ class UserController extends Controller
 
     public function kelas(Request $request)
     {
-        $title = 'Kelasku';
         $filter = $request->get('filter') ?? 'all';
         $page = $request->get('page') ?? 0;
         $userCourses = $this->userCourseCtrl->getCoursesUserFilter($filter, $page);
@@ -137,7 +131,6 @@ class UserController extends Controller
         // dd($userCourses);
 
         return view('user.kelas', [
-            "title" => $title,
             "filter" => $filter,
             "userCourses" => $userCourses,
             "page" => $page,
@@ -164,13 +157,17 @@ class UserController extends Controller
         }
         // dd($transactions);
 
-        $title = 'Data Transaksi';
-
         return view('user.transaksi', [
             "filter" => $filter,
-            "title" => $title,
             "id" => $this->user['id'],
             'transactions' => $transactions,
+            "full_name" => $this->user['full_name'],
+        ]);
+    }
+
+    public function cvmenu() {
+
+        return view('user.cvmenu', [
             "full_name" => $this->user['full_name'],
         ]);
     }

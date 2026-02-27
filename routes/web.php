@@ -122,6 +122,7 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::get('/kelas', [UserController::class, 'kelas'])->name('user.kelas');
     Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
+    Route::get('/cvmenu', [UserController::class, 'cvmenu'])->name('cvmenu');
     Route::get('/materi', [UserController::class, 'materi'])->name('materi');
     Route::get('/diskusi-kelas/{courseId}', [UserController::class, 'diskusi'])->name('diskusi');
     Route::get('/detail-kelas/{courseId}', [UserController::class, 'detailKelas'])->name('user.detail');
