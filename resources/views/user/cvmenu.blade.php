@@ -13,6 +13,13 @@
                     </ol>
                 </nav>
             </div>
+
+            <div>
+                <a href="#" class="btn btn-outline-primary px-4 shadow-sm"
+                    style="border-radius: 10px; font-weight: 600;">
+                    <i class="fas fa-history me-2"></i> Riwayat Screening
+                </a>
+            </div>
         </div>
 
         <div class="row">
@@ -21,63 +28,49 @@
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-4"><i class="fas fa-file-upload text-primary me-2"></i> Detail CV</h5>
 
-                        <div class="upload-area border border-2 border-dashed rounded-3 p-5 text-center mb-4"
-                            style="border-style: dashed !important; border-color: #dee2e6 !important; background: #fafafa; cursor: pointer;"
-                            onclick="document.getElementById('cvInput').click();">
-                            <div class="mb-3">
-                                <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
-                            </div>
-                            <h6 class="fw-bold">Klik untuk upload CV atau tempel dan taruh</h6>
-                            <p class="text-muted small">PDF max 2mb</p>
-                            <input type="file" id="cvInput" name="cv_file" accept=".pdf" style="display: none;">
-                        </div>
+                        <form id="analyzeForm" enctype="multipart/form-data">
+                            @csrf
 
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold small text-muted">Job Position</label>
-                                <input type="text" class="form-control" placeholder="Senior Frontend Engineer"
-                                    style="border-radius: 8px;">
+                            <div class="upload-area border border-2 border-dashed rounded-3 p-5 text-center mb-4"
+                                style="border-style: dashed !important; border-color: #dee2e6 !important; background: #fafafa; cursor: pointer;"
+                                onclick="document.getElementById('cvInput').click();">
+                                <div class="mb-3">
+                                    <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
+                                </div>
+                                <h6 class="fw-bold">Klik untuk upload CV atau tempel dan taruh</h6>
+                                <p class="text-muted small">PDF max 2mb</p>
+                                <input type="file" id="cvInput" name="resume" accept=".pdf" style="display: none;">
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold small text-muted">Pengalaman Dibutuhkan</label>
-                                <select class="form-select" style="border-radius: 8px;">
-                                    <option>1-2 Years</option>
-                                    <option>3-5 Years</option>
-                                    <option>5++ Years</option>
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label fw-bold small text-muted">Deskripsi pekerjaan</label>
-                                <textarea class="form-control" rows="4" placeholder="PT XYZ sedang mencari kandidat dengan kriteria..."
-                                    style="border-radius: 8px;"></textarea>
-                            </div>
-                        </div>
 
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-primary px-4 py-2 flex-grow-1 fw-bold"
-                                style="border-radius: 8px;">Analyze</button>
-                            <button class="btn btn-outline-warning px-4 py-2 fw-bold" style="border-radius: 8px;">Free 2x
-                                Analyze</button>
-                        </div>
-
-                        <hr class="my-5">
-
-                        <div class="text-center">
-                            <p class="text-muted fw-bold small mb-3">HASIL KECOCOKAN</p>
-                            <div class="position-relative d-inline-block">
-                                <div class="progress-circle d-flex align-items-center justify-content-center mx-auto mb-3"
-                                    style="width: 120px; height: 120px; border: 8px solid #e9ecef; border-top: 8px solid #007bff; border-radius: 50%;">
-                                    <div class="text-center">
-                                        <span class="h3 fw-bold m-0 d-block">85%</span>
-                                        <small class="text-primary fw-bold" style="font-size: 0.6rem;">HIGH MATCH</small>
-                                    </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small text-muted">Job Position</label>
+                                    <input type="text" name="job_position" class="form-control"
+                                        placeholder="Senior Frontend Engineer" style="border-radius: 8px;">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small text-muted">Pengalaman Dibutuhkan</label>
+                                    <select class="form-select" name="experience_years" style="border-radius: 8px;">
+                                        <option>1-2 Years</option>
+                                        <option>3-5 Years</option>
+                                        <option>5++ Years</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold small text-muted">Deskripsi pekerjaan</label>
+                                    <textarea class="form-control" name="job_description" rows="11"
+                                        placeholder="PT XYZ sedang mencari kandidat dengan kriteria..." style="border-radius: 8px;"></textarea>
                                 </div>
                             </div>
-                            <p class="text-muted small mx-auto" style="max-width: 400px;">
-                                The candidate's profile is highly compatible with the Senior Frontend Engineer role based on
-                                technical skills and experience depth.
-                            </p>
-                        </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit"
+                                    class="btn btn-primary px-4 py-2 flex-grow-1 fw-bold">Analyze</button>
+                                <button class="btn btn-outline-warning disabled px-4 py-2 fw-bold" style="border-radius: 8px;">Free
+                                    2x
+                                    Analyze</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -109,16 +102,44 @@
                     </div>
                 </div>
 
-                <div class="card border-0 text-white mb-4"
-                    style="background: linear-gradient(135deg, #4e73df, #224abe); border-radius: 12px;">
-                    <div class="card-body p-3 d-flex align-items-center gap-3">
-                        <div class="bg-white bg-opacity-25 rounded p-2">
-                            <i class="fas fa-sparkles text-white"></i>
+                <div class="card border-0 shadow-lg text-white mb-4"
+                    style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); border-radius: 16px; overflow: hidden;">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center"
+                                    style="width: 35px; height: 35px;">
+                                    <i class="fas fa-chart-pie text-white small"></i>
+                                </div>
+                                <h6 class="fw-bold m-0 small text-uppercase tracking-wider">Hasil Analisis AI</h6>
+                            </div>
+                            <span id="match-status" class="badge rounded-pill bg-white text-primary px-3 py-2 fw-bold"
+                                style="font-size: 0.7rem;">
+                                WAITING
+                            </span>
                         </div>
-                        <div>
-                            <h6 class="fw-bold m-0 small">AI Recommendation</h6>
-                            <p class="m-0" style="font-size: 0.75rem;">This candidate ranks in the top 5% of all
-                                applicants for technical compatibility.</p>
+
+                        <div class="text-center py-2">
+                            <div class="position-relative d-inline-flex align-items-center justify-content-center">
+                                <svg width="140" height="140" viewBox="0 0 140 140">
+                                    <circle cx="70" cy="70" r="60" stroke="rgba(255,255,255,0.2)"
+                                        stroke-width="10" fill="none" />
+                                    <circle id="progress-bar" cx="70" cy="70" r="60" stroke="#ffffff"
+                                        stroke-width="10" fill="none" stroke-dasharray="377" stroke-dashoffset="377"
+                                        stroke-linecap="round"
+                                        style="transition: stroke-dashoffset 1.5s ease-in-out; transform: rotate(-90deg); transform-origin: center;" />
+                                </svg>
+
+                                <div class="position-absolute text-center">
+                                    <h2 id="text-percentage" class="fw-bold m-0" style="font-size: 2rem;">0%</h2>
+                                    <small class="opacity-75 fw-bold" style="font-size: 0.6rem;">MATCH SCORE</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="text-summary" class="mt-3 p-3 bg-white text-light bg-opacity-10 rounded-3 text-center"
+                            style="font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.1);">
+                            Silakan unggah dan analisis CV Anda untuk melihat skor kecocokan.
                         </div>
                     </div>
                 </div>
@@ -132,8 +153,7 @@
                     <div class="card-body p-3">
                         <h6 class="fw-bold text-success mb-2 small"><i class="fas fa-check-circle me-1"></i> Key Strength
                         </h6>
-                        <p class="small text-muted mb-0">Strong proficiency in React Ecosystem (Hooks, Redux, Context API)
-                            shown in 3 previous roles.</p>
+                        <p class="small text-muted mb-0" id="text-strength">Masukan CV Terlebih dahulu...</p>
                     </div>
                 </div>
             </div>
@@ -143,8 +163,7 @@
                     <div class="card-body p-3">
                         <h6 class="fw-bold text-primary mb-2 small"><i class="fas fa-lightbulb me-1"></i> Recommendation
                         </h6>
-                        <p class="small text-muted mb-0">Candidate would excel in a team leading environment given their
-                            mentorship experience.</p>
+                        <p class="small text-muted mb-0" id="text-recommendation">Masukan CV Terlebih dahulu...</p>
                     </div>
                 </div>
             </div>
@@ -154,65 +173,144 @@
                     <div class="card-body p-3">
                         <h6 class="fw-bold text-warning mb-2 small"><i class="fas fa-exclamation-triangle me-1"></i>
                             Improvement Point</h6>
-                        <p class="small text-muted mb-0">Lacks formal experience with Next.js which is mentioned as a
-                            'nice-to-have' in JD.</p>
+                        <p class="small text-muted mb-0" id="text-improvement">Masukan CV Terlebih dahulu...</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <script>
-    document.getElementById('cvInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        const pdfViewer = document.getElementById('pdfViewer');
-        const placeholderText = document.getElementById('placeholderText');
-        const fileNameDisplay = document.getElementById('fileNameDisplay');
-        const fileDateDisplay = document.getElementById('fileDateDisplay');
-        const fullScreenBtn = document.getElementById('fullScreenBtn');
+        document.getElementById('cvInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const pdfViewer = document.getElementById('pdfViewer');
+            const placeholderText = document.getElementById('placeholderText');
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
+            const fileDateDisplay = document.getElementById('fileDateDisplay');
+            const fullScreenBtn = document.getElementById('fullScreenBtn');
 
-        if (file) {
-            // Validasi sederhana jika bukan PDF (opsional)
-            if (file.type !== 'application/pdf') {
-                alert('Mohon upload file berformat PDF untuk melihat pratinjau.');
-                return;
+            if (file) {
+                // Validasi sederhana jika bukan PDF (opsional)
+                if (file.type !== 'application/pdf') {
+                    alert('Mohon upload file berformat PDF untuk melihat pratinjau.');
+                    return;
+                }
+
+                // Membaca file untuk pratinjau
+                const fileURL = URL.createObjectURL(file);
+
+                // Tampilkan Iframe, Sembunyikan Placeholder
+                pdfViewer.src = fileURL;
+                pdfViewer.style.display = 'block';
+                placeholderText.style.display = 'none';
+                fullScreenBtn.style.display = 'block';
+                fullScreenBtn.href = fileURL;
+                fullScreenBtn.target = '_blank';
+
+                // Update Info File
+                fileNameDisplay.innerText = file.name;
+                const now = new Date();
+                fileDateDisplay.innerText = "Uploaded: " + now.getHours() + ":" + now.getMinutes() + " Just now";
             }
+        });
 
-            // Membaca file untuk pratinjau
-            const fileURL = URL.createObjectURL(file);
+        // Fitur Drag and Drop (Opsional tapi keren)
+        const uploadArea = document.querySelector('.upload-area');
 
-            // Tampilkan Iframe, Sembunyikan Placeholder
-            pdfViewer.src = fileURL;
-            pdfViewer.style.display = 'block';
-            placeholderText.style.display = 'none';
-            fullScreenBtn.style.display = 'block';
-            fullScreenBtn.href = fileURL;
-            fullScreenBtn.target = '_blank';
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
 
-            // Update Info File
-            fileNameDisplay.innerText = file.name;
-            const now = new Date();
-            fileDateDisplay.innerText = "Uploaded: " + now.getHours() + ":" + now.getMinutes() + " Just now";
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
-    });
 
-    // Fitur Drag and Drop (Opsional tapi keren)
-    const uploadArea = document.querySelector('.upload-area');
+        uploadArea.addEventListener('drop', function(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            document.getElementById('cvInput').files = files;
+            // Trigger change event manual
+            document.getElementById('cvInput').dispatchEvent(new Event('change'));
+        });
 
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        uploadArea.addEventListener(eventName, preventDefaults, false);
-    });
+        document.getElementById('analyzeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-    function preventDefaults (e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
+            let formData = new FormData(this);
+            let submitBtn = e.target.querySelector('button[type="submit"]');
 
-    uploadArea.addEventListener('drop', function(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        document.getElementById('cvInput').files = files;
-        // Trigger change event manual
-        document.getElementById('cvInput').dispatchEvent(new Event('change'));
-    });
-</script>
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Analyzing...';
+            submitBtn.disabled = true;
+
+            fetch("{{ route('resume.analyze') }}", {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    submitBtn.innerHTML = 'Analyze';
+                    submitBtn.disabled = false;
+
+
+                    if (data.success) {
+                        // 1. Update Persentase di lingkaran
+                        document.getElementById('text-percentage').innerText = data.match_percentage + '%';
+
+                        // 2. Update Key Strength
+                        document.getElementById('text-strength').innerText = data.strength;
+
+                        // 3. Update Recommendation
+                        document.getElementById('text-recommendation').innerText = data.recommendation;
+
+                        // 4. Update Improvement Points
+                        document.getElementById('text-improvement').innerText = data.improvement_points;
+
+                        // 5. Update Ringkasan di bawah lingkaran (opsional)
+                        if (data.summary) {
+                            document.getElementById('text-summary').innerText = data.summary;
+                        }
+
+                        const percentage = data.match_percentage;
+                        const circle = document.getElementById('progress-bar');
+                        const statusBadge = document.getElementById('match-status');
+
+                        // 1. Hitung Dash Offset (Keliling Lingkaran = 2 * PI * R ≈ 377)
+                        const offset = 377 - (377 * percentage / 100);
+                        circle.style.strokeDashoffset = offset;
+
+                        // 2. Update Teks Persentase
+                        document.getElementById('text-percentage').innerText = percentage + '%';
+
+                        // 3. Update Status Badge & Warna
+                        if (percentage >= 80) {
+                            statusBadge.innerText = "HIGH MATCH";
+                            statusBadge.className =
+                                "badge rounded-pill bg-success text-white px-3 py-2 fw-bold";
+                        } else if (percentage >= 50) {
+                            statusBadge.innerText = "MEDIUM MATCH";
+                            statusBadge.className = "badge rounded-pill bg-warning text-dark px-3 py-2 fw-bold";
+                        } else {
+                            statusBadge.innerText = "LOW MATCH";
+                            statusBadge.className = "badge rounded-pill bg-danger text-white px-3 py-2 fw-bold";
+                        }
+
+                        // 4. Update Summary
+                        document.getElementById('text-summary').innerText = data.recommendation;
+
+                        console.log("Analisis Berhasil Diupdate ke UI");
+                    } else {
+                        alert("Gagal menganalisis: " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Terjadi kesalahan saat analisis.");
+                    submitBtn.innerHTML = 'Analyze';
+                    submitBtn.disabled = false;
+                });
+        });
+    </script>
 @endsection

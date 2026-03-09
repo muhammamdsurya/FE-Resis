@@ -13,6 +13,7 @@ use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\publicController;
 use App\Http\Controllers\transactionController;
 use App\Http\Controllers\userCourseController;
+use App\Http\Controllers\ResumeController;
 
 // Rute standar
 Route::redirect('/', '/beranda');
@@ -142,6 +143,7 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::post('/kelas/rate', [userCourseController::class, 'rate'])->name('kelas.rate');
 
     Route::post('/checkout', [transactionController::class, 'checkout'])->name('user.checkout');
+    Route::post('/analyze-resume', [ResumeController::class, 'analyze'])->name('resume.analyze');
 });
 
 
