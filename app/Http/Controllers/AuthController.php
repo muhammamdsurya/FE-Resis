@@ -14,7 +14,6 @@ use App\Models\User; // <-- corrected line
 
 class AuthController extends Controller
 {
-
     protected $apiUrl;
 
     public function __construct()
@@ -29,7 +28,6 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-
         // Validasi input
         $request->validate([
             'email' => 'required|string|email|max:255',
@@ -50,16 +48,16 @@ class AuthController extends Controller
             // get the cookies from the response
             $cookies = $response->cookies();
             // get the session cookie
-           // ambil cookie "session" dari response
-    $cookies = $response->cookies();
-    $sessionCookie = $cookies->getCookieByName('session');
+            // ambil cookie "session" dari response
+            $cookies = $response->cookies();
+            $sessionCookie = $cookies->getCookieByName('session');
 
-    if ($sessionCookie) {
-        $sessionValue = $sessionCookie->getValue();
+            if ($sessionCookie) {
+                $sessionValue = $sessionCookie->getValue();
 
-        // simpan di Laravel session
-        session(['api_session' => $sessionValue]);
-    }
+                // simpan di Laravel session
+                session(['api_session' => $sessionValue]);
+            }
 
             // Validate the response structure
             $requiredFields = ['id', 'email', 'full_name', 'photo_profile', 'role', 'created_at', 'updated_at', 'activated_at'];
@@ -90,7 +88,6 @@ class AuthController extends Controller
 
     public function regisAdmin(Request $request)
     {
-
         // Hit API users/auth/register
         $response = Http::withApiSession()->post($this->apiUrl . 'admin/auth/register', [
             'email' => $request->email,
@@ -110,7 +107,7 @@ class AuthController extends Controller
                 return redirect()->route('admin.data', ['id' => $personId]);
             }
         } else {
-            return redirect()->route('data.admin')->with('error', "Email sudah terdaftar");
+            return redirect()->route('data.admin')->with('error', 'Email sudah terdaftar');
         }
     }
 
@@ -154,7 +151,6 @@ class AuthController extends Controller
                 Log::error('Set-Cookie header not found in API response.');
             }
 
-
             // Validate the response structure
             $requiredFields = ['id', 'email', 'full_name', 'photo_profile', 'role', 'created_at', 'updated_at', 'activated_at'];
             foreach ($requiredFields as $field) {
@@ -184,13 +180,12 @@ class AuthController extends Controller
 
     public function editPengajar(Request $request, $id)
     {
-
         $apiSession = session('api_session');
 
         // Definisikan headers
         $headers = [
             'Content-Type' => 'application/json',
-            'Cookie' => 'session=' . $apiSession
+            'Cookie' => 'session=' . $apiSession,
         ];
 
         // Definisikan body sebagai array associative
@@ -199,7 +194,6 @@ class AuthController extends Controller
             'education' => $request->education,
             'experience' => $request->experience,
         ];
-
 
         $apiUrl = $this->apiUrl . 'instructors/auth/data';
 
@@ -215,9 +209,9 @@ class AuthController extends Controller
                     ->attach(
                         'photo_profile',
                         fopen($request->file('image')->getRealPath(), 'r'), // Open the file for reading
-                        $request->file('image')->getClientOriginalName() // Get the original filename
+                        $request->file('image')->getClientOriginalName(), // Get the original filename
                     )
-                    ->put($this->apiUrl . "instructors/" . $id . "/photo_profile");
+                    ->put($this->apiUrl . 'instructors/' . $id . '/photo_profile');
                 // Check if the image upload was successful
 
                 // Cek respons API
@@ -232,7 +226,9 @@ class AuthController extends Controller
             return back()->with('message', 'Data berhasil diperbarui.');
         } else {
             // Handle case where the bundle data update fails
-            return redirect()->back()->withErrors(['msg' => 'Gagal memperbarui data.']);
+            return redirect()
+                ->back()
+                ->withErrors(['msg' => 'Gagal memperbarui data.']);
         }
     }
     public function regisInstructor(Request $request)
@@ -242,14 +238,14 @@ class AuthController extends Controller
         // Definisikan headers
         $headers = [
             'Content-Type' => 'application/json',
-            'Cookie' => 'session=' . $apiSession
+            'Cookie' => 'session=' . $apiSession,
         ];
 
         $body = [
             'email' => $request->email,
             'password' => $request->password,
             'password_confirm' => $request->password_confirm,
-            'full_name' => $request->full_name
+            'full_name' => $request->full_name,
         ];
 
         // Hit API users/auth/register
@@ -269,9 +265,9 @@ class AuthController extends Controller
                         ->attach(
                             'photo_profile',
                             fopen($request->file('image')->getRealPath(), 'r'), // Open the file for reading
-                            $request->file('image')->getClientOriginalName() // Get the original filename
+                            $request->file('image')->getClientOriginalName(), // Get the original filename
                         )
-                        ->put($this->apiUrl . "instructors/" . $personId . "/photo_profile");
+                        ->put($this->apiUrl . 'instructors/' . $personId . '/photo_profile');
 
                     // Cek respons API
                     if ($imageResponse->successful()) {
@@ -286,7 +282,7 @@ class AuthController extends Controller
             }
         } else {
             // Handle case where the bundle data update fails
-            return back()->with('error', "Email sudah digunakan");
+            return back()->with('error', 'Email sudah digunakan');
         }
     }
     public function loginInstructor(Request $request)
@@ -296,7 +292,6 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
         ]);
-
 
         // Kirim permintaan POST ke API login
         $response = Http::withClientUserIP()->post($this->apiUrl . 'instructors/auth/login', [
@@ -328,7 +323,6 @@ class AuthController extends Controller
                 Log::error('Set-Cookie header not found in API response.');
             }
 
-
             // Validate the response structure
             $requiredFields = ['id', 'email', 'full_name', 'photo_profile', 'role', 'created_at', 'updated_at', 'activated_at'];
             foreach ($requiredFields as $field) {
@@ -353,7 +347,6 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-
         // Hit API users/auth/register
         $response = Http::withClientUserIP()->post($this->apiUrl . 'users/auth/register', [
             'email' => $request->email,
@@ -366,17 +359,20 @@ class AuthController extends Controller
         if ($response->successful()) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Silahkan aktivasi akunmu di email!'
+                'message' => 'Silahkan aktivasi akunmu di email!',
             ]);
         }
 
         // Handle error dari API
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Email sudah terdaftar atau terjadi kesalahan.',
-            'body' => $response->body(),
-            'email' => $request->email
-        ], 400);
+        return response()->json(
+            [
+                'status' => 'error',
+                'message' => 'Email sudah terdaftar atau terjadi kesalahan.',
+                'body' => $response->body(),
+                'email' => $request->email,
+            ],
+            400,
+        );
     }
 
     public function handleGoogleOauth(Request $request)
@@ -434,7 +430,6 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         try {
-
             // Send a POST request to the API logout endpoint
             $response = Http::withApiSession()->post($this->apiUrl . 'auth/logout');
 
@@ -470,22 +465,27 @@ class AuthController extends Controller
     }
     public function activation(Request $request, $token)
     {
-
         $url = $this->apiUrl . 'auth/activation/' . $token;
 
         $response = Http::withClientUserIP()->post($url, ['email' => $request->email]);
 
         // Cek jika token dan email ada dalam query string
         if ($response->successful()) {
-            return response()->json([
-                'status_code' => $response->status(),
-                'message' => 'Akun berhasil diaktifkan.',
-            ], $response->status());
+            return response()->json(
+                [
+                    'status_code' => $response->status(),
+                    'message' => 'Akun berhasil diaktifkan.',
+                ],
+                $response->status(),
+            );
         } else {
-            return response()->json([
-                'status_code' => $response->status(),
-                'message' => 'Token aktivasi tidak valid atau sudah kadaluarsa.',
-            ], $response->status());
+            return response()->json(
+                [
+                    'status_code' => $response->status(),
+                    'message' => 'Token aktivasi tidak valid atau sudah kadaluarsa.',
+                ],
+                $response->status(),
+            );
         }
     }
 
@@ -499,10 +499,13 @@ class AuthController extends Controller
         if ($response->successful()) {
             return response()->json(['status' => 'success', 'message' => 'Cek email untuk reset password. Link untuk reset password hanya aktif dalam 5 menit']);
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => $response->body(),
-            ], $response->status());
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => $response->body(),
+                ],
+                $response->status(),
+            );
         }
     }
 
@@ -521,9 +524,9 @@ class AuthController extends Controller
             'Content-Type' => 'application/json',
         ];
         $body = [
-            "email" => $request->email,
-            "new_password" => $request->new_password,
-            "new_password_confirm" => $request->new_password_confirm
+            'email' => $request->email,
+            'new_password' => $request->new_password,
+            'new_password_confirm' => $request->new_password_confirm,
         ];
 
         $response = Http::withHeaders($headers)->put($url, $body);
@@ -531,10 +534,13 @@ class AuthController extends Controller
         if ($response->successful()) {
             return response()->json(['status' => 'success', 'message' => 'Password berhasil diubah!']);
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => $response->body(),
-            ], $response->status());
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => $response->body(),
+                ],
+                $response->status(),
+            );
         }
     }
     public function getReset()

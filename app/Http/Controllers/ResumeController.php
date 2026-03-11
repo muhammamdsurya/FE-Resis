@@ -8,8 +8,34 @@ use Illuminate\Support\Facades\Log;
 
 class ResumeController extends Controller
 {
+    public function __construct()
+    {
+        $this->user = session('user');
+        $this->apiUrl = env('API_URL');
+    }
+    /**
+     * Helper untuk mengambil session dengan format yang benar
+     */
+    private function getFormattedApiSession()
+    {
+        $apiSession = session('api_session');
+
+        if (!$apiSession) {
+            return null;
+        }
+
+        // Pastikan format mengandung prefix 'session='
+        if (!str_contains($apiSession, 'session=')) {
+            $apiSession = 'session=' . $apiSession;
+        }
+
+        return $apiSession;
+    }
+
     public function analyze(Request $request)
     {
+        $apiSession = $this->getFormattedApiSession();
+
         $request->validate([
             'resume' => 'required|mimes:pdf|max:2048',
             'experience_years' => 'required',
@@ -19,16 +45,10 @@ class ResumeController extends Controller
         try {
             $file = $request->file('resume');
 
-
-            // AMBIL COOKIE DARI SNIPPET POSTMAN ANDA
-            $sessionCookie = 'session=MTc3MzA3ODUxN3xEWDhFQVFMX2dBQUJFQUVRQUFEX2t2LUFBQU1HYzNSeWFXNW5EQXNBQ1hCbGNuTnZibDlwWkFaemRISnBibWNNSmdBa01HTXpZbVJtWWpjdFl6bGxNaTAwTVRVNExUa3dNek10TURsbFlqZzRNR0k1TmpJeUJuTjBjbWx1Wnd3SEFBVmxiV0ZwYkFaemRISnBibWNNRkFBU1oyeGxibTV4YkdGQVoyMWhhV3d1WTI5dEJuTjBjbWx1Wnd3R0FBUnliMnhsQm5OMGNtbHVad3dHQUFSMWMyVnl8pjH8L9H4z1kkrcCctojS8AvGSMTWVQdI_uJGd8EpCXY=';
-
-                $apiSession = session('api_session');
-
             $response = Http::timeout(120)
                 ->withoutVerifying()
                 ->withHeaders([
-                    'Cookie' => $apiSession, // WAJIB ADA AGAR TIDAK 401
+                    'Cookie' => $apiSession, // Formatnya sudah "session=xxxx" dari fungsi login
                     'Accept' => 'application/json',
                 ])
                 ->attach('resume', fopen($file->getRealPath(), 'r'), $file->getClientOriginalName())
@@ -47,16 +67,116 @@ class ResumeController extends Controller
                 ]);
             }
 
+            // 2. Jika API mengembalikan 401, artinya session di server tujuan sudah expire
+            if ($response->status() === 401) {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Sesi API telah berakhir, silakan login ulang ke aplikasi.',
+                    ],
+                    401,
+                );
+            }
+
             return response()->json(
                 [
                     'success' => false,
                     'message' => 'API Error: ' . $response->status(),
-                    'detail' => $response->json(), // Untuk melihat alasan ditolak
+                    'detail' => $response->json(),
                 ],
                 $response->status(),
             );
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage(),
+                ],
+                500,
+            );
         }
+    }
+
+    public function getCredits()
+    {
+        $apiSession = $this->getFormattedApiSession();
+
+        try {
+            $response = Http::withoutVerifying()
+                ->withHeaders(['Cookie' => $apiSession])
+                ->get('https://akuanalis.com/api/v1/credits'); // Sesuaikan endpoint aslinya
+
+            if ($response->successful()) {
+                return response()->json($response->json());
+            }
+
+            return response()->json(['credits' => 0], 200);
+        } catch (\Exception $e) {
+            return response()->json(['credits' => 0], 500);
+        }
+    }
+
+    public function history(Request $request)
+    {
+        $apiSession = $this->getFormattedApiSession();
+        $page = $request->get('page', 1); // Ambil halaman saat ini, default 1
+
+        $response = Http::withoutVerifying()
+            ->withHeaders(['Cookie' => $apiSession])
+            ->get('https://akuanalis.com/api/v1/resume/', [
+                'page' => $page,
+                'per_page' => 10,
+            ]);
+
+        //             // TAMBAHKAN INI UNTUK CEK DATA
+        // dd($response->json());
+        $data = $response->json();
+
+        return view('user.resume', [
+            'full_name' => $this->user['full_name'],
+            'results' => $data['results'] ?? [],
+            'total' => $data['total'] ?? 0,
+            'per_page' => $data['per_page'] ?? 10,
+            'current_page' => $data['page'] ?? 1,
+        ]);
+    }
+
+    public function report($id)
+    {
+        $apiSession = $this->getFormattedApiSession();
+
+        // 1. Ambil Detail Resume
+        $resumeResponse = Http::withoutVerifying()
+            ->withHeaders(['Cookie' => $apiSession])
+            ->get("https://akuanalis.com/api/v1/resume/{$id}");
+
+        if (!$resumeResponse->successful()) {
+            return redirect()->back()->with('error', 'Data tidak ditemukan.');
+        }
+
+        $resumeData = $resumeResponse->json();
+
+
+        // 2. Ambil Rekomendasi Kursus (Berdasarkan ID kategori dari resume)
+        $courses = [];
+        if (!empty($resumeData['course_categories'])) {
+            $categoryIds = collect($resumeData['course_categories'])->pluck('category_id')->toArray();
+
+            $courseResponse = Http::withoutVerifying()
+                ->withHeaders(['Cookie' => $apiSession])
+                ->post('https://akuanalis.com/api/v1/courses/by-categories', [
+                    'category_ids' => $categoryIds,
+                ]);
+
+            $coursesJson = $courseResponse->json();
+
+            $courses = $coursesJson['data'] ?? [];
+        }
+
+        return view('user.report', [
+            'full_name' => $this->user['full_name'],
+            'data' => $resumeData,
+            'courses' => $courses,
+        ]);
     }
 }

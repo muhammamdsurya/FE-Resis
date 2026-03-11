@@ -15,8 +15,7 @@
             </div>
 
             <div>
-                <a href="#" class="btn btn-outline-primary px-4 shadow-sm"
-                    style="border-radius: 10px; font-weight: 600;">
+                <a href="{{ route('resume.history') }}" class="btn btn-outline-primary px-4 shadow-sm" ...>
                     <i class="fas fa-history me-2"></i> Riwayat Screening
                 </a>
             </div>
@@ -66,9 +65,10 @@
                             <div class="d-flex gap-2">
                                 <button type="submit"
                                     class="btn btn-primary px-4 py-2 flex-grow-1 fw-bold">Analyze</button>
-                                <button class="btn btn-outline-warning disabled px-4 py-2 fw-bold" style="border-radius: 8px;">Free
-                                    2x
-                                    Analyze</button>
+                                <button id="btnCredits" class="btn btn-outline-warning disabled px-4 py-2 fw-bold"
+                                    style="border-radius: 8px;">
+                                    Free <span id="creditCount">...</span>x Analyze
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -180,6 +180,14 @@
         </div>
     </div>
     <script>
+        function refreshCredits() {
+            fetch("{{ route('credits.get') }}")
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('creditCount').innerText = data.credits || 0;
+                });
+        }
+        refreshCredits();
         document.getElementById('cvInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             const pdfViewer = document.getElementById('pdfViewer');
@@ -239,9 +247,25 @@
             let formData = new FormData(this);
             let submitBtn = e.target.querySelector('button[type="submit"]');
 
+            // Ambil nilai untuk pengecekan
+            const jobPosition = formData.get('job_position');
+            const originalDescription = formData.get('job_description');
+
+            // Validasi sederhana: pastikan tidak kosong
+            if (!jobPosition || !originalDescription) {
+                alert("Mohon isi Jabatan dan Deskripsi Pekerjaan!");
+                return;
+            }
+
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Analyzing...';
             submitBtn.disabled = true;
 
+            // Gabungkan teks
+            const combinedDescription =
+                `Posisi: ${jobPosition}. Berikut adalah deskripsi pekerjaan: ${originalDescription}`;
+
+            // Timpa nilai di formData
+            formData.set('job_description', combinedDescription);
             fetch("{{ route('resume.analyze') }}", {
                     method: "POST",
                     body: formData,
@@ -256,6 +280,7 @@
 
 
                     if (data.success) {
+                        refreshCredits();
                         // 1. Update Persentase di lingkaran
                         document.getElementById('text-percentage').innerText = data.match_percentage + '%';
 

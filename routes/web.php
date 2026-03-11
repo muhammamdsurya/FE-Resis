@@ -125,8 +125,11 @@ Route::prefix('user')->middleware(['whoami:user', 'completed.data'])->group(func
     Route::get('/transaksi', [UserController::class, 'transaksi'])->name('transaksi');
     Route::get('/cvmenu', [UserController::class, 'cvmenu'])->name('cvmenu');
     Route::get('/materi', [UserController::class, 'materi'])->name('materi');
+Route::get('/resume/history', [ResumeController::class, 'history'])->name('resume.history');
+Route::get('/resume/detail/{id}', [ResumeController::class, 'report'])->name('resume.detail');
     Route::get('/diskusi-kelas/{courseId}', [UserController::class, 'diskusi'])->name('diskusi');
     Route::get('/detail-kelas/{courseId}', [UserController::class, 'detailKelas'])->name('user.detail');
+    Route::get('/credits', [ResumeController::class, 'getCredits'])->name('credits.get');
 
     Route::post('/complete-data', [UserDataController::class, 'completePost'])->name('complete.post');
 

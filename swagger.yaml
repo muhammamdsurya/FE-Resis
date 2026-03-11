@@ -1,0 +1,4299 @@
+openapi: 3.1.0
+info:
+  title: Resi's Project Web Course API
+  description: This is Resis's Project Web Course API docs
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api/v1
+  - url: https://staging.akuanalis.com/api/v1
+  - url: https://dev-api.akuanalis.com/api/v1
+  - url: https://akuanalis.com/api/v1
+tags:
+  - name: auth
+    description: For Admin and User roles authentication
+  - name: course
+    description: For Admin and User roles to manage course
+  - name: course bundle
+    description: For Admin and User roles to manage course bundle
+  - name: course content
+    description: For Admin and User roles to manage course content
+  - name: course course forum
+    description: For Admin and User roles to manage course forum
+  - name: transaction
+    description: For User roles to manage course transaction
+  - name: user course content
+    description: For User roles to manage course content
+  - name: user course
+    description: For User roles to manage course
+  - name: account
+    description: For Admin and User roles to manage account
+  - name: statistics
+    description: For Admin and User roles to manage statistics
+  - name: search
+    description: For Admin and User roles to search
+  - name: free trial
+    description: For Admin and User roles to manage free tier
+  - name: resume
+    description: For Admin, Instructor, and User roles to manage resume analysis
+  - name: credits
+    description: For Admin, Instructor, and User roles to manage credits
+
+# start of paths
+paths:
+  /auth/whoami:
+    get:
+      tags:
+        - auth
+      summary: Get current user data
+      operationId: whoami
+      security:
+        - userSessionCookie: []
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+  /admin/auth/register:
+    post:
+      tags:
+        - auth
+      summary: Register for admin role
+      operationId: adminRegister
+      requestBody:
+        description: Register form
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: invalid email/password
+  /instructors/auth/register:
+    post:
+      tags:
+        - auth
+      summary: Register for instructors role
+      operationId: instructorRegister
+      requestBody:
+        description: Register form
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: invalid email/password
+  /users/auth/register:
+    post:
+      tags:
+        - auth
+      summary: Register for user role
+      operationId: userRegister
+      requestBody:
+        description: Register form
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: invalid email/password
+  /admin/auth/data:
+    post:
+      tags:
+        - auth
+      summary: To complete admin data
+      operationId: completeAdminData
+      security:
+        - adminSessionCookie: []
+      requestBody:
+        description: Admin data form
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminDataForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+        '400':
+          description: invalid data
+  /admin/auth/data/{adminId}:
+    get:
+      tags:
+        - auth
+      summary: Get admin data
+      operationId: getAdminData
+      parameters:
+        - name: adminId
+          in: path
+          description: ID of the admin to get
+          required: true
+          schema:
+            type: string
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Admin'
+  /instructors/auth/data:
+    post:
+      tags:
+        - auth
+      summary: To complete instructor data
+      operationId: completeInstructorData
+      security:
+        - adminSessionCookie: []
+      requestBody:
+        description: Instructor data form
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstructorDataForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instructor'
+        '400':
+          description: invalid data
+    put:
+      tags:
+        - auth
+      summary: To update instructor data
+      operationId: updateInstructorData
+      security:
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      requestBody:
+        description: Instructor data form
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstructorDataForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instructor'
+        '400':
+          description: invalid data
+  /instructors/auth/data/{instructorId}:
+    get:
+      tags:
+        - auth
+      summary: Get instructor data
+      parameters:
+        - name: instructorId
+          in: path
+          description: ID of the instructor to get
+          required: true
+          schema:
+            type: string
+      operationId: getInstructorData
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instructor'
+  /users/auth/data:
+    post:
+      tags:
+        - auth
+      summary: To complete user data
+      operationId: completeUserData
+      security:
+        - userSessionCookie: []
+      requestBody:
+        description: User data form
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDataForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: invalid data
+    put:
+      tags:
+        - auth
+      summary: To update user data
+      operationId: updateUserData
+      security:
+        - userSessionCookie: []
+      requestBody:
+        description: User data form
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDataForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: invalid data
+  /users/auth/data/{userId}:
+    get:
+      tags:
+        - auth
+      summary: Get user data
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user to get
+          required: true
+          schema:
+            type: string
+      operationId: getUserData
+      security:
+        - userSessionCookie: []
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /auth/activation/{activationToken}:
+    post:
+      tags:
+        - auth
+      summary: To activate admin & user account
+      operationId: activateUser
+      parameters:
+        - name: activationToken
+          in: path
+          description: ID that system generate to verify the activation request
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Form to activate account
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  examples:
+                    - test@yopmail.com
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: invalid activation token
+  /admin/auth/login:
+    post:
+      tags:
+        - auth
+      summary: Login for admin role
+      operationId: loginAdmin
+      requestBody:
+        description: Admin role login
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginForm'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+          headers:
+            Set-Cookie:
+              description: Set-Cookie
+              schema:
+                type: string
+        '400':
+          description: invalid email/password
+  /instructors/auth/login:
+    post:
+      tags:
+        - auth
+      summary: Login for instructor role
+      operationId: instructorLogin
+      requestBody:
+        description: Instructor login form
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginForm'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: invalid email/password
+  /users/auth/login:
+    post:
+      tags:
+        - auth
+      summary: Login for user role
+      operationId: userLogin
+      requestBody:
+        description: User login form
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginForm'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '400':
+          description: invalid email/password
+  /auth/logout:
+    post:
+      tags:
+        - auth
+      summary: Logout for admin and user roles
+      operationId: logout
+      security:
+        - adminSessionCookie: []
+        - userSessionCookie: []
+        - instructorSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /auth/password/forgot:
+    post:
+      tags:
+        - auth
+      summary: To request reset reset token
+      operationId: generateResetPasswordToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  examples:
+                    - user@mail.com
+  /auth/password/{resetToken}:
+    put:
+      tags:
+        - auth
+      summary: Reset Password for admin and user roles
+      operationId: resetPassword
+      parameters:
+        - name: resetToken
+          in: path
+          description: ID that system generate to verify the reset request
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Form to reset password
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetForm'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: invalid password
+    get:
+      tags:
+        - auth
+      summary: To verify reset token
+      operationId: verifyResetToken
+      parameters:
+        - name: resetToken
+          in: path
+          description: ID that system generate to verify the reset request
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The reset token is valid
+        '400':
+          description: invalid reset token
+  /courses/categories:
+    post:
+      tags:
+        - course
+      summary: Create a new course category by admin(regular & super)
+      operationId: createCourseCategory
+      security:
+        - sessionCookie: []
+      requestBody:
+        description: Course category object
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  examples:
+                    - Web Development
+                description:
+                  type: string
+                  examples:
+                    - Learn web development from basics to advanced
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseCategory'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - course
+      summary: Get all course categories
+      operationId: getCourseCategories
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseCategory'
+
+
+  /courses/categories/{categoryId}:
+    get:
+      tags:
+        - course
+      summary: Get course category by ID
+      operationId: getCourseCategoryById
+      parameters:
+        - name: categoryId
+          in: path
+          description: ID of the category to get
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseCategory'
+        '400':
+          description: Invalid category ID
+    put:
+      tags:
+        - course
+      summary: Update course category by ID
+      operationId: updateCourseCategoryById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: categoryId
+          in: path
+          description: ID of the category to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Course category object
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  examples:
+                    - Web Development
+                description:
+                  type: string
+                  examples:
+                    - Learn web development from basics to advanced
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseCategory'
+        '400':
+          description: Invalid input
+    delete:
+      tags:
+        - course
+      summary: Delete course category by ID
+      operationId: deleteCourseCategoryById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: categoryId
+          in: path
+          description: ID of the category to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid category ID
+  /courses:
+    post:
+      tags:
+        - course
+      summary: Create a new course by admin(regular & super)
+      operationId: createCourse
+      security:
+        - adminSessionCookie: []
+      requestBody:
+        description: Course object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseResponse'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - course
+      summary: Get all courses
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+      operationId: getCourses
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseResponsePagination'
+  /courses/instructors:
+    get:
+      tags:
+        - course
+      summary: Get all course categories with instructors
+      operationId: getCourseCategoriesWithInstructors
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InstructorResponse'
+
+  /courses/{courseId}:
+    get:
+      tags:
+        - course
+      summary: Get course by ID
+      operationId: getCourseById
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of the course to get
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseResponse'
+        '400':
+          description: Invalid course ID
+    put:
+      tags:
+        - course
+      summary: Update course by ID
+      operationId: updateCourseById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of the course to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Course object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseResponse'
+        '400':
+          description: Invalid input
+    delete:
+      tags:
+        - course
+      summary: Delete course by ID
+      operationId: deleteCourseById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of the course to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid course ID
+  /courses/{courseId}/thumbnail:
+    put:
+      tags:
+        - course
+      summary: Update course thumbnail by ID
+      operationId: updateCourseThumbnailById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of the course to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Course thumbnail object
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                thumbnail_image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+  /instructor/courses:
+    get:
+      tags:
+        - course
+      summary: Get all courses
+      security:
+        - instructorSessionCookie: []
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+      operationId: getCoursesInstructor
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseResponsePagination'
+  /courses/bundles:
+    post:
+      tags:
+        - course bundle
+      summary: Create a new course bundle by admin(regular & super)
+      operationId: createCourseBundle
+      security:
+        - adminSessionCookie: []
+      requestBody:
+        description: Course bundle object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseBundleForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseBundle'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - course bundle
+      summary: Get all course bundles
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+      operationId: getCourseBundles
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseBundlePagination'
+  /courses/bundles/{courseBundleId}:
+    get:
+      tags:
+        - course bundle
+      summary: Get course bundle by ID
+      operationId: getCourseBundleById
+      parameters:
+        - name: courseBundleId
+          in: path
+          description: ID of the course bundle to get
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseBundle'
+        '400':
+          description: Invalid course bundle ID
+    put:
+      tags:
+        - course bundle
+      summary: Update course bundle by ID
+      operationId: updateCourseBundleById
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: courseBundleId
+          in: path
+          description: ID of the course bundle to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Course bundle object
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  examples:
+                    - Web Development
+                description:
+                  type: string
+                  examples:
+                    - Learn how to build a website
+                price:
+                  type: number
+                  examples:
+                    - 100000
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid input
+    delete:
+      tags:
+        - course bundle
+      summary: Delete course bundle by ID
+      operationId: deleteCourseBundleById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: courseBundleId
+          in: path
+          description: ID of the course bundle to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid course bundle ID
+  /courses/bundles/{courseBundleId}/thumbnail:
+    put:
+      tags:
+        - course bundle
+      summary: Update course bundle thumbnail by ID
+      operationId: updateCourseBundleThumbnailById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: courseBundleId
+          in: path
+          description: ID of the course bundle to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Course bundle thumbnail object
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                thumbnail_image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+  /courses/bundles/{courseBundleId}/courses:
+    post:
+      tags:
+        - course bundle
+      summary: Add course to course bundle by ID
+      operationId: addCourseToCourseBundle
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: courseBundleId
+          in: path
+          description: ID of the course bundle to add course
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Course object
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                format: uuid
+                examples:
+                  - 5f7b1b3b7f3b9b0017b3b9b0
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+                  examples:
+                    - 5f7b1b3b7f3b9b0017b3b9b0
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - course bundle
+      summary: Get all courses in course bundle
+      operationId: getCoursesInCourseBundle
+      parameters:
+        - name: courseBundleId
+          in: path
+          description: ID of the course bundle to get
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+                  examples:
+                    - 5f7b1b3b7f3b9b0017b3b9b0
+        '400':
+          description: Invalid course bundle ID
+    delete:
+      tags:
+        - course bundle
+      summary: Delete course from course bundle by ID
+      operationId: deleteCourseFromCourseBundle
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: courseBundleId
+          in: path
+          description: ID of the course bundle to delete course
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Course object
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                format: uuid
+                examples:
+                  - 5f7b1b3b7f3b9b0017b3b9b0
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+                  examples:
+                    - 5f7b1b3b7f3b9b0017b3b9b0
+        '400':
+          description: Invalid input
+  /courses/{courseId}/contents:
+    post:
+      tags:
+        - course content
+      summary: Create a new course content by admin(regular & super)
+      operationId: createCourseContent
+      security:
+        - adminSessionCookie: []
+      requestBody:
+        description: Course content object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseContentForm'
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video_content:
+                  type: string
+                  format: binary
+                video_thumbnail:
+                  type: string
+                  format: binary
+                additional_source:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseContent'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - course content
+      summary: Get all course contents
+      operationId: getCourseContents
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseContent'
+  /courses/{courseId}/contents/{contentId}:
+    get:
+      tags:
+        - course content
+      summary: Get course content by ID
+      operationId: getCourseContentById
+      parameters:
+        - name: contentId
+          in: path
+          description: ID of the content to get
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseContent'
+        '400':
+          description: Invalid content ID
+    put:
+      tags:
+        - course content
+      summary: Update course content by ID
+      operationId: updateCourseContentById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: contentId
+          in: path
+          description: ID of the content to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Course content object
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content_title:
+                  type: string
+                  examples:
+                    - Introduction
+                content_description:
+                  type: string
+                  examples:
+                    - Introduction to web development
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video_content:
+                  type: string
+                  format: binary
+                additional_source:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+    delete:
+      tags:
+        - course content
+      summary: Delete course content by ID
+      operationId: deleteCourseContentById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: contentId
+          in: path
+          description: ID of the content to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid content ID
+  /courses/{courseId}/contents/{contentId}/video:
+    get:
+      tags:
+        - course content
+      summary: Get course content video by ID
+      operationId: getCourseContentVideoById
+      security:
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of the course to get
+          required: true
+          schema:
+            type: string
+        - name: contentId
+          in: path
+          description: ID of the content to get
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseVideo'
+        '400':
+          description: Invalid content ID
+    put:
+      tags:
+        - course content
+      summary: Update course content video by ID
+      operationId: updateCourseContentVideoById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of the course to update
+          required: true
+          schema:
+            type: string
+        - name: contentId
+          in: path
+          description: ID of the content to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Course video object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VideoContentForm'
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video_content:
+                  type: string
+                  format: binary
+                video_thumbnail:
+                  type: string
+                  format: binary
+                video_id:
+                  type: string
+                  examples:
+                    - 5f7b1b3b7f3b9b0017b3b9b0
+                chunk_index:
+                  type: integer
+                  examples:
+                    - 1
+                total_chunks:
+                  type: integer
+                  examples:
+                    - 1
+
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+  /courses/{courseId}/contents/{contentId}/additional_source:
+    get:
+      tags:
+        - course content
+      summary: Get course content additional source by ID
+      operationId: getCourseContentAdditionalSourceById
+      security:
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of the course to get
+          required: true
+          schema:
+            type: string
+        - name: contentId
+          in: path
+          description: ID of the content to get
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseAdditionalSource'
+        '400':
+          description: Invalid content ID
+    put:
+      tags:
+        - course content
+      summary: Update course content additional source by ID
+      operationId: updateCourseContentAdditionalSourceById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of the course to update
+          required: true
+          schema:
+            type: string
+        - name: contentId
+          in: path
+          description: ID of the content to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Course additional source object
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                additional_source:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+  /courses/{courseId}/contents/{contentId}/quiz:
+    get:
+      tags:
+        - course content
+      summary: Get course content quizze by ID
+      operationId: getCourseContentQuizzeById
+      security:
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of the course to get
+          required: true
+          schema:
+            type: string
+        - name: contentId
+          in: path
+          description: ID of the content to get
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseQuiz'
+        '400':
+          description: Invalid content ID
+    put:
+      tags:
+        - course content
+      summary: Update course content quizze by ID
+      operationId: updateCourseContentQuizzeById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: courseId
+          in: path
+          description: ID of the course to update
+          required: true
+          schema:
+            type: string
+        - name: contentId
+          in: path
+          description: ID of the content to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Course quizze object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuizForm'
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+  /courses/{courseId}/forums:
+    post:
+      tags:
+        - course course forum
+      summary: Create a new course forum by admin(regular & super)
+      operationId: createCourseForum
+      security:
+        - userSessionCookie: []
+      requestBody:
+        description: Course forum object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseForumQuestionForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseForumQuestionResponse'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - course course forum
+      summary: Get all course forums
+      operationId: getCourseForums
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseForumQuestionResponsePagination'
+  /courses/{courseId}/forums/{forumId}:
+    get:
+      tags:
+        - course course forum
+      summary: Get course forum by ID
+      operationId: getCourseForumById
+      security:
+        - userSessionCookie: []
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      parameters:
+        - name: forumId
+          in: path
+          description: ID of the forum to get
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseForumQuestionResponse'
+        '400':
+          description: Invalid forum ID
+    delete:
+      tags:
+        - course course forum
+      summary: Delete course forum by ID
+      operationId: deleteCourseForumById
+      security:
+        - userSessionCookie: []
+        - adminSessionCookie: []
+      parameters:
+        - name: forumId
+          in: path
+          description: ID of the forum to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid forum ID
+  /courses/{courseId}/forums/{forumId}/image:
+    post:
+      tags:
+        - course course forum
+      summary: add course forum image by ID
+      operationId: addCourseForumImage
+      security:
+        - userSessionCookie: []
+      requestBody:
+        description: Course forum image object
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                forum_question_image:
+                  type: string
+                  format: binary
+
+  /courses/{courseId}/forums/{forumId}/replies:
+    post:
+      tags:
+        - course course forum
+      summary: Create a new course forum reply by admin(regular & super)
+      operationId: createCourseForumReply
+      security:
+        - userSessionCookie: []
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      requestBody:
+        description: Course forum reply object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseForumQuestionReplyForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseForumQuestionReplyResponse'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - course course forum
+      summary: Get all course forum replies
+      operationId: getCourseForumReplies
+      security:
+        - userSessionCookie: []
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseForumQuestionReplyResponse'
+  /courses/{courseId}/forums/{forumId}/replies/{replyId}:
+    get:
+      tags:
+        - course course forum
+      summary: Get course forum reply by ID
+      operationId: getCourseForumReplyById
+      security:
+        - userSessionCookie: []
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      parameters:
+        - name: replyId
+          in: path
+          description: ID of the reply to get
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseForumQuestionReplyResponse'
+        '400':
+          description: Invalid reply ID
+    delete:
+      tags:
+        - course course forum
+      summary: Delete course forum reply by ID
+      operationId: deleteCourseForumReplyById
+      security:
+        - userSessionCookie: []
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      parameters:
+        - name: replyId
+          in: path
+          description: ID of the reply to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid reply ID
+  /courses/{courseId}/forums/{forumId}/replies/{replyId}/image:
+    post:
+      tags:
+        - course course forum
+      summary: add course forum image by ID
+      operationId: addCourseForumReplyImage
+      security:
+        - userSessionCookie: []
+      requestBody:
+        description: Course forum question reply image object
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                forum_question_reply_image:
+                  type: string
+                  format: binary
+  /transaction/webhook/midtrans/notify:
+    post:
+      tags:
+        - transaction
+      summary: Midtrans notification webhook
+      operationId: midtransNotificationWebhook
+      requestBody:
+        description: Midtrans notification webhook object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseTransactionForm'
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+  /courses/transactions/token:
+    post:
+      tags:
+        - transaction
+      summary: Create a new course transaction by user
+      operationId: createCourseTransaction
+      security:
+        - userSessionCookie: []
+      requestBody:
+        description: Course transaction object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestTransactionForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                properties:
+                  midtrans_snap_token:
+                    type: string
+                    examples:
+                      - 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: Invalid input
+  /courses/transactions/active:
+    get:
+      tags:
+        - transaction
+      summary: Get all course active transactions
+      operationId: getCourseTransactionsData
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseTransactionData'
+        '400':
+          description: Invalid input
+  /courses/transactions/active/{transactionId}:
+    get:
+      tags:
+        - transaction
+      summary: Get course active transactions
+      operationId: getCourseTransactionData
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseTransactionData'
+    delete:
+      tags:
+        - transaction
+      summary: Cancel course transaction by user
+      operationId: cancelCourseTransaction
+      security:
+        - userSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /courses/transactions:
+    get:
+      tags:
+        - transaction
+      summary: Get all course transactions base on transaction status
+      operationId: getCourseTransactions
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: status
+          in: query
+          description: status of the transaction
+          required: true
+          schema:
+            type: string
+            enum:
+              - capture
+              - settlement
+              - pending
+              - deny
+              - cancel
+              - expire
+              - refund
+              - partial_refund
+              - all
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseTransactionResponsePagination'
+        '400':
+          description: Invalid input
+  /courses/transactions/{transactionId}:
+    get:
+      tags:
+        - transaction
+      summary: Get course transactions base on transaction status
+      operationId: getCourseTransaction
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseTransactionResponse'
+        '400':
+          description: Invalid input
+  /user/{userId}/courses/{studentId}/contents:
+    get:
+      tags:
+        - user course content
+      summary: Get all course contents by user
+      operationId: getUserCourseContents
+      security:
+        - userSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentCourseContentProgress'
+
+  /user/{userId}/courses/{studentId}/contents/{contentId}:
+    post:
+      tags:
+        - user course content
+      summary: Mark done course content progress by user
+      operationId: markDoneCourseContentProgress
+      security:
+        - userSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+  /user/{userId}/courses/{studentId}/contents/{contentId}/video:
+    get:
+      tags:
+        - user course content
+      summary: Get course content video by user
+      operationId: getCourseContentVideoByUser
+      security:
+        - userSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseVideo'
+  /user/{userId}/courses/{studentId}/contents/{contentId}/additional_source:
+    get:
+      tags:
+        - user course content
+      summary: Get course content additional source by user
+      operationId: getCourseContentAdditionalSourceByUser
+      security:
+        - userSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseAdditionalSource'
+  /user/{userId}/courses/{studentId}/contents/{contentId}/quiz:
+    get:
+      tags:
+        - user course content
+      summary: Get course content quizze by user
+      operationId: getCourseContentQuizzeByUser
+      security:
+        - userSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseQuizResponse'
+    post:
+      tags:
+        - user course content
+      summary: Submit course content quizze by user
+      operationId: submitCourseContentQuizzeByUser
+      security:
+        - userSessionCookie: []
+      requestBody:
+        description: Course quizze object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuizAnswerForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseStudentQuizResult'
+        '400':
+          description: Invalid input
+  /user/{userId}/courses/{studentId}/contents/{contentId}/quiz/results:
+    get:
+      tags:
+        - user course content
+      summary: Get course content quizze result by user
+      operationId: getCourseContentQuizzeResultByUser
+      security:
+        - userSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseStudentQuizResult'
+
+  /user/{userId}/courses:
+    get:
+      tags:
+        - user course
+      summary: Get all student courses by user
+      operationId: getUserCourses
+      parameters:
+        - name: status
+          in: query
+          description: status of the course
+          required: true
+          schema:
+            type: string
+            enum:
+              - active
+              - expired
+              - all
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+      security:
+        - userSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseResponsePagination'
+  /user/{userId}/courses/student/{courseId}:
+    get:
+      tags:
+        - user course
+      summary: Get student course by user
+      operationId: getUserCourse
+      security:
+        - userSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseStudent'
+  /user/{userId}/courses/{studentId}/rating:
+    post:
+      tags:
+        - user course
+      summary: Rate course by user
+      operationId: rateCourse
+      security:
+        - userSessionCookie: []
+      requestBody:
+        description: Course rating object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourseRatingForm'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseRatingResponse'
+        '400':
+          description: Invalid input
+    get:
+      tags:
+        - user course
+      summary: Get course rating by user
+      operationId: getCourseRating
+      security:
+        - userSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseRatingResponse'
+        '400':
+          description: Invalid input
+
+  /courses/{courseId}/ratings:
+    get:
+      tags:
+        - course
+      summary: Get all course ratings
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            default: 1
+      operationId: getCourseRatings
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseRatingResponsePagination'
+  /users/auth/google/login:
+    get:
+      tags:
+        - auth
+      summary: Login with google
+      operationId: loginWithGoogle
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /users/auth/google/login/callback:
+    get:
+      tags:
+        - auth
+      summary: Login with google callback
+      operationId: loginWithGoogleCallback
+      parameters:
+        - name: code
+          in: query
+          description: code from google
+          required: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: state from google
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /admin/{adminId}:
+    delete:
+      tags:
+        - account
+      summary: Delete admin by ID
+      operationId: deleteAdminById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: adminId
+          in: path
+          description: ID of the admin to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid admin ID
+  /instructors/{instructorId}/photo_profile:
+    put:
+      tags:
+        - account
+      summary: Update instructor photo profile by ID
+      operationId: updateInstructorPhotoProfileById
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: instructorId
+          in: path
+          description: ID of the instructor to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Instructor photo profile object
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                photo_profile:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+  /instructors/{instructorId}:
+    delete:
+      tags:
+        - account
+      summary: Delete instructor from course by ID
+      operationId: deleteInstructorFromCourse
+      security:
+        - adminSessionCookie: []
+      parameters:
+        - name: instructorId
+          in: path
+          description: ID of the instructor to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid instructor ID
+  /courses/search:
+    get:
+      tags:
+        - search
+      summary: Search course by name
+      operationId: searchCourseByName
+      parameters:
+        - name: q
+          in: query
+          description: name of the course
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+        '400':
+          description: Invalid input
+  /courses/by-categories:
+    post:
+      tags:
+        - course
+      summary: Get courses filtered by category IDs
+      description: Returns courses belonging to any of the specified categories
+      operationId: getCoursesByCategoryIds
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - category_ids
+              properties:
+                category_ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseResponsePagination'
+        '400':
+          description: Invalid input
+  /courses/bundles/search:
+    get:
+      tags:
+        - search
+      summary: Search course bundle by name
+      operationId: searchCourseBundleByName
+      parameters:
+        - name: q
+          in: query
+          description: name of the course bundle
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseBundle'
+        '400':
+          description: Invalid input
+  /statistics/courses/count:
+    get:
+      tags:
+        - statistics
+      summary: Get all courses count statistics
+      operationId: getCoursesStatisticsCount
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_courses:
+                    type: number
+                    examples:
+                      - 100
+                  average_student:
+                    type: number
+                    examples:
+                      - 100
+  /statistics/courses:
+    get:
+      tags:
+        - statistics
+      summary: Get all courses statistics
+      operationId: getCoursesStatistics
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+
+  /statistics/courses/csv:
+    get:
+      tags:
+        - statistics
+      summary: Get all courses statistics in csv
+      operationId: getCoursesStatisticsCsv
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+  /statistics/courses/bundles/count:
+    get:
+      tags:
+        - statistics
+      summary: Get all course bundles count statistics
+      operationId: getCourseBundlesStatisticsCount
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_course_bundles:
+                    type: number
+                    examples:
+                      - 100
+  /statistics/courses/bundles/csv:
+    get:
+      tags:
+        - statistics
+      summary: Get all course bundles statistics in csv
+      operationId: getCourseBundlesStatisticsCsv
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+  /statistics/users/count:
+    get:
+      tags:
+        - statistics
+      summary: Get all users count statistics
+      operationId: getUsersStatisticsCount
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_users:
+                    type: number
+                    examples:
+                      - 100
+  /statistics/users:
+    get:
+      tags:
+        - statistics
+      summary: Get all users statistics
+      operationId: getUsersStatistics
+      parameters:
+        - name: page
+          in: query
+          description: page of the users
+          required: false
+          schema:
+            type: number
+            examples:
+              - 1
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserStatisticPagination'
+  /statistics/users/csv:
+    get:
+      tags:
+        - statistics
+      summary: Get all users statistics in csv
+      operationId: getUsersStatisticsCsv
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+  /statistics/admins/count:
+    get:
+      tags:
+        - statistics
+      summary: Get all admins count statistics
+      operationId: getAdminsStatisticsCount
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_admins:
+                    type: number
+                    examples:
+                      - 100
+  /statistics/admins:
+    get:
+      tags:
+        - statistics
+      summary: Get all admins statistics
+      operationId: getAdminsStatistics
+      parameters:
+        - name: page
+          in: query
+          description: page of the admins
+          required: false
+          schema:
+            type: number
+            examples:
+              - 1
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminStatisticPagination'
+  /statistics/admins/csv:
+    get:
+      tags:
+        - statistics
+      summary: Get all admins statistics in csv
+      operationId: getAdminsStatisticsCsv
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+  /statistics/instructors/count:
+    get:
+      tags:
+        - statistics
+      summary: Get all instructors count statistics
+      operationId: getInstructorsStatisticsCount
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_instructors:
+                    type: number
+                    examples:
+                      - 100
+  /statistics/instructors:
+    get:
+      tags:
+        - statistics
+      summary: Get all instructors statistics
+      operationId: getInstructorsStatistics
+      parameters:
+        - name: page
+          in: query
+          description: page of the instructors
+          required: false
+          schema:
+            type: number
+            examples:
+              - 1
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstructorStatisticPagination'
+  /statistics/instructors/csv:
+    get:
+      tags:
+        - statistics
+      summary: Get all instructors statistics in csv
+      operationId: getInstructorsStatisticsCsv
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+  /statistics/sales/count:
+    get:
+      tags:
+        - statistics
+      summary: Get all sales statistics
+      operationId: getSalesStatisticsCount
+      parameters:
+        - name: month
+          in: query
+          description: sales of the month
+          required: true
+          schema:
+            type: number
+            examples:
+              - 3
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_sales:
+                    type: number
+                    examples:
+                      - 100
+                  total_income:
+                    type: number
+                    examples:
+                      - 100
+  /statistics/sales:
+    get:
+      tags:
+        - statistics
+      summary: Get all sales statistics
+      operationId: getSalesStatistics
+      parameters:
+        - name: few_months
+          in: query
+          description: few months of the sales
+          required: true
+          schema:
+            type: number
+            examples:
+              - 3
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SalesStatistics'
+  /statistics/sales/transactions:
+    get:
+      tags:
+        - statistics
+      summary: Get all sales transactions statistics
+      parameters:
+        - name: page
+          in: query
+          description: page of the sales transactions
+          required: false
+          schema:
+            type: number
+            examples:
+              - 1
+      operationId: getSalesTransactionsStatistics
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentTransactionStatisticPagination'
+  /statistics/sales/transactions/csv:
+    get:
+      tags:
+        - statistics
+      summary: Get all sales transactions statistics in csv
+      operationId: getSalesTransactionsStatisticsCsv
+      security:
+        - adminSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+  /courses/free-trial:
+    get:
+      tags:
+        - free trial
+      summary: Get all free trial courses
+      parameters:
+        - name: page
+          in: query
+          description: status of the course
+          required: false
+          schema:
+            type: number
+            examples:
+              - 1
+      operationId: getFreeTrialCourses
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CourseResponse'
+  /courses/bundles/free-trial:
+    get:
+      tags:
+        - free trial
+      summary: Get all free trial course bundles
+      parameters:
+        - name: page
+          in: query
+          description: status of the course
+          required: false
+          schema:
+            type: number
+            examples:
+              - 1
+      operationId: getFreeTrialCourseBundles
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourseBundlePagination'
+  /resume/analyze:
+    post:
+      tags:
+        - resume
+      summary: Analyze resume with AI
+      description: Submits a PDF resume for AI-powered analysis. The analysis evaluates the resume against a job description and provides strength assessment, recommendations, improvement points, and course category suggestions. Requires 1 credit per analysis.
+      operationId: analyzeResume
+      security:
+        - userSessionCookie: []
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      requestBody:
+        description: Resume analysis request with PDF file, job description, and experience years
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - resume
+                - experience_years
+                - job_description
+              properties:
+                resume:
+                  type: string
+                  format: binary
+                  description: PDF file of the resume (max 2MB)
+                experience_years:
+                  type: string
+                  description: Years of experience (e.g., "5")
+                job_description:
+                  type: string
+                  description: Target job description for matching
+      responses:
+        '200':
+          description: Resume analysis completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResumeAnalysisResponse'
+        '400':
+          description: Invalid request - missing required fields, invalid file type, or invalid experience_years format
+        '401':
+          description: Unauthorized - invalid or missing session
+        '413':
+          description: Payload too large - file exceeds 2MB limit
+        '402':
+          description: Payment required - insufficient credits
+        '500':
+          description: Internal server error
+  /resume/:
+    get:
+      tags:
+        - resume
+      summary: Get resume analyses for current user
+      description: Retrieves a paginated list of the current user's resume analysis history. Results are sorted by creation date in descending order.
+      operationId: getResumeAnalyses
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination
+          required: false
+          schema:
+            type: integer
+            default: 1
+      security:
+        - userSessionCookie: []
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedResumeAnalyses'
+        '401':
+          description: Unauthorized - invalid or missing session
+        '500':
+          description: Internal server error
+  /resume/{id}:
+    get:
+      tags:
+        - resume
+      summary: Get resume analysis by ID
+      description: Retrieves a specific resume analysis by ID. Users can only access their own analyses, while admins can access any analysis.
+      operationId: getResumeAnalysis
+      parameters:
+        - name: id
+          in: path
+          description: ID of the resume analysis to retrieve
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - userSessionCookie: []
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResumeAnalysis'
+        '400':
+          description: Invalid analysis ID format
+        '401':
+          description: Unauthorized - invalid or missing session
+        '404':
+          description: Analysis not found
+        '500':
+          description: Internal server error
+  /credits:
+    get:
+      tags:
+        - credits
+      summary: Get user credit balance
+      description: Retrieves the current credit balance for the authenticated user. Credits are earned through course purchases (2 credits per single course, 2 credits per course in a bundle) and consumed by resume analyses (1 credit per analysis).
+      operationId: getCredits
+      security:
+        - userSessionCookie: []
+        - adminSessionCookie: []
+        - instructorSessionCookie: []
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditsResponse'
+        '401':
+          description: Unauthorized - invalid or missing session
+        '500':
+          description: Internal server error
+# end of paths
+
+# start of components
+components:
+  # start of schemas:
+  schemas:
+    RegistrationForm:
+      type: object
+      properties:
+        email:
+          type: string
+          examples:
+            - test@yopmail.com
+        password:
+          type: string
+          examples:
+            - Password@312
+        password_confirm:
+          type: string
+          examples:
+            - Password@312
+        full_name:
+          type: string
+          examples:
+            - Jhon Doe
+    LoginForm:
+      type: object
+      properties:
+        email:
+          type: string
+          examples:
+            - example@email.com
+        password:
+          type: string
+      xml:
+        name: login_form
+    Person:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        email:
+          type: string
+          examples:
+            - example@email.com
+        password:
+          type: string
+        full_name:
+          type: string
+          examples:
+            - Jhon Doe
+        role:
+          type: string
+          description: Person has a few roles
+          examples:
+            - admin
+            - user
+          enum:
+            - admin
+            - user
+        photo_profile:
+          type: string
+          examples:
+            - adslfkad.jpg
+        created_at:
+          type: string
+          format: date-time
+        activated_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      xml:
+        name: person
+    Admin:
+      type: object
+      properties:
+        person_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        type:
+          type: string
+          description: Person has a few roles
+          examples:
+            - super
+          enum:
+            - super
+            - regular
+            - instructure
+        created_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+      xml:
+        name: admin
+    User:
+      type: object
+      properties:
+        person_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        birth:
+          type: string
+          format: date-time
+        study_level:
+          type: string
+          examples:
+            - sma
+          enum:
+            - sd
+            - smp
+            - sma
+            - universitas
+            - umum
+        institution:
+          type: string
+          examples:
+            - SMAN 1 Bekasi
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      xml:
+        name: admin
+    Instructor:
+      type: object
+      properties:
+        person_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        education:
+          type: string
+          examples:
+            - Bachelor of Computer Science
+        experience:
+          type: string
+          examples:
+            - 5 years
+        created_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+      xml:
+        name: instructor
+    PasswordResetForm:
+      type: object
+      properties:
+        new_password:
+          type: string
+        new_password_confirm:
+          type: string
+    CourseCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        name:
+          type: string
+          examples:
+            - Web Development
+        description:
+          type: string
+          examples:
+            - Learn web development from basics to advanced
+        created_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+      xml:
+        name: course_category
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        admin_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        name:
+          type: string
+          examples:
+            - Web Development
+        description:
+          type: string
+          examples:
+            - Learn how to build a website
+        course_category_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        purpose:
+          type: string
+          examples:
+            - Learn how to build a website
+        price:
+          type: number
+          examples:
+            - 100000
+        thumbnail_image:
+          type: string
+          examples:
+            - adslfkad.jpg
+        rating:
+          type: number
+          examples:
+            - 4.5
+        instructor_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+      xml:
+        name: course
+    CourseBundle:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        admin_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        name:
+          type: string
+          examples:
+            - Web Development
+        description:
+          type: string
+          examples:
+            - Learn how to build a website
+        thumbnail_image:
+          type: string
+          examples:
+            - adslfkad.jpg
+        price:
+          type: number
+          examples:
+            - 100000
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+    CourseBundlePagination:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseBundle'
+        pagination:
+          $ref: '#/components/schemas/PaginationResponse'
+    CourseBundleForm:
+      type: object
+      properties:
+        name:
+          type: string
+          examples:
+            - Web Development
+        description:
+          type: string
+          examples:
+            - Learn how to build a website
+        price:
+          type: number
+          examples:
+            - 100000
+    CourseForm:
+      type: object
+      properties:
+        name:
+          type: string
+          examples:
+            - Web Development
+        description:
+          type: string
+          examples:
+            - Learn how to build a website
+        category_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        price:
+          type: number
+          examples:
+            - 100000
+        purpose:
+          type: string
+          examples:
+            - Learn how to build a website
+        instructor_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+    AdminDataForm:
+      type: object
+      properties:
+        person_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        type:
+          type: string
+          description: admin has a few types
+          examples:
+            - super
+          enum:
+            - super
+            - regular
+    InstructorDataForm:
+      type: object
+      properties:
+        person_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        education:
+          type: string
+          examples:
+            - Bachelor of Computer Science
+        experience:
+          type: string
+          examples:
+            - 5 years
+    UserDataForm:
+      type: object
+      properties:
+        person_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        birth:
+          type: string
+          format: date-time
+          examples:
+            - 1990-01-01T00:00:00Z
+        study_level:
+          type: string
+          examples:
+            - sma
+          enum:
+            - sd
+            - smp
+            - sma
+            - universitas
+            - umum
+        institution:
+          type: string
+          examples:
+            - SMAN 1 Bekasi
+    CourseContentForm:
+      type: object
+      properties:
+        course_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        content_title:
+          type: string
+          examples:
+            - Introduction
+        content_description:
+          type: string
+          examples:
+            - Introduction to web development
+        content_type:
+          type: string
+          examples:
+            - video
+          enum:
+            - video
+            - quiz
+            - additional_source
+        quiz:
+          type: object
+          $ref: '#/components/schemas/QuizForm'
+        video_article_content:
+          type: string
+          examples:
+            - Introduction to web development
+        video_duration:
+          type: integer
+          description: The duration of the video in seconds
+          examples:
+            - 60
+    QuizForm:
+      type: object
+      properties:
+        passing_grade:
+          type: number
+          examples:
+            - 75
+        quiz_content:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizQuestionForm'
+    QuizQuestionForm:
+      type: object
+      properties:
+        question:
+          type: string
+          examples:
+            - What is the capital city of Indonesia?
+        answer:
+          type: integer
+          description: The answer is the index of the options
+          examples:
+            - 0
+        options:
+          type: array
+          items:
+            type: string
+            examples:
+              - Jakarta
+              - Bandung
+              - Surabaya
+              - Medan
+    CourseContent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        content_title:
+          type: string
+          examples:
+            - Introduction
+        content_description:
+          type: string
+          examples:
+            - Introduction to web development
+        content_type:
+          type: string
+          examples:
+            - video
+          enum:
+            - video
+            - quiz
+            - additional_source
+        content_sequence:
+          type: integer
+          examples:
+            - 1
+        course_video_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_quiz_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_additional_source_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+    CourseVideo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        video_file:
+          type: string
+          examples:
+            - https://www.youtube.com/watch?v=123456
+        video_duration:
+          type: integer
+          description: The duration of the video in seconds
+          examples:
+            - 60
+        thumbnail_image:
+          type: string
+          examples:
+            - adslfkad.jpg
+        article_content:
+          type: string
+          examples:
+            - Introduction to web development
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+    CourseQuiz:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        passing_grade:
+          type: number
+          examples:
+            - 75
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizQuestionForm'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+    QuizQuestionResponse:
+      type: object
+      properties:
+        question:
+          type: string
+          examples:
+            - What is the capital city of Indonesia?
+        options:
+          type: array
+          items:
+            type: string
+            examples:
+              - Jakarta
+              - Bandung
+              - Surabaya
+              - Medan
+    CourseQuizResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        passing_grade:
+          type: number
+          examples:
+            - 75
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizQuestionResponse'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+    QuizAnswerForm:
+      type: object
+      properties:
+        answers:
+          type: array
+          items:
+            type: integer
+            examples:
+              - 0
+              - 1
+              - 2
+              - 3
+    CourseStudentQuizResult:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_student_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_content_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        passing_grade:
+          type: number
+          examples:
+            - 75
+        passed_status:
+          type: boolean
+          examples:
+            - true
+        score:
+          type: number
+          examples:
+            - 100
+        created_at:
+          type: string
+          format: date-time
+    CourseAdditionalSource:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        file:
+          type: string
+          examples:
+            - https://www.youtube.com/watch?v=123456
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+    VideoContentForm:
+      type: object
+      properties:
+        video_duration:
+          type: integer
+          description: The duration of the video in seconds
+          examples:
+            - 60
+        article_content:
+          type: string
+          examples:
+            - Introduction to web development
+    CourseStudent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        user_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        created_at:
+          type: string
+          format: date-time
+        expired_at:
+          type: string
+          format: date-time
+    CourseForumQuestion:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_student_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        question_title:
+          type: string
+          examples:
+            - How to build a website?
+        question_content:
+          type: string
+          examples:
+            - I want to learn how to build a website
+        question_image:
+          type: string
+          examples:
+            - adslfkad.jpg
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+    CourseForumQuestionReply:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_forum_question_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_student_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        reply:
+          type: string
+          examples:
+            - You can learn how to build a website by joining our course
+        reply_image:
+          type: string
+          examples:
+            - adslfkad.jpg
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+    CourseForumQuestionResponse:
+      type: object
+      properties:
+        student_name:
+          type: string
+          examples:
+            - Jhon Doe
+        role:
+          type: string
+          examples:
+            - user
+        course_forum_question:
+          $ref: '#/components/schemas/CourseForumQuestion'
+    CourseForumQuestionResponsePagination:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseForumQuestionResponse'
+        pagination:
+          $ref: '#/components/schemas/PaginationResponse'
+    CourseForumQuestionReplyResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          examples:
+            - Jhon Doe
+        role:
+          type: string
+          examples:
+            - instructor
+        course_forum_question_reply:
+          $ref: '#/components/schemas/CourseForumQuestionReply'
+    CourseForumQuestionForm:
+      type: object
+      properties:
+        question_title:
+          type: string
+          examples:
+            - How to build a website?
+        question_content:
+          type: string
+          examples:
+            - I want to learn how to build a website
+    CourseForumQuestionReplyForm:
+      type: object
+      properties:
+        reply:
+          type: string
+          examples:
+            - You can learn how to build a website by joining our course
+    CourseTransaction:
+      type: object
+      properties:
+        transaction_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_bundle_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        user_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        midtrans_ref_id:
+          type: string
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_price:
+          type: number
+          examples:
+            - 100000
+        transaction_fee:
+          type: number
+          examples:
+            - 5000
+        tax:
+          type: number
+          examples:
+            - 1000
+        total_amount:
+          type: number
+          examples:
+            - 106000
+        payment_status:
+          type: string
+          examples:
+            - pending
+          enum:
+            - capture
+            - settlement
+            - pending
+            - deny
+            - cancel
+            - expire
+            - failure
+            - refund
+            - partial_refund
+        payment_type:
+          type: string
+          examples:
+            - qris
+        fraud_status:
+          type: string
+          examples:
+            - accept
+          enum:
+            - accept
+            - deny
+        status_message:
+          type: string
+          examples:
+            - transaction success
+        transaction_time:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CourseTransactionResponse:
+      type: object
+      properties:
+        transaction:
+          $ref: '#/components/schemas/CourseTransaction'
+        course:
+          $ref: '#/components/schemas/Course'
+        course_bundle:
+          $ref: '#/components/schemas/CourseBundle'
+
+    CourseTransactionResponsePagination:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseTransactionResponse'
+        pagination:
+          $ref: '#/components/schemas/PaginationResponse'
+    CourseTransactionForm:
+      type: object
+      properties:
+        transaction_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_bundle_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        user_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        midtrans_ref_id:
+          type: string
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_price:
+          type: number
+          examples:
+            - 100000
+        transaction_fee:
+          type: number
+          examples:
+            - 5000
+        tax:
+          type: number
+          examples:
+            - 1000
+        total_amount:
+          type: number
+          examples:
+            - 106000
+        payment_status:
+          type: string
+          examples:
+            - pending
+          enum:
+            - capture
+            - settlement
+            - pending
+            - deny
+            - cancel
+            - expire
+            - failure
+            - refund
+            - partial_refund
+        payment_type:
+          type: string
+          examples:
+            - qris
+        fraud_status:
+          type: string
+          examples:
+            - accept
+          enum:
+            - accept
+            - deny
+        status_message:
+          type: string
+          examples:
+            - transaction success
+        transaction_time:
+          type: string
+          format: date-time
+    CourseTransactionData:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_bundle_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        transaction_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_price:
+          type: number
+          examples:
+            - 100000
+        transaction_fee:
+          type: number
+          examples:
+            - 5000
+        tax:
+          type: number
+          examples:
+            - 1000
+        total_amount:
+          type: number
+          examples:
+            - 106000
+        midtrans_snap_token:
+          type: string
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+    StudentCourseContentProgress:
+      type: object
+      properties:
+        content_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        is_completed:
+          type: boolean
+          examples:
+            - true
+    CourseRatingForm:
+      type: object
+      properties:
+        rating:
+          type: number
+          examples:
+            - 5
+        description:
+          type: string
+          examples:
+            - This course is very good
+    CourseRating:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_student_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        rating:
+          type: number
+          examples:
+            - 5
+        description:
+          type: string
+          examples:
+            - This course is very good
+        created_at:
+          type: string
+          format: date-time
+    CourseRatingResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_student_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        student_name:
+          type: string
+          examples:
+            - Jhon Doe
+        rating:
+          type: number
+          examples:
+            - 5
+        description:
+          type: string
+          examples:
+            - This course is very good
+        created_at:
+          type: string
+          format: date-time
+    CourseRatingResponsePagination:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseRatingResponse'
+        pagination:
+          $ref: '#/components/schemas/PaginationResponse'
+    CourseResponse:
+      type: object
+      properties:
+        course:
+          $ref: '#/components/schemas/Course'
+        course_category:
+          $ref: '#/components/schemas/CourseCategory'
+        instructor:
+          $ref: '#/components/schemas/InstructorResponse'
+    CourseResponsePagination:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseResponse'
+        pagination:
+          $ref: '#/components/schemas/PaginationResponse'
+    InstructorResponse:
+      type: object
+      properties:
+        instructor:
+          $ref: '#/components/schemas/Instructor'
+        full_name:
+          type: string
+          examples:
+            - Jhon Doe
+        photo_profile:
+          type: string
+          examples:
+            - adslfkad.jpg
+    SalesStatistics:
+      type: object
+      properties:
+        month:
+          type: string
+          examples:
+            - January 2024
+        total_sales:
+          type: number
+          examples:
+            - 100
+        total_income:
+          type: number
+          examples:
+            - 100
+    UsersStatistics:
+      type: object
+      properties:
+        name:
+          type: string
+          examples:
+            - Jhon Doe
+        email:
+          type: string
+          examples:
+            - example@yopmail.com
+        study_level:
+          type: string
+          examples:
+            - sma
+        institution:
+          type: string
+          examples:
+            - SMAN 1 Bekasi
+        birth:
+          type: string
+          format: date-time
+          examples:
+            - 1990-01-01T00:00:00Z
+        created_at:
+          type: string
+          format: date-time
+    UserStatisticPagination:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsersStatistics'
+        pagination:
+          $ref: '#/components/schemas/PaginationResponse'
+    AdminsStatistics:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        name:
+          type: string
+          examples:
+            - Jhon Doe
+        email:
+          type: string
+          examples:
+            - example@yopmail.com
+        type:
+          type: string
+          examples:
+            - super
+        created_at:
+          type: string
+          format: date-time
+    AdminStatisticPagination:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminsStatistics'
+        pagination:
+          $ref: '#/components/schemas/PaginationResponse'
+    InstructorsStatistics:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        photo_profile:
+          type: string
+          examples:
+            - adslfkad.jpg
+        name:
+          type: string
+          examples:
+            - Jhon Doe
+        email:
+          type: string
+          examples:
+            - example@yopmail.com
+        education:
+          type: string
+          examples:
+            - Bachelor of Computer Science
+        experience:
+          type: string
+          examples:
+            - 5 years
+    InstructorStatisticPagination:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstructorsStatistics'
+        pagination:
+          $ref: '#/components/schemas/PaginationResponse'
+    StudentTransactionStatistics:
+      type: object
+      properties:
+        name:
+          type: string
+          examples:
+            - Jhon Doe
+        email:
+          type: string
+          examples:
+            - example@yopmail.com
+        transaction_type:
+          type: string
+          examples:
+            - course
+        product_name:
+          type: string
+          examples:
+            - Web Development
+        product_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_price:
+          type: number
+          examples:
+            - 100000
+        transaction_fee:
+          type: number
+          examples:
+            - 5000
+        tax:
+          type: number
+          examples:
+            - 1000
+        total_amount:
+          type: number
+          examples:
+            - 106000
+        payment_status:
+          type: string
+          examples:
+            - pending
+          enum:
+            - capture
+            - settlement
+            - pending
+            - deny
+            - cancel
+            - expire
+            - failure
+            - refund
+            - partial_refund
+        payment_type:
+          type: string
+          examples:
+            - qris
+        created_at:
+          type: string
+          format: date-time
+    StudentTransactionStatisticPagination:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentTransactionStatistics'
+        pagination:
+          $ref: '#/components/schemas/PaginationResponse'
+    PaginationResponse:
+      type: object
+      properties:
+        page:
+          type: number
+          examples:
+            - 1
+        total_page:
+          type: number
+          examples:
+            - 10
+    RequestTransactionForm:
+      type: object
+      properties:
+        course_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        course_bundle_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+    CourseCategorySuggestion:
+      type: object
+      properties:
+        category_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        confidence:
+          type: number
+          format: double
+          examples:
+            - 0.85
+    ResumeAnalysisResponse:
+      type: object
+      properties:
+        strength:
+          type: string
+          examples:
+            - "Strong technical background in chemistry with practical lab experience"
+        recommendation:
+          type: string
+          examples:
+            - "Consider enrolling in Advanced Organic Chemistry courses"
+        improvement_points:
+          type: array
+          items:
+            type: string
+          examples:
+            - "Add more specific lab techniques"
+            - "Include research project details"
+        match_percentage:
+          type: integer
+          examples:
+            - 75
+        course_categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseCategorySuggestion'
+    ResumeAnalysis:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        user_id:
+          type: string
+          format: uuid
+          examples:
+            - 123e4567-e89b-12d3-a456-426614174000
+        job_description:
+          type: string
+          examples:
+            - "Senior Chemistry Researcher position requiring expertise in analytical chemistry"
+        experience_years:
+          type: string
+          examples:
+            - "5"
+        strength:
+          type: string
+          examples:
+            - "Strong technical background in chemistry"
+        recommendation:
+          type: string
+          examples:
+            - "Consider enrolling in Advanced Organic Chemistry courses"
+        improvement_points:
+          type: array
+          items:
+            type: string
+          examples:
+            - "Add more specific lab techniques"
+        match_percentage:
+          type: integer
+          examples:
+            - 75
+        course_categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/CourseCategorySuggestion'
+        created_at:
+          type: string
+          format: date-time
+          examples:
+            - "2024-01-15T10:30:00Z"
+    PaginatedResumeAnalyses:
+      type: object
+      properties:
+        total:
+          type: integer
+          examples:
+            - 50
+        page:
+          type: integer
+          examples:
+            - 1
+        per_page:
+          type: integer
+          examples:
+            - 10
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResumeAnalysis'
+    CreditsResponse:
+      type: object
+      properties:
+        credits:
+          type: integer
+          examples:
+            - 5
+
+# end of schemas
+
+    ApiResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      xml:
+        name: '##default'
+  requestBodies:
+    LoginForm:
+      description: This is login form object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LoginForm'
+
+# start of securitySchemes
+  securitySchemes:
+    adminSessionCookie:
+      type: apiKey
+      in: cookie
+      name: session
+    userSessionCookie:
+      type: apiKey
+      in: cookie
+      name: session
+    instructorSessionCookie:
+      type: apiKey
+      in: cookie
+      name: session

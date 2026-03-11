@@ -13,7 +13,6 @@ use App\Http\Controllers\Controller;
 use GrahamCampbell\ResultType\Success;
 use Illuminate\Support\Facades\Http;
 
-
 class UserController extends Controller
 {
     private $user;
@@ -34,7 +33,6 @@ class UserController extends Controller
         $this->courseCtrl = new courseController();
     }
 
-
     private function getDetailData()
     {
         $id = $this->user['id'];
@@ -44,7 +42,6 @@ class UserController extends Controller
 
         return $response->json();
     }
-
 
     protected function fetchApiData($url)
     {
@@ -62,16 +59,14 @@ class UserController extends Controller
     public function completeData()
     {
         return view('user.completeData', [
-            "title" => 'Isi Data',
-            "id" => $this->user['id'],
-            "full_name" => $this->user['full_name'],
+            'title' => 'Isi Data',
+            'id' => $this->user['id'],
+            'full_name' => $this->user['full_name'],
         ]);
     }
 
     private function getProfileData()
     {
-
-
         return [
             'id' => $this->user['id'],
             'full_name' => $this->user['full_name'],
@@ -83,15 +78,13 @@ class UserController extends Controller
         $userCourses = $this->userCourseCtrl->getCoursesUser('active');
         $expired = $this->userCourseCtrl->getCoursesUser('expired');
 
-
         return view('user.dashboard', [
-            "id" => $this->user['id'],
+            'id' => $this->user['id'],
             'userCourses' => $userCourses,
             'expired' => $expired,
-            "full_name" => $this->user['full_name'],
+            'full_name' => $this->user['full_name'],
         ]);
     }
-
 
     public function formatDateToView($input)
     {
@@ -109,16 +102,13 @@ class UserController extends Controller
         $wib = $birth->setTimezone('Asia/Jakarta');
         $format = $wib->format('d-m-Y');
 
-
-
         return view('user.profile', [
-            "full_name" => $profileData['full_name'],
-            "email" => $profileData['email'],
-            "birth" => $format,
-            "birth_edit" => $this->formatDateToView($detailData['birth']),
+            'full_name' => $profileData['full_name'],
+            'email' => $profileData['email'],
+            'birth' => $format,
+            'birth_edit' => $this->formatDateToView($detailData['birth']),
             'study_level' => Str::upper($detailData['study_level']), // Mengubah 'study_level' menjadi 'studyLevel'
-            "institution" => Str::upper($detailData['institution'])
-
+            'institution' => Str::upper($detailData['institution']),
         ]);
     }
 
@@ -131,18 +121,17 @@ class UserController extends Controller
         // dd($userCourses);
 
         return view('user.kelas', [
-            "filter" => $filter,
-            "userCourses" => $userCourses,
-            "page" => $page,
-            "filter" => $filter,
-            "id" => $this->user['id'],
-            "full_name" => $this->user['full_name'],
+            'filter' => $filter,
+            'userCourses' => $userCourses,
+            'page' => $page,
+            'filter' => $filter,
+            'id' => $this->user['id'],
+            'full_name' => $this->user['full_name'],
         ]);
     }
 
     public function transaksi(Request $request)
     {
-
         $filter = $request->get('filter') ?? 'active';
         $page = $request->get('page') ?? 0;
         $transactions = new stdClass();
@@ -158,28 +147,29 @@ class UserController extends Controller
         // dd($transactions);
 
         return view('user.transaksi', [
-            "filter" => $filter,
-            "id" => $this->user['id'],
+            'filter' => $filter,
+            'id' => $this->user['id'],
             'transactions' => $transactions,
-            "full_name" => $this->user['full_name'],
+            'full_name' => $this->user['full_name'],
         ]);
     }
 
-    public function cvmenu() {
-
+    public function cvmenu()
+    {
         return view('user.cvmenu', [
-            "full_name" => $this->user['full_name'],
+            'full_name' => $this->user['full_name'],
         ]);
     }
+
 
     public function materi()
     {
         $title = 'Materi Praktikum Laboratorium Dasar';
 
         return view('user.materi', [
-            "title" => $title,
-            "id" => $this->user['id'],
-            "full_name" => $this->user['full_name'],
+            'title' => $title,
+            'id' => $this->user['id'],
+            'full_name' => $this->user['full_name'],
         ]);
     }
     public function diskusi(Request $request, $courseId)
@@ -188,9 +178,7 @@ class UserController extends Controller
 
         $userCourse = $this->userCourseCtrl->getCoursesUserByCourseId($courseId);
 
-
         $page = $request->get('page') ?? 0;
-
 
         $courseForums = $this->courseForumCtrl->courseForums($courseId, $page);
         if (isset($courseForums->data)) {
@@ -204,22 +192,21 @@ class UserController extends Controller
         // Lakukan operasi lain yang diperlukan
 
         return view('user.diskusi', [
-            "title" => $title,
-            "id" => $this->user['id'],
-            "userCourse" => $userCourse,
-            "courseId" => $courseId,
-            "courseForums" => $courseForums,
-            "full_name" => $this->user['full_name'],
+            'title' => $title,
+            'id' => $this->user['id'],
+            'userCourse' => $userCourse,
+            'courseId' => $courseId,
+            'courseForums' => $courseForums,
+            'full_name' => $this->user['full_name'],
         ]);
     }
     public function detailKelas(Request $request, $courseId)
     {
-
         $course = $this->fetchApiData($this->apiUrl . 'courses/' . $courseId);
         if (isset($course)) {
             $title = json_decode(json_encode($course))->course->name;
         }
-        $selectedCourseContentId = $request->get("selectedCourseContentId") ?? '';
+        $selectedCourseContentId = $request->get('selectedCourseContentId') ?? '';
         $userCourse = $this->userCourseCtrl->getCoursesUserByCourseId($courseId);
         $userRate = $this->userCourseCtrl->getRate($userCourse->id);
         $courseContents = $this->userCourseCtrl->getCoursesUserContents($userCourse->id);
@@ -246,8 +233,6 @@ class UserController extends Controller
         $addSrcType = 'additional_source';
         $quizType = 'quiz';
 
-
-
         if ($selectedCourseContentId != '') {
             $courseContent = $this->courseContentCtrl->courseContentsById($courseId, $selectedCourseContentId);
 
@@ -256,7 +241,6 @@ class UserController extends Controller
             if (!$courseContent) {
                 $selectedCourseContentId = '';
             }
-
 
             if ($selectedCourseContentId != '') {
                 $selectedIndex = -1; // Use -1 to indicate not found initially
@@ -268,13 +252,13 @@ class UserController extends Controller
                     }
                 }
 
-
                 // NEXT PREVIOUS
 
                 $nextCourseContentId = null;
                 $previousCourseContentId = null;
 
-                if ($selectedIndex !== -1) { // Ensure we found the selected index
+                if ($selectedIndex !== -1) {
+                    // Ensure we found the selected index
                     // Check for previous and next content
                     if ($selectedIndex > 0) {
                         $previousCourseContentId = $courseContents[$selectedIndex - 1]->content_id;
@@ -297,11 +281,11 @@ class UserController extends Controller
                     $courseContentVideo = $this->userCourseCtrl->userCourseContentVideo($userCourse->id, $selectedCourseContentId);
                     //Merge
                     $courseContent->video = $courseContentVideo;
-                } else if ($courseContent->content_type == $addSrcType) {
+                } elseif ($courseContent->content_type == $addSrcType) {
                     $courseContentSrc = $this->userCourseCtrl->userCourseContentSrc($userCourse->id, $selectedCourseContentId);
                     //Merge
                     $courseContent->src = $courseContentSrc;
-                } else if ($courseContent->content_type == $quizType) {
+                } elseif ($courseContent->content_type == $quizType) {
                     $courseContentQuiz = $this->userCourseCtrl->userCourseContentQuiz($userCourse->id, $selectedCourseContentId);
                     $courseContent->quiz = $courseContentQuiz;
 
@@ -309,10 +293,12 @@ class UserController extends Controller
                         foreach ($courseContent->quiz->questions as $index => $question) {
                             $question->index = $index;
                             foreach ($question->Options as $indexOption => $option) {
-                                $question->Options[$indexOption] = json_decode(json_encode([
-                                    'name' => $option,
-                                    'index' => $indexOption
-                                ]));
+                                $question->Options[$indexOption] = json_decode(
+                                    json_encode([
+                                        'name' => $option,
+                                        'index' => $indexOption,
+                                    ]),
+                                );
                             }
 
                             //Harus di random setelah index dicatat
@@ -322,33 +308,29 @@ class UserController extends Controller
                         //Harus di random setelah index dicatat
                         shuffle($courseContent->quiz->questions);
 
-                        $courseContent->quiz->questionTotal =  count($courseContent->quiz->questions);
+                        $courseContent->quiz->questionTotal = count($courseContent->quiz->questions);
                     }
                 }
             }
         }
 
-
-
-
-
         return view('user.detailKelas', [
-            "title" => $title,
-            "courseId" => $courseId,
-            "userRate" => $userRate,
-            "selectedCourseContentId" => $selectedCourseContentId,
-            "previousCourseContentId" => $previousCourseContentId,
-            "nextCourseContentId" => $nextCourseContentId,
-            "id" => $this->user['id'],
-            "full_name" => $this->user['full_name'],
-            "role" => $this->user['role'],
-            "course" => json_decode(json_encode($course)), // Encode the categories for JS
-            "courseContents" => $courseContents, // Encode the categories for JS
-            "courseContent" => $courseContent, // Encode the categories for JS
-            "videoType" => $videoType,
-            "addSrcType" => $addSrcType,
-            "quizType" => $quizType,
-            "userCourse" => $userCourse,
+            'title' => $title,
+            'courseId' => $courseId,
+            'userRate' => $userRate,
+            'selectedCourseContentId' => $selectedCourseContentId,
+            'previousCourseContentId' => $previousCourseContentId,
+            'nextCourseContentId' => $nextCourseContentId,
+            'id' => $this->user['id'],
+            'full_name' => $this->user['full_name'],
+            'role' => $this->user['role'],
+            'course' => json_decode(json_encode($course)), // Encode the categories for JS
+            'courseContents' => $courseContents, // Encode the categories for JS
+            'courseContent' => $courseContent, // Encode the categories for JS
+            'videoType' => $videoType,
+            'addSrcType' => $addSrcType,
+            'quizType' => $quizType,
+            'userCourse' => $userCourse,
         ]);
     }
 }

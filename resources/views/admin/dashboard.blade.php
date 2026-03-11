@@ -1,187 +1,172 @@
 @extends('layout.adminLayout')
-@section('title', $title)
 
 @section('content')
-    <div class="container-fluid">
-        <!-- Small boxes (Stat box) -->
-        <div class="row gx-2 gy-0">
+    <div class="container-fluid py-3">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold m-0" style="color: #343a40;">Dashboard</h2>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div class="small-box bg-primary">
+                <div class="small-box shadow-sm border-0"
+                    style="background: linear-gradient(45deg, #4e73df, #224abe); color: white; border-radius: 15px;">
                     <div class="inner">
-                        <h3>{{ $total_courses }}</h3>
-
-                        <p>Jumlah Kelas</p>
+                        <h3 class="fw-bold">{{ $total_courses }}</h3>
+                        <p>Total Kelas</p>
                     </div>
-                    <div class="icon">
-                        <i class="fas fa-book-reader"></i>
+                    <div class="icon text-white-50">
+                        <i class="fas fa-chalkboard-teacher"></i>
                     </div>
-                    <a href="{{ route('admin.kelas') }}" class="small-box-footer">Lihat <i
-                            class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('admin.kelas') }}" class="small-box-footer bg-dark bg-opacity-10 border-0"
+                        style="border-radius: 0 0 15px 15px;">
+                        Detail Info <i class="fas fa-arrow-circle-right ms-1"></i>
+                    </a>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div class="small-box bg-info">
+                <div class="small-box shadow-sm border-0"
+                    style="background: linear-gradient(45deg, #36b9cc, #258391); color: white; border-radius: 15px;">
                     <div class="inner">
-                        <h3>{{ $total_instructors }}</h3>
-
-                        <p>Jumlah Pengajar</p>
+                        <h3 class="fw-bold">{{ $total_instructors }}</h3>
+                        <p>Total Pengajar</p>
                     </div>
-                    <div class="icon">
-                        <i class="fas fa-book-reader"></i>
+                    <div class="icon text-white-50">
+                        <i class="fas fa-user-tie"></i>
                     </div>
-                    <a href="{{ route('data.pengajar') }}" class="small-box-footer">Lihat <i
-                            class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('data.pengajar') }}" class="small-box-footer bg-dark bg-opacity-10 border-0"
+                        style="border-radius: 0 0 15px 15px;">
+                        Detail Info <i class="fas fa-arrow-circle-right ms-1"></i>
+                    </a>
                 </div>
             </div>
-
-            <!-- ./col -->
             <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div class="small-box bg-info">
+                <div class="small-box shadow-sm border-0"
+                    style="background: linear-gradient(45deg, #f6c23e, #dda20a); color: white; border-radius: 15px;">
                     <div class="inner">
-                        <h3>{{ $total_admins }}</h3>
-
-                        <p>Jumlah Admin</p>
+                        <h3 class="fw-bold">{{ $total_admins }}</h3>
+                        <p>Admin Sistem</p>
                     </div>
-                    <div class="icon">
-                        <i class="fas fa-users-cog"></i>
+                    <div class="icon text-white-50">
+                        <i class="fas fa-user-shield"></i>
                     </div>
-                    <a href="{{ route('data.admin') }}" class="small-box-footer">Lihat <i
-                            class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('data.admin') }}" class="small-box-footer bg-dark bg-opacity-10 border-0"
+                        style="border-radius: 0 0 15px 15px;">
+                        Detail Info <i class="fas fa-arrow-circle-right ms-1"></i>
+                    </a>
                 </div>
             </div>
-            <!-- ./col -->
             <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div class="small-box bg-info">
+                <div class="small-box shadow-sm border-0"
+                    style="background: linear-gradient(45deg, #e74a3b, #be2617); color: white; border-radius: 15px;">
                     <div class="inner">
-                        <h3>{{ $total_users }}</h3>
-
-                        <p>Jumlah Siswa</p>
+                        <h3 class="fw-bold">{{ $total_users }}</h3>
+                        <p>Total Siswa</p>
                     </div>
-                    <div class="icon">
+                    <div class="icon text-white-50">
                         <i class="fas fa-user-graduate"></i>
                     </div>
-                    <a href="{{ route('data.siswa') }}" class="small-box-footer">Lihat <i
-                            class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-            <!-- ./col -->
-        </div>
-        <!-- /.row -->
-        <div class="row gx-2 gy-0">
-            <div class="col-lg-3 col-6">
-                <!-- small box -->
-                <div class="small-box bg-primary">
-                    <div class="inner">
-                        <h3>{{ $total_bundles }}</h3>
-
-                        <p>Jumlah Bundling</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-book-reader"></i>
-                    </div>
-                    <a href="{{ route('admin.bundling') }}" class="small-box-footer">Lihat <i
-                            class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-            <div class="col-lg-4 col-6">
-                <!-- Total Sales Box -->
-                <div class="small-box bg-success">
-                    <div class="inner">
-                        <h3 id="totalSales">Loading...</h3>
-                        <p>Total Penjualan</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <a href="{{ route('admin.sales') }}" class="small-box-footer">Lihat <i
-                            class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-
-            <div class="col-lg-5 col-12">
-                <!-- Total Income Box -->
-                <div class="small-box bg-success">
-                    <div class="inner">
-                        <h3 id="totalIncome">Loading...</h3>
-                        <p>Total Pendapatan</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                    <a href="{{ route('admin.sales') }}" class="small-box-footer">Lihat <i
-                            class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('data.siswa') }}" class="small-box-footer bg-dark bg-opacity-10 border-0"
+                        style="border-radius: 0 0 15px 15px;">
+                        Detail Info <i class="fas fa-arrow-circle-right ms-1"></i>
+                    </a>
                 </div>
             </div>
         </div>
-        <!-- Main row -->
+
         <div class="row">
-            <!-- Right col for few months statistics -->
-            <section class="col-lg-8 connectedSortable">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-chart-bar mr-1"></i>
-                            Statistik Penjualan Beberapa Bulan
+            <div class="col-lg-4 col-md-6">
+                <div class="small-box shadow-sm border-0 bg-white"
+                    style="border-radius: 15px; border-left: 5px solid #4e73df !important;">
+                    <div class="inner text-dark">
+                        <h3 class="text-primary">{{ $total_bundles }}</h3>
+                        <p class="text-muted fw-bold">Jumlah Bundling</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-layer-group text-light"></i>
+                    </div>
+                    <a href="{{ route('admin.bundling') }}"
+                        class="small-box-footer text-primary border-top py-2 bg-transparent">
+                        Lihat Koleksi <i class="fas fa-arrow-right small ms-1"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="small-box shadow-sm border-0 bg-white"
+                    style="border-radius: 15px; border-left: 5px solid #1cc88a !important;">
+                    <div class="inner text-dark">
+                        <h3 id="totalSales" class="text-success">...</h3>
+                        <p class="text-muted fw-bold">Total Penjualan</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-shopping-cart text-light"></i>
+                    </div>
+                    <a href="{{ route('sales') }}" class="small-box-footer text-success border-top py-2 bg-transparent">
+                        Laporan Sales <i class="fas fa-arrow-right small ms-1"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12">
+                <div class="small-box shadow-sm border-0 bg-white"
+                    style="border-radius: 15px; border-left: 5px solid #6f42c1 !important;">
+                    <div class="inner text-dark">
+                        <h3 id="totalIncome" class="text-purple" style="color: #6f42c1;">...</h3>
+                        <p class="text-muted fw-bold">Total Pendapatan</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-wallet text-light"></i>
+                    </div>
+                    <a href="{{ route('sales') }}" class="small-box-footer text-purple border-top py-2 bg-transparent"
+                        style="color: #6f42c1;">
+                        Detail Keuangan <i class="fas fa-arrow-right small ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                    <div class="card-header bg-white py-3">
+                        <h3 class="card-title fw-bold text-dark">
+                            <i class="fas fa-chart-line text-primary mr-2"></i> Tren Penjualan
                         </h3>
-                    </div><!-- /.card-header -->
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="monthRange">Pilih Rentang Bulan:</label>
-                            <select id="monthRange" class="form-control" onchange="fetchSalesData(this.value)">
-                                <option value="">Pilih Rentang Bulan</option>
-                                <option value="6">6 Bulan</option>
-                                <option value="12">12 Bulan</option>
+                        <div class="card-tools">
+                            <select id="monthRange" class="form-control form-control-sm border-0 bg-light"
+                                onchange="fetchSalesData(this.value)">
+                                <option value="6">6 Bulan Terakhir</option>
+                                <option value="12">1 Tahun Terakhir</option>
                             </select>
                         </div>
-                        <div class="chart" style="position: relative; height: auto;">
-                            <canvas id="fewmonthChart" style="width: 100%; height: 300px;"></canvas>
-                        </div>
-                    </div><!-- /.card-body -->
+                    </div>
+                    <div class="card-body">
+                        <canvas id="fewmonthChart"
+                            style="min-height: 350px; height: 350px; max-height: 350px; width: 100%;"></canvas>
+                    </div>
                 </div>
-                <!-- /.card -->
-            </section>
-            <!-- /.Right col -->
-            <!-- Left col for monthly statistics -->
-            <section class="col-lg-4 connectedSortable">
-                <!-- Custom tabs (Charts with tabs) -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-chart-pie mr-1"></i>
-                            Statistik Penjualan Per Bulan
+            </div>
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                    <div class="card-header bg-white py-3">
+                        <h3 class="card-title fw-bold text-dark">
+                            <i class="fas fa-chart-pie text-info mr-2"></i> Per Bulan
                         </h3>
-                    </div><!-- /.card-header -->
+                    </div>
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="monthRange">Pilih Bulan:</label>
-                            <select id="monthRange" class="form-control" onchange="fetchMonthData(this.value)">
-                                <option value="">Pilih Bulan</option>
-                                <option value="1">Januari</option>
-                                <option value="2">Februari</option>
-                                <option value="3">Maret</option>
-                                <option value="4">April</option>
-                                <option value="5">Mei</option>
-                                <option value="6">Juni</option>
-                                <option value="7">Juli</option>
-                                <option value="8">Agustus</option>
-                                <option value="9">September</option>
-                                <option value="10">Oktober</option>
-                                <option value="11">November</option>
-                                <option value="12">Desember</option>
+                            <select id="monthRangeSingle" class="form-control bg-light border-0 rounded-pill"
+                                onchange="fetchMonthData(this.value)">
+                                @foreach (['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $key => $month)
+                                    <option value="{{ $key + 1 }}" {{ $key + 1 == 10 ? 'selected' : '' }}>
+                                        {{ $month }}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="chart" style="position: relative; height: auto;">
-                            <canvas id="monthChart" style="width: 100%; height: 300px;"></canvas>
-                        </div>
-                    </div><!-- /.card-body -->
+                        <canvas id="monthChart"
+                            style="min-height: 280px; height: 280px; max-height: 280px; width: 100%;"></canvas>
+                    </div>
                 </div>
-                <!-- /.card -->
-            </section>
-            <!-- /.Left col -->
+            </div>
         </div>
     </div>
 
@@ -291,23 +276,25 @@
                 monthChart.destroy();
             }
 
-            // Create the datasets with yAxisID
+            // Contoh untuk totalSalesDataset di dalam updateChart
             const totalSalesDataset = {
-                label: 'Penjualan',
-                data: totalSales, // Use the total sales from the sales data
-                backgroundColor: 'rgba(54, 162, 235, 0.6)', // Customize colors
-                borderColor: 'rgba(54, 162, 235, 1)',
+                label: 'Total Penjualan',
+                data: totalSales,
+                backgroundColor: 'rgba(78, 115, 223, 0.8)', // Warna Biru Modern
+                borderColor: '#4e73df',
                 borderWidth: 1,
-                yAxisID: 'y-axis-sales' // yAxisID for total sales
+                borderRadius: 5, // Membuat batang chart agak bulat
+                barPercentage: 0.6,
             };
 
             const totalIncomeDataset = {
-                label: 'Pendapatan', // Add another dataset for total_income
-                data: totalIncome, // Set the data to the total_income values
-                backgroundColor: 'rgba(255, 99, 132, 0.6)', // Different color for clarity
-                borderColor: 'rgba(255, 99, 132, 1)',
+                label: 'Total Pendapatan',
+                data: totalIncome,
+                backgroundColor: 'rgba(28, 200, 138, 0.8)', // Warna Hijau Modern
+                borderColor: '#1cc88a',
                 borderWidth: 1,
-                yAxisID: 'y-axis-income' // yAxisID for total income
+                borderRadius: 5,
+                barPercentage: 0.6,
             };
 
             // Create a new chart with the updated data
@@ -348,25 +335,26 @@
                 fewmonthChart.destroy();
             }
 
-            // Create the datasets with yAxisID
+            // Contoh untuk totalSalesDataset di dalam updateChart
             const totalSalesDataset = {
                 label: 'Total Penjualan',
-                data: totalSales, // Use the total sales from the sales data
-                backgroundColor: 'rgba(54, 162, 235, 0.6)', // Customize colors
-                borderColor: 'rgba(54, 162, 235, 1)',
+                data: totalSales,
+                backgroundColor: 'rgba(78, 115, 223, 0.8)', // Warna Biru Modern
+                borderColor: '#4e73df',
                 borderWidth: 1,
-                yAxisID: 'y-axis-sales' // yAxisID for total sales
+                borderRadius: 5, // Membuat batang chart agak bulat
+                barPercentage: 0.6,
             };
 
             const totalIncomeDataset = {
-                label: 'Total Pendapatan', // Add another dataset for total_income
-                data: totalIncome, // Set the data to the total_income values
-                backgroundColor: 'rgba(255, 99, 132, 0.6)', // Different color for clarity
-                borderColor: 'rgba(255, 99, 132, 1)',
+                label: 'Total Pendapatan',
+                data: totalIncome,
+                backgroundColor: 'rgba(28, 200, 138, 0.8)', // Warna Hijau Modern
+                borderColor: '#1cc88a',
                 borderWidth: 1,
-                yAxisID: 'y-axis-income' // yAxisID for total income
+                borderRadius: 5,
+                barPercentage: 0.6,
             };
-
             // Create a new chart with the updated data
             fewmonthChart = new Chart(fewmonthChartCanvas.getContext('2d'), {
                 type: 'bar', // Bar chart type
@@ -389,5 +377,4 @@
             });
         }
     </script>
-
 @endsection

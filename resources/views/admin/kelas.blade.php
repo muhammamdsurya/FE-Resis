@@ -12,28 +12,85 @@
 @section('content')
 
     <style>
-        .card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        .course-card-modern {
+            border-radius: 20px !important;
+            transition: all 0.3s ease;
+            border: none !important;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            filter: brightness(0.9);
-            /* Darkens the card on hover */
+        .course-card-modern:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08) !important;
         }
 
-        .card img {
-            height: 100px;
+        .img-wrapper-custom {
+            position: relative;
+            padding-top: 56.25%;
+            /* 16:9 Ratio */
+            overflow: hidden;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .img-wrapper-custom img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
         }
 
-        .card .card-body {
-            background-color: #fff;
+        .text-limit-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 2.8rem;
+            line-height: 1.4;
         }
 
-        .card .text-warning {
-            font-size: 1rem;
+        .badge-soft-primary {
+            background-color: #eef4ff;
+            color: #0d6efd;
+            font-weight: 500;
+            font-size: 11px;
+        }
+
+        .pagination {
+            gap: 8px;
+            /* Memberi jarak antar kotak nomor */
+        }
+
+        .pagination .page-item .page-link {
+            border: none;
+            border-radius: 10px !important;
+            /* Membuat kotak agak membulat */
+            color: #6c757d;
+            padding: 8px 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #0d6efd;
+            /* Warna utama biru */
+            color: white;
+            box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .pagination .page-item:not(.active):hover .page-link {
+            background-color: #e9ecef;
+            color: #0d6efd;
+            transform: translateY(-2px);
+        }
+
+        .pagination .page-item.disabled .page-link {
+            background-color: transparent;
+            opacity: 0.5;
+            border: 1px solid #eee;
         }
     </style>
 
@@ -65,112 +122,127 @@
         </div>
 
 
-        <div id="coursesContainer" class="row gx-2 gy-0">
-            @if ($pagination ?? false) {{-- Jika ada pagination --}}
-                @if ($courses['data'])
-                    @foreach ($courses['data'] as $item)
-                        {{-- Akses data dari courses['data'] --}}
-                        <div class="col-lg-3 col-md-4 col-6">
-                            <a href="{{ route('detail-kelas', ['id' => $item['course']['id']]) }}"
-                                class="text-decoration-none">
-                                <div class="card shadow-sm border-light rounded">
-                                    <img src="{{ $item['course']['thumbnail_image'] }}" class="card-img-top"
-                                        alt="{{ $item['course']['thumbnail_image'] }}">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <div class="rating d-flex align-items-center me-2">
-                                                <i class="fas fa-star text-warning me-1"></i>
-                                                <span class="fs-6 mb-0 text-muted">{{ $item['course']['rating'] }}</span>
-                                            </div>
-                                            <span class="badge bg-primary small text-center px-2 py-1"
-                                                style="white-space: normal;">
-                                                {{ $item['course_category']['name'] }}
-                                            </span>
-                                        </div>
+        <div id="coursesContainer" class="row g-4">
+            @php
+                // Normalisasi data untuk menangani kedua kondisi (pagination vs biasa)
+                $dataItems = $pagination ?? false ? $courses['data'] ?? [] : $courses ?? [];
+            @endphp
 
-                                        <h5 class="card-title fw-bold fs-6 mt-2">
-                                            {{ $item['course']['name'] }}
-                                        </h5>
-                                    </div>
+            @forelse($dataItems as $item)
+                @php
+                    // Mapping variabel agar konsisten
+                    $c = $pagination ?? false ? $item['course'] : $item;
+                    $cat = $pagination ?? false ? $item['course_category'] : $item['course_category'] ?? null;
+                    $instruktur = $item['instructor'] ?? null;
+                @endphp
 
-                                </div>
-                            </a>
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card h-100 shadow-sm course-card-modern">
+                        <div class="img-wrapper-custom">
+                            <img src="{{ $c['thumbnail_image'] }}" alt="Course Thumbnail">
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <span class="badge bg-white text-dark shadow-sm rounded-pill py-1 px-2">
+                                    <i class="fas fa-star text-warning me-1"></i>
+                                    <span class="small fw-bold">{{ $c['rating'] > 0 ? $c['rating'] : 'New' }}</span>
+                                </span>
+                            </div>
                         </div>
-                    @endforeach
-                @else
-                    <div class="col-12 text-center">
-                        <h4>Data kelas kosong</h4>
+
+                        <div class="card-body p-3 d-flex flex-column">
+                            <div class="mb-2">
+                                <span class="badge badge-soft-primary px-2 py-1 rounded">
+                                    {{ $cat['name'] ?? 'General' }}
+                                </span>
+                            </div>
+
+                            <h6 class="fw-bold text-dark text-limit-2 mb-3">
+                                {{ $c['name'] }}
+                            </h6>
+
+                            @if ($instruktur)
+                                <div class="d-flex align-items-center mb-3 mt-auto">
+                                    <img src="{{ $instruktur['photo_profile'] ?? 'https://ui-avatars.com/api/?name=' . $instruktur['full_name'] }}"
+                                        class="rounded-circle me-2" width="25" height="25"
+                                        style="object-fit: cover;">
+                                    <small class="text-muted text-truncate">{{ $instruktur['full_name'] }}</small>
+                                </div>
+                            @endif
+
+                            <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-bold text-primary">
+                                        Rp{{ number_format($c['price'] ?? 0, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                                <a href="{{ route('detail-kelas', ['id' => $c['id']]) }}"
+                                    class="btn btn-primary rounded-pill btn-sm px-3 fw-bold shadow-sm">
+                                    Detail <i class="fas fa-arrow-right ms-1" style="font-size: 10px;"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                @endif
-            @else
-                {{-- Jika tidak ada pagination --}}
-                @if ($courses != null)
-                    @foreach ($courses as $item)
-                        <div class="col-lg-3 col-md-4 col-6">
-                            <a href="{{ route('detail-kelas', ['id' => $item['id']]) }}" class="text-decoration-none">
-                                <div class="card shadow-sm border-light rounded">
-                                    <img src="{{ $item['thumbnail_image'] }}" class="card-img-top"
-                                        alt="{{ $item['thumbnail_image'] }}">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <div class="rating d-flex align-items-center me-2">
-                                                <i class="fas fa-star text-warning me-1"></i>
-                                                <span class="fs-6 mb-0 text-muted">{{ $item['course']['rating'] }}</span>
-                                            </div>
-                                            <span class="badge bg-primary small text-center px-2 py-1"
-                                                style="white-space: normal;">
-                                                {{ $item['course_category']['name'] }}
-                                            </span>
-                                        </div>
-
-                                        <h5 class="card-title fw-bold fs-6 mt-2">
-                                            {{ $item['course']['name'] }}
-                                        </h5>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    @endforeach
-                @endif
-            @endif
-
+                </div>
+            @empty
+                <div class="col-12 text-center py-5">
+                    <div class="p-5 bg-light rounded-4 border border-dashed">
+                        <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Tidak ada kelas yang ditemukan</h5>
+                    </div>
+                </div>
+            @endforelse
         </div>
 
 
         @if ($pagination ?? false)
-            <!-- Tampilkan pagination hanya jika pagination tersedia -->
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <!-- Previous Button -->
-                    @if ($pagination['page'] > 1)
-                        <li class="page-item">
-                            <a class="page-link"
-                                href="{{ route('admin.kelas', ['page' => $pagination['page'] - 1]) }}">Previous</a>
+            <nav aria-label="Page navigation" class="mt-5">
+                <ul class="pagination justify-content-center align-items-center">
+
+                    <li class="page-item {{ $pagination['page'] <= 1 ? 'disabled' : '' }}">
+                        <a class="page-link"
+                            href="{{ $pagination['page'] > 1 ? route('admin.kelas', ['page' => $pagination['page'] - 1]) : '#' }}"
+                            aria-label="Previous">
+                            <i class="fas fa-chevron-left small"></i>
+                        </a>
+                    </li>
+
+                    @php
+                        $start = max(1, $pagination['page'] - 2);
+                        $end = min($pagination['total_page'], $pagination['page'] + 2);
+                    @endphp
+
+                    @if ($start > 1)
+                        <li class="page-item d-none d-md-block">
+                            <a class="page-link" href="{{ route('admin.kelas', ['page' => 1]) }}">1</a>
                         </li>
-                    @else
-                        <li class="page-item disabled">
-                            <a class="page-link">Previous</a>
-                        </li>
+                        @if ($start > 2)
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        @endif
                     @endif
 
-                    <!-- Page Numbers -->
-                    @for ($i = 1; $i <= $pagination['total_page']; $i++)
+                    @for ($i = $start; $i <= $end; $i++)
                         <li class="page-item {{ $pagination['page'] == $i ? 'active' : '' }}">
                             <a class="page-link" href="{{ route('admin.kelas', ['page' => $i]) }}">{{ $i }}</a>
                         </li>
                     @endfor
 
-                    <!-- Next Button -->
-                    @if ($pagination['page'] < $pagination['total_page'])
-                        <li class="page-item">
+                    @if ($end < $pagination['total_page'])
+                        @if ($end < $pagination['total_page'] - 1)
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        @endif
+                        <li class="page-item d-none d-md-block">
                             <a class="page-link"
-                                href="{{ route('admin.kelas', ['page' => $pagination['page'] + 1]) }}">Next</a>
-                        </li>
-                    @else
-                        <li class="page-item disabled">
-                            <a class="page-link">Next</a>
+                                href="{{ route('admin.kelas', ['page' => $pagination['total_page']]) }}">{{ $pagination['total_page'] }}</a>
                         </li>
                     @endif
+
+                    <li class="page-item {{ $pagination['page'] >= $pagination['total_page'] ? 'disabled' : '' }}">
+                        <a class="page-link"
+                            href="{{ $pagination['page'] < $pagination['total_page'] ? route('admin.kelas', ['page' => $pagination['page'] + 1]) : '#' }}"
+                            aria-label="Next">
+                            <i class="fas fa-chevron-right small"></i>
+                        </a>
+                    </li>
+
                 </ul>
             </nav>
         @endif

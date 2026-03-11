@@ -25,7 +25,7 @@
             <div class="d-flex align-items-center px-3 py-1 bg-light rounded-pill border shadow-sm">
                 <i class="far fa-calendar-alt text-primary mr-2"></i>
                 <span class="small fw-bold text-dark d-none d-md-block">
-                    {{ \Carbon\Carbon::now()->isoFormat('dddd, D MMMM YYYY') }}
+                    {{ \Carbon\Carbon::now('Asia/Jakarta')->locale('id')->isoFormat('dddd, D MMMM YYYY') }}
                 </span>
             </div>
         </li>
