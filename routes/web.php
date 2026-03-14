@@ -26,6 +26,7 @@ Route::get('/kelas', [publicController::class, 'kelas'])->name('kelas');
 Route::get('/detail-kelas/{courseId}', [publicController::class, 'detailKelas'])->name('detail.kelas');
 
 Route::get('/bundling', [publicController::class, 'bundling'])->name('bundling');
+Route::get('/cv-screening', [publicController::class, 'cvScreening'])->name('cv-screening');
 Route::get('/detail-bundling/{courseBundleId}', [publicController::class, 'detailBundling'])->name('detail.bundling');
 
 

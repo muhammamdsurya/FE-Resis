@@ -104,6 +104,12 @@ class publicController extends Controller
         ]);
     }
 
+    public function cvScreening() {
+          return view('cvScreening', [
+
+        ]);
+    }
+
     public function detailBundling($courseId)
     {
 
