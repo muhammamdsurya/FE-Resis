@@ -37,7 +37,16 @@
                             <div class="text-start mb-3">
                                 <p class="mb-1 small text-muted font-monospace">TARGET POSISI</p>
                                 <h6 class="fw-bold text-dark mb-0">
-                                    {{ Str::between($data['job_description'], 'Posisi:', '.') }}
+                                    @php
+                                        // Mengambil apapun setelah 'Posisi:' sampai bertemu titik yang diikuti kata 'Berikut'
+                                        preg_match(
+                                            '/Posisi:\s*(.*?)\.\s*Berikut/i',
+                                            $data['job_description'],
+                                            $matches,
+                                        );
+                                        $position = $matches[1] ?? 'Posisi Tidak Ditemukan';
+                                    @endphp
+                                    {{ $position }}
                                 </h6>
                             </div>
                             <div class="text-start">
