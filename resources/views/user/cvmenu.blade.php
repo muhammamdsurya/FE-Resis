@@ -181,6 +181,43 @@
         </div>
     </div>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                title: '<strong>Disclaimer Penting!</strong>',
+                icon: 'info',
+                html: `
+                <div class="text-start border-top pt-3 mt-2" style="font-size: 0.95rem;">
+                    <p>Mohon perhatikan hal-hal berikut sebelum melanjutkan:</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i>
+                            <strong>Format File:</strong> Sistem saat ini hanya kompatibel dengan file bertipe <b>.PDF</b>.
+                        </li>
+                        <li>
+                            <i class="bi bi-robot text-primary me-2"></i>
+                            <strong>Optimasi:</strong> Sangat dianjurkan menggunakan <b>CV ATS-Friendly</b> agar sistem kami dapat mengekstraksi data Anda secara maksimal.
+                        </li>
+                    </ul>
+                </div>
+            `,
+                focusConfirm: false,
+                confirmButtonText: '<i class="bi bi-check2-circle me-1"></i> Saya Mengerti',
+                confirmButtonColor: '#0d6efd', // Warna primary (biru)
+                background: '#ffffff',
+                customClass: {
+                    popup: 'rounded-4 shadow',
+                    confirmButton: 'rounded-pill px-4'
+                },
+                // Animasi agar lebih menarik
+                showClass: {
+                    popup: 'animate__animated animate__fadeInDown'
+                },
+                hideClass: {
+                    popup: 'animate__animated animate__fadeOutUp'
+                }
+            });
+        });
+
         function refreshCredits() {
             fetch("{{ route('credits.get') }}")
                 .then(res => res.json())
@@ -323,7 +360,7 @@
                         if (percentage >= 80) {
                             statusBadge.innerText = "HIGH MATCH";
                             statusBadge.className =
-                            "badge rounded-pill bg-success text-white px-3 py-2 fw-bold";
+                                "badge rounded-pill bg-success text-white px-3 py-2 fw-bold";
                         } else if (percentage >= 50) {
                             statusBadge.innerText = "MEDIUM MATCH";
                             statusBadge.className = "badge rounded-pill bg-warning text-dark px-3 py-2 fw-bold";
@@ -340,7 +377,7 @@
                 })
                 .catch(error => {
                     console.error("Error:", error);
-                    Swal.fire('Error', 'Terjadi kesalahan sistem saat analisis.', 'error');
+                    Swal.fire('Error', 'Uups File nya tidak kompatibel, silahkan coba file lainnya!', 'error');
                     submitBtn.innerHTML = 'Analyze';
                     submitBtn.disabled = false;
                 });

@@ -81,7 +81,7 @@ class ResumeController extends Controller
             return response()->json(
                 [
                     'success' => false,
-                    'message' => 'API Error: ' . $response->status(),
+                    'message' => 'Uups File nya tidak kompatibel, silahkan coba file lainnya!: ' . $response->status(),
                     'detail' => $response->json(),
                 ],
                 $response->status(),
