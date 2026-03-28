@@ -42,9 +42,7 @@ Route::get('/privacy-policy', function () {
     return view('policy');
 })->name('policy');
 
-Route::get('/register', function () {
-    return view('register');
-})->name('show'); // Menampilkan form registrasi
+
 
 
 // Grup rute untuk rute-rute yang terkait dengan admin
@@ -172,6 +170,8 @@ Route::prefix('')->middleware('redirect.if.authenticated:user')->group(function 
     Route::get('/login/google', [AuthController::class, 'handleGoogleOauth'])->name('login.google');
     Route::get('/register/google', [AuthController::class, 'handleGoogleOauth'])->name('register.google');
     Route::get('/auth/google/login', [AuthController::class, 'handleGoogleCallback']);
+Route::get('/register',[AuthController::class, 'showRegister'])->name('show');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
 });
 
 // Rute untuk login admin
@@ -186,8 +186,6 @@ Route::prefix('instructor')->middleware('redirect.if.authenticated:instructor')-
     Route::post('/login', [AuthController::class, 'loginInstructor']); // Proses login admin
 });
 
-
-Route::post('/register', [AuthController::class, 'register'])->name('register'); // Proses registrasi user
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

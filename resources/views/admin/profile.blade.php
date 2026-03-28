@@ -2,49 +2,93 @@
 @section('title', $title)
 
 @section('content')
-
     <style>
+        .profile-card {
+            transition: transform 0.3s ease;
+        }
 
+        .form-control:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+            color: #333;
+        }
+
+        .profile-avatar i {
+            color: #4e73df !important;
+        }
     </style>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="card">
-                    <div class="card-body">
 
-                        <div class="text-center mb-3">
-                            <span class="badge bg-primary fs-5">Tipe : {{ $role }}</span>
+    <div class="container-fluid p-4" style="background-color: #f4f6f9; min-height: 100vh;">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-11">
+                <div class="card profile-card shadow-sm border-0 rounded-4 overflow-hidden">
+                    <div class="profile-header-bg"
+                        style="background: linear-gradient(45deg, #4e73df, #224abe); height: 120px;"></div>
+
+                    <div class="profile-avatar-wrapper text-center"
+                        style="margin-top: -60px; position: relative; z-index: 1;">
+                        <div class="profile-avatar mb-3">
+                            <i class="fas fa-user-circle fa-7x text-white bg-white rounded-circle shadow"></i>
+                        </div>
+                        <h3 class="fw-bold mt-2 mb-0 text-dark">{{ $full_name }}</h3>
+                        <div class="mt-2">
+                            <span class="badge rounded-pill bg-primary-subtle text-primary px-4 py-2">
+                                <i class="fas fa-shield-alt me-1"></i> Tipe: {{ strtoupper($role) }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card-body px-lg-5 pb-5 pt-4">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-muted small text-uppercase">Nama Lengkap</label>
+                                <input type="text" class="form-control bg-light border-0 shadow-none py-2"
+                                    value="{{ $full_name }}" disabled>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-muted small text-uppercase">Email</label>
+                                <input type="email" class="form-control bg-light border-0 shadow-none py-2"
+                                    value="{{ $email }}" disabled>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-muted small text-uppercase">Dibuat Tanggal</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0 text-muted"><i
+                                            class="far fa-calendar-alt"></i></span>
+                                    <input type="text" class="form-control bg-light border-0 shadow-none py-2"
+                                        value="{{ $created_at }}" disabled>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold text-muted small text-uppercase">Diperbarui
+                                    Tanggal</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0 text-muted"><i
+                                            class="fas fa-history"></i></span>
+                                    <input type="text" class="form-control bg-light border-0 shadow-none py-2"
+                                        value="{{ $updated_at }}" disabled>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="fullName" class="form-label">Nama Lengkap</label>
-                            <input type="text" class="form-control" id="fullName" value="{{ $full_name }}" disabled>
-                        </div>
+                        <div class="d-flex justify-content-center gap-3 mt-5">
+                            <button type="button" class="btn btn-warning px-4 fw-bold shadow-sm reset-password">
+                                <i class="fas fa-key me-2"></i>Reset Password
+                            </button>
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" value="{{ $email }}" disabled>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="createdAt" class="form-label">Dibuat Tanggal</label>
-                            <input type="text" class="form-control" id="createdAt" value="{{ $created_at }}" disabled>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="updatedAt" class="form-label">Diperbarui Tanggal</label>
-                            <input type="text" class="form-control" id="updatedAt" value="{{ $updated_at }}" disabled>
-                        </div>
-
-                        <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-warning mb-3 reset-password">Reset Pasword</button>
-                            <button type="submit" class="btn btn-danger mb-3 btn-logout">Logout</button>
+                            <button type="button" class="btn btn-danger btn-logout px-4 fw-bold shadow-sm">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 
 
     <script>

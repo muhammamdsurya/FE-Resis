@@ -45,7 +45,7 @@
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold small text-muted">Job Position</label>
                                     <input type="text" name="job_position" class="form-control"
-                                        placeholder="Senior Frontend Engineer" style="border-radius: 8px;">
+                                        placeholder="Analis Kimia" style="border-radius: 8px;">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold small text-muted">Pengalaman Dibutuhkan</label>
@@ -61,14 +61,15 @@
                                         placeholder="PT XYZ sedang mencari kandidat dengan kriteria..." style="border-radius: 8px;"></textarea>
                                 </div>
                             </div>
-
-                            <div class="d-flex gap-2">
-                                <button type="submit"
-                                    class="btn btn-primary px-4 py-2 flex-grow-1 fw-bold">Analyze</button>
-                                <button id="btnCredits" class="btn btn-outline-warning disabled px-4 py-2 fw-bold"
-                                    style="border-radius: 8px;">
-                                    Free <span id="creditCount">...</span>x Analyze
+                            <div class="text-center w-100">
+                                <button type="submit" id="btnAnalyze"
+                                    class="btn btn-primary px-5 py-3 rounded-4 fw-bold shadow w-100 mb-2">
+                                    Analisis CV
                                 </button>
+                                <div class="text-muted small">
+                                    <i class="fas fa-bolt text-warning me-1"></i>
+                                    Kamu Punya <strong><span id="creditCount">...</span>x analisis</strong>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -247,25 +248,46 @@
             let formData = new FormData(this);
             let submitBtn = e.target.querySelector('button[type="submit"]');
 
-            // Ambil nilai untuk pengecekan
+            // --- LOGIKA PROTEKSI KREDIT ---
+            const creditCountElement = document.getElementById('creditCount');
+            const currentCredits = parseInt(creditCountElement.innerText) || 0;
+
+            if (currentCredits <= 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Maaf, Token Habis!',
+                    text: 'Kamu tidak memiliki kuota analisis tersisa. Silakan top-up atau tunggu besok!',
+                    confirmButtonText: 'Top Up Sekarang',
+                    confirmButtonColor: '#0d6efd',
+                    showCancelButton: true,
+                    cancelButtonText: 'Tutup'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/pricing'; // Sesuaikan route pricing Anda
+                    }
+                });
+                return; // Menghentikan eksekusi, tidak jadi fetch
+            }
+            // ------------------------------
+
+            // Validasi input form
             const jobPosition = formData.get('job_position');
             const originalDescription = formData.get('job_description');
 
-            // Validasi sederhana: pastikan tidak kosong
             if (!jobPosition || !originalDescription) {
-                alert("Mohon isi Jabatan dan Deskripsi Pekerjaan!");
+                Swal.fire('Oops!', 'Mohon isi Jabatan dan Deskripsi Pekerjaan!', 'warning');
                 return;
             }
 
+            // Efek Loading
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Analyzing...';
             submitBtn.disabled = true;
 
             // Gabungkan teks
             const combinedDescription =
                 `Posisi: ${jobPosition}. Berikut adalah deskripsi pekerjaan: ${originalDescription}`;
-
-            // Timpa nilai di formData
             formData.set('job_description', combinedDescription);
+
             fetch("{{ route('resume.analyze') }}", {
                     method: "POST",
                     body: formData,
@@ -278,42 +300,30 @@
                     submitBtn.innerHTML = 'Analyze';
                     submitBtn.disabled = false;
 
-
                     if (data.success) {
-                        refreshCredits();
-                        // 1. Update Persentase di lingkaran
-                        document.getElementById('text-percentage').innerText = data.match_percentage + '%';
+                        // Panggil fungsi refresh kredit (jika ada di global scope)
+                        if (typeof refreshCredits === "function") refreshCredits();
 
-                        // 2. Update Key Strength
-                        document.getElementById('text-strength').innerText = data.strength;
-
-                        // 3. Update Recommendation
-                        document.getElementById('text-recommendation').innerText = data.recommendation;
-
-                        // 4. Update Improvement Points
-                        document.getElementById('text-improvement').innerText = data.improvement_points;
-
-                        // 5. Update Ringkasan di bawah lingkaran (opsional)
-                        if (data.summary) {
-                            document.getElementById('text-summary').innerText = data.summary;
-                        }
-
+                        // Update UI Result (Progress Circle, Text, dll)
                         const percentage = data.match_percentage;
                         const circle = document.getElementById('progress-bar');
                         const statusBadge = document.getElementById('match-status');
 
-                        // 1. Hitung Dash Offset (Keliling Lingkaran = 2 * PI * R ≈ 377)
+                        // Hitung Dash Offset
                         const offset = 377 - (377 * percentage / 100);
                         circle.style.strokeDashoffset = offset;
 
-                        // 2. Update Teks Persentase
                         document.getElementById('text-percentage').innerText = percentage + '%';
+                        document.getElementById('text-strength').innerText = data.strength;
+                        document.getElementById('text-recommendation').innerText = data.recommendation;
+                        document.getElementById('text-improvement').innerText = data.improvement_points;
+                        document.getElementById('text-summary').innerText = data.recommendation;
 
-                        // 3. Update Status Badge & Warna
+                        // Status Color Logic
                         if (percentage >= 80) {
                             statusBadge.innerText = "HIGH MATCH";
                             statusBadge.className =
-                                "badge rounded-pill bg-success text-white px-3 py-2 fw-bold";
+                            "badge rounded-pill bg-success text-white px-3 py-2 fw-bold";
                         } else if (percentage >= 50) {
                             statusBadge.innerText = "MEDIUM MATCH";
                             statusBadge.className = "badge rounded-pill bg-warning text-dark px-3 py-2 fw-bold";
@@ -322,17 +332,15 @@
                             statusBadge.className = "badge rounded-pill bg-danger text-white px-3 py-2 fw-bold";
                         }
 
-                        // 4. Update Summary
-                        document.getElementById('text-summary').innerText = data.recommendation;
+                        Swal.fire('Berhasil!', 'Silahkan cek detail di riwayat screening.', 'success');
 
-                        console.log("Analisis Berhasil Diupdate ke UI");
                     } else {
-                        alert("Gagal menganalisis: " + data.message);
+                        Swal.fire('Gagal!', data.message, 'error');
                     }
                 })
                 .catch(error => {
                     console.error("Error:", error);
-                    alert("Terjadi kesalahan saat analisis.");
+                    Swal.fire('Error', 'Terjadi kesalahan sistem saat analisis.', 'error');
                     submitBtn.innerHTML = 'Analyze';
                     submitBtn.disabled = false;
                 });

@@ -38,7 +38,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'redirect.if.authenticated' => App\Http\Middleware\RedirectIfAuthenticated::class,
             'completed.data' => App\Http\Middleware\CompletedData::class,
             /* 'adminRole' => adminRole::class, */
-            /* 'authCheck' => authCheck::class */
+            // 'authCheck' => App\Http\Middleware\authCheck::class 
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -2,13 +2,6 @@
 @section('title', $title)
 
 
-@section('buttons')
-    <a href="{{ route('admin.dataBundling.download') }}" class="btn btn-primary mb-0 d-flex align-items-center">
-        <i class="fas fa-download d-inline me-1 "></i> <!-- Ikon untuk mobile -->
-        <span class="d-none d-lg-inline">Download CSV</span> <!-- Teks untuk desktop -->
-    </a>
-@endsection
-
 @section('content')
     <style>
         .bundle-card {
@@ -29,7 +22,12 @@
         }
     </style>
 
-    <div class="container mt-3">
+    <div class="container-fluid py-3">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold m-0" style="color: #343a40;">Data Bundling</h2>
+            </div>
+        </div>
         <div class="row mb-3">
             <div class="col-7">
                 <div class="search-form" style="width: 100%">
@@ -42,7 +40,11 @@
                     </form>
                 </div>
             </div>
-            <div class="col-5 d-flex justify-content-end">
+            <div class="col-5 d-flex justify-content-end gap-2">
+                <a href="{{ route('admin.dataBundling.download') }}" class="btn btn-primary mb-0 d-flex align-items-center">
+                    <i class="fas fa-download d-inline me-1 "></i> <!-- Ikon untuk mobile -->
+                    <span class="d-none d-lg-inline">Download CSV</span> <!-- Teks untuk desktop -->
+                </a>
                 <button type="button" class="btn btn-success d-flex align-items-center" data-bs-toggle="modal"
                     data-bs-target="#modal-bundling">
                     <i class="fas fa-plus d-inline me-1"></i><span class="d-none d-lg-inline">Tambah</span>
@@ -74,7 +76,7 @@
                 @endif
             @else
                 <div class="col-12 text-center">
-                    <h4>Data kelas kosong</h4>
+                    <h4>Data bundling kosong</h4>
                 </div>
             @endif
             {{-- Jika tidak ada pagination --}}

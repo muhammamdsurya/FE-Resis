@@ -345,6 +345,10 @@ class AuthController extends Controller
         }
     }
 
+    public function showRegister () {
+        return view('register');
+    }
+
     public function register(Request $request)
     {
         // Hit API users/auth/register

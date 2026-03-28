@@ -3,278 +3,295 @@
 
 @section('content')
     <style>
-        .image-container,
-        .image-container-add {
-            position: relative;
-            display: inline-block;
-
+        /* Mempercantik Table */
+        .table thead th {
+            font-size: 0.7rem;
+            letter-spacing: 0.05rem;
+            text-transform: uppercase;
+            background-color: #2E3A9D;
         }
 
-        .image-container img,
-        .image-container-add img {
-            width: 100%;
-            height: 50% !important;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        .table-hover tbody tr:hover {
+            background-color: #fcfcfc;
+            transition: 0.3s;
         }
 
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5) !important;
-            /* Warna hitam transparan */
+        /* Efek hover tombol Download */
+        .transition-all:hover {
+            transform: translateY(-2px);
+            background-color: #0d6efd;
             color: white !important;
-            opacity: 0;
-            /* Awalnya disembunyikan */
-            transition: opacity 0.3s ease;
-            /* Animasi saat hover */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            border-radius: 10px;
         }
 
-        .image-container:hover .overlay,
-        .image-container-add:hover .overlay {
-            opacity: 1;
+        .cursor-pointer {
             cursor: pointer;
-            /* Muncul saat di-hover */
+        }
+
+        #imagePreview {
+            transition: transform 0.2s ease;
+            border: 3px solid #f8f9fa;
+        }
+
+        #imagePreview:hover {
+            transform: scale(1.05);
+            border-color: #0d6efd;
+        }
+
+        .btn-light {
+            border: 1px solid #f0f0f0;
         }
     </style>
-
-    <div class="card">
-        <div class="card-body">
-            @if ($type === 'super')
-                <!-- Tombol untuk menampilkan modal -->
-                <a href="#" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#registrationModal">
-                    <i class="fas fa-plus d-inline me-1"></i> <!-- Ikon untuk mobile -->
-                    <span class="d-lg-inline">Tambah Instruktur</span> <!-- Teks untuk desktop -->
-                </a>
-            @endif
-
-            <!-- Modal untuk Registrasi -->
-            <div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="registrationModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="registrationModalLabel">Tambah Instruktur</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="registrationForm" method="POST" action="{{ route('admin.dataInstructor.regis') }}"
-                                enctype="multipart/form-data">
-                                @csrf
-                                <!-- Image Section -->
-                                <div class="image-container-add text-center mb-4 cursor-pointer">
-                                    <img src="{{ asset('assets/img/testimonials/profile.jpg') }}" alt="upload gambar"
-                                        class="img-fluid rounded shadow image-preview cursor-pointer" id="imagePreview">
-                                    <div class="overlay">Ganti Gambar</div>
-                                </div>
-                                <input type="file" id="imageUpload" name="image" style="display: none; cursor-pointer"
-                                    accept="image/*">
-
-                                <!-- Name input -->
-                                <div class="form-floating mb-3">
-                                    <input type="text" class="form-control" id="full_name" placeholder="Nama lengkap"
-                                        name="full_name" required>
-                                    <label for="name">Nama Lengkap</label>
-                                    <p class="small" id="nameError" style="color: red; display: none;">Masukan nama
-                                        lengkap</p>
-                                </div>
-
-                                <!-- Email input -->
-                                <div class="form-floating mb-3">
-                                    <input type="email" class="form-control" id="email" placeholder="email"
-                                        name="email" required>
-                                    <label for="email">Email</label>
-                                    <p class="small" id="emailError" style="color: red; display: none;">Gunakan alamat
-                                        email aktif anda</p>
-                                </div>
-
-                                <!-- Password input -->
-                                <div class="form-floating">
-                                    <input type="password" class="form-control" id="password" placeholder="Password"
-                                        name="password" required>
-                                    <label for="password">Password</label>
-                                    <p class="small">Gunakan minimal 8 karakter dengan kombinasi huruf, angka &
-                                        karakter</p>
-                                    <p id="passwordError" class="small text-danger" style="display: none;">Password
-                                        harus mengandung minimal 8 karakter, 1 huruf besar, 1 angka & 1 Karakter</p>
-                                </div>
-
-                                <div class="form-floating">
-                                    <input type="password" class="form-control" id="password_confirm"
-                                        placeholder="Konfirmasi Password" name="password_confirm" required>
-                                    <label for="confirmPassword">Konfirmasi Password</label>
-                                    <p id="passwordMismatch" class="small text-danger" style="display: none;">Password
-                                        tidak cocok</p>
-                                </div>
-
-                                <div class="text-center text-lg-start mt-4 pt-2">
-                                    <button type="submit" class="btn btn-primary w-100"
-                                        id="submitRegistration">Registrasi</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+    <div class="container-fluid py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold m-0 text-dark">Data Pengajar</h2>
+                <p class="text-muted small mb-0">Kelola informasi instruktur dan kredensial akademik.</p>
             </div>
-            <a href="{{ route('admin.dataInstructor.download') }}" class="btn btn-primary mb-3">
-                <i class="fas fa-download d-inline me-1 "></i> <!-- Ikon untuk mobile -->
-                <span class="d-lg-inline">Download CSV</span> <!-- Teks untuk desktop -->
-            </a>
-            <div class="table-responsive">
-                <table class="table table-hover table-striped table-bordered">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Education</th>
-                            <th>Experience</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Data instruktur akan ditampilkan disini -->
-                        @if ($dataInstructor != null)
-                            @foreach ($dataInstructor as $instructor)
+            <div class="d-flex gap-2">
+                @if ($type === 'super')
+                    <button class="btn btn-success rounded-pill px-4 shadow-sm" data-bs-toggle="modal"
+                        data-bs-target="#registrationModal">
+                        <i class="bi bi-plus-lg me-1"></i> Tambah Instruktur
+                    </button>
+                @endif
+                <a href="{{ route('admin.dataInstructor.download') }}"
+                    class="btn btn-outline-primary rounded-pill px-4 shadow-sm">
+                    <i class="bi bi-download me-1"></i> Export CSV
+                </a>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="thead-custom">
+                            <tr>
+                                <th class="ps-4 py-3 border-0 text-light fw-bold">INSTRUKTUR</th>
+                                <th class="py-3 border-0 text-light fw-bold">PENDIDIKAN</th>
+                                <th class="py-3 border-0 text-light fw-bold">PENGALAMAN</th>
+                                <th class="py-3 border-0 text-light fw-bold text-center">AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($dataInstructor as $instructor)
                                 <tr>
-                                    <td>{{ $instructor->name }}</td>
-                                    <td>{{ $instructor->email }}</td>
-                                    <td>{{ $instructor->education ?? '' }}</td>
-                                    <td>{{ $instructor->experience ?? '' }}</td>
-                                    <td class="d-flex justify-content-center">
+                                    <td class="ps-4">
+                                        <div class="fw-bold text-dark">{{ $instructor->name }}</div>
+                                        <small class="text-muted">{{ $instructor->email }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="text-dark small fw-medium">{{ $instructor->education ?? '-' }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-dark small fw-medium">{{ $instructor->experience ?? '-' }}</span>
+                                    </td>
+                                    <td class="text-center">
                                         @if ($type === 'super')
-                                            <div class="d-flex justify-content-center">
-                                                <!-- Delete Button -->
+                                            <div class="d-flex justify-content-center gap-2">
                                                 @if ($instructor->education && $instructor->experience)
-                                                    <button class="btn btn-danger btn-sm me-2 delete-btn"
-                                                        data-id="{{ $instructor->id }}">
-                                                        <i class="fas fa-trash"></i>
+                                                    <button
+                                                        class="btn btn-light btn-sm rounded-circle text-danger shadow-sm delete-btn"
+                                                        data-id="{{ $instructor->id }}" style="width: 32px; height: 32px;">
+                                                        <i class="bi bi-trash3"></i>
                                                     </button>
-                                                    <!-- Edit Button -->
-                                                    <button class="btn btn-success btn-sm edit-btn"
-                                                        data-id="{{ $instructor->id }}" data-bs-toggle="modal"
-                                                        data-bs-target="#modal-{{ $instructor->id }}">
-                                                        <i class="fas fa-edit"></i>
+                                                    <button
+                                                        class="btn btn-light btn-sm rounded-circle text-success shadow-sm"
+                                                        data-bs-toggle="modal" data-bs-target="#modal-{{ $instructor->id }}"
+                                                        style="width: 32px; height: 32px;">
+                                                        <i class="bi bi-pencil-square"></i>
                                                     </button>
                                                 @else
                                                     <a href="{{ route('instructor.data', ['personId' => $instructor->id]) }}"
-                                                        class="btn btn-warning btn-sm">
-                                                        <i class="fas fa-edit"></i>
+                                                        class="btn btn-warning btn-sm px-3 rounded-pill shadow-sm small">
+                                                        Lengkapi Profil
                                                     </a>
                                                 @endif
-
                                             </div>
                                         @endif
                                     </td>
                                 </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="5" class="text-center">Belum ada data</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center py-5">
+                                        <div class="text-muted">
+                                            <i class="bi bi-person-badge mb-3 fa-2x opacity-25"></i>
+                                            <p>Belum ada data pengajar tersedia.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card-footer bg-white border-0 py-4">
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination pagination-sm justify-content-center align-items-center mb-0">
+
+                        <li class="page-item {{ $pagination['page'] <= 1 ? 'disabled' : '' }}">
+                            <a class="page-link rounded-circle mx-1 border-0 shadow-sm d-flex align-items-center justify-content-center"
+                                style="width: 32px; height: 32px;"
+                                href="{{ $pagination['page'] > 1 ? route('data.pengajar', ['page' => $pagination['page'] - 1]) : '#' }}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+
+                        @for ($i = 1; $i <= $pagination['total_page']; $i++)
+                            <li class="page-item mx-1 {{ $pagination['page'] == $i ? 'active' : '' }}">
+                                <a class="page-link rounded-circle border-0 shadow-sm d-flex align-items-center justify-content-center {{ $pagination['page'] == $i ? 'bg-primary text-white' : 'text-dark' }}"
+                                    style="width: 32px; height: 32px;" href="{{ route('data.pengajar', ['page' => $i]) }}">
+                                    {{ $i }}
+                                </a>
+                            </li>
+                        @endfor
+
+                        <li class="page-item {{ $pagination['page'] >= $pagination['total_page'] ? 'disabled' : '' }}">
+                            <a class="page-link rounded-circle mx-1 border-0 shadow-sm d-flex align-items-center justify-content-center"
+                                style="width: 32px; height: 32px;"
+                                href="{{ $pagination['page'] < $pagination['total_page'] ? route('data.pengajar', ['page' => $pagination['page'] + 1]) : '#' }}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
-        <!-- Tampilkan pagination hanya jika pagination tersedia -->
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <!-- Previous Button -->
-                @if ($pagination['page'] > 1)
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="{{ route('data.pengajar', ['page' => $pagination['page'] - 1]) }}">Previous</a>
-                    </li>
-                @else
-                    <li class="page-item disabled">
-                        <a class="page-link">Previous</a>
-                    </li>
-                @endif
+    </div>
 
-                <!-- Page Numbers -->
-                @for ($i = 1; $i <= $pagination['total_page']; $i++)
-                    <li class="page-item {{ $pagination['page'] == $i ? 'active' : '' }}">
-                        <a class="page-link" href="{{ route('data.pengajar', ['page' => $i]) }}">{{ $i }}</a>
-                    </li>
-                @endfor
+    <div class="modal fade" id="registrationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-0">
+                    <h5 class="fw-bold m-0">Tambah Instruktur</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+                    <form id="registrationForm" method="POST" action="{{ route('admin.dataInstructor.regis') }}"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="text-center mb-4">
+                            <div class="position-relative d-inline-block">
+                                <img src="{{ asset('assets/img/testimonials/profile.jpg') }}" id="imagePreview"
+                                    class="rounded-4 shadow-sm" width="120" height="120"
+                                    style="object-fit: cover; cursor: pointer;">
+                                <label for="imageUpload"
+                                    class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-2 shadow-sm cursor-pointer"
+                                    style="width: 35px; height: 35px;">
+                                    <i class="bi bi-camera-fill small"></i>
+                                </label>
+                            </div>
+                            <input type="file" id="imageUpload" name="image" class="d-none" accept="image/*">
+                            <p class="text-muted small mt-2">Klik foto untuk unggah</p>
+                        </div>
 
-                <!-- Next Button -->
-                @if ($pagination['page'] < $pagination['total_page'])
-                    <li class="page-item">
-                        <a class="page-link"
-                            href="{{ route('data.pengajar', ['page' => $pagination['page'] + 1]) }}">Next</a>
-                    </li>
-                @else
-                    <li class="page-item disabled">
-                        <a class="page-link">Next</a>
-                    </li>
-                @endif
-            </ul>
-        </nav>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control rounded-3" name="full_name" placeholder="Nama"
+                                required>
+                            <label>Nama Lengkap</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control rounded-3" name="email" placeholder="Email"
+                                required>
+                            <label>Email Instruktur</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control rounded-3" name="password" placeholder="Pass"
+                                required>
+                            <label>Password</label>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <input type="password" class="form-control rounded-3" name="password_confirm"
+                                placeholder="Conf" required>
+                            <label>Konfirmasi Password</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-3 rounded-3 fw-bold">Simpan &
+                            Daftarkan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Tampilkan pagination hanya jika pagination tersedia -->
     </div>
 
     @if ($dataInstructor)
 
         @foreach ($dataInstructor as $instructor)
-            <!-- Modal with unique ID for each instructor -->
-            <div class="modal fade" id="modal-{{ $instructor->id }}" tabindex="-1"
-                aria-labelledby="modalLabel{{ $instructor->id }}" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalLabel{{ $instructor->id }}">Edit Instruktur</h5>
+            <div class="modal fade" id="modal-{{ $instructor->id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg rounded-4">
+                        <div class="modal-header border-0 pb-0">
+                            <h5 class="fw-bold m-0 text-dark">Edit Profil Instruktur</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
+
+                        <div class="modal-body p-4">
                             <form action="{{ route('admin.dataPengajar.edit', ['id' => $instructor->id]) }}"
                                 method="POST" enctype="multipart/form-data">
                                 @csrf
-                                <input type="hidden" class="form-control" id="id" name="id"
-                                    value="{{ $instructor->id }}">
-                                <!-- Image Section -->
-                                <div class="image-container text-center mb-4" data-id="{{ $instructor->id }}">
-                                    <img src="{{ $instructor->photo_profile }}" alt="{{ $instructor->name }}"
-                                        class="img-fluid rounded shadow image-preview"
-                                        id="imagePreview{{ $instructor->id }}">
-                                    <div class="overlay">Ganti Gambar</div>
+                                <input type="hidden" name="id" value="{{ $instructor->id }}">
+
+                                <div class="text-center mb-4">
+                                    <div class="position-relative d-inline-block">
+                                        <img src="{{ $instructor->photo_profile ?? asset('assets/img/testimonials/profile.jpg') }}"
+                                            alt="{{ $instructor->name }}"
+                                            class="rounded-circle shadow-sm border border-3 border-white"
+                                            id="imagePreview{{ $instructor->id }}"
+                                            style="width: 120px; height: 120px; object-fit: cover;">
+
+                                        <label for="imageUpload{{ $instructor->id }}"
+                                            class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-2 shadow-sm cursor-pointer"
+                                            style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;"
+                                            title="Ganti Gambar">
+                                            <i class="bi bi-camera-fill small"></i>
+                                        </label>
+                                    </div>
+                                    <input type="file" id="imageUpload{{ $instructor->id }}" name="image"
+                                        class="d-none" accept="image/*"
+                                        onchange="previewImage(this, '{{ $instructor->id }}')">
+                                    <p class="small text-muted mt-2">Klik ikon kamera untuk mengubah foto</p>
                                 </div>
-                                <input type="file" id="imageUpload{{ $instructor->id }}" name="image"
-                                    style="display: none;" accept="image/*">
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-12 mb-3">
-                                        <label for="fullName" class="form-label">Full name</label>
-                                        <input type="text" class="form-control" id="fullName" name="full_name"
-                                            value="{{ $instructor->name }}" readonly>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold text-secondary">NAMA LENGKAP</label>
+                                        <input type="text" class="form-control bg-light rounded-3 shadow-none border-0"
+                                            value="{{ $instructor->name }}" readonly disabled style="font-size: 0.9rem;">
                                     </div>
-                                    <div class="col-lg-6 col-md-12 mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email"
-                                            value="{{ $instructor->email }}" readonly>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold text-secondary">EMAIL</label>
+                                        <input type="email" class="form-control bg-light rounded-3 shadow-none border-0"
+                                            value="{{ $instructor->email }}" readonly disabled
+                                            style="font-size: 0.9rem;">
                                     </div>
-                                    <div class="col-lg-6 col-md-12 mb-3">
-                                        <label for="education" class="form-label">Education</label>
-                                        <input type="text" class="form-control" id="education" name="education"
-                                            value="{{ $instructor->education ?? '' }}">
+
+                                    <div class="col-12">
+                                        <label for="education{{ $instructor->id }}"
+                                            class="form-label small fw-bold text-secondary text-uppercase">
+                                            <i class="bi bi-mortarboard-fill me-1 text-primary"></i> Pendidikan Terakhir
+                                        </label>
+                                        <textarea class="form-control rounded-3 shadow-sm" id="education{{ $instructor->id }}" name="education"
+                                            rows="2" placeholder="Contoh: S1 Teknik Informatika - Univ. Indonesia">{{ $instructor->education ?? '' }}</textarea>
                                     </div>
-                                    <div class="col-lg-6 col-md-12 mb-3">
-                                        <label for="experience" class="form-label">Experience</label>
-                                        <input type="text" class="form-control" id="experience" name="experience"
-                                            value="{{ $instructor->experience ?? '' }}">
+
+                                    <div class="col-12">
+                                        <label class="form-label small fw-bold text-secondary text-uppercase">
+                                            <i class="bi bi-briefcase-fill me-1 text-primary"></i> Pengalaman Kerja
+                                        </label>
+                                        <textarea class="form-control rounded-3 shadow-sm" id="experience{{ $instructor->id }}" name="experience"
+                                            rows="2" placeholder="Contoh: Analis Kimia - Pertamina Indonesia">{{ $instructor->experience ?? '' }}</textarea>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Tutup</button>
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
+
+                                <div class="modal-footer border-0 pt-4 px-0 pb-0">
+                                    <button type="button" class="btn btn-light rounded-pill px-4"
+                                        data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow">Simpan
+                                        Perubahan</button>
                                 </div>
                             </form>
                         </div>
@@ -285,6 +302,20 @@
     @endif
 
     <script>
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('imagePreview');
+                output.src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        });
+
+        // Tambahkan trigger klik pada gambar
+        document.getElementById('imagePreview').addEventListener('click', function() {
+            document.getElementById('imageUpload').click();
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
 
             @if (session('message'))

@@ -18,7 +18,7 @@
                     <img src="assets/img/hero-img.png" class="img-fluid animated" alt="">
                 </div>
             </div>
-        </div>
+    </div>
 
     </section><!-- /Hero Section -->
 

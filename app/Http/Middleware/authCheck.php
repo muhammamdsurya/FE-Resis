@@ -15,12 +15,20 @@ class authCheck
      */
     public function handle(Request $request, Closure $next): Response
     {
+       // Cek apakah session role tersedia
+    if ($request->session()->has('role')) {
         $role = $request->session()->get('role');
-            if ($role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            } else if ($role === 'user') {
-                return redirect()->route('user.dashboard');
-            }
-        return $next($request);
+
+        if ($role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        } 
+        
+        if ($role === 'user') {
+            return redirect()->route('user.dashboard');
+        }
+    }
+
+    // Jika tidak ada session (berarti tamu/guest), lanjutkan ke halaman register/login
+    return $next($request);
     }
 }

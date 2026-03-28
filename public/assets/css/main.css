@@ -81,6 +81,10 @@ h6 {
     z-index: 1; /* Z-index lebih rendah */
 }
 
+.bg-standar {
+     color: var(--accent-color);
+  font-family: var(--heading-font);
+}
 /*--------------------------------------------------------------
 # Global Header
 --------------------------------------------------------------*/

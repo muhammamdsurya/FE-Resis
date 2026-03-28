@@ -1,73 +1,148 @@
 @extends('layout.authLayout')
 @section('content')
-    <div class="login">
-        <div class="container d-flex align-items-center justify-content-center min-vh-100 z-index-99">
-            <div class="container bg-light">
-                <div class="row d-flex justify-content-center align-items-center shadow py-3">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
 
-                    <div class="col-md-5 col-lg-5 ">
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        /* Agar ikon berada di atas input */
+        .z-index-3 {
+            z-index: 3;
+        }
+
+        /* Memberi ruang di kanan agar teks password tidak tertutup ikon */
+        .pe-5 {
+            padding-right: 3rem !important;
+        }
+
+        .btn-google {
+            border-radius: 12px;
+            border: 1.5px solid #e2e8f0;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .btn-google:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        /* Tombol-tombol */
+        .btn-login {
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(13, 110, 253, 0.2);
+        }
+    </style>
+    <div class="login-section" style="background: linear-gradient(135deg, #f8faff 0%, #e9f0ff 100%);">
+        <div class="container d-flex align-items-center justify-content-center min-vh-100 py-5">
+            <div class="card border-0 shadow-lg overflow-hidden rounded-4 w-100" style="max-width: 1000px;">
+                <div class="row g-0">
+
+                    <div
+                        class="col-md-6 bg-light d-none d-md-flex align-items-center justify-content-center p-5 position-relative">
+                        <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10"
+                            style="background-image: url('data:image/svg+xml,...');"></div>
+                        <div class="text-center text-dark z-index-1">
+                            <img src="assets/img/logo.png" class="img-fluid mb-4 floating-ani"
+                                style="width: 15rem; "alt="Logo">
+                            <p class="opacity-75">Bergabunglah dengan ribuan profesional lainnya dan raih karier impian Anda
+                                bersama Akuanalis.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 bg-white p-4 p-lg-5">
                         <form id="registrationForm" method="POST" action="{{ route('register') }}">
                             @csrf
-                            <h3 class="text-center mb-3">Registrasi</h3>
-                            <!-- Name input -->
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="name" placeholder="Nama lengkap"
-                                    name="nama">
-                                <label for="name">Nama Lengkap</label>
-                                <p class="small" id="nameError" style="color: red; display: none;">Masukan nama lengkap</p>
+                            <div class="mb-4 text-center text-md-start">
+                                <h3 class="fw-bold text-dark">Registrasi Akun</h3>
+                                <p class="text-muted small">Silakan lengkapi data di bawah ini untuk memulai.</p>
                             </div>
 
-                            <!-- Email input -->
                             <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="email" placeholder="email"
+                                <input type="text" class="form-control rounded-3" id="name"
+                                    placeholder="Nama lengkap" name="nama">
+                                <label for="name text-muted"><i class="bi bi-person me-2"></i>Nama Lengkap</label>
+                                <p class="small text-danger mt-1" id="nameError" style="display: none;">Masukkan nama
+                                    lengkap</p>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control rounded-3" id="email" placeholder="email"
                                     name="email">
-                                <label for="email">Email</label>
-                                <p class="small" id="emailError" style="color: red; display: none;">Gunakan alamat email
-                                    aktif anda</p>
+                                <label for="email text-muted"><i class="bi bi-envelope me-2"></i>Email</label>
+                                <p class="small text-danger mt-1" id="emailError" style="display: none;">Gunakan alamat
+                                    email aktif</p>
+                            </div>
+                            <div class="form-floating mb-2 position-relative">
+                                <input type="password" class="form-control rounded-3 pe-5" id="password"
+                                    placeholder="Password" name="password">
+                                <label for="password" class="text-muted"><i class="bi bi-lock me-2"></i>Password</label>
+                                <span
+                                    class="position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer z-index-3"
+                                    onclick="togglePassword('password', 'eyeIcon1')">
+                                    <i class="bi bi-eye-slash text-muted" id="eyeIcon1"></i>
+                                </span>
+                            </div>
+                            <div class="mb-3 px-1">
+                                <p id="passwordError" class="x-small text-muted mb-0" style="font-size: 0.75rem;">
+                                    <i class="bi bi-info-circle me-1"></i> Minimal 8 karakter (Huruf, Angka & Simbol)
+                                </p>
                             </div>
 
-                            <!-- Password input -->
-                            <div class="form-floating">
-                                <input type="password" class="form-control" id="password" placeholder="Password"
-                                    name="password">
-                                <label for="password">Password</label>
-                                <p class="small">Gunakan minimal 8 karakter dengan kombinasi huruf, angka & karakter</p>
-                                <p id="passwordError" class="small text-danger" style="display: none;">Password harus
-                                    mengandung minimal 8 karakter, 1 huruf besar, 1 angka & 1 Karakter</p>
-                            </div>
-
-                            <div class="form-floating">
-                                <input type="password" class="form-control" id="confirmPassword"
+                            <div class="form-floating mb-3 position-relative">
+                                <input type="password" class="form-control rounded-3 pe-5" id="confirmPassword"
                                     placeholder="Konfirmasi Password" name="confirm">
-                                <label for="confirmPassword">Konfirmasi Password</label>
-                                <p id="passwordMismatch" class="small text-danger" style="display: none;">Password tidak
-                                    cocok</p>
+                                <label for="confirmPassword" class="text-muted"><i
+                                        class="bi bi-shield-check me-2"></i>Konfirmasi Password</label>
+                                <span
+                                    class="position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer z-index-3"
+                                    onclick="togglePassword('confirmPassword', 'eyeIcon2')">
+                                    <i class="bi bi-eye-slash text-muted" id="eyeIcon2"></i>
+                                </span>
+                                <p id="passwordMismatch" class="small text-danger mt-1" style="display: none;">Password
+                                    tidak cocok</p>
                             </div>
 
-                            <div class="text-center text-lg-start mt-4 pt-2">
-                                <button type="submit" class="btn btn-primary w-100" id="register"
-                                    disabled>Registrasi</button>
+                            <button type="submit"
+                                class="btn btn-primary btn-login w-100 py-3 fw-bold rounded-3 shadow-sm mt-2"
+                                id="register">
+                                Buat Akun Sekarang
+                            </button>
 
-                                <div class="d-flex align-items-center my-2">
-                                    <div class="flex-grow-1 border-top" style="border-color: #ccc;"></div>
-                                    <span class="mx-2">atau</span>
-                                    <div class="flex-grow-1 border-top" style="border-color: #ccc;"></div>
-                                </div>
-
-                                <a href="{{ route('register.google') }}" class="btn btn-light w-100"><i
-                                        class="bi bi-google mx-3"></i>Daftar
-                                    dengan google</a>
-
-                                <p class="small mt-3 pt-1 mb-0">Sudah punya akun? <a href="/login"
-                                        class="link-primary">Login</a></p>
+                            <div class="d-flex align-items-center my-4">
+                                <hr class="flex-grow-1 text-muted">
+                                <span class="mx-3 text-muted small fw-bold">ATAU</span>
+                                <hr class="flex-grow-1 text-muted">
                             </div>
+
+                            <a href="{{ route('register.google') }}"
+                                class="btn btn-google w-100 py-2 d-flex align-items-center justify-content-center mb-4">
+                                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="18"
+                                    class="me-2" alt="Google">
+                                Masuk dengan Google
+                            </a>
+
+                            <p class="text-center small mb-0 text-muted">
+                                Sudah punya akun? <a href="/login" class="text-primary fw-bold text-decoration-none">Login
+                                    di sini</a>
+                            </p>
                         </form>
+                    </div>
 
-                    </div>
-                    <div class="col-md-5 col-lg-5">
-                        <img src="assets/img/logo.png" class="img-fluid d-none d-md-block mx-auto" style="width: 20rem;"
-                            alt="Sample image">
-                    </div>
                 </div>
             </div>
         </div>
@@ -77,6 +152,20 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        function togglePassword(inputId, iconId) {
+            const passwordInput = document.getElementById(inputId);
+            const eyeIcon = document.getElementById(iconId);
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('bi-eye-slash');
+                eyeIcon.classList.add('bi-eye'); // Ganti ke ikon mata terbuka
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('bi-eye');
+                eyeIcon.classList.add('bi-eye-slash'); // Ganti ke ikon mata tertutup
+            }
+        }
         // Check if the alert exists and set a timeout to hide it
         document.addEventListener('DOMContentLoaded', function() {
             var alertMessage = document.getElementById('alert-message');

@@ -2,13 +2,6 @@
 @section('title', $title)
 
 
-@section('buttons')
-    <a href="{{ route('admin.dataCourse.download') }}" class="btn btn-primary mb-0 d-flex align-items-center">
-        <i class="fas fa-download d-inline me-1 "></i> <!-- Ikon untuk mobile -->
-        <span class="d-none d-lg-inline">Download CSV</span> <!-- Teks untuk desktop -->
-    </a>
-@endsection
-
 @section('content')
 
     <style>
@@ -94,7 +87,12 @@
         }
     </style>
 
-    <div class="container mt-3">
+    <div class="container-fluid py-3">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold m-0" style="color: #343a40;">Data Kelas</h2>
+            </div>
+        </div>
         <div class="row mb-3">
             <div class="col-7">
                 <div class="search-form" style="width: 100%">
@@ -108,6 +106,10 @@
                 </div>
             </div>
             <div class="col-5 d-flex justify-content-end align-items-center gap-1">
+                <a href="{{ route('admin.dataCourse.download') }}" class="btn btn-primary mb-0 d-flex align-items-center">
+                    <i class="fas fa-download d-inline me-1 "></i> <!-- Ikon untuk mobile -->
+                    <span class="d-none d-lg-inline">Download CSV</span> <!-- Teks untuk desktop -->
+                </a>
                 <button type="button" class="btn btn-info d-flex align-items-center" data-bs-toggle="modal"
                     data-bs-target="#modal-kelas">
                     <i class="fas fa-book d-inline me-1"></i> <!-- Ikon Kelas untuk mobile -->

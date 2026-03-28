@@ -56,13 +56,13 @@
         font-weight: 600;
         padding: 14px;
         transition: all 0.3s ease;
-        background-color: #1e293b; /* Warna admin lebih gelap/tegas */
+        background-color: #2E3A9D; /* Warna admin lebih gelap/tegas */
         border: none;
         color: white;
     }
 
     .btn-admin:hover {
-        background-color: #0f172a;
+        background-color: #1f2a8b; /* Warna admin lebih gelap/tegas */
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(30, 41, 59, 0.25);
         color: white;
@@ -137,7 +137,7 @@
                                     <a href="{{ route('reset.password.public') }}" class="small text-decoration-none">Lupa Password?</a>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary w-100 shadow-sm mb-3">
+                                <button type="submit" class="btn btn-admin w-100 shadow-sm mb-3">
                                     Masuk Ke Sistem
                                 </button>
 
